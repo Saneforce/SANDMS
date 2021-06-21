@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <include layout="@layout/custom_toolbar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/C5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:text="OrderId:" />
+
+                    <TextView
+                        android:id="@+id/ord_id"
+                        style="@style/TextStyle"
+                        android:textSize="@dimen/C14dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:text="Date :" />
+
+                    <TextView
+                        android:id="@+id/dis_date"
+                        style="@style/TextStyle"
+                        android:textSize="@dimen/C14dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:text="Amount :" />
+
+                    <TextView
+                        android:id="@+id/dis_amt"
+                        style="@style/TextStyle"
+                        android:textSize="@dimen/C14dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/C7dp">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:text="Payment Mode"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/C10dp"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/online"
+                            style="@style/TextStyle"
+                            android:checked="false"
+                            android:text="Online - payment" />
+
+                        <RadioButton
+                            android:id="@+id/offline"
+                            style="@style/TextStyle"
+                            android:checked="false"
+                            android:text="Offline - payment" />
+
+                        <RadioButton
+                            android:id="@+id/cred"
+                            style="@style/TextStyle"
+                            android:checked="false"
+                            android:text="Credit" />
+                    </RadioGroup>
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_offline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="@dimen/C10dp"
+       >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/C20dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:text="Offline Mode"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/lin_route"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/C5dp"
+                    android:background="@drawable/round_white_backround"
+                    android:elevation="@dimen/C2dp"
+                    android:onClick="LinearOfflineMode"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_offline_mode"
+                        style="@style/TextStyle"
+                        android:hint="Offline Mode" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@color/cardview_light_background"
+                    android:onClick="OffImg"
+                    android:padding="@dimen/C10dp"
+                    android:src="@drawable/ic_baseline_attachment_24" />
+
+                <ImageView
+                    android:id="@+id/imgSource"
+                    android:layout_width="@dimen/C70dp"
+                    android:layout_height="@dimen/C70dp"
+                    android:layout_marginLeft="@dimen/C10dp"
+                    android:padding="@dimen/C10dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/C10dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextStyle"
+                android:text="UTR"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edt_utr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/C5dp"
+                android:background="@drawable/round_white_backround"
+                android:hint="Enter UTR number"
+                android:padding="@dimen/C8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/lin_payment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_bg"
+            android:drawableRight="@drawable/forward"
+            android:drawablePadding="@dimen/C10dp"
+            android:gravity="center_vertical"
+            android:onClick="ProceedOrder"
+            android:padding="@dimen/C15dp"
+            android:text="Proceed"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            tools:ignore="RtlCompat" />
+
+    </LinearLayout>
+</LinearLayout>

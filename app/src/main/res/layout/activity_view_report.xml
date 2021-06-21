@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.ViewReportActivity">
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <include layout="@layout/custom_toolbar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ord.Id :"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/txt_product_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date :"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/txt_order_Date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/view_layout" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="@dimen/c200dp"
+                android:text="Name"
+                android:textSize="@dimen/C12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="@dimen/C40dp"
+                android:text="Qty"
+                android:textSize="@dimen/C12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="@dimen/C50dp"
+                android:text="Rate"
+                android:textSize="@dimen/C12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="@dimen/C80dp"
+                android:paddingLeft="@dimen/C20dp"
+                android:text="Value"
+                android:textSize="@dimen/C12dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <include layout="@layout/view_layout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/date_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/C5dp"
+            tools:listitem="@layout/row_date_view_report" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/C5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearlayout"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/ButtonStyle"
+                android:id="@+id/red_btn"
+                android:onClick="Delete"
+                android:text="Delete"
+                android:visibility="gone"
+                android:background="@drawable/button_amber"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/green_btn"
+                android:text="Pay Now"
+                android:visibility="gone"
+                android:onClick="PayNow"
+                android:background="@drawable/button_green"
+                style="@style/ButtonStyle"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="10dip"
+                android:text="Total : "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/total_value"
+                style="@style/TextStyle"
+                android:paddingRight="@dimen/C10dp"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+
+        <include layout="@layout/back_arrow" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

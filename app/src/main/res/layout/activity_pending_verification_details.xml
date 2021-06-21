@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.PendingVerificationDetails">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/custom_toolbar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/C10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Order ID:" />
+
+                <TextView
+                    android:id="@+id/product_order_id"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Order Value:" />
+
+                <TextView
+                    android:id="@+id/product_amnt"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Distributor:" />
+
+                <TextView
+                    android:id="@+id/product_distributor"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="UTR Number :" />
+
+                <TextView
+                    android:id="@+id/product_number"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Receipt :" />
+
+                <ImageView
+                    android:id="@+id/bank_receipt"
+                    android:layout_width="@dimen/header_width1"
+                    android:layout_height="@dimen/header_width1"
+              />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/C20dp"
+                android:layout_height="wrap_content">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:onClick="Cancel"
+                    android:text="Cancel"
+                    android:background="@drawable/button_cancel"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/green_btn"
+                    android:text="Verify"
+                    android:onClick="Verify"
+                    android:background="@drawable/button_color_theme"
+                    style="@style/ButtonStyle"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

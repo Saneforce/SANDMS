@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">San DMS</string>
+    <string name="web_client_id">966907461610-bfunvaum8tvsijmun2jthhtkpoofqoge.apps.googleusercontent.com</string>
+    <string name="pri_orders">Primary Orders</string>
+    <string name="sec_orders">Secondary Orders</string>
+    <string name="counter_orders">Counter Orders</string>
+    <string name="my_orders">My Orders</string>
+    <string name="Rep_orders">Reports</string>
+    <string name="Pri_Rep_orders">Primary Reports</string>
+    <string name="Sec_Rep_orders">Secondary Reports</string>
+    <string name="View_Rep">View Report</string>
+    <string name="view_cart">View Cart</string>
+    <string name="search_type">Search...</string>
+    <string name="report">View Cart</string>
+    <string name="dash">DashBoard</string>
+    <string name="order_type">Order Type</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="head_quater">Headquaters</string>
+    <string name="route">Route  </string>
+    <string name="retailer">Name </string>
+    <string name="retailer_add"> Address </string>
+    <string name="payment">Payment Type </string>
+    <string name="retailer_class">Retailer Class  </string>
+    <string name="retailer_channel">Retailer Channel </string>
+    <string name="secondary">Proceed to Order</string>
+    <string name="event_capture">Event Capture</string>
+    <string name="order">Orders</string>
+    <string name="add_retailer">Add New Retailer</string>
+    <string name="remarks">Enter the Remarks (or) Select from Templates</string>
+    <string name="remark">Enter the Remarks </string>
+    <string name="allowance">Do you want to submit Allowance?</string>
+    <string name="from_date">From    :</string>
+    <string name="to_date">To :</string>
+    <bool name="config_closeDialogWhenTouchOutside">true</bool>
+    <string name="title_activity_checking">CheckingActivity</string>
+
+
+    <string name="access_code">Access Code</string>
+    <string name="pay_button">Pay</string>
+    <string name="merchant_id">Merchant Id</string>
+    <string name="currency">Currency</string>
+    <string name="amount">Amount</string>
+    <string name="redirect_url">Redirect Url</string>
+    <string name="cancel_url">Cancel Url</string>
+    <string name="rsa_url">RSA Key Url</string>
+
+
+</resources>

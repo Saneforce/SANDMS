@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearlayout"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/appColor">
+
+            <ImageView
+                android:id="@+id/toolbar_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/C20dp"
+                android:src="@drawable/back" />
+
+            <TextView
+                style="@style/TextStyle"
+                android:padding="10dp"
+                android:text="Add New Retailer"
+                android:layout_width="@dimen/header_date_width"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="#fff"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/C70dp"
+                android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/C10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="@string/route" />
+
+                        <LinearLayout
+                            android:id="@+id/lin_route"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:onClick="LinearRoute"
+                            android:elevation="@dimen/C2dp"
+                            android:orientation="vertical"
+                            android:layout_margin="@dimen/C5dp"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/txt_route"
+                                style="@style/TextStyle"
+                                android:hint="@string/route" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Name" />
+
+                        <EditText
+                            android:id="@+id/edt_new_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:gravity="start"
+                            android:elevation="@dimen/C2dp"
+                            android:hint="Enter the Name"
+                            android:layout_margin="@dimen/C5dp"
+                            android:padding="10dp"
+                            android:singleLine="true"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Address" />
+
+                        <EditText
+                            android:id="@+id/edt_new_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:gravity="start"
+                            android:layout_margin="@dimen/C5dp"
+                            android:elevation="@dimen/C2dp"
+                            android:hint="Enter the Address"
+                            android:padding="10dp"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="City" />
+
+                        <EditText
+                            android:id="@+id/edt_new_city"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:gravity="start"
+                            android:hint="Enter the City"
+                            android:padding="10dp"
+                            android:layout_margin="@dimen/C5dp"
+                            android:elevation="@dimen/C2dp"
+                            android:singleLine="true"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Phone" />
+
+                        <EditText
+                            android:id="@+id/edt_new_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:gravity="start"
+                            android:elevation="@dimen/C2dp"
+                            android:hint="Enter the Phone No"
+                            android:inputType="number"
+                            android:layout_margin="@dimen/C5dp"
+                            android:maxLength="10"
+                            android:padding="10dp"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Email" />
+
+                        <EditText
+                            android:id="@+id/edt_new_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                             android:gravity="start"
+                            android:elevation="@dimen/C2dp"
+                            android:hint="Enter the Email"
+                            android:inputType="textEmailAddress"
+                            android:padding="10dp"
+                            android:layout_margin="@dimen/C5dp"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Latitude" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:elevation="@dimen/C2dp"
+                            android:layout_margin="@dimen/C5dp"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/txt_retail_lat"
+                                style="@style/TextStyle"
+                                android:hint="Retailer Latitude" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="Longitude" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:elevation="@dimen/C2dp"
+                            android:layout_margin="@dimen/C5dp"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/txt_retail_lon"
+                                style="@style/TextStyle"
+                                android:hint="Retailer Longitude" />
+                        </LinearLayout>
+
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="@string/retailer_class" />
+
+                        <LinearLayout
+                            android:id="@+id/linear_retailer_class"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:onClick="LinearClass"
+                            android:elevation="@dimen/C2dp"
+                            android:layout_margin="@dimen/C5dp"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/txt_retailer_class"
+                                style="@style/TextStyle"
+                                android:hint="@string/retailer_class" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:text="@string/retailer_channel" />
+
+                        <LinearLayout
+                            android:id="@+id/linear_retailer_channel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_white_backround"
+                            android:onClick="LinearChannel"
+                            android:elevation="@dimen/C2dp"
+                            android:layout_marginTop="@dimen/C5dp"
+                            android:layout_marginLeft="@dimen/C5dp"
+                            android:layout_marginRight="@dimen/C5dp"
+                            android:layout_marginBottom="@dimen/C15dp"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/txt_retailer_channel"
+                                style="@style/TextStyle"
+                                android:hint="@string/retailer_channel" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/linearlayout">
+
+        <Button
+            android:id="@+id/submit_button"
+            style="@style/ButtonStyle"
+            android:onClick="addSave"
+            android:background="@drawable/sign_bg"
+            android:text="Save" />
+
+        <include layout="@layout/back_arrow"></include>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row_category"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:tag="cards main container"
+        tools:ignore="MissingConstraints">
+
+        <androidx.cardview.widget.CardView xmlns:card_view="https://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardBackgroundColor="#FFF"
+            card_view:cardCornerRadius="50dp"
+            tools:ignore="MissingConstraints">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                tools:ignore="MissingConstraints">
+
+                <LinearLayout
+                    android:layout_width="@dimen/product_i"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/C5dp">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/product_i"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/child_product_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="SAN Honey-Almond Cold"
+                            android:textColor="@android:color/black"
+                            android:textSize="13dp"></TextView>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/C4dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/C4dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Tax : "
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_tax"
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="0%"
+                                    android:textSize="10dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/C4dp"
+                                android:layout_marginTop="@dimen/C4dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Dis : "
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_dis"
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="0%"
+                                    android:textSize="10dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/C4dp"
+                                android:layout_marginTop="@dimen/C4dp"
+                                android:visibility="gone">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Stock : "
+                                    android:textSize="10dp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="1"
+                                    android:textSize="10dp" />
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/C4dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Tax Amt : "
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_tax_amt"
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:textSize="10dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/C4dp"
+                                android:layout_marginTop="@dimen/C4dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Dis Amt: "
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_dis_amt"
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:textSize="10dp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/child_product_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@android:color/black"
+                                android:textSize="10dp" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text="X"
+                                android:textColor="@android:color/black"
+                                android:textSize="10dp" />
+
+                            <TextView
+                                android:id="@+id/product_item_qty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingLeft="4dp"
+                                android:text=""
+                                android:textColor="@android:color/black"
+                                android:textSize="10dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text="="
+                                android:textColor="@android:color/black"
+                                android:textSize="10dp"></TextView>
+
+                            <TextView
+                                android:id="@+id/product_item_total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text=""
+                                android:textColor="@android:color/black"
+                                android:textSize="10dp"></TextView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/c35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/C5dp"
+                    tools:ignore="MissingConstraints">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true">
+
+
+                        <LinearLayout
+                            android:id="@+id/linear_add"
+                            android:layout_width="@dimen/c110dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/oval_background">
+
+
+                            <LinearLayout
+                                android:id="@+id/image_minus"
+                                android:layout_width="@dimen/c38dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center">
+
+                                <LinearLayout
+                                    android:layout_width="16dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:background="@drawable/minus"
+                                    android:gravity="center"></LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/disable_minus"
+                                android:layout_width="@dimen/c38dp"
+                                android:visibility="gone"
+                                android:layout_height="match_parent"
+                                android:gravity="center">
+
+                                <LinearLayout
+                                    android:layout_width="16dp"
+                                    android:layout_height="12dp"
+                                    android:layout_margin="8dp"
+                                    android:background="@drawable/disable_minus"
+                                    android:gravity="center"></LinearLayout>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/product_count_increment"
+                                android:layout_width="@dimen/C50dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:background="@android:color/transparent"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:padding="5dp"
+                                android:text="0"
+                                android:visibility="gone"></TextView>
+
+                            <EditText
+                                android:id="@+id/edt_product_count_inc_dec"
+                                android:layout_width="35dp"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:text="0" />
+
+                            <LinearLayout
+                                android:id="@+id/image_plus"
+                                android:layout_width="38dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center">
+
+                                <LinearLayout
+                                    android:layout_width="13dp"
+                                    android:layout_height="10dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:background="@drawable/plus"
+                                    android:gravity="center"></LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

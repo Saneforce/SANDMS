@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/C10dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        app:cardCornerRadius="@dimen/C5dp"
+        android:id="@+id/card_item"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/C5dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/C10dp"
+            tools:ignore="MissingConstraints">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:text="Order ID:" />
+                <TextView
+
+                    style="@style/TextStyle"
+                    android:text="1500Ml" />
+
+            </LinearLayout>
+            <TextView
+                android:background="@drawable/button_amber"
+                android:padding="@dimen/C5dp"
+                android:text="Pending"
+                android:id="@+id/txt_pending"
+                android:textColor="@android:color/white"
+                style="@style/TextStyle" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/C5dp"
+            tools:ignore="MissingConstraints">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:text="Order ID:" />
+                <TextView
+                    android:id="@+id/product_order_id"
+                    style="@style/TextStyle"
+               />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/txt_date"
+                style="@style/TextStyle" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F"
+                    android:text="Order Value:" />
+                <TextView
+                    android:id="@+id/product_amnt"
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F"
+                    android:text="Distributor :" />
+                <TextView
+                    android:id="@+id/product_distributor"
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

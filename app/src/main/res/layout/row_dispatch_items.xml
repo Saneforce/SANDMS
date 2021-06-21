@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row_category"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/C5dp"
+    android:padding="@dimen/C5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:ignore="MissingConstraints">
+
+        <androidx.cardview.widget.CardView xmlns:card_view="https://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="5dp"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                tools:ignore="MissingConstraints">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/child_product_name"
+                            style="@style/TextStyle"
+                            android:layout_weight="1"
+                            android:text="SAN Honey-Almond Cold"
+                            android:textSize="@dimen/C17dp" />
+
+                        <TextView
+                            android:id="@+id/child_pro_unit"
+                            style="@style/TextStyle"
+                            android:text="BOX"
+                            android:textColor="@color/appColor"
+                            android:textSize="@dimen/C17dp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/C10dp"
+                        android:layout_marginBottom="@dimen/C10dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/c35dp"
+                            android:layout_gravity="center"
+                            android:gravity="end"
+                            tools:ignore="MissingConstraints">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true">
+
+
+                                <LinearLayout
+                                    android:id="@+id/linear_add"
+                                    android:layout_width="@dimen/header_60"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/oval_background">
+
+                                    <EditText
+                                        android:id="@+id/text_view_count"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@android:color/transparent"
+                                        android:gravity="center"
+                                        android:inputType="number"
+                                        android:maxLength="3"
+                                        android:text="0" />
+
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
