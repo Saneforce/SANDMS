@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SANDMS.iml" filepath="$PROJECT_DIR$/.idea/SANDMS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DMS.iml" filepath="$PROJECT_DIR$/.idea/modules/DMS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DMS.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DMS.app.iml" />
     </modules>
   </component>
 </project>
