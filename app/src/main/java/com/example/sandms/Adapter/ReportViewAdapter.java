@@ -22,7 +22,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     Context context;
     List<ReportModel> mDate;
     DMS.ViewReport mViewReport;
-    String produtId, productDate;
+    String produtId, productDate,taxValue,tax;
     String OrderValue;
 
     public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport   ) {
@@ -85,6 +85,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
         @Override
         public void onClick(View v) {
             mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue());
+
 
         }
     }

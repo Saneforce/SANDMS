@@ -31,7 +31,8 @@ public class PrimaryProductRepository {
         new DeleteContactAsynTask(contactDao).execute(contact);
     }
 
-    public LiveData<List<PrimaryProduct>> getAllConData() {
+    public LiveData<List<PrimaryProduct>>
+    getAllConData() {
         return allConData;
     }
     public LiveData<List<PrimaryProduct>> getFilterData() {

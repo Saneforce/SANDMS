@@ -37,12 +37,17 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         try {
+            String taxRate;
             JSONObject jsonObjec = jsonArray.getJSONObject(position);
             holder.txtName.setText(jsonObjec.getString("Product_Name"));
             holder.txtQty.setText(jsonObjec.getString("CQty"));
             holder.txtRate.setText(jsonObjec.getString("Rate"));
-            float total = Float.parseFloat(jsonObjec.getString("value"));
-            holder.txtTotal.setText(new DecimalFormat("##.##").format(total));
+            taxRate=jsonObjec.getString("taxRate");
+            holder.txtTax.setText((taxRate));
+            holder.txtTotal.setText(jsonObjec.getString("taxval"));
+            //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
+
+            //NEW CODE
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -58,7 +63,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtName,txtQty,txtRate,txtTotal;
+        TextView txtName,txtQty,txtRate,txtTotal,txtTax;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,6 +71,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             txtQty = (TextView) itemView.findViewById(R.id.txt_qty);
             txtRate = (TextView) itemView.findViewById(R.id.txt_rate);
             txtTotal = (TextView) itemView.findViewById(R.id.txt_total);
+            txtTax=itemView.findViewById(R.id.txt_tax);
 
 
         }

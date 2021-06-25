@@ -253,6 +253,8 @@ public class PrimaryOrderProducts extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+
+
         super.onResume();
         Log.v("Primary_order", "onResume");
         if (productBarCode.equalsIgnoreCase("")) {

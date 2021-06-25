@@ -86,9 +86,7 @@ public class ViewReportActivity extends AppCompatActivity {
         orderDate = intent.getStringExtra("OrderDate");
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
-//        OrderTax=intent.getStringExtra("Tax");
-//        OrderAmtNew= Double.valueOf(intent.getStringExtra("TaxOderValue"));
-       // TotalValue.setText("Rs."+OrderAmtNew);
+
 
         DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
         DateRecyclerView.setHasFixedSize(true);
@@ -142,9 +140,7 @@ public class ViewReportActivity extends AppCompatActivity {
         payIntent.putExtra("Date", orderDate);
       //  payIntent.putExtra("Amount", OrderAmt);
         payIntent.putExtra("Amount",OrderAmtNew);
-        //new code
-       // payIntent.putExtra("Amount",new DecimalFormat("##.##").format( OrderTaxCal));
-        //new code
+
         startActivity(payIntent);
         finish();
     }

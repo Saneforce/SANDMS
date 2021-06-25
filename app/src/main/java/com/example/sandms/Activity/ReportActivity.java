@@ -207,7 +207,7 @@ public class ReportActivity extends AppCompatActivity {
                 Log.e("Total_Value", String.valueOf(intSum));
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, mDReportModels, new DMS.ViewReport() {
                     @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue) {
+                    public void reportCliick(String productId, String orderDate, String OrderValue) {//,String TaxValue,String Tax
                         Intent intnet = new Intent(ReportActivity.this, ViewReportActivity.class);
                         intnet.putExtra("ProductID", productId);
                         intnet.putExtra("OrderDate", orderDate);
