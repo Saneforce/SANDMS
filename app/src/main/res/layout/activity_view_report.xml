@@ -70,7 +70,7 @@
 
             <TextView
                 style="@style/TextStyle"
-                android:layout_width="@dimen/c200dp"
+                android:layout_width="@dimen/c160dp"
                 android:text="Name"
                 android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />
@@ -79,6 +79,7 @@
                 style="@style/TextStyle"
                 android:layout_width="@dimen/C40dp"
                 android:text="Qty"
+                android:paddingLeft="@dimen/C5dp"
                 android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />
 
@@ -87,12 +88,20 @@
                 android:layout_width="@dimen/C50dp"
                 android:text="Rate"
                 android:textSize="@dimen/C12dp"
+                android:paddingLeft="@dimen/C5dp"
+                android:textStyle="bold" />
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="@dimen/C40dp"
+                android:text="Tax"
+                android:paddingLeft="@dimen/C5dp"
+                android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />
 
             <TextView
                 style="@style/TextStyle"
-                android:layout_width="@dimen/C80dp"
-                android:paddingLeft="@dimen/C20dp"
+                android:layout_width="@dimen/C70dp"
+                android:paddingLeft="@dimen/C10dp"
                 android:text="Value"
                 android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />

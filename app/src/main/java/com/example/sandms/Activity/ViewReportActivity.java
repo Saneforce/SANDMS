@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -38,15 +39,24 @@ import retrofit2.Response;
 
 public class ViewReportActivity extends AppCompatActivity {
     TextView toolHeader, txtProductId, txtProductDate;
+
+
     ImageView imgBack;
     EditText toolSearch;
     RecyclerView DateRecyclerView;
-    String productId, orderDate, formDate, toDate, OrderType, OrderAmt;
+    String productId;
+    String orderDate;
+    String formDate;
+    String toDate;
+    String OrderType;
+    String OrderAmt;
+    String OrderTax;
     DateReportAdapter mDateReportAdapter;
     Shared_Common_Pref shared_common_pref;
     ArrayList<Integer> mArrayList;
     TextView TotalValue;
     Button PayNow,Delete;
+    Double OrderTaxCal,  OrderAmtNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +69,27 @@ public class ViewReportActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
 
         OrderType = shared_common_pref.getvalue("OrderType");
-        OrderAmt = String.valueOf(getIntent().getSerializableExtra("OderValue"));
-        TotalValue.setText("Rs." + String.valueOf(getIntent().getSerializableExtra("OderValue")));
+        //OrderAmt = Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
+        //new code start
+       // OrderTax="5%";
+       // OrderAmtNew=Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
+
+
+        //OrderTaxCal=(OrderAmtNew*(5/100.0f))+OrderAmtNew;
+        //TotalValue.setText("Rs."+new DecimalFormat("##.##").format( OrderTaxCal));
+        ///new code stop
+
+        //TotalValue.setText("Rs." + String.valueOf(getIntent().getSerializableExtra("OderValue")));
 
         Intent intent = getIntent();
         productId = intent.getStringExtra("ProductID");
         orderDate = intent.getStringExtra("OrderDate");
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
+//        OrderTax=intent.getStringExtra("Tax");
+//        OrderAmtNew= Double.valueOf(intent.getStringExtra("TaxOderValue"));
+       // TotalValue.setText("Rs."+OrderAmtNew);
+
         DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
         DateRecyclerView.setHasFixedSize(true);
         DateRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -117,7 +140,11 @@ public class ViewReportActivity extends AppCompatActivity {
         Intent payIntent = new Intent(getApplicationContext(), PaymentDetailsActivity.class);
         payIntent.putExtra("OrderId", productId);
         payIntent.putExtra("Date", orderDate);
-        payIntent.putExtra("Amount", OrderAmt);
+      //  payIntent.putExtra("Amount", OrderAmt);
+        payIntent.putExtra("Amount",OrderAmtNew);
+        //new code
+       // payIntent.putExtra("Amount",new DecimalFormat("##.##").format( OrderTaxCal));
+        //new code
         startActivity(payIntent);
         finish();
     }
@@ -149,6 +176,8 @@ public class ViewReportActivity extends AppCompatActivity {
                     JSONObject jsonObject = null;
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
+                        OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
+                        TotalValue.setText("Rs."+jsonObject.getString("taxval"));
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
                         Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
                         if (PaymentValue == 0) {

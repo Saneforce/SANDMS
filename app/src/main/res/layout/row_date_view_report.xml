@@ -15,12 +15,13 @@
             android:text="Name"
             android:textSize="@dimen/C12dp"
             android:id="@+id/txt_name"
-            android:layout_width="@dimen/c200dp" />
+            android:layout_width="@dimen/c160dp" />
 
         <TextView
             style="@style/TextStyle"
             android:text="Qty"
             android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp"
             android:id="@+id/txt_qty"
             android:layout_width="@dimen/C40dp" />
 
@@ -28,15 +29,28 @@
             style="@style/TextStyle"
             android:id="@+id/txt_rate"
             android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp"
             android:layout_width="@dimen/C50dp"
             android:text="Rate" />
 
+
+
+        <TextView
+        style="@style/TextStyle"
+        android:id="@+id/txt_tax"
+        android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp"
+        android:layout_width="@dimen/C40dp"
+        android:text="Tax" />
+
+
+
         <TextView
             style="@style/TextStyle"
-            android:layout_width="@dimen/C80dp"
+            android:layout_width="@dimen/C70dp"
             android:text="Value"
             android:textSize="@dimen/C12dp"
-            android:paddingLeft="@dimen/C20dp"
+            android:paddingLeft="@dimen/C10dp"
             android:id="@+id/txt_total" />
 
     </LinearLayout>
