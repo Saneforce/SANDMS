@@ -71,7 +71,7 @@
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="@dimen/c160dp"
-                android:text="Name"
+                android:text="ProductName"
                 android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />
 
@@ -136,7 +136,7 @@
                 style="@style/ButtonStyle"
                 android:id="@+id/red_btn"
                 android:onClick="Delete"
-                android:text="Delete"
+                android:text="CANCEL"
                 android:visibility="gone"
                 android:background="@drawable/button_amber"
                 android:layout_weight="1" />

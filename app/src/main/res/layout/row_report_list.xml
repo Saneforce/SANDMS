@@ -22,7 +22,7 @@
             style="@style/TextStyle"
             android:text="OrderID"
             android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/header_width2" />
+            android:layout_width="@dimen/C80dp" />
 
         <TextView
             android:id="@+id/txt_date"
@@ -30,11 +30,16 @@
             android:textSize="@dimen/C12dp"
             android:layout_width="@dimen/C80dp"
             android:text="OrderDate" />
-
+        <TextView
+            android:id="@+id/txt_status"
+            style="@style/TextStyle"
+            android:textSize="@dimen/C12dp"
+            android:layout_width="@dimen/C80dp"
+            android:text="Status" />
         <TextView
             android:id="@+id/txt_total"
             style="@style/TextStyle"
-            android:layout_width="@dimen/header_width1"
+            android:layout_width="@dimen/header_width2"
             android:text="Value"
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C15dp" />

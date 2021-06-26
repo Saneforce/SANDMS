@@ -27,10 +27,20 @@ public class ReportModel {
     @Expose
     private String orderValue;
 
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     @SerializedName("taxVal")
     @Expose
     private String taxValue;
-
+    @SerializedName("Order_Status")
+    @Expose
+    private String orderStatus;
     public String getTax() {
         return tax;
     }

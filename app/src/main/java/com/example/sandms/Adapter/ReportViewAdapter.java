@@ -51,6 +51,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
         holder.txtsNo.setText(mDate.get(position).getSlno());
         holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
         holder.txtOrderID.setText(mDate.get(position).getOrderNo());
+        holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
 
         float total = Float.parseFloat(mDate.get(position).getOrderValue());
         holder.txtValue.setText(new DecimalFormat("##.##").format(total));
@@ -69,7 +70,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView txtsNo,txtOrderDate,txtOrderID,txtValue;
+        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus;
         LinearLayout linearLayout;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -78,6 +79,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
             txtOrderID = (TextView) itemView.findViewById(R.id.txt_order);
             txtOrderDate = (TextView) itemView.findViewById(R.id.txt_date);
             txtValue = (TextView) itemView.findViewById(R.id.txt_total);
+            txtOrderStatus=itemView.findViewById(R.id.txt_status);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
             itemView.setOnClickListener(this);
         }

@@ -46,7 +46,7 @@ import retrofit2.Response;
 
 
 public class ReportActivity extends AppCompatActivity {
-    TextView toolHeader, txtTotalValue, txtProductDate;
+    TextView toolHeader, txtTotalValue, txtProductDate,  txtName ;
     ImageView imgBack;
     Button fromBtn, toBtn;
     EditText toolSearch;
@@ -66,6 +66,7 @@ public class ReportActivity extends AppCompatActivity {
 
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
+
         Count = getIntent().getIntExtra("count", 100);
         shared_common_pref = new Shared_Common_Pref(this);
 
@@ -73,6 +74,8 @@ public class ReportActivity extends AppCompatActivity {
         Log.v("OrderType", OrderType);
         mArrayList = new ArrayList<>();
         txtTotalValue = (TextView) findViewById(R.id.total_value);
+        txtName = findViewById(R.id.dist_name);
+        txtName.setText("Name:"+ ""+shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
         @SuppressLint("WrongConstant")
         SharedPreferences sh = getSharedPreferences("MyPrefs", MODE_APPEND);
         SF_CODE = sh.getString("Sf_Code", "");
@@ -193,6 +196,7 @@ public class ReportActivity extends AppCompatActivity {
                     JSONObject JsonObjects;
                     for (int l = 0; l <= jsonArray.length(); l++) {
                         JsonObjects = jsonArray.getJSONObject(l);
+                        
                         Log.v("JSON_OBEJCTS",JsonObjects.getString("Order_Value"));
                         intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
                     }
