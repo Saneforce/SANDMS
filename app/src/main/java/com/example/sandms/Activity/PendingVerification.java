@@ -124,6 +124,7 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
+            Log.v("iage",Imgurl);
 
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);

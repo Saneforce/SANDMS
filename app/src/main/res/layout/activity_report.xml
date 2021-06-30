@@ -82,6 +82,44 @@
                     android:layout_height="wrap_content">
             <include layout="@layout/view_layout"/>
                 </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/C20dp"
+                    android:weightSum="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:layout_margin="@dimen/C15dp"
+                        android:text="Payment Status:"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/lin_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/C5dp"
+                        android:background="@drawable/round_white_backround"
+                        android:elevation="@dimen/C2dp"
+
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/txt_orderstatus"
+                            style="@style/TextStyle"
+
+                            android:hint="All                                                            " />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

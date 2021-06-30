@@ -71,7 +71,7 @@
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="@dimen/c160dp"
-                android:text="ProductName"
+                android:text="Product Name"
                 android:textSize="@dimen/C12dp"
                 android:textStyle="bold" />
 

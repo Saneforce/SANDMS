@@ -114,7 +114,12 @@ ApiInterface {
     Call<JsonObject> LogistData(@Query("OrderID") String OrderID);
 
     @FormUrlEncoded
+    //For dispatch save url commented below 2 lines
+
     @POST("db_v14.php?axn=save/editpriorderlg")
     Call<JsonObject> Dispatch(@Query("sfCode") String OrderID, @Field("data") String data);
+
+
+
 }
 

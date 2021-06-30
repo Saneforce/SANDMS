@@ -38,9 +38,33 @@ public class ReportModel {
     @SerializedName("taxVal")
     @Expose
     private String taxValue;
+
+    public String getOrderTakenBy() {
+        return orderTakenBy;
+    }
+
+    public void setOrderTakenBy(String orderTakenBy) {
+        this.orderTakenBy = orderTakenBy;
+    }
+
     @SerializedName("Order_Status")
     @Expose
     private String orderStatus;
+    @SerializedName("Order_Taken_By")
+    @Expose
+    private String orderTakenBy;
+
+    public String getOrderValueTotal() {
+        return orderValueTotal;
+    }
+
+    public void setOrderValueTotal(String orderValueTotal) {
+        this.orderValueTotal = orderValueTotal;
+    }
+
+    @SerializedName("OrderVal")
+    @Expose
+    private String orderValueTotal;
     public String getTax() {
         return tax;
     }

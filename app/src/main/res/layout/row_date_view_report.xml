@@ -12,7 +12,7 @@
 
         <TextView
             style="@style/TextStyle"
-            android:text="Name"
+            android:text="Product Name"
             android:textSize="@dimen/C12dp"
             android:id="@+id/txt_name"
             android:layout_width="@dimen/c160dp" />

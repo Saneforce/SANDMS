@@ -56,7 +56,7 @@ public class ViewReportActivity extends AppCompatActivity {
     ArrayList<Integer> mArrayList;
     TextView TotalValue;
     Button PayNow,Delete;
-    Double OrderTaxCal,  OrderAmtNew;
+    Double OrderTaxCal,  OrderAmtNew,OrderValueTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,10 +172,16 @@ public class ViewReportActivity extends AppCompatActivity {
                     JSONObject jsonObject = null;
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
+                    //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
+
+                        OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
                         OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
-                        TotalValue.setText("Rs."+jsonObject.getString("taxval"));
+                      //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
+                        TotalValue.setText("Rs."+jsonObject.getString("OrderVal"));
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
                         Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
+                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
+                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderAmtNew));
                         if (PaymentValue == 0) {
                             PayNow.setVisibility(View.VISIBLE);
                             Delete.setVisibility(View.VISIBLE);

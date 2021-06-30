@@ -44,7 +44,6 @@ public class PaymentVerified extends AppCompatActivity {
 
 
         mShared_common_pref = new Shared_Common_Pref(this);
-
         String LoginType = mShared_common_pref.getvalue("Login_details");
         Log.v("LoginType", LoginType);
 
@@ -56,10 +55,15 @@ public class PaymentVerified extends AppCompatActivity {
         }else{
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }
+
+
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.v("Product_Requestresponse", response.toString());
+
+
                 mCommon_class.ProgressdialogShow(1, "");
                 JSONObject jsonObject1;
                 Shared_Common_Pref shared_common_pref;
