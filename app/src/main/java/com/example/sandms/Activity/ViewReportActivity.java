@@ -139,7 +139,7 @@ public class ViewReportActivity extends AppCompatActivity {
         payIntent.putExtra("OrderId", productId);
         payIntent.putExtra("Date", orderDate);
       //  payIntent.putExtra("Amount", OrderAmt);
-        payIntent.putExtra("Amount",OrderAmtNew);
+        payIntent.putExtra("Amount", OrderValueTotal);
 
         startActivity(payIntent);
         finish();

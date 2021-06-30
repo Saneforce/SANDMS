@@ -1,11 +1,13 @@
 package com.example.sandms.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +36,7 @@ public class DispatchCreditedActivity extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-
+    ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +46,13 @@ public class DispatchCreditedActivity extends AppCompatActivity {
 
         mShared_common_pref = new Shared_Common_Pref(this);
 
-
+        getToolbar();
 
         mCommon_class = new Common_Class(this);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         ca = apiInterface.getDisaptchCreated(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
-        Log.v("Product_Request", ca.request().toString());
+        Log.v("Product_RequestDispatch", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -85,7 +87,19 @@ public class DispatchCreditedActivity extends AppCompatActivity {
             }
         });
     }
+    public void getToolbar() {
 
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                finish();
+            }
+        });
+
+    }
 }
 
 

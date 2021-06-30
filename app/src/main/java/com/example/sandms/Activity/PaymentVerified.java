@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,13 +36,13 @@ public class PaymentVerified extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-
+    ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_verified);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
-
+        getToolbar();
 
         mShared_common_pref = new Shared_Common_Pref(this);
         String LoginType = mShared_common_pref.getvalue("Login_details");
@@ -51,7 +52,9 @@ public class PaymentVerified extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         if (LoginType.equalsIgnoreCase("Logistics")) {
-        ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+            //below api is omitted because new
+       // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+            ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }else{
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }
@@ -95,7 +98,19 @@ public class PaymentVerified extends AppCompatActivity {
             }
         });
     }
+    public void getToolbar() {
 
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                finish();
+            }
+        });
+
+    }
 }
 
 
@@ -187,4 +202,8 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             martl_view = itemView.findViewById(R.id.card_item);
         }
     }
+
+
+
+
 }

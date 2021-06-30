@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,16 +37,18 @@ public class PendingVerification extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-
+    ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_verification);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
+        getToolbar();
 
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
         Call<JsonObject> ca = apiInterface.getPrimaryVerification(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
 
         Log.v("Product_Request", ca.request().toString());
@@ -81,6 +85,21 @@ public class PendingVerification extends AppCompatActivity {
                 mCommon_class.ProgressdialogShow(2, "");
             }
         });
+    }
+
+
+    public void getToolbar() {
+
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                finish();
+            }
+        });
+
     }
 
 }
