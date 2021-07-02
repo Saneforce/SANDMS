@@ -42,12 +42,8 @@ public class DispatchCreditedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dispatch_credited);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
-
-
         mShared_common_pref = new Shared_Common_Pref(this);
-
         getToolbar();
-
         mCommon_class = new Common_Class(this);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;

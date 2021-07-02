@@ -52,7 +52,10 @@ public class DispatchEditActivtity extends AppCompatActivity {
     JSONObject jsonObject = null;
     ImageView imgBack;
     String OrderVal;
-
+    Integer newQty;
+    Integer OldCQtys;
+    Integer Rates;
+        String OldQty;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,77 +99,55 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     ViewProductEdit priProdAdapter = new ViewProductEdit(DispatchEditActivtity.this, jsonArray, new DMS.DisptachEditing() {
                         @Override
                         public void onClickParentInter(String position, String Slno, String PCode, String OrderId,
-                                                       String ProductName, String OldCQty, String Oldvalue, String Newvalue,
-                                                       String Rate, String Cl_bal, String Unit, String newCQty) {
+                                                       String ProductName, String OldCQty,
+                                                       String Oldvalue, String Newvalue,
+                                                       String Rate, String Cl_bal, String Unit,
+                                                       String newCQty,String OQty) {
+                            try {
+                                newQty = Integer.valueOf(newCQty);
+                                OldCQtys = Integer.valueOf(OldCQty);
+                                Integer Rates = Integer.valueOf(Rate);
+                                Integer NewOrder = newQty - OldCQtys;
+                                Integer NewValue = NewOrder * Rates;
+                                Integer OldValues = OldCQtys * Rates;
+                                if (OldCQtys > newQty) {
+                                    Toast.makeText(DispatchEditActivtity.this,"Please select quantity equal or below value",Toast.LENGTH_SHORT).show();
 
-//try {
-//    Log.v("ONITem________ARRAY", position);
-//    Log.v("ONITem________ARRAY", OrderId);
-//    Log.v("ONITem________ARRAY", ProductName);
-//    Log.v("ONITem________ARRAY", OldCQty);
-//    Log.v("ONITem________ARRAY", Rate);
-//    Log.v("ONITem________ARRAY", Cl_bal);
-//    Log.v("ONITem________ARRAY", Unit);
-//    Log.v("ONITem________ARRAY", newCQty);
-//
-//    Integer newQty = Integer.valueOf(newCQty);
-//    Integer OldCQtys = Integer.valueOf(OldCQty);
-//    Integer Rates = Integer.valueOf(Rate);
-//    Integer NewOrder = newQty - OldCQtys;
-//
-//    Integer NewValue = NewOrder * Rates;
-//    Integer OldValues = OldCQtys * Rates;
-//    Log.v("NewOrderNewOrderY", String.valueOf(NewValue));
-//    Log.v("NewOrderNewOrderY", String.valueOf(OldValues));
+                                } else {
 
-                           try {
-
-                               Log.v("ONITem________ARRAY", position);
-                               Log.v("ONITem________ARRAY", OrderId);
-                               Log.v("ONITem________ARRAY", ProductName);
-                               Log.v("ONITem________ARRAY", OldCQty);
-                               Log.v("ONITem________ARRAY", Rate);
-                               Log.v("ONITem________ARRAY", Cl_bal);
-                               Log.v("ONITem________ARRAY", Unit);
-                               Log.v("ONITem________ARRAY", newCQty);
-
-                               Integer newQty = Integer.valueOf(newCQty);
-                               Integer OldCQtys = Integer.valueOf(OldCQty);
-                               Integer Rates = Integer.valueOf(Rate);
-                               Integer NewOrder = newQty - OldCQtys;
-
-                               Integer NewValue = NewOrder * Rates;
-                               Integer OldValues = OldCQtys * Rates;
-                               Log.v("NewOrderNewOrderY", String.valueOf(NewValue));
-                               Log.v("NewOrderNewOrderY", String.valueOf(OldValues));
+                                    OldQty=OQty;
 
 
-                                JSONObject jsonObject2 = new JSONObject();
-                                jsonObject2.put("Slno", Slno);
-                                jsonObject2.put("PCode", PCode);
-                                jsonObject2.put("OrderId", OrderId);
-                                jsonObject2.put("ProductName", ProductName);
-                                jsonObject2.put("OldCQty", OldCQtys);
-                                jsonObject2.put("Newvalue", Float.valueOf(NewValue));
-                                jsonObject2.put("Oldvalue", Float.valueOf(OldValues));
-                                jsonObject2.put("Rate", Rates);
-                                jsonObject2.put("Cl_bal", Cl_bal);
-                                jsonObject2.put("Unit", Unit);
-                                jsonObject2.put("newCQty", NewOrder);
-                                // jsonObject2.put("value", position);
-                                Log.v("PUSHNOTIIFCAITON", jsonObject2.toString());
-                                jsonsds = jsonObject2.toString();
-
-                                for (int i = 0; i < jsonArray.length(); i++) {
-
+                               for (int i = 0; i < jsonArray.length(); i++) {
                                     jsonObject = jsonArray.getJSONObject(i);
-                                    listdata.add(jsonArray.get(i));
-                                    listdata.set(Integer.parseInt(position), jsonObject2.toString());
-                                }
+                                       if (Slno.equals(jsonObject.getString("Slno"))) {
+                                           jsonObject.put("Slno", Slno);
+                                           jsonObject.put("PCode", PCode);
+                                           jsonObject.put("OrderId", OrderId);
+                                           jsonObject.put("ProductName", ProductName);
+                                           jsonObject.put("OldCQty", OldCQtys);
+                                           jsonObject.put("Newvalue", Float.valueOf(NewValue));
+                                           jsonObject.put("Oldvalue", Float.valueOf(OldValues));
+                                           jsonObject.put("Rate", Rates);
+                                           jsonObject.put("Cl_bal", Cl_bal);
+                                           jsonObject.put("Unit", Unit);
+                                           jsonObject.put("newCQty", NewOrder);
+                                           listdata.set(Integer.parseInt(position), jsonObject.toString());
+                                       }else {
 
+                                   }
+
+
+
+                               }
+                                    Log.v("LIST_OF_DATA", String.valueOf(listdata.toString()));
+
+                                    Log.v("JsONDATE", jsonArray.toString());
+                             }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            } catch (NumberFormatException EE){}                          Log.v("LIST_OF_DATA", String.valueOf(listdata.toString()));
+                            } catch (NumberFormatException EE){}
+                            Log.v("LIST_OF_DATA", String.valueOf(listdata.toString()));
 
                             Log.v("JsONDATE", jsonArray.toString());
 
@@ -186,43 +167,85 @@ public class DispatchEditActivtity extends AppCompatActivity {
         });
 
 
+
+
+
+
+
+
     }
 
     public void dipatchItem(View v) {
+        try {
+            if (OldCQtys > newQty) {
+                Toast.makeText(DispatchEditActivtity.this, "Please select quantity equal or below value", Toast.LENGTH_SHORT).show();
+
+            }
+        }catch(NullPointerException ee){
+
+            Log.v("LIST_OF_DATAssssss", String.valueOf(listdata.toString()));
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> ca = apiInterface.Dispatch(mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), listdata.toString());
+            Log.v("parametersDispatch", "data1" + mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code) + "data2" + String.valueOf(listdata.toString()));
+
+            Log.v("REquest_DISPACTCH", ca.request().toString());
+            ca.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.v("RESPONSE_DISPACTCH", response.toString());
+                    Toast.makeText(DispatchEditActivtity.this, "Dispatched Item Successfully", Toast.LENGTH_SHORT).show();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent Details = new Intent(DispatchEditActivtity.this, PaymentVerified.class);
+                            Details.putExtra("OrderId", OrderId);
+                            startActivity(Details);
+                        }
+                    }, 1000);
 
 
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                }
+            });
+            Log.v("Product_Request", ca.request().toString());
+        }
         Log.v("LIST_OF_DATAssssss", String.valueOf(listdata.toString()));
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Dispatch(mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), listdata.toString());
-Log.v("parametersDispatch","data1"+mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code)+"data2"+String.valueOf(listdata.toString()));
+                ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+                Call<JsonObject> ca = apiInterface.Dispatch(mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), listdata.toString());
+                Log.v("parametersDispatch", "data1" + mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code) + "data2" + String.valueOf(listdata.toString()));
 
-        Log.v("REquest_DISPACTCH", ca.request().toString());
-        ca.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("RESPONSE_DISPACTCH",response.toString());
-                Toast.makeText(DispatchEditActivtity.this,"Dispatched Item Successfully",Toast.LENGTH_SHORT).show();
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                Log.v("REquest_DISPACTCH", ca.request().toString());
+                ca.enqueue(new Callback<JsonObject>() {
                     @Override
-                    public void run() {
-                        Intent Details = new Intent(DispatchEditActivtity.this, PaymentVerified.class);
-                        Details.putExtra("OrderId", OrderId);
-                        startActivity(Details);
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        Log.v("RESPONSE_DISPACTCH", response.toString());
+                        Toast.makeText(DispatchEditActivtity.this, "Dispatched Item Successfully", Toast.LENGTH_SHORT).show();
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent Details = new Intent(DispatchEditActivtity.this, PaymentVerified.class);
+                                Details.putExtra("OrderId", OrderId);
+                                startActivity(Details);
+                            }
+                        }, 1000);
+
+
                     }
-                }, 1000);
 
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
 
+                    }
+                });
+                Log.v("Product_Request", ca.request().toString());
             }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
-        Log.v("Product_Request", ca.request().toString());
-
-    }
     public void getToolbar() {
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
@@ -262,19 +285,20 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClick.onClickParentInter("", "", "", "", "", "", "", "", "", "", "", "");
+                itemClick.onClickParentInter("", "", "", "", "",
+                        "", "", "", "", "", "", "","");
             }
         });
+
+
         return new ViewProductEdit.MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewProductEdit.MyViewHolder holder, int position) {
-
+        String OCQty;
 
         Log.v("JSON________ARRAY", jsonArray.toString());
-
-
         try {
             jsonObject = (JSONObject) jsonArray.get(position);
 
@@ -287,12 +311,20 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
             String Rate = String.valueOf(jsonObject.get("Rate"));
             String Cl_bal = String.valueOf(jsonObject.get("Cl_bal"));
             String Unit = String.valueOf(jsonObject.get("Unit"));
+            String nCQty= String.valueOf(jsonObject.get("newCQty"));
+            String NValue= String.valueOf(jsonObject.get("Newvalue"));
+            Log.v("oldvalue",value);
+
+            Log.v("oldvqty",CQty);
+            Log.v("newqty",nCQty);
+
 
             holder.orderID.setText("" + String.valueOf(jsonObject.get("Product_Name")));
             holder.orderValue.setText("" + String.valueOf(jsonObject.get("OldCQty")));
             holder.orderDistributor.setText("" + String.valueOf(jsonObject.get("Unit")));
             Log.v("JSONDETIAILS", String.valueOf(jsonObject.get("Product_Name")));
            // holder.orderValue.setFilters(new InputFilter[]{new InputFilterMinMax("1", CQty)});
+            OCQty = String.valueOf(jsonObject.get("OldCQty"));
 
             holder.orderValue.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -305,22 +337,20 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                     Log.e("textchange",s.toString());
                     Log.e("orderval",CQty);
                   String OrderVal=holder.orderValue.getText().toString();
-//                    if(Integer.parseInt(CQty)>Integer.parseInt(OrderVal)){
-//                        Toast.makeText(context,"Please select quantity equal or below value",Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                else
+
 
                     if (holder.orderValue.getText().toString().equals("") || holder.orderValue.getText()==null||holder.orderValue.getText().equals("0")||
                             holder.orderValue.getText().toString().equalsIgnoreCase("null")) {//||holder.orderValue.getText().equals("0")
                         holder.orderValue.setText("" + 0);
                         itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
                                 Product_Name, holder.orderValue.getText().toString(), "", "",
-                                Rate, Cl_bal, Unit, CQty);
+                                Rate, Cl_bal, Unit, CQty,OCQty);
                     } else {
                         itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
-                                Product_Name, holder.orderValue.getText().toString(),holder.orderValue.getText().toString(), "",
-                                Rate, Cl_bal, Unit, CQty);
+                                Product_Name, holder.orderValue.getText().toString(),
+                              "", "",
+                                Rate, Cl_bal, Unit,
+                                CQty,OCQty);
                     }
                 }
 
