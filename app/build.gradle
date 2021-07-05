@@ -94,4 +94,8 @@ dependencies {
     //Razor Pay
     implementation 'com.razorpay:checkout:1.6.4'
 
+
+    implementation 'com.madgag:scpkix-jdk15on:1.47.0.1'
+    implementation'com.itextpdf:itextpdf:5.0.6'
+
 }

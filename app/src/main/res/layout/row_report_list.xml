@@ -53,6 +53,21 @@
 
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/row_retailer"
+        android:layout_below="@+id/row_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:id="@+id/txt_reatiler"
+            style="@style/TextStyle"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:text="Retailer Name:"
+            android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row_reporttakenby"

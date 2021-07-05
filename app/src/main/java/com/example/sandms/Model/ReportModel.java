@@ -20,8 +20,28 @@ public class ReportModel {
     @Expose
     private String orderDate;
 
-//    @SerializedName("Payment_Option")
-//    @Expose
+    public String getRetailerName() {
+        return retailerName;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    @SerializedName("ReportType")
+    @Expose
+    private String reportType;
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
+
+    @SerializedName("RetName")
+    @Expose
+    private String retailerName;
 
 
 //    public String getPaymentOption() {

@@ -51,6 +51,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 try {
+    String reportType=mDate.get(position).getReportType();
     if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
             OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
         holder.txtsNo.setText(mDate.get(position).getSlno());
@@ -58,7 +59,11 @@ try {
         holder.txtOrderID.setText(mDate.get(position).getOrderNo());
         holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
         holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
-       // holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
+
+        if(reportType.equals("Secondary")) {
+            holder.txtRetailerName.setVisibility(View.VISIBLE);
+            holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+        }
 
         float total = Float.parseFloat(mDate.get(position).getOrderValue());
         holder.txtValue.setText(new DecimalFormat("##.##").format(total));
@@ -76,7 +81,13 @@ try {
         holder.txtOrderID.setText(mDate.get(position).getOrderNo());
         holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
         holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
-      //  holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
+
+
+        if(reportType.equals("Secondary")) {
+            holder.txtRetailerName.setVisibility(View.VISIBLE);
+            holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+        }
+
 
         float total = Float.parseFloat(mDate.get(position).getOrderValue());
         holder.txtValue.setText(new DecimalFormat("##.##").format(total));
@@ -100,6 +111,11 @@ try {
     holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
     float total = Float.parseFloat(mDate.get(position).getOrderValue());
     holder.txtValue.setText(new DecimalFormat("##.##").format(total));
+    String reportType=mDate.get(position).getReportType();
+    if(reportType.equals("Secondary")) {
+        holder.txtRetailerName.setVisibility(View.VISIBLE);
+        holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+    }
     //holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
 }
     }
@@ -110,7 +126,7 @@ try {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtPaymentOption;
+        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName;
         LinearLayout linearLayout,linearLayoutTakenby;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -123,7 +139,7 @@ try {
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
             txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
-            //txtPaymentOption=itemView.findViewById(R.id.txt_paymenttaken);
+            txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
             itemView.setOnClickListener(this);
         }
 
