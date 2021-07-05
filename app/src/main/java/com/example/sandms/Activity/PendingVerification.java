@@ -144,11 +144,17 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
             Log.v("iage",Imgurl);
-
+            String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
+            String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
+            holder.txtPaymentOption.setText("Payment Type :"+Payment_Option);
+            if(Payment_Option.equals("Offline")){
+                holder.txtPaymentMode.setVisibility(View.VISIBLE);
+                holder.txtPaymentMode.setText("Payment Mode:"+Payment_Mode);
+            }
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -175,7 +181,7 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus;
+        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;;
         CardView martl_view;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -186,6 +192,8 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             orderDate = itemView.findViewById(R.id.txt_date);
             orderID = itemView.findViewById(R.id.product_order_id);
             martl_view = itemView.findViewById(R.id.card_item);
+            txtPaymentOption=itemView.findViewById(R.id.txt_paymentpending);
+            txtPaymentMode=itemView.findViewById(R.id.txt_paymentpending_mode);
         }
     }
 }

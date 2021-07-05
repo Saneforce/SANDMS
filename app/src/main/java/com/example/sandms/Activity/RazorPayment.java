@@ -34,6 +34,7 @@ public class RazorPayment extends AppCompatActivity implements PaymentResultList
         String stre = shared_common_pref.getvalue("task");
         Log.v("STORE_DATA_DETAILS", stre);
 
+
         // adding on click listener to our button.
         payBtn.setOnClickListener(new View.OnClickListener() {
             @Override

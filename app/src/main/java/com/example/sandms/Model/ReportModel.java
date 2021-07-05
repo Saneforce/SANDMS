@@ -1,8 +1,5 @@
 package com.example.sandms.Model;
 
-
-
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -23,10 +20,22 @@ public class ReportModel {
     @Expose
     private String orderDate;
 
+//    @SerializedName("Payment_Option")
+//    @Expose
+
+
+//    public String getPaymentOption() {
+//        return paymentOption;
+//    }
+//
+//    public void setPaymentOption(String paymentOption) {
+//        this.paymentOption = paymentOption;
+//    }
+
     @SerializedName("Order_Value")
     @Expose
     private String orderValue;
-
+//    private String paymentOption;
     public String getOrderStatus() {
         return orderStatus;
     }

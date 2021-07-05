@@ -156,11 +156,18 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
+            String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
+            String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
 
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
+            holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
+            if(Payment_Option.equals("Offline")){
+                holder.txtPaymentMode.setVisibility(View.VISIBLE);
+                holder.txtPaymentMode.setText("Payment Mode :"+ Payment_Mode);
+            }
 
             String LoginType = shared_common_pref.getvalue("Login_details");
             Log.v("LoginType", LoginType);
@@ -189,7 +196,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus;
+        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;
         CardView martl_view;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -200,6 +207,8 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             orderDate = itemView.findViewById(R.id.txt_date);
             orderID = itemView.findViewById(R.id.product_order_id);
             martl_view = itemView.findViewById(R.id.card_item);
+            txtPaymentOption=itemView.findViewById(R.id.txt_paymenttaken);
+            txtPaymentMode=itemView.findViewById(R.id.txt_paymentmode);
         }
     }
 
