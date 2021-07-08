@@ -329,7 +329,8 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
 
                         startActivity(intent);
-                        finish();
+                        finish
+                                ();
                     } else {
                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                         shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);

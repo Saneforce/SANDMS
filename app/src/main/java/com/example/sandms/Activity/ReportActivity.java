@@ -120,7 +120,10 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     ArrayList<String> OrderStatusListID;
     LinearLayout linearLayout;
 
+    View supportLayout;
+
     private Bitmap bitmap;
+
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -129,6 +132,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
+        supportLayout=findViewById(R.id.customlayout);
         getToolbar();
 
         FReport = getIntent().getStringExtra("FromReport");
@@ -264,10 +268,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgShare=findViewById(R.id.toolbar_share);
         imgShare.setVisibility(View.VISIBLE);
+
         imgShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                supportLayout.setVisibility(View.GONE);
                 bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                 createPdf();
 

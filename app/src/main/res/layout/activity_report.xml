@@ -18,7 +18,9 @@
 
         tools:ignore="MissingConstraints">
 
-        <include layout="@layout/custom_toolbar" />
+        <include
+            android:id="@+id/customlayout"
+            layout="@layout/custom_toolbar" />
         <LinearLayout
             android:layout_width="match_parent"
 

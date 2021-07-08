@@ -34,34 +34,65 @@
             android:id="@+id/edt_serach_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/C10dp"
+            android:layout_margin="@dimen/C5dp"
             android:lines="1"
             android:drawableRight="@drawable/ic_search_icon"
             android:background="@drawable/card_border"
             android:hint="Search..." />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/C70dp"
+            android:layout_margin="@dimen/C5dp"
+            android:padding="@dimen/C5dp"
+            android:weightSum="1"
+            android:orientation="horizontal">
+        <Button
+            android:id="@+id/backward"
+            android:layout_gravity="center"
+            android:background="@drawable/bckward"
+            android:layout_width="@dimen/C20dp"
+            android:layout_height="@dimen/C30dp"
+
+            android:padding="@dimen/C5dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_checking"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/C80dp"
+            android:layout_height="@dimen/C70dp"
             android:layout_margin="@dimen/C5dp"
+            android:layout_weight=".95"
+            android:layout_gravity="center"
             android:padding="@dimen/C5dp" />
 
+            <Button
+                android:id="@+id/forward"
+                android:background="@drawable/frward"
+                android:layout_gravity="center"
+                android:layout_width="@dimen/C20dp"
+                android:layout_height="@dimen/C30dp"
+                android:layout_margin="@dimen/C5dp"
+                android:padding="@dimen/C5dp" />
+
+
+        </LinearLayout>
         <TextView
             android:id="@+id/text_checki"
-            style="@style/TextStyle"
-            android:layout_margin="@dimen/C5dp"
+            android:layout_height="@dimen/C30dp"
+            android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/C5dp"
+            android:layout_marginLeft="@dimen/C5dp"
             android:padding="@dimen/C5dp"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/C22dp"
+            android:textSize="@dimen/C15dp"
             android:textStyle="bold"
+            android:text="Product"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_checking1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/C60dp"
+            android:layout_marginBottom="@dimen/C50dp"
             android:padding="@dimen/C5dp"
             tools:listitem="@layout/product_details" />
 
@@ -84,7 +115,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/C40dp"
                 android:layout_margin="5dp">
 
                 <LinearLayout
@@ -168,7 +199,7 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/C40dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
                         android:drawableRight="@drawable/forward"

@@ -118,7 +118,7 @@
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="DisCount :"
+                                android:text="Discount :"
                                 android:textSize="12dp" />
 
                             <TextView
