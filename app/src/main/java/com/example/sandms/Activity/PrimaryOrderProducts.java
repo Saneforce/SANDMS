@@ -111,6 +111,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
         mShared_common_pref = new Shared_Common_Pref(this);
         searchEdit = findViewById(R.id.edt_serach_view);
 
+
         sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
 
 
@@ -164,7 +165,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
             public void onClick(View v) {
 
                 String STR = grandTotal.getText().toString();
-                Log.e("STRVALUE", STR);
+                Log.v("STRVALUE", STR);
                 if (STR.equals("0") || STR.equals("0.0")) {
                     Toast.makeText(PrimaryOrderProducts.this, "Please choose to cart", Toast.LENGTH_SHORT).show();
                 } else {
@@ -322,19 +323,27 @@ public class PrimaryOrderProducts extends AppCompatActivity {
         contactViewModels.getFilterDatas().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
-                Log.e("TotalSize", new Gson().toJson(contacts.size()));
+                Log.v("TotalSize", new Gson().toJson(contacts.size()));
                 item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-
+                grandTotal.setText("" + sum);
                 float sum = 0;
+                        float tax=0;
                 for (PrimaryProduct cars : contacts) {
                     sum = sum + Float.parseFloat(cars.getSubtotal());
-
-                    Log.e("Total_value", String.valueOf(sum));
+                   // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                    ;
+             //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+                   Log.v("Total_valuebefore", String.valueOf(sum));
                 }
                 grandTotal.setText("" + sum);
                 mShared_common_pref.save("GrandTotal", String.valueOf(sum));
             }
         });
+
+//        sum= Float.parseFloat(getIntent().getStringExtra("GrandTotal"));
+//        if(!"".equals(sum)|| !("0".equals(sum))||sum!=0){
+//            grandTotal.setText("" + sum);
+//        }
 
     }
 
@@ -353,7 +362,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
     public void SaveDataValue() {
         Gson gson = new Gson();
         String jsonCars = gson.toJson(Product_Array_List);
-        Log.e("Category_Data", jsonCars);
+        Log.v("Category_Data", jsonCars);
         Intent mIntent = new Intent(PrimaryOrderProducts.this, ViewCartActivity.class);
         mIntent.putExtra("list_as_string", jsonCars);
         mIntent.putExtra("GrandTotal", grandTotal.getText().toString());
@@ -550,67 +559,290 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
             holder.productItem.setText(mContact.getTxtqty());
             holder.mProductCount.setText(mContact.getTxtqty());
             subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-            Log.v("subtotal",subTotal.toString());
-            float pc = Float.parseFloat((mContact.getTxtqty()));
+            Log.v("subtotalshow", subTotal.toString());
+            //july11
+            if ("".equals(mContact.getSchemeProducts().getDiscountvalue()) ||
+                    ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+            ) {
+                holder.ProductDisAmt.setText("0");
+                finalPrice = 0;
+            }
+
+            if ("".equals(mContact.getTax_Value()) ||
+                    ("0").equals(mContact.getTax_Value())) {
+                tax = Float.valueOf("0.0");
+
+            } else {
+                tax = Float.valueOf(mContact.getTax_Value());
+
+            }
+            //jul 11
+
             if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
                 schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
-                Log.e("schemeamt1", String.valueOf(schemCount));
-                Log.e("schemeamt2pc", String.valueOf(pc));
-                if (pc == schemCount || pc > schemCount) {
+                if (ProductCount == schemCount || ProductCount > schemCount) {
                     disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                    Log.v("dis1",disValue.toString());
-                    holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
-                    finalPrice = (subTotal * disValue) / 100;
-                    Log.v("finalPrice1", String.valueOf(finalPrice));
-                    holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
-                    subTotal = subTotal - finalPrice;
-                    Log.v("finalPriceAfterDis1", String.valueOf(subTotal));
+                    Log.v("+disvalueshow", String.valueOf(disValue));
+                    if(disValue.equals("0")||disValue.equals("")){
+                        holder.ProductDisAmt.setText("0");
+                        finalPrice=0;
+                        holder.ProductDis.setText("0");
+                        if(subTotal.equals("0")){
+                            subTotal=Float.parseFloat("0.0");
+                            holder.productItemTotal.setText("0.0");//new july10
+                        }else {
+                            holder.productItemTotal.setText("" + subTotal);//new july10
+                        }
+                    }else {
+                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        finalPrice = (subTotal * disValue) / 100;
+                        Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+                        subTotal=subTotal-finalPrice;
+                        Log.v("disamttotshow",String.valueOf(finalPrice));
+                        holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                        holder.productItemTotal.setText("" + subTotal);//new july 10
+                    }
+                    if (tax != 0.0) {
+                        taxAmt = 100 + tax;
+                        Log.v("+TaxAMTll", String.valueOf(taxAmt));
+                        // subTotal=subTotal-finalPrice;
+                        Log.v("disamt",String.valueOf(finalPrice));
+                        Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                        Log.v("+Total_tcodellshow", "=" + mContact.getProduct_Cat_Code());
+                        Log.v("+Total_productllshow", "=" +holder.mProductCount.getText().toString());
+                        Log.v("+Subtotafterdisllshow", String.valueOf(subTotal));
+                        //  Log.v("+calcull",calculate.toString());
+                        // valueTotal = subTotal/Float.parseFloat(holder.mProductCount.getText().toString());//working code commented
+                        valueTotal = subTotal*tax/100;
+                        subTotal = (taxAmt* subTotal) / 100;
+                        //   valueTotal = subTotal - calculate;//working code commented
+                        holder.productItemTotal.setText("" + subTotal);//workig code commented
+                        holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+                        Log.v("+Totalshow", "=" + subTotal);
+                        // holder.productItemTotal.setText("" + subTotal);
+                        Log.v("+PRDTaxAMTshow", String.valueOf(valueTotal));
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
+                                String.valueOf(valueTotal), String.valueOf(finalPrice));
+                        Log.v("ifupdatedval++show",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
+                    } else {
+                        if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
+                            holder.ProductTaxAmt.setText("0");
+                            valueTotal=Float.parseFloat("0.0");//new code added jul87
 
-                    Log.e("taxamt6",valueTotal.toString());
-                    Log.e("taxamt36", String.valueOf(finalPrice));
-                   // holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal+finalPrice));
-                    //new code start
-//                    if (tax != 0.0 ) {
+                        }else {
+                            holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                            valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
+                        }
+
+                        Log.e("cntup00show",subTotal+""+finalPrice+""+valueTotal);
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
+                                String.valueOf(valueTotal), String.valueOf(finalPrice));
+
+                    }
+
+
+                } else {
+                    //july12
+                    if(("0").equals(disValue)||("").equals(disValue)){
+                        holder.ProductDisAmt.setText("0");
+                        finalPrice=0;
+                        holder.ProductDis.setText("0");
+
+                        if(subTotal.equals("0")){
+
+                            subTotal=Float.parseFloat("0.0");
+                            holder.productItemTotal.setText("0.0");//new july10
+                        }else {
+                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+
+                            holder.productItemTotal.setText("" + subTotal);//new july10
+                        }
+                    }else {
+                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        finalPrice = (subTotal * disValue) / 100;
+                        Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+                        subTotal=subTotal-finalPrice;
+                        Log.v("disamttotshow",String.valueOf(finalPrice));
+                        holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                        holder.productItemTotal.setText("" + subTotal);//new july 10
+                    }
+                    //jul 12
+
+                   // holder.ProductDis.setText("0");
+                   // holder.ProductDisAmt.setText("0");
+
+//new code tax start
+                    if (tax != 0.0) {
+                        taxAmt = 100 + tax;
+                        Log.v("++++TaxAMT1", String.valueOf(taxAmt));
+                        subTotal = (taxAmt * subTotal) / 100;
+                        holder.productItemTotal.setText("" + subTotal);
+                        Log.v("+++Total_Dist1show2", "=" + subTotal);
+                        Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                        Log.v("+++Total_calode1show2", "=" + mContact.getProduct_Cat_Code());
+                        Log.v("++++Total_product1show2", "=" + holder.mProductCount.getText().toString());
+                        valueTotal = subTotal - calculate;
+                        holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+                        Log.v("+PRDTaxAMT1show2", String.valueOf(valueTotal));
+                    } else {
+                        valueTotal=Float.parseFloat(mContact.getTax_amt());
+                        holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                        subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                        Log.v("+++subtotalwtaXshow2", String.valueOf(subTotal));
+                        holder.productItemTotal.setText(subTotal.toString());
+                    }
+                    //new code tax stop
+                  String  prdDisAmt=mContact.getDis_amt();
+                    if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
+                        Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ prdDisAmt);
+
+                    }else{
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
+                        Log.v("updatshow++else22",    subTotal+""+String.valueOf(valueTotal)+ mContact.getDis_amt());
+                    }
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+            else {//new start
+                if (tax != 0.0) {
+                    taxAmt = 100 + tax;
+                    Log.v("q+TaxAMT1", String.valueOf(taxAmt));
+                    subTotal = (taxAmt * subTotal) / 100;
+
+                    // holder.productItemTotal.setText("" + subTotal);
+                    Log.v("q+Total_Distcount1", "=" + subTotal);
+                    Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                    Log.v("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+                    Log.v("q+Total_product1", "=" + holder.mProductCount.getText().toString());
+                    valueTotal = subTotal - calculate;
+                    holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+                    holder.productItemTotal.setText("" + subTotal);
+                    Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
+                } else {
+                    if(mContact.getTax_amt().equals("")||mContact.getTax_amt().equals("0")){
+                        holder.ProductTaxAmt.setText("0");
+                        valueTotal=Float.parseFloat("0.0");//new july 8
+                    }else {
+                        holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                        valueTotal=Float.parseFloat(mContact.getTax_amt());
+                    }
+                    holder.productItemTotal.setText("" + subTotal);
+                    //  holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                }
+
+                Log.v("5Taxamt",mContact.getTax_amt().toString());
+                Log.v("55taxamt",valueTotal.toString());
+                Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
+                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+            }//new stop
+        }  //jul 11
+
+                    //old code commented below
+
+//                    disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+//                    Log.v("dis1", disValue.toString());
+//                    holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+//                    finalPrice = (subTotal * disValue) / 100;
+//                    Log.v("finalPrice1", String.valueOf(finalPrice));
+//                    holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                    subTotal = subTotal - finalPrice;
+//                    Log.v("finalPriceAfterDis1", String.valueOf(subTotal));
+//                    //july 9 code start
+//                    if (tax != 0.0) {
 //                        taxAmt = 100 + tax;
-//                        Log.v("Tax Amt", String.valueOf(taxAmt));
-//                        subTotal = (valueTotal* subTotal) / 100;
-//                        Log.e("Total_Tax", "=" + subTotal);
+//                        Log.v("Tax Amt", String.valueOf(tax));
+//                        valueTotal = subTotal * tax / 100;
+//                        Log.v("prodsubtotal",subTotal.toString());
+//                        holder.productItemTotal.setText("" +  subTotal * taxAmt / 100);
+//                        //subTotal = (taxAmt * subTotal) / 100;//this line commented
+//                        //new code july 9 start
+//
+//                        //new code july 9 stop
+//                        Log.v("taxamt6", valueTotal.toString());
+//                        Log.v("taxamt36", String.valueOf(subTotal * taxAmt / 100));
+//                        // holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal+finalPrice));
+//
+//                      //  holder.productItemTotal.setText("" + subTotal);
+//                    }
+//
+//                 //   holder.productItemTotal.setText("" + subTotal);
+//                    Log.v("taxamt19922", valueTotal.toString());
+//                    updateTask(mContact, holder.mProductCount.getText().toString(),
+//                            String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+//                } else {
+//                    finalPrice = Float.parseFloat("0.00");
+//                    Log.v("dIS Amt", String.valueOf(finalPrice));
+//                    holder.ProductDis.setText("0");
+//                    valueTotal=Float.parseFloat("0.00");//new code july11
+//                    holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(0));
+//                    //julyn9 statt
+//                    if (tax != 0.0) {
+//                        taxAmt = 100 + tax;
+//                        Log.v("Tax Amt77", String.valueOf(tax));
+//                        subTotal = (taxAmt * subTotal) / 100;//this line commented
+//                        Log.v("Total_Tax", "=" + subTotal);
+//                        //below 2 lines commented
 //                        Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
 //                        valueTotal = subTotal - calculate;
 //                        holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-//                        Log.e("taxamt6",valueTotal.toString());
+//
 //                    } else {
+//                        valueTotal = Float.parseFloat(mContact.getTax_amt());
+//                        Log.v("taxamt1" +
+//                                "9", valueTotal.toString());
 //                        holder.ProductTaxAmt.setText(mContact.getTax_amt());
 //                    }
-                    //new code stop
-
-                    holder.productItemTotal.setText("" + subTotal);
-                } else {
-                    holder.ProductDis.setText("0");
-                    holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(0));
-                }
-            }
-            if (tax != 0.0) {
-                taxAmt = 100 + tax;
-                Log.v("Tax Amt", String.valueOf(taxAmt));
-                subTotal = (taxAmt * subTotal) / 100;
-                Log.e("Total_Tax", "=" + subTotal);
-                Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                valueTotal = subTotal - calculate;
-
-
-                    holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-
-            } else {
-                holder.ProductTaxAmt.setText(mContact.getTax_amt());
-            }
-            holder.productItemTotal.setText("" + subTotal);
-            Log.e("taxamt1",valueTotal.toString());
-            updateTask(mContact, holder.mProductCount.getText().toString(),
-                    String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
-     Log.v("updatedval",  String.valueOf(valueTotal)+ String.valueOf(finalPrice));
-
-        }
+//                    holder.productItemTotal.setText("" + subTotal);
+//                    Log.v("productt44",subTotal.toString());
+//                    Log.v("taxamt199", valueTotal.toString());
+//                    updateTask(mContact, holder.mProductCount.getText().toString(),
+//                            String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+//                    Log.v("updatedval99", String.valueOf(valueTotal) + String.valueOf(finalPrice));
+//
+//                    //july 9 stopp
+//                }
+//            } else {
+//                //working code commented below start
+//            if (tax != 0.0) {
+//                taxAmt = 100 + tax;
+//                Log.v("Tax Amt", String.valueOf(taxAmt));
+//                subTotal = (taxAmt * subTotal) / 100;//this line commented
+//                Log.v("Total_Tax", "=" + subTotal);
+//                //below 2 lines commented
+//                Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+//                valueTotal = subTotal - calculate;
+//                holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//
+//            } else {
+//                valueTotal=Float.parseFloat(mContact.getTax_amt());
+//                Log.v("taxamt1" +
+//                        "9",valueTotal.toString());
+//                holder.ProductTaxAmt.setText(mContact.getTax_amt());
+//            }
+//               // working code commented stop
+//
+//            holder.productItemTotal.setText("" + subTotal);
+//            Log.v("producttotal55",subTotal.toString());
+//            Log.v("taxamt199",valueTotal.toString());
+//            updateTask(mContact, holder.mProductCount.getText().toString(),
+//                    String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+//                Log.v("updatedval99", String.valueOf(valueTotal) + String.valueOf(finalPrice));
+//
+//            }
+//            //below 1 brace added for else
+//        }
+        //below old code commented
 
         Log.v("countcount", String.valueOf(count));
         holder.linPLus.setOnClickListener(new View.OnClickListener() {
@@ -633,18 +865,19 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
 //                Log.v("+++disvalue", String.valueOf(disValue));
                 if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
                         ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
-                ){
+                ) {
                     holder.ProductDisAmt.setText("0");
                     finalPrice=0;
                 }
-                holder.productItemTotal.setText("" + subTotal);
+             //   holder.productItemTotal.setText("" + subTotal);//working code commented
                 if("".equals(mContact.getTax_Value())||
                         ("0").equals(mContact.getTax_Value())){
                     tax= Float.valueOf("0.0");
+                    Log.v("tax",tax.toString());
 
                 }else {
                     tax = Float.valueOf(mContact.getTax_Value());
-
+                    Log.v("tax",tax.toString());
                 }
                 //tax = Float.valueOf(mContact.getTax_Value());
                 if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
@@ -656,31 +889,48 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                         if(disValue.equals("0")||disValue.equals("")){
                             holder.ProductDisAmt.setText("0");
                             finalPrice=0;
+
+                            holder.ProductDis.setText("0");
+                            if(subTotal.equals("0")){
+                                holder.productItemTotal.setText("0.0");//new july10
+                            }else {
+                                holder.productItemTotal.setText("" + subTotal);//new july10
+                            }
                         }else {
                             holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
                             finalPrice = (subTotal * disValue) / 100;
                             Log.v("+finalPrice*disvalue", String.valueOf(finalPrice));
+
+                            subTotal=subTotal-finalPrice;
+                            Log.v("disamttot",String.valueOf(finalPrice));
                             holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                            holder.productItemTotal.setText("" + subTotal);//new july 10
                         }
                         if (tax != 0.0) {
                             taxAmt = 100 + tax;
-                            Log.v("+TaxAMT", String.valueOf(taxAmt));
-                            subTotal=subTotal-finalPrice;
+                            Log.v("+TaxAMTll", String.valueOf(taxAmt));
+                           // subTotal=subTotal-finalPrice;
+                            Log.v("disamt",String.valueOf(finalPrice));
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                            Log.e("+Total_calculatecatcode", "=" + mContact.getProduct_Cat_Code());
-                            Log.e("+Total_product", "=" +holder.mProductCount.getText().toString());
-                            Log.v("+Subtotafterdis", String.valueOf(subTotal));
-                            Log.v("+calcu",calculate.toString());
-                            valueTotal = subTotal/Float.parseFloat(holder.mProductCount.getText().toString());
-                            subTotal = (taxAmt * subTotal) / 100;
-                            holder.productItemTotal.setText("" + subTotal);
+
+                            Log.v("+Total_tcodell", "=" + mContact.getProduct_Cat_Code());
+                            Log.v("+Total_productll", "=" +holder.mProductCount.getText().toString());
+                            Log.v("+Subtotafterdisll", String.valueOf(subTotal));
+                          //  Log.v("+calcull",calculate.toString());
+                           // valueTotal = subTotal/Float.parseFloat(holder.mProductCount.getText().toString());//working code commented
+
+                            valueTotal = subTotal*tax/100;
+                            subTotal = (taxAmt* subTotal) / 100;
+
+                         //   valueTotal = subTotal - calculate;//working code commented
+                             holder.productItemTotal.setText("" + subTotal);//workig code commented
                             holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                             Log.v("+Total", "=" + subTotal);
-                            holder.productItemTotal.setText("" + subTotal);
+                           // holder.productItemTotal.setText("" + subTotal);
                             Log.v("+PRDTaxAMT", String.valueOf(valueTotal));
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice));
-                            Log.v("ifupdatedval++",   String.valueOf(valueTotal)+String.valueOf(finalPrice));
+                            Log.v("ifupdatedval++",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
                         } else {
 
                             if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
@@ -692,24 +942,33 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                                 valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
                             }
                             //if no tax
-                            if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
-                                holder.ProductDisAmt.setText("0");
-                                finalPrice=Float.parseFloat("0.0");//new code added jly 8
-                            }else {
-                                holder.ProductDisAmt.setText(mContact.getDis_amt());
-                                finalPrice=Float.parseFloat(mContact.getDis_amt());//new code added jul 8
-                            }
+//                            if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
+//                                holder.ProductDisAmt.setText("0");
+//                                finalPrice=Float.parseFloat("0.0");//new code added jly 8
+//                            }else {
+//                                holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+//                                finalPrice = (subTotal * disValue) / 100;
+//                                Log.v("+finalPrice*disvalue11", String.valueOf(finalPrice));
+//                                holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                                subTotal=subTotal-finalPrice;
+//                                holder.productItemTotal.setText("" + subTotal);
+                               // holder.ProductDisAmt.setText(mContact.getDis_amt());
+                               // finalPrice=Float.parseFloat(mContact.getDis_amt());//new code added jul 8
+                       //     }
                             //new code added-jul8
+                            Log.e("cntup00",subTotal+""+finalPrice+""+valueTotal);
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice));
                          //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                         }
 
-                      Log.e("taxamt+", mContact.getTax_amt());
+                      Log.v("taxamt+", valueTotal.toString());
                      //   updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), mContact.getTax_amt(), mContact.getDis_amt());
 
-                        Log.v("updatedval++",  mContact.getTax_amt()+ mContact.getDis_amt());
-                    } else {
+                        Log.v("updatedval++",  mContact.getTax_amt()+finalPrice);
+                    }
+
+                    else {
                         holder.ProductDis.setText("0");
                         holder.ProductDisAmt.setText("0");
 
@@ -719,39 +978,89 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                             Log.v("++++TaxAMT1", String.valueOf(taxAmt));
                             subTotal = (taxAmt * subTotal) / 100;
                             holder.productItemTotal.setText("" + subTotal);
-                            Log.e("+++++Total_Distcount1", "=" + subTotal);
+                            Log.v("+++++Total_Distcount1", "=" + subTotal);
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                            Log.e("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
-                            Log.e("++++++Total_product1", "=" + holder.mProductCount.getText().toString());
+                            Log.v("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+                            Log.v("++++++Total_product1", "=" + holder.mProductCount.getText().toString());
                             valueTotal = subTotal - calculate;
                             holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                             Log.v("+PRDTaxAMT1", String.valueOf(valueTotal));
                         } else {
                             holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                            Log.v("+++subtotalwithoutaX", String.valueOf(subTotal));
+                            holder.productItemTotal.setText(subTotal.toString());
                         }
                         //new code tax stop
                         prdDisAmt=mContact.getDis_amt();
                         if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
-                            Log.v("updatedval++else",   String.valueOf(valueTotal)+ prdDisAmt);
+                            Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ prdDisAmt);
 
                         }else{
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
-                            Log.v("updatedval++else",    String.valueOf(valueTotal)+ mContact.getDis_amt());
+                            Log.v("updatedval++else22",    String.valueOf(valueTotal)+ mContact.getDis_amt());
                     }
                     }
 
                   //  updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
-                }else {//new start
+                }
+
+
+
+
+
+
+
+
+                else {//new start
+                  //  disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                    //new code jul12
+                     if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
+                            ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+                    ) {
+
+                        holder.ProductDisAmt.setText("0");
+                        finalPrice=0;
+                        holder.ProductDis.setText("0");
+
+                        if(subTotal.equals("0")){
+
+                            subTotal=Float.parseFloat("0.0");
+                            holder.productItemTotal.setText("0.0");//new july10
+                        }else {
+                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+
+                            holder.productItemTotal.setText("" + subTotal);//new july10
+                        }
+                    }else {
+                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        finalPrice = (subTotal * disValue) / 100;
+                        Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+                        subTotal=subTotal-finalPrice;
+                        Log.v("disamttotshow",String.valueOf(finalPrice));
+                        holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                        holder.productItemTotal.setText("" + subTotal);//new july 10
+                    }
+
+                    //new code jul12
+
                     if (tax != 0.0) {
                         taxAmt = 100 + tax;
                         Log.v("q+TaxAMT1", String.valueOf(taxAmt));
+
                         subTotal = (taxAmt * subTotal) / 100;
-                        holder.productItemTotal.setText("" + subTotal);
-                        Log.e("q+Total_Distcount1", "=" + subTotal);
+//                        holder.productItemTotal.setText("" + new DecimalFormat("##.#").format(subTotal+
+//                                (tax*(holder.mProductCount.getText().toString() ))/100));
+//                        Log.v("q+Totaxtotal+", "=" + new DecimalFormat("##.#").format(subTotal+(tax*subTotal)/100)
+//                        );
+                        //holder.productItemTotal.setText("" + (taxAmt * subTotal) / 100);
+                       holder.productItemTotal.setText("" + subTotal);
+                        Log.v("q+Total_Distcount1", "=" + subTotal);
                         Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                        Log.e("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
-                        Log.e("q+Total_product1", "=" + holder.mProductCount.getText().toString());
+                        Log.v("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+                        Log.v("q+Total_product1", "=" + holder.mProductCount.getText().toString());
                         valueTotal = subTotal - calculate;
                         holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                         Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
@@ -763,12 +1072,12 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                             holder.ProductTaxAmt.setText(mContact.getTax_amt());
                             valueTotal=Float.parseFloat(mContact.getTax_amt());
                         }
-                      //  holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                        holder.productItemTotal.setText("" + ( subTotal));
                     }
 
-                    Log.e("5Taxamt",mContact.getTax_amt().toString());
-                    Log.e("55taxamt",valueTotal.toString());
-
+                    Log.v("5Taxamt",mContact.getTax_amt().toString());
+                    Log.v("55taxamt",valueTotal.toString());
+                    Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
                     updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
                 }//new stop
               //  updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
@@ -824,12 +1133,15 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                                 Log.v("+TaxAMT", String.valueOf(taxAmt));
                                 subTotal=subTotal-finalPrice;
                                 Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                                Log.e("+Total_calculatecatcode", "=" + mContact.getProduct_Cat_Code());
-                                Log.e("+Total_product", "=" +holder.mProductCount.getText().toString());
+                                Log.v("+Total_calculatecatcode", "=" + mContact.getProduct_Cat_Code());
+                                Log.v("+Total_product", "=" +holder.mProductCount.getText().toString());
                                 Log.v("+Subtotafterdis", String.valueOf(subTotal));
                                 Log.v("+calcu",calculate.toString());
-                                valueTotal = subTotal/Float.parseFloat(holder.mProductCount.getText().toString());
-                                subTotal = (taxAmt * subTotal) / 100;
+                               // valueTotal = subTotal/Float.parseFloat(holder.mProductCount.getText().toString());//working code commened
+                               // subTotal = (taxAmt * subTotal) / 100;//working code commented
+
+                                valueTotal = subTotal*tax/100;
+                                subTotal = (taxAmt* subTotal) / 100;
                                 holder.productItemTotal.setText("" + subTotal);
                                 holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                                 Log.v("+Total", "=" + subTotal);
@@ -843,14 +1155,17 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                                 //if no tax
                                 if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                                     holder.ProductDisAmt.setText("0");
+                                 finalPrice=Float.parseFloat(mContact.getDis_amt());
                                 }else {
                                     holder.ProductDisAmt.setText(mContact.getDis_amt());
+                                    finalPrice= Float.parseFloat(mContact.getDis_amt());
                                 }
 
                                 //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                             }
 
-                            Log.e("taxamt+", mContact.getTax_amt());
+                            Log.v("taxamt+", mContact.getTax_amt());
+                            Log.v("disamt6", String.valueOf(finalPrice));
                             //   updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), mContact.getTax_amt(), mContact.getDis_amt());
 
                             Log.v("updatedval++",  mContact.getTax_amt()+ mContact.getDis_amt());
@@ -864,25 +1179,34 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                                 Log.v("++++TaxAMT1", String.valueOf(taxAmt));
                                 subTotal = (taxAmt * subTotal) / 100;
                                 holder.productItemTotal.setText("" + subTotal);
-                                Log.e("+++++Total_Distcount1", "=" + subTotal);
+                                Log.v("+++++Total_Distcount1", "=" + subTotal);
                                 Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                                Log.e("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
-                                Log.e("++++++Total_product1", "=" + holder.mProductCount.getText().toString());
+                                Log.v("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+                                Log.v("++++++Total_product1", "=" + holder.mProductCount.getText().toString());
                                 valueTotal = subTotal - calculate;
                                 holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                                 Log.v("+PRDTaxAMT1", String.valueOf(valueTotal));
                             } else {
-                                holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                                if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
+                                    holder.ProductTaxAmt.setText("0");
+                                    valueTotal=Float.parseFloat("0.0");//new code added jul87
+
+                                }else {
+                                    holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                                    valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
+                                }
+                               // holder.ProductTaxAmt.setText(mContact.getTax_amt());//comment jul 9
                             }
                             //new code tax stop
                             prdDisAmt=mContact.getDis_amt();
+                            holder.productItemTotal.setText("" + subTotal);//new code jul10
                             if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
-                                Log.v("updatedval++else",   String.valueOf(valueTotal)+ prdDisAmt);
+                                Log.v("updatedval++else1",   subTotal+""+String.valueOf(valueTotal)+ prdDisAmt);
 
                             }else{
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
-                                Log.v("updatedval++else",    String.valueOf(valueTotal)+ mContact.getDis_amt());
+                                Log.v("updatedval++else",    subTotal+""+String.valueOf(valueTotal)+ mContact.getDis_amt());
                             }
                         }
 
@@ -893,15 +1217,23 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                             Log.v("q+TaxAMT1", String.valueOf(taxAmt));
                             subTotal = (taxAmt * subTotal) / 100;
                             holder.productItemTotal.setText("" + subTotal);
-                            Log.e("q+Total_Distcount1", "=" + subTotal);
+                            Log.v("q+Total_Distcount1", "=" + subTotal);
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                            Log.e("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
-                            Log.e("q+Total_product1", "=" + holder.mProductCount.getText().toString());
+                            Log.v("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+                            Log.v("q+Total_product1", "=" + holder.mProductCount.getText().toString());
                             valueTotal = subTotal - calculate;
                             holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                             Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
                         } else {
-                            holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                            if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
+                                holder.ProductTaxAmt.setText("0");
+                                valueTotal=Float.parseFloat("0.0");//new code added jul87
+
+                            }else {
+                                holder.ProductTaxAmt.setText(mContact.getTax_amt());
+                                valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
+                            }
+                          //  holder.ProductTaxAmt.setText(mContact.getTax_amt());//comment july 9
                         }
 
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
@@ -943,7 +1275,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
 //                        if (ProductCount == schemCount || ProductCount > schemCount) {
 //                            disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
 //                            holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
-//                            Log.e("-Discountvalue",mContact.getSchemeProducts().getDiscountvalue());
+//                            Log.v("-Discountvalue",mContact.getSchemeProducts().getDiscountvalue());
 //                            finalPrice = (subTotal * disValue) / 100;
 //                            Log.v("finalPrice", String.valueOf(finalPrice));
 //                            holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
@@ -966,7 +1298,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
 //                        ));
 //                        subTotal = (taxAmt * subTotal) / 100;
 //                        holder.productItemTotal.setText("" + subTotal);
-//                        Log.e("Total_Distcount", "=" + subTotal);
+//                        Log.v("Total_Distcount", "=" + subTotal);
 //                        Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
 //                        valueTotal = subTotal - calculate;
 //                        holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
@@ -983,6 +1315,37 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
 //    }
 
     private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt) {
+        class UpdateTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                task.setQty(Qty);
+                task.setTxtqty(Qty);
+                task.setSubtotal(subTotal);
+                PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
+                        .contactDao()
+
+
+                        .update(task.getPID(),
+                                Qty, Qty,
+                                String.valueOf(subTotal),
+                                task.getTax_Value(),
+                                task.getDiscount(),
+                                taxAmt,
+                                disAmt);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }
+
+        UpdateTask ut = new UpdateTask();
+        ut.execute();
+    }
+    private void updateTaskAmt(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
             @Override

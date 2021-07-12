@@ -102,7 +102,7 @@ public class ViewCartActivity extends AppCompatActivity {
     TextView viewTotal;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
 
-
+    List<PrimaryProduct> contacts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,8 +119,10 @@ public class ViewCartActivity extends AppCompatActivity {
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
 
         Log.v("viewTotal", GrandTotal);
-        viewTotal.setText(GrandTotal);
+//new code added start
 
+        viewTotal.setText(GrandTotal);
+//new code added stop
         contactViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
         contactViewModel.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
@@ -170,6 +172,9 @@ public class ViewCartActivity extends AppCompatActivity {
                     @Override
                     public void PositiveMethod(DialogInterface dialog, int id) {
                         ViewCartActivity.super.onBackPressed();
+//                        Intent aa=new Intent(ViewCartActivity.this,PrimaryOrderProducts.class);
+//                        aa.putExtra("GrandTotal",GrandTotal);
+//                        startActivity(aa);
                     }
 
                     @Override

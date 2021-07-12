@@ -2,6 +2,7 @@ package com.example.sandms.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,21 +62,47 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         PrimaryProduct mProductArray = mProduct_arrays.get(position);
+
         holder.txtCatName.setText(mProductArray.getName());
         holder.txtPrice.setText(mProductArray.getProduct_Cat_Code());
         holder.txtQty.setText(mProductArray.getQty());
         holder.editCount.setText("" + mProductArray.getQty());
-        holder.dis_amount.setText("Rs." + mProductArray.getDis_amt());
 
         float total, qty, rate;
         float taxAmount;
         qty = Float.parseFloat(mProductArray.getQty());
         rate = Float.parseFloat(mProductArray.getProduct_Cat_Code());
         total = qty * rate;
-        taxAmount = Float.parseFloat(mProductArray.getTax_amt());
-        holder.tax_amount.setText("Rs." + new DecimalFormat("##.##").format(taxAmount));
-        holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
+        taxAmount=Float.parseFloat( mProduct_arrays.get(position).getTax_amt());
+     //   taxAmount = Float.parseFloat(mProductArray.getTax_amt());
+        Log.v("taxcart", String.valueOf(taxAmount));
+        Log.v("discart",   mProduct_arrays.get(position).getDis_amt());
+        Log.v("totalcart",mProductArray.getSubtotal());
+
+        if( mProduct_arrays.get(position).getDis_amt().equals("0")||mProduct_arrays.get(position).getDis_amt().equals("")){
+            holder.dis_amount.setText("Rs." +"0");
+        }else{
+            holder.dis_amount.setText("Rs." +  mProduct_arrays.get(position).getDis_amt());
+        }
+        if( mProduct_arrays.get(position).getTax_amt().equals("0")||mProduct_arrays.get(position).getTax_amt().equals("")){
+            holder.tax_amount.setText("Rs." +"0");
+        }else {
+            holder.tax_amount.setText("Rs." + new DecimalFormat("##.##").format(taxAmount));
+
+        }
+//        if(!mProductArray.getDis_amt().equals("0")&&!mProductArray.getTax_amt().equals("0")){
+//            holder.totalAmount.setText("Rs."  +String.valueOf(total-Float.parseFloat(mProductArray.getDis_amt())*Float.parseFloat(mProductArray.getTax_amt())/100));
+//        }else if(!mProductArray.getDis_amt().equals("0")){
+//            holder.totalAmount.setText("Rs."  +String.valueOf(total-Float.parseFloat(mProductArray.getDis_amt())));
+//        }else if(!mProductArray.getTax_amt().equals("0")){
+//            holder.totalAmount.setText("Rs."  +(total*Float.parseFloat(mProductArray.getTax_amt()))/100);
+//        }else {
+
+            holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
+//        }
         holder.item_amount.setText("Rs." + new DecimalFormat("##.##").format(total));
+
+
 
 
     }

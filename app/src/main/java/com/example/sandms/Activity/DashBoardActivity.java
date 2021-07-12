@@ -261,6 +261,10 @@ public class DashBoardActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(List<PrimaryProduct> contacts) {
 
+
+
+
+
                         Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
 
                         Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));

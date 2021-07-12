@@ -95,7 +95,7 @@ public class PendingVerification extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
                 finish();
             }
         });
