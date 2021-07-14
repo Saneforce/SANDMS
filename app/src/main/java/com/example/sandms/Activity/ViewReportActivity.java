@@ -76,11 +76,11 @@ public class ViewReportActivity extends AppCompatActivity {
 
     Shared_Common_Pref shared_common_pref;
     ArrayList<Integer> mArrayList;
-    TextView TotalValue;
+    TextView TotalValue,total_value;
     Button PayNow,Delete;
     Double OrderTaxCal,  OrderAmtNew,OrderValueTotal;
     View supportLayout;
-    LinearLayout  linearLayout;
+    LinearLayout  linearLayout,totalLayout;
     private Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +89,15 @@ public class ViewReportActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.linearproductlayout);
         supportLayout=findViewById(R.id.customtoolbarlayout);
         supportLayout.setVisibility(View.VISIBLE);
-        getToolbar();
+        totalLayout=findViewById(R.id.totalLayout);
+
 
         mArrayList = new ArrayList<Integer>();
         TotalValue = findViewById(R.id.total_value);
         shared_common_pref = new Shared_Common_Pref(this);
 
         OrderType = shared_common_pref.getvalue("OrderType");
+        getToolbar();
         //OrderAmt = Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
         //new code start
        // OrderTax="5%";
@@ -147,7 +149,7 @@ public class ViewReportActivity extends AppCompatActivity {
                     {
                         // Code for above or equal 23 API Oriented Device
                         // Your Permission granted already .Do next code
-
+totalLayout.setVisibility(View.VISIBLE);
                         bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                         createPdf();
                     } else {

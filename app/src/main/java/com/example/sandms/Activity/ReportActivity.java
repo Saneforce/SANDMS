@@ -124,11 +124,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     View supportLayout;
 
-    private Bitmap bitmap;
+    private Bitmap bitmap,bitmapTotal;
 
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
+    LinearLayout totalLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +137,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
         supportLayout=findViewById(R.id.customlayout);
         supportLayout.setVisibility(View.VISIBLE);
-        getToolbar();
+        totalLayout=findViewById(R.id.totalLayout);
 
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
@@ -148,6 +149,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         Log.v("OrderType", OrderType);
         mArrayList = new ArrayList<>();
         txtTotalValue = (TextView) findViewById(R.id.total_value);
+        getToolbar();
         txtOrderStatus=findViewById(R.id.txt_orderstatus);
         txtName = findViewById(R.id.dist_name);
         txtName.setText("Name:"+ ""+shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
@@ -283,7 +285,10 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         // Code for above or equal 23 API Oriented Device
                         // Your Permission granted already .Do next code
                         supportLayout.setVisibility(View.GONE);
+                        totalLayout.setVisibility(View.VISIBLE);
                         bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                      //  bitmapTotal = loadBitmapFromView(totalLayout, linearLayout.getWidth(), linearLayout.getHeight());
+
                         createPdf();
                     } else {
                         requestPermission(); // Code for permission
@@ -471,6 +476,13 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         paint.setColor(Color.WHITE);
         //paint.setColor(Color.BLUE);
         canvas.drawBitmap(bitmap, 0, 0 , null);
+
+//        bitmapTotal = Bitmap.createScaledBitmap(bitmapTotal, convertWidth, convertHighet, true);
+//        paint.setColor(Color.WHITE);
+//        //paint.setColor(Color.BLUE);
+//        canvas.drawBitmap(bitmapTotal, 0, 0 , null);
+
+
         document.finishPage(page);
 
 
@@ -563,6 +575,8 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     Log.e("value", "Permission Granted, Now you can use local drive .");
                     supportLayout.setVisibility(View.GONE);
                     bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+             //       bitmapTotal = loadBitmapFromView(totalLayout, linearLayout.getWidth(), linearLayout.getHeight());
+
                     createPdf();
                 } else {
                     Log.e("value", "Permission Denied, You cannot use local drive .");
