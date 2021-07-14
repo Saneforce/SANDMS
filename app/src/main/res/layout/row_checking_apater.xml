@@ -23,8 +23,8 @@
                 android:id="@+id/text_checking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/C12dp"
-                android:text="0"
+                android:padding="@dimen/C9dp"
+                android:text="MilkProducts"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/C17dp" />
         </LinearLayout>

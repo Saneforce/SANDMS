@@ -35,6 +35,8 @@ import com.example.sandms.Model.Methods;
 import com.itextpdf.text.Document;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -133,6 +135,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         setContentView(R.layout.activity_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
         supportLayout=findViewById(R.id.customlayout);
+        supportLayout.setVisibility(View.VISIBLE);
         getToolbar();
 
         FReport = getIntent().getStringExtra("FromReport");
@@ -272,9 +275,29 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         imgShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supportLayout.setVisibility(View.GONE);
-                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-                createPdf();
+
+                if (Build.VERSION.SDK_INT >= 23)
+                {
+                    if (checkPermission())
+                    {
+                        // Code for above or equal 23 API Oriented Device
+                        // Your Permission granted already .Do next code
+                        supportLayout.setVisibility(View.GONE);
+                        bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                        createPdf();
+                    } else {
+                        requestPermission(); // Code for permission
+                    }
+                }
+                else
+                {
+
+                    // Code for Below 23 API Oriented Device
+                    // Do next code
+                }
+//                supportLayout.setVisibility(View.GONE);
+//                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+//                createPdf();
 
             }
         });
@@ -469,7 +492,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         // close the document
         document.close();
         Toast.makeText(this, "PDF is created!!!", Toast.LENGTH_SHORT).show();
-
         openGeneratedPDF();
 
     }
@@ -513,6 +535,43 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     }
 
     //openpdf stop
+
+    //permission start
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(ReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(ReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(ReportActivity.this, "Write External Storage permission allows us to do store. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(ReportActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                    supportLayout.setVisibility(View.GONE);
+                    bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                    createPdf();
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
+        }
+    }
+
+    //permision stop
 
 }
 

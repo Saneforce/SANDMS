@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,7 +60,7 @@ import retrofit2.Response;
 public class ViewReportActivity extends AppCompatActivity {
     TextView toolHeader, txtProductId, txtProductDate;
 
-
+    private static final int PERMISSION_REQUEST_CODE = 1;
     ImageView imgBack,imgShare;
     EditText toolSearch;
     RecyclerView DateRecyclerView;
@@ -85,6 +88,7 @@ public class ViewReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearproductlayout);
         supportLayout=findViewById(R.id.customtoolbarlayout);
+        supportLayout.setVisibility(View.VISIBLE);
         getToolbar();
 
         mArrayList = new ArrayList<Integer>();
@@ -136,8 +140,28 @@ public class ViewReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 supportLayout.setVisibility(View.GONE);
-                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-                createPdf();
+
+                if (Build.VERSION.SDK_INT >= 23)
+                {
+                    if (checkPermission())
+                    {
+                        // Code for above or equal 23 API Oriented Device
+                        // Your Permission granted already .Do next code
+
+                        bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                        createPdf();
+                    } else {
+                        requestPermission(); // Code for permission
+                    }
+                }
+                else
+                {
+
+                    // Code for Below 23 API Oriented Device
+                    // Do next code
+                }
+//                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+//                createPdf();
 
             }
         });
@@ -356,7 +380,7 @@ public class ViewReportActivity extends AppCompatActivity {
         // close the document
         document.close();
         Toast.makeText(this, "PDF is created!!!", Toast.LENGTH_SHORT).show();
-
+        supportLayout.setVisibility(View.VISIBLE);
         openGeneratedPDF();
 
     }
@@ -400,4 +424,41 @@ public class ViewReportActivity extends AppCompatActivity {
     }
 
     //openpdf stop
+
+    //permission start
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(ViewReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(ViewReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(ViewReportActivity.this, "Write External Storage permission allows us to do store. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(ViewReportActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+
+                    bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                    createPdf();
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
+        }
+    }
+
+    //permision stop
 }

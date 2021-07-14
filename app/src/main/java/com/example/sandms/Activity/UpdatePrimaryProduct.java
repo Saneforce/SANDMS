@@ -74,6 +74,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         ProductCount = Integer.parseInt(mProductCount.getText().toString());
         subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
+        Log.v("total", String.valueOf(subTotal));
         float subTT = subTotal + Float.parseFloat(productTaxAmt.getText().toString());
         productTotal.setText("" + subTT);
 //new code add start
@@ -139,124 +140,124 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                count = count + 1;
 //                ProductCount = Integer.parseInt(mProductCount.getText().toString());
 //                ProductCount = ProductCount + 1;
-//                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = task.getSchemeProducts().getScheme();
 //                String proCnt = String.valueOf(ProductCount);
 //                Log.v("countcount_Click", String.valueOf(proCnt));
 //                Log.v("countcount_Click_SCHEME", Scheme);
 //                mProductCount.setText("" + ProductCount);
-//                subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+//                subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
 //                Log.v("+++subtotal", String.valueOf(subTotal));
 //                productItem.setText(mProductCount.getText().toString());
 //
-////                disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+////                disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
 ////                Log.v("+++disvalue", String.valueOf(disValue));
-//                if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
-//                        ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+//                if("".equals(task.getSchemeProducts().getDiscountvalue())||
+//                        ("0").equals(task.getSchemeProducts().getDiscountvalue())
 //                ){
-//                    ProductDisAmt.setText("0");
+//                    productDisAmt.setText("0");
 //                    finalPrice=0;
 //                }
-//                productItemTotal.setText("" + subTotal);
-//                if("".equals(mContact.getTax_Value())||
-//                        ("0").equals(mContact.getTax_Value())){
+//                productTotal.setText("" + subTotal);
+//                if("".equals(task.getTax_Value())||
+//                        ("0").equals(task.getTax_Value())){
 //                    tax= Float.valueOf("0.0");
 //
 //                }else {
-//                    tax = Float.valueOf(mContact.getTax_Value());
+//                    tax = Float.valueOf(task.getTax_Value());
 //
 //                }
-//                //tax = Float.valueOf(mContact.getTax_Value());
-//                if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-//                    schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+//                //tax = Float.valueOf(task.getTax_Value());
+//                if (!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
+//                    schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
 //                    if (ProductCount == schemCount || ProductCount > schemCount) {
 //
-//                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+//                        disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
 //                        Log.v("+disvalue", String.valueOf(disValue));
 //                        if(disValue.equals("0")||disValue.equals("")){
-//                            ProductDisAmt.setText("0");
+//                            productDisAmt.setText("0");
 //                            finalPrice=0;
 //                        }else {
-//                            ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+//                            productDis.setText(task.getSchemeProducts().getDiscountvalue());
 //                            finalPrice = (subTotal * disValue) / 100;
 //                            Log.v("+finalPrice*disvalue", String.valueOf(finalPrice));
-//                            ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                            productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
 //                        }
 //                        if (tax != 0.0) {
 //                            taxAmt = 100 + tax;
 //                            Log.v("+TaxAMT", String.valueOf(taxAmt));
 //                            subTotal=subTotal-finalPrice;
-//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                            Log.e("+Total_calculatecatcode", "=" + mContact.getProduct_Cat_Code());
+//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                            Log.e("+Total_calculatecatcode", "=" + task.getProduct_Cat_Code());
 //                            Log.e("+Total_product", "=" +mProductCount.getText().toString());
 //                            Log.v("+Subtotafterdis", String.valueOf(subTotal));
 //                            Log.v("+calcu",calculate.toString());
 //                            valueTotal = subTotal/Float.parseFloat(mProductCount.getText().toString());
 //                            subTotal = (taxAmt * subTotal) / 100;
-//                            productItemTotal.setText("" + subTotal);
-//                            ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                            productTotal.setText("" + subTotal);
+//                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                            Log.v("+Total", "=" + subTotal);
-//                            productItemTotal.setText("" + subTotal);
+//                            productTotal.setText("" + subTotal);
 //                            Log.v("+PRDTaxAMT", String.valueOf(valueTotal));
 //                            updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal),
 //                                    String.valueOf(valueTotal), String.valueOf(finalPrice));
 //                            Log.v("ifupdatedval++",   String.valueOf(valueTotal)+String.valueOf(finalPrice));
 //                        } else {
 //
-//                            if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
-//                                ProductTaxAmt.setText("0");
+//                            if(task.getTax_Value().equals("")||task.getTax_Value().equals("0")){
+//                                productTaxAmt.setText("0");
 //                                valueTotal=Float.parseFloat("0.0");//new code added jul87
 //
 //                            }else {
-//                                ProductTaxAmt.setText(mContact.getTax_amt());
-//                                valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
+//                                productTaxAmt.setText(task.getTax_amt());
+//                                valueTotal=Float.parseFloat(task.getTax_amt());//new code added jul 8
 //                            }
 //                            //if no tax
-//                            if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
-//                                ProductDisAmt.setText("0");
+//                            if(task.getDis_amt().equals("")||task.getDis_amt().equals("0")){
+//                                productDisAmt.setText("0");
 //                                finalPrice=Float.parseFloat("0.0");//new code added jly 8
 //                            }else {
-//                                ProductDisAmt.setText(mContact.getDis_amt());
-//                                finalPrice=Float.parseFloat(mContact.getDis_amt());//new code added jul 8
+//                                productDisAmt.setText(task.getDis_amt());
+//                                finalPrice=Float.parseFloat(task.getDis_amt());//new code added jul 8
 //                            }
 //                            //new code added-jul8
 //                            updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal),
 //                                    String.valueOf(valueTotal), String.valueOf(finalPrice));
-//                            //   ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                            //   productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
 //                        }
 //
-//                        Log.e("taxamt+", mContact.getTax_amt());
-//                        //   updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), mContact.getTax_amt(), mContact.getDis_amt());
+//                        Log.e("taxamt+", task.getTax_amt());
+//                        //   updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), task.getTax_amt(), task.getDis_amt());
 //
-//                        Log.v("updatedval++",  mContact.getTax_amt()+ mContact.getDis_amt());
+//                        Log.v("updatedval++",  task.getTax_amt()+ task.getDis_amt());
 //                    } else {
-//                        ProductDis.setText("0");
-//                        ProductDisAmt.setText("0");
+//                        productDis.setText("0");
+//                        productDisAmt.setText("0");
 //
 ////new code tax start
 //                        if (tax != 0.0) {
 //                            taxAmt = 100 + tax;
 //                            Log.v("++++TaxAMT1", String.valueOf(taxAmt));
 //                            subTotal = (taxAmt * subTotal) / 100;
-//                            productItemTotal.setText("" + subTotal);
+//                            productTotal.setText("" + subTotal);
 //                            Log.e("+++++Total_Distcount1", "=" + subTotal);
-//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                            Log.e("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                            Log.e("+++++Total_calctcode1", "=" + task.getProduct_Cat_Code());
 //                            Log.e("++++++Total_product1", "=" + mProductCount.getText().toString());
 //                            valueTotal = subTotal - calculate;
-//                            ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                            Log.v("+PRDTaxAMT1", String.valueOf(valueTotal));
 //                        } else {
-//                            ProductTaxAmt.setText(mContact.getTax_amt());
+//                            productTaxAmt.setText(task.getTax_amt());
 //                        }
 //                        //new code tax stop
-//                        prdDisAmt=mContact.getDis_amt();
-//                        if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
+//                        prdDisAmt=task.getDis_amt();
+//                        if(task.getDis_amt().equals("")||task.getDis_amt().equals("0")){
 //                            updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
 //                            Log.v("updatedval++else",   String.valueOf(valueTotal)+ prdDisAmt);
 //
 //                        }else{
-//                            updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
-//                            Log.v("updatedval++else",    String.valueOf(valueTotal)+ mContact.getDis_amt());
+//                            updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), task.getDis_amt());
+//                            Log.v("updatedval++else",    String.valueOf(valueTotal)+ task.getDis_amt());
 //                        }
 //                    }
 //
@@ -266,26 +267,26 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                        taxAmt = 100 + tax;
 //                        Log.v("q+TaxAMT1", String.valueOf(taxAmt));
 //                        subTotal = (taxAmt * subTotal) / 100;
-//                        productItemTotal.setText("" + subTotal);
+//                        productTotal.setText("" + subTotal);
 //                        Log.e("q+Total_Distcount1", "=" + subTotal);
-//                        Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                        Log.e("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+//                        Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                        Log.e("q+Total_calctcode1", "=" + task.getProduct_Cat_Code());
 //                        Log.e("q+Total_product1", "=" + mProductCount.getText().toString());
 //                        valueTotal = subTotal - calculate;
-//                        ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                        productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                        Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
 //                    } else {
-//                        if(mContact.getTax_amt().equals("")||mContact.getTax_amt().equals("0")){
-//                            ProductTaxAmt.setText("0");
+//                        if(task.getTax_amt().equals("")||task.getTax_amt().equals("0")){
+//                            productTaxAmt.setText("0");
 //                            valueTotal=Float.parseFloat("0.0");//new july 8
 //                        }else {
-//                            ProductTaxAmt.setText(mContact.getTax_amt());
-//                            valueTotal=Float.parseFloat(mContact.getTax_amt());
+//                            productTaxAmt.setText(task.getTax_amt());
+//                            valueTotal=Float.parseFloat(task.getTax_amt());
 //                        }
-//                        //  ProductTaxAmt.setText(mContact.getTax_amt());
+//                        //  productTaxAmt.setText(task.getTax_amt());
 //                    }
 //
-//                    Log.e("5Taxamt",mContact.getTax_amt().toString());
+//                    Log.e("5Taxamt",task.getTax_amt().toString());
 //                    Log.e("55taxamt",valueTotal.toString());
 //
 //                    updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
@@ -300,7 +301,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //            public void onClick(View v) {
 //                ProductCount = Integer.parseInt(mProductCount.getText().toString());
 //                ProductCount = ProductCount - 1;
-//                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = task.getSchemeProducts().getScheme();
 //                String proCnt = String.valueOf(ProductCount);
 //                Log.v("countcount_Click", String.valueOf(proCnt));
 //                Log.v("countcount_Click_SCHEME", Scheme);
@@ -309,99 +310,99 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                if (ProductCount >= 0) {
 //                    String prdDisAmt;
 //                    mProductCount.setText("" + ProductCount);
-//                    subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+//                    subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
 //                    Log.v("+++subtotal", String.valueOf(subTotal));
 //                    productItem.setText(mProductCount.getText().toString());
 //
-////                disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+////                disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
 ////                Log.v("+++disvalue", String.valueOf(disValue));
-//                    if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
-//                            ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+//                    if("".equals(task.getSchemeProducts().getDiscountvalue())||
+//                            ("0").equals(task.getSchemeProducts().getDiscountvalue())
 //                    ){
-//                        ProductDisAmt.setText("0");
+//                        productDisAmt.setText("0");
 //                        finalPrice=0;
 //                    }
-//                    productItemTotal.setText("" + subTotal);
-//                    tax = Float.valueOf(mContact.getTax_Value());
-//                    if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-//                        schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+//                    productTotal.setText("" + subTotal);
+//                    tax = Float.valueOf(task.getTax_Value());
+//                    if (!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
+//                        schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
 //                        if (ProductCount == schemCount || ProductCount > schemCount) {
 //
-//                            disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+//                            disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
 //                            Log.v("+disvalue", String.valueOf(disValue));
 //                            if(disValue.equals("0")||disValue.equals("")){
-//                                ProductDisAmt.setText("0");
+//                                productDisAmt.setText("0");
 //                                finalPrice=0;
 //                            }else {
-//                                ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+//                                productDis.setText(task.getSchemeProducts().getDiscountvalue());
 //                                finalPrice = (subTotal * disValue) / 100;
 //                                Log.v("+finalPrice*disvalue", String.valueOf(finalPrice));
-//                                ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                                productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
 //                            }
 //                            if (tax != 0.0) {
 //                                taxAmt = 100 + tax;
 //                                Log.v("+TaxAMT", String.valueOf(taxAmt));
 //                                subTotal=subTotal-finalPrice;
-//                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                                Log.e("+Total_calculatecatcode", "=" + mContact.getProduct_Cat_Code());
+//                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                                Log.e("+Total_calculatecatcode", "=" + task.getProduct_Cat_Code());
 //                                Log.e("+Total_product", "=" +mProductCount.getText().toString());
 //                                Log.v("+Subtotafterdis", String.valueOf(subTotal));
 //                                Log.v("+calcu",calculate.toString());
 //                                valueTotal = subTotal/Float.parseFloat(mProductCount.getText().toString());
 //                                subTotal = (taxAmt * subTotal) / 100;
-//                                productItemTotal.setText("" + subTotal);
-//                                ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                                productTotal.setText("" + subTotal);
+//                                productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                                Log.v("+Total", "=" + subTotal);
-//                                productItemTotal.setText("" + subTotal);
+//                                productTotal.setText("" + subTotal);
 //                                Log.v("+PRDTaxAMT", String.valueOf(valueTotal));
 //                                updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal),
 //                                        String.valueOf(valueTotal), String.valueOf(finalPrice));
 //                                Log.v("ifupdatedval++",   String.valueOf(valueTotal)+String.valueOf(finalPrice));
 //                            } else {
-//                                ProductTaxAmt.setText(mContact.getTax_amt());
+//                                productTaxAmt.setText(task.getTax_amt());
 //                                //if no tax
-//                                if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
-//                                    ProductDisAmt.setText("0");
+//                                if(task.getDis_amt().equals("")||task.getDis_amt().equals("0")){
+//                                    productDisAmt.setText("0");
 //                                }else {
-//                                    ProductDisAmt.setText(mContact.getDis_amt());
+//                                    productDisAmt.setText(task.getDis_amt());
 //                                }
 //
-//                                //   ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                                //   productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
 //                            }
 //
-//                            Log.e("taxamt+", mContact.getTax_amt());
-//                            //   updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), mContact.getTax_amt(), mContact.getDis_amt());
+//                            Log.e("taxamt+", task.getTax_amt());
+//                            //   updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), task.getTax_amt(), task.getDis_amt());
 //
-//                            Log.v("updatedval++",  mContact.getTax_amt()+ mContact.getDis_amt());
+//                            Log.v("updatedval++",  task.getTax_amt()+ task.getDis_amt());
 //                        } else {
-//                            ProductDis.setText("0");
-//                            ProductDisAmt.setText("0");
+//                            productDis.setText("0");
+//                            productDisAmt.setText("0");
 //
 ////new code tax start
 //                            if (tax != 0.0) {
 //                                taxAmt = 100 + tax;
 //                                Log.v("++++TaxAMT1", String.valueOf(taxAmt));
 //                                subTotal = (taxAmt * subTotal) / 100;
-//                                productItemTotal.setText("" + subTotal);
+//                                productTotal.setText("" + subTotal);
 //                                Log.e("+++++Total_Distcount1", "=" + subTotal);
-//                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                                Log.e("+++++Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+//                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                                Log.e("+++++Total_calctcode1", "=" + task.getProduct_Cat_Code());
 //                                Log.e("++++++Total_product1", "=" + mProductCount.getText().toString());
 //                                valueTotal = subTotal - calculate;
-//                                ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                                productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                                Log.v("+PRDTaxAMT1", String.valueOf(valueTotal));
 //                            } else {
-//                                ProductTaxAmt.setText(mContact.getTax_amt());
+//                                productTaxAmt.setText(task.getTax_amt());
 //                            }
 //                            //new code tax stop
-//                            prdDisAmt=mContact.getDis_amt();
-//                            if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
+//                            prdDisAmt=task.getDis_amt();
+//                            if(task.getDis_amt().equals("")||task.getDis_amt().equals("0")){
 //                                updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
 //                                Log.v("updatedval++else",   String.valueOf(valueTotal)+ prdDisAmt);
 //
 //                            }else{
-//                                updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
-//                                Log.v("updatedval++else",    String.valueOf(valueTotal)+ mContact.getDis_amt());
+//                                updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), task.getDis_amt());
+//                                Log.v("updatedval++else",    String.valueOf(valueTotal)+ task.getDis_amt());
 //                            }
 //                        }
 //
@@ -411,16 +412,16 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                            taxAmt = 100 + tax;
 //                            Log.v("q+TaxAMT1", String.valueOf(taxAmt));
 //                            subTotal = (taxAmt * subTotal) / 100;
-//                            productItemTotal.setText("" + subTotal);
+//                            productTotal.setText("" + subTotal);
 //                            Log.e("q+Total_Distcount1", "=" + subTotal);
-//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-//                            Log.e("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
+//                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+//                            Log.e("q+Total_calctcode1", "=" + task.getProduct_Cat_Code());
 //                            Log.e("q+Total_product1", "=" + mProductCount.getText().toString());
 //                            valueTotal = subTotal - calculate;
-//                            ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
 //                            Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
 //                        } else {
-//                            ProductTaxAmt.setText(mContact.getTax_amt());
+//                            productTaxAmt.setText(task.getTax_amt());
 //                        }
 //
 //                        updateTask(mContact, mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
@@ -440,10 +441,12 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             finalPrice = (subTotal * disValue) / 100;
             Log.v("finalPrice", String.valueOf(finalPrice));
             productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+            productDis.setText(""+ disValue);
             subTotal = subTotal - finalPrice;
             Log.v("finalPriceAfterDis", String.valueOf(subTotal));
+            subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
             productTotal.setText("" + subTotal);
-            productDis.setText(""+ disValue);
+
 
         } else {
             productDis.setText("0");
@@ -476,6 +479,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 valueTotal = subTotal - calculate;
                 Log.e("tax220", valueTotal.toString());
                 productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+                subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
                 productTotal.setText("" + subTotal);
             }
 
@@ -604,7 +608,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                     }
 //                    else {
 //                        productTaxAmt.setText(PrimaryProduct.SchemeProducts..getTax_amt());
-//                        valueTotal=Float.parseFloat(mContact.getTax_amt());//new code added jul 8
+//                        valueTotal=Float.parseFloat(task.getTax_amt());//new code added jul 8
 //                    }
                     //if no tax
 
@@ -614,94 +618,289 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                        finalPrice=Float.parseFloat("0.0");//new code added jly 8
 //                    }
 //                    else {
-//                        ProductDisAmt.setText(mContact.getDis_amt());
-//                        finalPrice=Float.parseFloat(mContact.getDis_amt());//new code added jul 8
+//                        productDisAmt.setText(task.getDis_amt());
+//                        finalPrice=Float.parseFloat(task.getDis_amt());//new code added jul 8
 //                    }
-                    //new code july 9
-                    if (ProductCount == schemCount || ProductCount > schemCount) {
-                        finalPrice = (subTotal * disValue) / 100;
-                        Log.v("finalPrice", String.valueOf(finalPrice));
-                        productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
-                        productDis.setText("" + disValue);
-                        //new code tax jyly 9
-                        if (tax != 0.0) {
-                            Log.e("initil ttt",tax.toString());
-                            taxAmt = 100 + tax;
-                            Log.v("tax3Discount", String.valueOf(taxAmt));
-                           // subTotal = (taxAmt * subTotal) / 100;
+                    //jul 11
 
-                            Log.e("Tss", "=" + subTotal);
+                    if (!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
+                        schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
+                        ProductCount = Integer.parseInt(mProductCount.getText().toString());
+                        Log.e("prdcount1", String.valueOf(ProductCount));
+                        Log.e("scheme2", String.valueOf(schemCount));
+                        if (ProductCount == schemCount || ProductCount > schemCount||schemCount<ProductCount) {
+                            disValue = Float.parseFloat(task.getSchemeProducts().getDiscountvalue());
+                            Log.v("+disvalueshow77", String.valueOf(disValue));
+                            Log.v("getdis",task.getDiscount());
+                            if( disValue!=0|| disValue!=0.0){
+                           // if(!task.getSchemeProducts().getDiscountvalue().equals("0")||!task.getSchemeProducts().getDiscountvalue().equals("0.0")) {
+                                productDis.setText(task.getSchemeProducts().getDiscountvalue());
+                                finalPrice = (subTotal * disValue) / 100;
+                                Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+                                subTotal=subTotal-finalPrice;
+                                Log.v("disamttotshow",String.valueOf(finalPrice));
+                                productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                                productTotal.setText("" +  new DecimalFormat("##.##").format(subTotal));//new july 10
+                            }
+                          else  if(task.getDiscount().equals("")||task.getDiscount().equals("0.0")||task.getDiscount().equals("0")){
 
-                            if(finalPrice!=0) {
-                               // subTotal = subTotal - finalPrice;//dis calculatihj july 9
-                                valueTotal = tax * subTotal / 100;
-                                Log.e("tota2222l", String.valueOf(subTotal));
-                                Log.e("taxcalyy", valueTotal.toString());
+
+                             // if(task.getDis_amt().equals("0")||task.getDis_amt().equals("")||task.getDis_amt().equals("0.0")){
+                              task.setDis_amt("0.0");
+                              task.setDiscount("0");
+                              productDisAmt.setText("0");
+                                  finalPrice=0;
+                                  productDis.setText("0");
+                                  if(subTotal == Float.parseFloat("0.0")||subTotal==Float.parseFloat("0")){
+                                      subTotal=Float.parseFloat("0.0");
+                                      productTotal.setText("0.0");//new july10
+                                  }else {
+                                      productTotal.setText("" + subTotal);//new july10
+                                  }
+                           //   }
+                          }else{
+
+
+                            }
+                            if (tax != 0.0) {
+                                taxAmt = 100 + tax;
+                                Log.v("+TaxAMTll", String.valueOf(taxAmt));
+                                // subTotal=subTotal-finalPrice;
+                                Log.v("disamt",String.valueOf(finalPrice));
+                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+                                Log.v("+Total_tcodellshow", "=" + task.getProduct_Cat_Code());
+                                Log.v("+Total_productllshow", "=" +mProductCount.getText().toString());
+                                Log.v("+Subtotafterdisllshow", String.valueOf(subTotal));
+                                //  Log.v("+calcull",calculate.toString());
+                                // valueTotal = subTotal/Float.parseFloat(mProductCount.getText().toString());//working code commented
+                                valueTotal = subTotal*tax/100;
+                                subTotal = (taxAmt* subTotal) / 100;
+                                //   valueTotal = subTotal - calculate;//working code commented
+                                productTotal.setText("" + subTotal);//workig code commented
                                 productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-                            }else{
+                                Log.v("+Totalshow", "=" + subTotal);
+                                // productItemTotal.setText("" + subTotal);
+                                Log.v("+PRDTaxAMTshow", String.valueOf(valueTotal));
+
+                                Log.v("ifupdatedval++show",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
+                            } else {
+                                if(task.getTax_Value().equals("")||task.getTax_Value().equals("0")){
+                                    productTaxAmt.setText("0");
+                                    valueTotal=Float.parseFloat("0.0");//new code added jul87
+
+                                }else {
+                                    productTaxAmt.setText(task.getTax_amt());
+                                    valueTotal=Float.parseFloat(task.getTax_amt());//new code added jul 8
+                                }
+
+                                Log.e("cntup00show",subTotal+""+finalPrice+""+valueTotal);
+
+
+                            }
+
+
+                        } else {
+                            //july12
+                            disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
+                            Log.v("+00disvalueelseshow", String.valueOf(task.getDiscount()));
+                          //  if(task.getDiscount().equals("")||task.getDiscount().equals("0.0")||task.getDiscount().equals("0")){
+                                // if(("0").equals(disValue)||("").equals(disValue)){
+                                task.setDiscount("0.0");
+                                task.setDis_amt("0.0");
+
+                                productDisAmt.setText("0");
+                                finalPrice=0;
+                                productDis.setText("0");
+
+                                if(subTotal==Float.parseFloat("0")||subTotal==Float.parseFloat("0.0")){
+
+                                    subTotal=Float.parseFloat("0.0");
+                                    productTotal.setText("0.0");//new july10
+                                }else {
+                                    subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+
+                                    productTotal.setText("" + subTotal);//new july10
+                                }
+                         //   }else {
+//                                disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
+//                                productDis.setText(task.getSchemeProducts().getDiscountvalue());
+//                                finalPrice = (subTotal * disValue) / 100;
+//                                Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+//                                subTotal=subTotal-finalPrice;
+//                                Log.v("disamttotshow",String.valueOf(finalPrice));
+//                                productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                                productTotal.setText("" + subTotal);//new july 10
+                          //  }
+                            //jul 12
+//finalPrice=0;
+//                    productDis.setText("0");
+//                   productDisAmt.setText("0");
+
+//new code tax start
+                            if (tax != 0.0) {
+                                taxAmt = 100 + tax;
+                                Log.v("++++TaxAMT1", String.valueOf(taxAmt));
                                 subTotal = (taxAmt * subTotal) / 100;
-                                Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
-                                Log.e("calculate",calculate.toString());
-                                valueTotal = subTotal - calculate;
-                                Log.e("tax220", valueTotal.toString());
+                                productTotal.setText("" + new DecimalFormat("##.##").format(subTotal));
+                                Log.v("+++Total_Dist1show2", "=" + subTotal);
+                                Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+                                Log.v("+++Total_calode1show2", "=" + task.getProduct_Cat_Code());
+                                Log.v("++++Total_product1show2", "=" + mProductCount.getText().toString());
+                                if(!("0").equals(disValue
+                                )|| !(("").equals(disValue)))  {
+                                    valueTotal =( subTotal-calculate)+finalPrice;
+                                    Log.v("+PRDTaxAMTdisshow2", String.valueOf(finalPrice));
+                                    Log.v("+PRDTaxAMT1+disshow2", String.valueOf(valueTotal));
+                                }else{
+                                    valueTotal = subTotal - calculate;
+                                }
                                 productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-                            }
-
-
-
-
-                           // subTotal = (taxAmt * subTotal) / 100;//original
-
-
-                            //        productTotal.setText("" + subTotal);
-                         //   Log.e("Total_Distcount", "=" + subTotal);
-//                            Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
-//                         Log.e("calculate",calculate.toString());
-//                            valueTotal = subTotal - calculate;
-                           // Log.e("tax220", valueTotal.toString());
-                           // productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-                        } else {
-                            if (task.getTax_amt().equals("") || task.getTax_amt().equals("0")) {
-                                task.setTax_amt("0");
+                                Log.v("+PRDTaxAMT1show2", String.valueOf(valueTotal));
+                            } else {
+                                valueTotal=Float.parseFloat(task.getTax_amt());
                                 productTaxAmt.setText(task.getTax_amt());
-                                Log.e("gtax", task.getTax_amt().toString());
+                                subTotal = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+                                Log.v("+++subtotalwtaXshow2", String.valueOf(subTotal));
+                                String subTotall= new DecimalFormat("##.##").format(subTotal);
+                                productTotal.setText(String.valueOf(subTotall));
                             }
-                            productTaxAmt.setText(task.getTax_amt());
-                        }
-                        //new code tax july 9
-                       // subTotal = subTotal - finalPrice;
-                        Log.v("finalPriceAfterDis33", String.valueOf(subTotal));
-                        productTotal.setText("" + subTotal);
 
 
-                    } else {
-                        finalPrice = 0;
-                        productDis.setText("0");
-                        productDisAmt.setText("" + new DecimalFormat("##.##").format(0));
-                        //   }
-                        //new code start july 9
-                        if (tax != 0.0) {
-                            taxAmt = 100 + tax;
-                            Log.v("tax3Discount", String.valueOf(taxAmt));
-                            subTotal = (taxAmt * subTotal) / 100;
-                            productTotal.setText("" + subTotal);
-                            Log.e("Total_Distcount", "=" + subTotal);
-                            Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
-                            valueTotal = subTotal - calculate;
-                            Log.e("tax220", valueTotal.toString());
-                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
-                        } else {
-                            if (task.getTax_amt().equals("") || task.getTax_amt().equals("0")) {
-                                task.setTax_amt("0");
-                                productTaxAmt.setText(task.getTax_amt());
-                                Log.e("gtax", task.getTax_amt().toString());
-                            }
-                            productTaxAmt.setText(task.getTax_amt());
                         }
-                        //new code july 9 stop
+
 
                     }
-                }
+
+
+
+
+
+
+
+
+                    else {//new start
+                        if (tax != 0.0) {
+                            taxAmt = 100 + tax;
+                            Log.v("q+TaxAMT1", String.valueOf(taxAmt));
+                            subTotal = (taxAmt * subTotal) / 100;
+
+                            // productItemTotal.setText("" + subTotal);
+                            Log.v("q+Total_Distcount1", "=" + subTotal);
+                            Float calculate = Float.parseFloat(mProductCount.getText().toString()) * Float.parseFloat(task.getProduct_Cat_Code());
+                            Log.v("q+Total_calctcode1", "=" + task.getProduct_Cat_Code());
+                            Log.v("q+Total_product1", "=" + mProductCount.getText().toString());
+                            valueTotal = subTotal - calculate;
+                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+                            productTotal.setText("" + subTotal);
+                            Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
+                        } else {
+                            if(task.getTax_amt().equals("")||task.getTax_amt().equals("0")){
+                                productTaxAmt.setText("0");
+                                valueTotal=Float.parseFloat("0.0");//new july 8
+                            }else {
+                                productTaxAmt.setText(task.getTax_amt());
+                                valueTotal=Float.parseFloat(task.getTax_amt());
+                            }
+                            productTotal.setText("" + subTotal);
+                            //  productTaxAmt.setText(task.getTax_amt());
+                        }
+
+                        Log.v("5Taxamt",task.getTax_amt().toString());
+                        Log.v("55taxamt",valueTotal.toString());
+                        Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
+                         }//new stop
+                }  //jul 11
+                    
+                    
+                    
+                    //new code july 9 start
+//                    if (ProductCount == schemCount || ProductCount > schemCount) {
+//                        finalPrice = (subTotal * disValue) / 100;
+//                        Log.v("finalPrice", String.valueOf(finalPrice));
+//                        productDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+//                        productDis.setText("" + disValue);
+//                        Log.e("taxx",tax.toString());
+//                        //new code tax jyly 9
+//                        if (tax != 0.0) {
+//                            Log.e("initil ttt",tax.toString());
+//                            taxAmt = 100 + tax;
+//                            Log.v("tax3Discount", String.valueOf(taxAmt));
+//                           // subTotal = (taxAmt * subTotal) / 100;
+//
+//                            Log.e("Tss", "=" + subTotal);
+//
+//                            if(finalPrice!=0) {
+//                               // subTotal = subTotal - finalPrice;//dis calculatihj july 9
+//                                valueTotal = tax * subTotal / 100;
+//                                Log.e("tota2222l", String.valueOf(subTotal));
+//                                Log.e("taxcalyy", valueTotal.toString());
+//                                productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                            }else{
+//                                subTotal = (taxAmt * subTotal) / 100;
+//                                Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
+//                                Log.e("calculate",calculate.toString());
+//                                valueTotal = subTotal - calculate;
+//                                Log.e("tax220", valueTotal.toString());
+//                                productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                            }
+//
+//
+//
+//
+//                           // subTotal = (taxAmt * subTotal) / 100;//original
+//
+//
+//                            //        productTotal.setText("" + subTotal);
+//                         //   Log.e("Total_Distcount", "=" + subTotal);
+////                            Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
+////                         Log.e("calculate",calculate.toString());
+////                            valueTotal = subTotal - calculate;
+//                           // Log.e("tax220", valueTotal.toString());
+//                           // productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                        } else {
+//                            if (task.getTax_amt().equals("") || task.getTax_amt().equals("0")) {
+//                                task.setTax_amt("0");
+//                                productTaxAmt.setText(task.getTax_amt());
+//                                Log.e("gtax", task.getTax_amt().toString());
+//                            }
+//                            productTaxAmt.setText(task.getTax_amt());
+//                        }
+//                        //new code tax july 9
+//                       // subTotal = subTotal - finalPrice;
+//                        Log.v("finalPriceAfterDis33", String.valueOf(subTotal));
+//                        productTotal.setText("" + subTotal);
+//
+//
+//                    } else {
+//                        finalPrice = 0;
+//                        productDis.setText("0");
+//                        productDisAmt.setText("" + new DecimalFormat("##.##").format(0));
+//                        //   }
+//                        //new code start july 9
+//                        if (tax != 0.0) {
+//                            taxAmt = 100 + tax;
+//                            Log.v("tax3Discount", String.valueOf(taxAmt));
+//                            subTotal = (taxAmt * subTotal) / 100;
+//                            productTotal.setText("" + subTotal);
+//                            Log.e("Total_Distcount", "=" + subTotal);
+//                            Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
+//                            valueTotal = subTotal - calculate;
+//                            Log.e("tax220", valueTotal.toString());
+//                            productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
+//                        } else {
+//                            if (task.getTax_amt().equals("") || task.getTax_amt().equals("0")) {
+//                                task.setTax_amt("0");
+//                                productTaxAmt.setText(task.getTax_amt());
+//                                Log.e("gtax", task.getTax_amt().toString());
+//                            }
+//                            productTaxAmt.setText(task.getTax_amt());
+//                            productTotal.setText("" + subTotal);
+//                        }
+//                    }
+                        //new code july 9 stop
+
+
+            //    }//note for july 9 stop include this too
 //new brace below  added july 9
             }
 

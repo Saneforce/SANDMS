@@ -101,7 +101,6 @@ public class ViewCartActivity extends AppCompatActivity {
     String GrandTotal = "";
     TextView viewTotal;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
-
     List<PrimaryProduct> contacts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

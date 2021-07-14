@@ -141,6 +141,8 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
 
                     JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
                     for (int a = 0; a < jsonArray.length(); a++) {
+
+
                         JSONObject jso = jsonArray.getJSONObject(a);
                         String className = String.valueOf(jso.get("Name"));
                         String id = String.valueOf(jso.get("Code"));
