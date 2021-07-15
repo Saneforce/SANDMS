@@ -5,9 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
+    <LinearLayout
+        android:id="@+id/linearproductlayouts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:background="@drawable/text_back"
+        tools:ignore="MissingConstraints">
+        <include layout="@layout/view_grey_layout_line" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/productLayout"
         tools:ignore="MissingConstraints">
 
         <TextView
@@ -15,44 +27,69 @@
             android:text="Product Name"
             android:textSize="@dimen/C12dp"
             android:id="@+id/txt_name"
-            android:layout_width="@dimen/c160dp" />
+             />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/productLayout"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1"
+
+        >
         <TextView
             style="@style/TextStyle"
+android:layout_weight=".2"
+            android:layout_width="0dp"
+
             android:text="Qty"
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C5dp"
             android:id="@+id/txt_qty"
-            android:layout_width="@dimen/C40dp" />
-
+             />
+<!--        android:layout_width="@dimen/C40dp"-->
         <TextView
+            android:layout_width="0dp"
             style="@style/TextStyle"
             android:id="@+id/txt_rate"
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C5dp"
-            android:layout_width="@dimen/C50dp"
+            android:layout_weight=".2"
             android:text="Rate" />
-
-
-
+<!--        android:layout_width="@dimen/C50dp"-->
+        <TextView
+            android:layout_width="0dp"
+            style="@style/TextStyle"
+            android:id="@+id/txt_discount"
+            android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp"
+            android:layout_weight=".2"
+            android:text="Discount" />
+<!--        android:layout_width="@dimen/C70dp"-->
         <TextView
         style="@style/TextStyle"
         android:id="@+id/txt_tax"
         android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C5dp"
-        android:layout_width="@dimen/C40dp"
+            android:layout_weight=".2"
+            android:layout_width="0dp"
         android:text="Tax" />
 
-
+<!--        android:layout_width="@dimen/C40dp"-->
 
         <TextView
             style="@style/TextStyle"
-            android:layout_width="@dimen/C70dp"
+            android:layout_width="0dp"
             android:text="Value"
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C10dp"
+            android:layout_weight=".2"
             android:id="@+id/txt_total" />
-
+<!--        android:layout_width="@dimen/C70dp"-->
     </LinearLayout>
 
+    </LinearLayout>
+    <include layout="@layout/view_grey_layout_line" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

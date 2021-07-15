@@ -28,6 +28,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,6 +106,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     ImageView imgBack,imgShare;
     Button fromBtn, toBtn;
     EditText toolSearch;
+
     String fromDateString, dateTime, toDateString, SF_CODE, FReport = "", TReport = "", OrderType = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
     ReportViewAdapter mReportViewAdapter;
@@ -125,7 +127,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     View supportLayout;
 
     private Bitmap bitmap,bitmapTotal;
-
+    ScrollView scrollLayout;
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -138,7 +140,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         supportLayout=findViewById(R.id.customlayout);
         supportLayout.setVisibility(View.VISIBLE);
         totalLayout=findViewById(R.id.totalLayout);
-
+        scrollLayout=findViewById(R.id.scrolllayout);
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
 
@@ -200,8 +202,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                                ViewDateReport("All");
                                 mArrayList.clear();
+                                OrderStatusList.clear();
+                                modeOrderData.clear();
+                                txtOrderStatus.setText("All");
+                                ViewDateReport("All");
+
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -221,8 +227,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                         toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        ViewDateReport("All");
                         mArrayList.clear();
+                        OrderStatusList.clear();
+                        modeOrderData.clear();
+                        txtOrderStatus.setText("All");
+                        ViewDateReport("All");
+
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -245,11 +255,14 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                OrderStatusList.add("Order Dispatched");
                OrderStatusList.add("Payment Verified");
                OrderStatusList.add("Payment Done");
+                OrderStatusList.add("Credit Raised");
+                OrderStatusList.add("Credit Verified");
+                OrderStatusList.add("Credit Dispatched");
                 for (int i = 0; i < OrderStatusList.size(); i++) {
                     String id = String.valueOf(OrderStatusList.get(i));
                     String name = OrderStatusList.get(i);
                     mCommon_model_spinner = new Common_Model(id, name, "flag");
-                   modeOrderData.add(mCommon_model_spinner);
+                    modeOrderData.add(mCommon_model_spinner);
                 }
 
 
@@ -285,8 +298,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         // Code for above or equal 23 API Oriented Device
                         // Your Permission granted already .Do next code
                         supportLayout.setVisibility(View.GONE);
-                        totalLayout.setVisibility(View.VISIBLE);
-                        bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                        //totalLayout.setVisibility(View.VISIBLE);
+                        bitmap = loadBitmapFromView(scrollLayout, scrollLayout.getWidth(), scrollLayout.getHeight());
+                      //  bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                       //  bitmapTotal = loadBitmapFromView(totalLayout, linearLayout.getWidth(), linearLayout.getHeight());
 
                         createPdf();
@@ -343,14 +357,22 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
                     JSONObject JsonObject;
                     modeOrderData.clear();
+                   Float intSum = Float.valueOf(0);
+
+
                     for (int l = 0; l <= jsonArray.length(); l++) {
                         JsonObject = jsonArray.getJSONObject(l);
                         String orderStatus = JsonObject.getString("Order_Status");
                         Log.e("datareportmodels", String.valueOf(mReportActivities.getData()));
-                        if (orderTakenByFilter.equals(orderStatus)) {
+
+                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
                             mDReportModels=mReportActivities.getData();
+//                            intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
+//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
                         } else {
                             mDReportModels=mReportActivities.getData();
+//                            intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
+//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
 
                         }
                     }
@@ -375,7 +397,24 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
                         String orderStatus=JsonObjects.getString("Order_Status");
                          String orderNo=JsonObjects.getString("Order_No");
-                        Log.v("JSON_OBEJCTS",JsonObjects.getString("Order_Status"));
+                        Log.v("status",JsonObjects.getString("Order_Status"));
+
+                        intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+                        txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+
+//                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
+//                            intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+//                            Log.e("Total_Value11", String.valueOf(intSum));
+//                          //  mDReportModels=mReportActivities.getData();
+//                        } else {
+//
+//                            intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+//                            Log.e("Total_Value22", String.valueOf(intSum));
+//                           // mDReportModels=mReportActivities.getData();
+//
+//                        }
 
 
 //                        mCommon_model_spinner = new Common_Model(orderNo, orderStatus, "flag");
@@ -387,11 +426,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     e.printStackTrace();
                 }
 
-
-
                 //Float intSum = Float.valueOf(mArrayList.stream().mapToLong(Float::longValue).sum());
-                txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-                Log.e("Total_Value", String.valueOf(intSum));
+               // txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));//working code commented jul 15
+              //  Log.e("Total_Value", String.valueOf(intSum));
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, mDReportModels, new DMS.ViewReport() {
                     @Override
                     public void reportCliick(String productId, String orderDate, String OrderValue) {//,String TaxValue,String Tax
@@ -401,6 +438,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         intnet.putExtra("FromDate", fromBtn.getText().toString());
                         intnet.putExtra("ToDate", toBtn.getText().toString());
                         intnet.putExtra("OderValue", OrderValue);
+
                         startActivity(intnet);
                         //  finish();
                     }
@@ -574,7 +612,8 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("value", "Permission Granted, Now you can use local drive .");
                     supportLayout.setVisibility(View.GONE);
-                    bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                    bitmap = loadBitmapFromView(scrollLayout, scrollLayout.getWidth(), scrollLayout.getHeight());
+                 //   bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
              //       bitmapTotal = loadBitmapFromView(totalLayout, linearLayout.getWidth(), linearLayout.getHeight());
 
                     createPdf();

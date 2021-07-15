@@ -47,6 +47,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             taxRate=jsonObjec.getString("taxRate");
             holder.txtTax.setText((taxRate));
             holder.txtTotal.setText(jsonObjec.getString("taxval"));
+            holder.txtDis.setText(jsonObjec.getString("discount_price"));
             //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
 
             //NEW CODE
@@ -65,7 +66,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtName,txtQty,txtRate,txtTotal,txtTax;
+        TextView txtName,txtQty,txtRate,txtTotal,txtTax,txtDis;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +75,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             txtRate = (TextView) itemView.findViewById(R.id.txt_rate);
             txtTotal = (TextView) itemView.findViewById(R.id.txt_total);
             txtTax=itemView.findViewById(R.id.txt_tax);
+            txtDis=itemView.findViewById(R.id.txt_discount);
 
 
         }

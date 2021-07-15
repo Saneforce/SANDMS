@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrolllayout"
+              android:scrollbars="none"
+            android:fillViewport="true">
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,10 +12,21 @@
     android:layout_height="match_parent"
     tools:context=".Activity.ViewReportActivity">
 
+
+
     <LinearLayout
         android:id="@+id/linearproductlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/text_back"
+        tools:ignore="MissingConstraints">
+
+    <LinearLayout
+        android:id="@+id/linearproductlayouts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
         android:orientation="vertical"
         android:background="@drawable/text_back"
         tools:ignore="MissingConstraints">
@@ -69,94 +86,157 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/productLayout"
+            tools:ignore="MissingConstraints">
 
             <TextView
                 style="@style/TextStyle"
-                android:layout_width="@dimen/c160dp"
                 android:text="Product Name"
+                android:textStyle="bold"
                 android:textSize="@dimen/C12dp"
-                android:textStyle="bold" />
+                android:id="@+id/txt_name"
+                />
 
-            <TextView
-                style="@style/TextStyle"
-                android:layout_width="@dimen/C40dp"
-                android:text="Qty"
-                android:paddingLeft="@dimen/C5dp"
-                android:textSize="@dimen/C12dp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/productLayout"
+                android:orientation="horizontal"
+                android:weightSum="1"
 
-            <TextView
-                style="@style/TextStyle"
-                android:layout_width="@dimen/C50dp"
-                android:text="Rate"
-                android:textSize="@dimen/C12dp"
-                android:paddingLeft="@dimen/C5dp"
-                android:textStyle="bold" />
-            <TextView
-                style="@style/TextStyle"
-                android:layout_width="@dimen/C40dp"
-                android:text="Tax"
-                android:paddingLeft="@dimen/C5dp"
-                android:textSize="@dimen/C12dp"
-                android:textStyle="bold" />
+                >
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight=".2"
+                    android:text="Qty"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/C12dp"
+                    android:paddingLeft="@dimen/C5dp"
+                    android:id="@+id/txt_qty"
+                    />
+                <!--        android:layout_width="@dimen/C40dp"-->
+                <TextView
 
-            <TextView
-                style="@style/TextStyle"
-                android:layout_width="@dimen/C70dp"
-                android:paddingLeft="@dimen/C10dp"
-                android:text="Value"
-                android:textSize="@dimen/C12dp"
-                android:textStyle="bold" />
+                    style="@style/TextStyle"
+                    android:id="@+id/txt_rate"
+                    android:textSize="@dimen/C12dp"
+                    android:paddingLeft="@dimen/C5dp"
+                    android:layout_weight=".2"
+                    android:textStyle="bold"
+                    android:text="Rate" />
+                <!--        android:layout_width="@dimen/C50dp"-->
+                <TextView
+                    style="@style/TextStyle"
+                    android:id="@+id/txt_discount"
+                    android:textSize="@dimen/C12dp"
+                    android:paddingLeft="@dimen/C5dp"
+                    android:layout_weight=".2"
+                    android:textStyle="bold"
+                    android:text="Discount" />
+                <!--        android:layout_width="@dimen/C70dp"-->
+                <TextView
+                    style="@style/TextStyle"
+                    android:id="@+id/txt_tax"
+                    android:textSize="@dimen/C12dp"
+                    android:textStyle="bold"
+                    android:paddingLeft="@dimen/C5dp"
+                    android:layout_weight=".2"
+                    android:text="Tax" />
 
+                <!--        android:layout_width="@dimen/C40dp"-->
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:textStyle="bold"
+                    android:text="Value"
+                    android:textSize="@dimen/C12dp"
+                    android:paddingLeft="@dimen/C10dp"
+                    android:layout_weight=".2"
+                    android:id="@+id/txt_total" />
+                <!--        android:layout_width="@dimen/C70dp"-->
+            </LinearLayout>
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C100dp"-->
+<!--                android:text="Product Name"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C40dp"-->
+<!--                android:text="Qty"-->
+<!--                android:paddingLeft="@dimen/C5dp"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C50dp"-->
+<!--                android:text="Rate"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:paddingLeft="@dimen/C5dp"-->
+<!--                android:textStyle="bold" />-->
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C40dp"-->
+<!--                android:text="Dis"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:paddingLeft="@dimen/C5dp"-->
+<!--                android:textStyle="bold" />-->
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C40dp"-->
+<!--                android:text="Tax"-->
+<!--                android:paddingLeft="@dimen/C5dp"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                style="@style/TextStyle"-->
+<!--                android:layout_width="@dimen/C70dp"-->
+<!--                android:paddingLeft="@dimen/C10dp"-->
+<!--                android:text="Value"-->
+<!--                android:textSize="@dimen/C12dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--        </LinearLayout>-->
 
         <include layout="@layout/view_layout" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/date_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/C5dp"
-            tools:listitem="@layout/row_date_view_report" />
+<!--        <androidx.core.widget.NestedScrollView-->
 
 
-      <LinearLayout
-            android:id="@+id/totalLayout"
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--            android:id="@+id/nestedScrollView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="526dp"-->
+<!--            android:overScrollMode="never">-->
 
-            <TextView
-                style="@style/TextStyle"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:padding="10dip"
-                android:text="Total : "
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/total_value"
-                style="@style/TextStyle"
-                android:paddingRight="@dimen/C10dp"
-                android:textAlignment="textEnd" />
-
-        </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/date_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/C5dp"
 
 
-    </LinearLayout>
+                    tools:listitem="@layout/row_date_view_report" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/bottom_linear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:padding="@dimen/C5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearproductlayout"
-        tools:ignore="MissingConstraints">
-
-<!--        <LinearLayout-->
+<!--        </androidx.core.widget.NestedScrollView>-->
+<!--      <LinearLayout-->
 <!--            android:id="@+id/totalLayout"-->
 <!--            android:visibility="visible"-->
 <!--            android:layout_width="match_parent"-->
@@ -178,7 +258,47 @@
 
 <!--        </LinearLayout>-->
 
+
+    </LinearLayout>
+    </LinearLayout>
+
+<!--        app:layout_constraintBottom_toBottomOf="@+id/linearproductlayouts"-->
+    <LinearLayout
+        android:id="@+id/bottom_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/C5dp"
+
+
+        app:layout_constraintBottom_toBottomOf="@+id/linearproductlayout"
+        tools:ignore="MissingConstraints">
+
         <LinearLayout
+            android:id="@+id/totalLayout"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="10dip"
+                android:text="Total : "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/total_value"
+                style="@style/TextStyle"
+                android:paddingRight="@dimen/C10dp"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/paymentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -205,5 +325,12 @@
 
 
         <include layout="@layout/back_arrow" />
+
     </LinearLayout>
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class ViewReportActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     ImageView imgBack,imgShare;
     EditText toolSearch;
+
     RecyclerView DateRecyclerView;
     String productId;
     String orderDate;
@@ -78,15 +81,18 @@ public class ViewReportActivity extends AppCompatActivity {
     ArrayList<Integer> mArrayList;
     TextView TotalValue,total_value;
     Button PayNow,Delete;
-    Double OrderTaxCal,  OrderAmtNew,OrderValueTotal;
+    Double OrderTaxCal,  OrderAmtNew,OrderValueTotal,OderDiscount;
     View supportLayout;
     LinearLayout  linearLayout,totalLayout;
+    ScrollView relativeLayout;
     private Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearproductlayout);
+
+        relativeLayout=findViewById(R.id.scrolllayout);
         supportLayout=findViewById(R.id.customtoolbarlayout);
         supportLayout.setVisibility(View.VISIBLE);
         totalLayout=findViewById(R.id.totalLayout);
@@ -150,7 +156,8 @@ public class ViewReportActivity extends AppCompatActivity {
                         // Code for above or equal 23 API Oriented Device
                         // Your Permission granted already .Do next code
 totalLayout.setVisibility(View.VISIBLE);
-                        bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                     //   bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                       bitmap = loadBitmapFromView(relativeLayout, relativeLayout.getWidth(), relativeLayout.getHeight());
                         createPdf();
                     } else {
                         requestPermission(); // Code for permission
@@ -452,8 +459,8 @@ totalLayout.setVisibility(View.VISIBLE);
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("value", "Permission Granted, Now you can use local drive .");
-
-                    bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
+                    bitmap = loadBitmapFromView(relativeLayout, relativeLayout.getWidth(), relativeLayout.getHeight());
+                 //   bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                     createPdf();
                 } else {
                     Log.e("value", "Permission Denied, You cannot use local drive .");
