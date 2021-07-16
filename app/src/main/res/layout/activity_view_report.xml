@@ -229,8 +229,6 @@
                     android:id="@+id/date_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/C5dp"
-
 
                     tools:listitem="@layout/row_date_view_report" />
             </LinearLayout>

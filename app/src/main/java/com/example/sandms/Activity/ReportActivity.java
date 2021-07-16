@@ -203,7 +203,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                                 fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                                 mArrayList.clear();
-                                OrderStatusList.clear();
+//                                OrderStatusList.clear();
                                 modeOrderData.clear();
                                 txtOrderStatus.setText("All");
                                 ViewDateReport("All");
@@ -228,7 +228,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                         toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                         mArrayList.clear();
-                        OrderStatusList.clear();
+  //                      OrderStatusList.clear();
                         modeOrderData.clear();
                         txtOrderStatus.setText("All");
                         ViewDateReport("All");
@@ -339,6 +339,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ReportDataList> responseBodyCall;
 
+
         if (OrderType.equalsIgnoreCase("1")) {
             responseBodyCall = apiInterface.reportValues("get/ViewReport", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
         } else {
@@ -353,78 +354,139 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
               //  List<ReportModel> mDReportModels;
                List<ReportModel> mDReportModels = mReportActivities.getData();
+                if(orderTakenByFilter.equalsIgnoreCase("Payment Pending")){
+                    String ordervalue=String.valueOf(mReportActivities.getPaymentPending());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay1",ordervalue);
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Payment Verified")){
+                    String ordervalue=String.valueOf(mReportActivities.getPaymentVerified());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay11",String.valueOf(mReportActivities.getPaymentVerified()));
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Verified")){
+                    String ordervalue=String.valueOf(mReportActivities.getCreditVerified());
+                    txtTotalValue.setText("Rs . "+ordervalue);
+                    Log.e("pay111",String.valueOf(mReportActivities.getCreditVerified()));
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Order Dispatched")){
+                    String ordervalue=String.valueOf(mReportActivities.getOrderDispatched());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay122",String.valueOf(mReportActivities.getOrderDispatched()));
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Dispatched")){
+                    String ordervalue=String.valueOf(mReportActivities.getCreditDispatched());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay133",mReportActivities.getCreditDispatched());
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Payment Done")){
+                    String ordervalue=String.valueOf(mReportActivities.getPaymentDone());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay155",String.valueOf(mReportActivities.getPaymentDone()));
+                }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Raised")){
+                    String ordervalue=String.valueOf(mReportActivities.getCreditRaised());
+                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay15",String.valueOf(mReportActivities.getCreditRaised()));
+                }else{
+                    txtTotalValue.setText("Rs.0");
+                }
                try {
+
+                   Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
                     JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
                     JSONObject JsonObject;
                     modeOrderData.clear();
                    Float intSum = Float.valueOf(0);
+                //  String order=mReportActivities.getPayment_Pending();
 
 
-                    for (int l = 0; l <= jsonArray.length(); l++) {
+
+
+                   for (int l = 0; l <= jsonArray.length(); l++) {
                         JsonObject = jsonArray.getJSONObject(l);
                         String orderStatus = JsonObject.getString("Order_Status");
                         Log.e("datareportmodels", String.valueOf(mReportActivities.getData()));
+                        Float orderValue= Float.valueOf(JsonObject.getString("Order_Value"));
+                        Log.v("JSON_OBEJCTSvalue" +
+                                "",orderValue.toString());
+
 
                         if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
                             mDReportModels=mReportActivities.getData();
-//                            intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
-//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-                        } else {
-                            mDReportModels=mReportActivities.getData();
-//                            intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
-//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
 
+                         //   intSum = intSum +orderValue;
+                     //      intSum= Float.valueOf(intSum+ mReportActivities.getData().get(l).getOrderValue());
+                     //   intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
+                     //      Log.v("JSOn_VAlue1",intSum.toString());
+                     //      txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+                        } else if(orderTakenByFilter.equals("All")||orderTakenByFilter.equalsIgnoreCase("All")) {
+                            mDReportModels=mReportActivities.getData();
+                      //      intSum= Float.valueOf(intSum+ mReportActivities.getData().get(l).getOrderValue());
+                          intSum = intSum +orderValue;
+                           //Log.v("JSOn_VAlue12",intSum.toString());
+                      //   intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
+                           txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+
+                        }else{
+                            mDReportModels=mReportActivities.getData();
                         }
                     }
 
                 }catch (Exception e){
 
                 }
-                for (int i = 0; i < mDReportModels.size(); i++) {
-                    Log.e("data", String.valueOf(mDReportModels.get(i).getOrderValue()));
-                    mArrayList.add(Float.valueOf((mDReportModels.get(i).getOrderValue())));
-                }
+               try {
+
+                   for (int i = 0; i < mDReportModels.size(); i++) {
+                       Log.e("data", String.valueOf(mDReportModels.get(i).getOrderValue()));
+                       mArrayList.add(Float.valueOf((mDReportModels.get(i).getOrderValue())));
+
+                   }
+               }catch (Exception ee){
+
+               }
                 Log.v("DATA_COMING", new Gson().toJson(mDReportModels));
-                Float intSum = Float.valueOf(0);
-                try {
-                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
-                    JSONObject JsonObjects;
-                    modeOrderData.clear();
-                    for (int l = 0; l <= jsonArray.length(); l++) {
-                        JsonObjects = jsonArray.getJSONObject(l);
-                        
-                        Log.v("JSON_OBEJCTS",JsonObjects.getString("Order_Value"));
-                        intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-                        String orderStatus=JsonObjects.getString("Order_Status");
-                         String orderNo=JsonObjects.getString("Order_No");
-                        Log.v("status",JsonObjects.getString("Order_Status"));
-
-                        intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-                        txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-
-//                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
-//                            intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-//                            Log.e("Total_Value11", String.valueOf(intSum));
-//                          //  mDReportModels=mReportActivities.getData();
-//                        } else {
+              //  Float intSum = Float.valueOf(0);
+//                try {
+//                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
+//                    JSONObject JsonObjects;
+//                    modeOrderData.clear();
+////                    Float intSum = Float.valueOf(0);
+////                    txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+//                    for (int l = 0; l <= jsonArray.length(); l++) {
+//                        JsonObjects = jsonArray.getJSONObject(l);
 //
-//                            intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-//                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-//                            Log.e("Total_Value22", String.valueOf(intSum));
-//                           // mDReportModels=mReportActivities.getData();
 //
-//                        }
-
-
-//                        mCommon_model_spinner = new Common_Model(orderNo, orderStatus, "flag");
-//                      modeOrderData.add(mCommon_model_spinner);
-
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                      //  intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+//                        String orderStatus=JsonObjects.getString("Order_Status");
+//                         String orderNo=JsonObjects.getString("Order_No");
+//                        Log.v("status",JsonObjects.getString("Order_Status"));
+//
+//                   //   Float orderValue= Float.valueOf(JsonObjects.getString("Order_Value"));
+//                     //   Log.v("JSON_OBEJCTSvalue" + "",orderValue.toString());
+////                        intSum = in
+////                        tSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+////                        txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+//                        Log.v("JSON_OBEJCTSvaluest" ,   orderTakenByFilter.toString());
+//                        Log.v("JSON_OBEJCTSstattus" ,  orderStatus.toString());
+////                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
+////                            intSum = intSum +orderValue;
+////                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+////                            Log.e("Total_Value11", String.valueOf(intSum));
+////                          //  mDReportModels=mReportActivities.getData();
+////                        } else {
+////                            intSum = intSum +orderValue;
+////                           // intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
+////                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+////                            Log.e("Total_Value22", String.valueOf(intSum));
+////                           // mDReportModels=mReportActivities.getData();
+////
+////                        }
+//
+//
+////                        mCommon_model_spinner = new Common_Model(orderNo, orderStatus, "flag");
+////                      modeOrderData.add(mCommon_model_spinner);
+//
+//
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 
                 //Float intSum = Float.valueOf(mArrayList.stream().mapToLong(Float::longValue).sum());
                // txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));//working code commented jul 15
@@ -442,7 +504,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         startActivity(intnet);
                         //  finish();
                     }
-                },orderTakenByFilter);
+                },orderTakenByFilter,txtTotalValue);
                 mReportList.setAdapter(mReportViewAdapter);
             }
 

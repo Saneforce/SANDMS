@@ -1,7 +1,6 @@
 package com.example.sandms.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +25,14 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     String produtId, productDate,taxValue,tax;
     String OrderValue;
     String OrderTakenbyFilter;
+    TextView textTotalValue;
 
-    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter  ) {
+    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue ) {
         this.context = context;
         this.mDate = mDate;
         this.mViewReport = mViewReport;
         this.OrderTakenbyFilter=ordertakenbyFilter;
+        this.textTotalValue=textTotalValue;
     }
 
     @NonNull
@@ -51,6 +52,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 try {
+   double totalvalue=0.0;
     String reportType=mDate.get(position).getReportType();
     if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
             OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
@@ -59,7 +61,10 @@ try {
         holder.txtOrderID.setText(mDate.get(position).getOrderNo());
         holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
         holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+//        if(mDate.get(position).getOrderStatus().equalsIgnoreCase())
 
+        double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+//textTotalValue.setText(String.valueOf(totalfin));
         if(reportType.equals("Secondary")) {
             holder.txtRetailerName.setVisibility(View.VISIBLE);
             holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
@@ -81,6 +86,9 @@ try {
         holder.txtOrderID.setText(mDate.get(position).getOrderNo());
         holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
         holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+        double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+       // textTotalValue.setText(String.valueOf(totalfin));
+
 
 
         if(reportType.equals("Secondary")) {

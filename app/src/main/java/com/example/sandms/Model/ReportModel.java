@@ -35,6 +35,15 @@ public class ReportModel {
     @SerializedName("ReportType")
     @Expose
     private String reportType;
+
+
+
+
+
+
+
+
+
     public void setRetailerName(String retailerName) {
         this.retailerName = retailerName;
     }
