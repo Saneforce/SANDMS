@@ -11,19 +11,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.sandms.Activity.ReportActivity"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/text_back"
-        android:orientation="vertical"
-        android:id="@+id/linearlayouts"
-        android:visibility="visible"
-        tools:ignore="MissingConstraints">
-        <include
-            android:id="@+id/customlayout"
-            layout="@layout/custom_toolbar" />
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@drawable/text_back"-->
+<!--        android:orientation="vertical"-->
+<!--        android:id="@+id/linearlayouts"-->
+<!--        android:visibility="visible"-->
+<!--        tools:ignore="MissingConstraints">-->
+<!--        <include-->
+<!--            android:id="@+id/customlayout"-->
+<!--            layout="@layout/custom_toolbar" />-->
 
 
 
@@ -36,7 +36,9 @@
                 android:id="@+id/linearlayout"
                 android:visibility="visible"
                 tools:ignore="MissingConstraints">
-
+                <include
+                    android:id="@+id/customlayout"
+                    layout="@layout/custom_toolbar" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -190,34 +192,34 @@
                     </LinearLayout>
 
                     <include layout="@layout/view_layout" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/report_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/headingLayout"
-                        tools:listitem="@layout/row_report_list" />
-                    </LinearLayout>
+
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recyclerlinear"
+                    android:layout_below="@+id/headingLayout"
+                    android:orientation="vertical">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/report_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/row_report_list" />
 
 
         <LinearLayout
-            android:id="@+id/bottom_linear"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/bottom_linear"
+
             android:background="@android:color/white"
             android:orientation="horizontal"
             android:padding="@dimen/C5dp"
-            app:layout_constraintBottom_toBottomOf="
-            @+id/linearlayouts"
 
-            tools:ignore="MissingConstraints">
-            <!--        app:layout_constraintBottom_toBottomOf="@+id/linearlayout"-->
+            tools:ignore="MissingConstraints"
+            android:layout_height="match_parent">
+            <!--      ,./  app:layout_constraintBottom_toBottomOf="@+id/linearlayout"-->
 
             <TextView
                 style="@style/TextStyle"
@@ -237,8 +239,8 @@
                 android:textAlignment="textEnd" />
 
         </LinearLayout>
-    </LinearLayout>
 
+            </LinearLayout>
 
     </LinearLayout>
 
@@ -310,3 +312,4 @@
 
 
 <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+

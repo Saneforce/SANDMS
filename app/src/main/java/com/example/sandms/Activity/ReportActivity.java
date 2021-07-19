@@ -385,7 +385,8 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 }else{
                     txtTotalValue.setText("Rs.0");
                 }
-               try {
+               try
+               {
 
                    Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
                     JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
@@ -596,6 +597,10 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         try {
             document.writeTo(new FileOutputStream(filePath));
 
+
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
@@ -687,6 +692,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     }
 
     //permision stop
+
+
+
 
 }
 

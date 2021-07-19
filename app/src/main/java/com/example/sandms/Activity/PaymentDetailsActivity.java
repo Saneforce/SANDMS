@@ -151,6 +151,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
 
                         Log.v("NAME_STRING", className);
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -193,7 +194,9 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
                     if (PaymntMode.equalsIgnoreCase("Online")) {
                         getOnlinePayment();
                     } else {
-                        finish();
+                        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+                        startActivity(a);
+                       // finish();//jul 19 working code commented
                     }
                 }
 
@@ -345,10 +348,14 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
     @Override
     public void onPaymentSuccess(String s) {
         Toast.makeText(this, "Payment is successful : " + s, Toast.LENGTH_SHORT).show();
+        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+        startActivity(a);
+
     }
 
     @Override
     public void onPaymentError(int i, String s) {
-
+        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+        startActivity(a);
     }
 }
