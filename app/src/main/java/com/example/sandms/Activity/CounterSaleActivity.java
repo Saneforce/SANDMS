@@ -20,7 +20,8 @@ import com.example.sandms.Utils.CustomListViewDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CounterSaleActivity extends AppCompatActivity implements DMS.Master_Interface {
+public class
+CounterSaleActivity extends AppCompatActivity implements DMS.Master_Interface {
     LinearLayout linBtm;
     Intent dashIntent;
     List<Common_Model> pymntCounter = new ArrayList<>();

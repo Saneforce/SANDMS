@@ -13,26 +13,6 @@ import com.google.gson.JsonObject;
 
 
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Query;
-
-
-
-
-
-import com.example.sandms.Model.HeaderCat;
-import com.example.sandms.Model.ReportDataList;
-import com.google.gson.JsonObject;
-
-import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -142,8 +122,9 @@ public interface ApiInterface {
 
     @POST("db_v14.php?axn=save/editpriorderlg")
     Call<JsonObject> Dispatch(@Query("sfCode") String OrderID, @Field("data") String data);
-
-
+//profile Activity
+     @GET("db_v14.php?axn=get/ProfileMas_Stockist")
+     Call<JsonObject> getProfile(@Query("Stockist_Code") String Stockist_Code);
 
 }
 

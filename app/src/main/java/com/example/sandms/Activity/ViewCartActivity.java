@@ -111,7 +111,7 @@ public class ViewCartActivity extends AppCompatActivity {
         SF_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         DIVISION_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         String carListAsString = getIntent().getStringExtra("list_as_string");
-        Log.v("carListAsString", carListAsString);
+       // Log.v("carListAsString", carListAsString);
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
 

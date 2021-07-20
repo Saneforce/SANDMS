@@ -132,6 +132,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
     LinearLayout totalLayout;
+    ImageView filter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,13 +141,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         supportLayout=findViewById(R.id.customlayout);
         supportLayout.setVisibility(View.VISIBLE);
         totalLayout=findViewById(R.id.totalLayout);
+       // filter=findViewById(R.id.toolbar_filter);
         scrollLayout=findViewById(R.id.scrolllayout);
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
-
         Count = getIntent().getIntExtra("count", 100);
         shared_common_pref = new Shared_Common_Pref(this);
-
         OrderType = shared_common_pref.getvalue("OrderType");
         Log.v("OrderType", OrderType);
         mArrayList = new ArrayList<>();
@@ -282,6 +282,36 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     /*Toolbar*/
     public void getToolbar() {
+        filter= (ImageView) findViewById(R.id.toolbar_filter);
+        filter.setVisibility(View.VISIBLE);
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OrderStatusList=new ArrayList<>();
+                modeOrderData.clear();
+                OrderStatusList.add("All");
+                OrderStatusList.add("Payment Pending");
+                OrderStatusList.add("Order Dispatched");
+                OrderStatusList.add("Payment Verified");
+                OrderStatusList.add("Payment Done");
+                OrderStatusList.add("Credit Raised");
+                OrderStatusList.add("Credit Verified");
+                OrderStatusList.add("Credit Dispatched");
+                for (int i = 0; i < OrderStatusList.size(); i++) {
+                    String id = String.valueOf(OrderStatusList.get(i));
+                    String name = OrderStatusList.get(i);
+                    mCommon_model_spinner = new Common_Model(id, name, "flag");
+                    modeOrderData.add(mCommon_model_spinner);
+                }
+
+
+                customDialog = new CustomListViewDialog(ReportActivity.this,modeOrderData, 11);
+                Window window = customDialog.getWindow();
+                window.setGravity(Gravity.CENTER);
+                window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                customDialog.show();
+            }
+        });
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgShare=findViewById(R.id.toolbar_share);

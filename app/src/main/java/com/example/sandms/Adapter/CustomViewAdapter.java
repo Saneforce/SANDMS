@@ -2,28 +2,42 @@ package com.example.sandms.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sandms.Activity.DashBoardActivity;
+import com.example.sandms.Activity.PrimaryOrderProducts;
+import com.example.sandms.Activity.ViewCartActivity;
+import com.example.sandms.Activity.ViewReportActivity;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.Product_Array;
 import com.example.sandms.R;
+import com.example.sandms.Utils.AlertDialogBox;
+import com.example.sandms.Utils.PrimaryProductDatabase;
+import com.example.sandms.Utils.Shared_Common_Pref;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.realm.Realm.getApplicationContext;
+
 public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.MyViewHolder> {
 
-
+    Shared_Common_Pref mShared_common_pref;
     Float quntaity, price;
     private List<PrimaryProduct> mProduct_arrays = new ArrayList<>();
     DMS.viewProduct viewProd;
@@ -62,6 +76,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         PrimaryProduct mProductArray = mProduct_arrays.get(position);
+        String productid=mProductArray.getPID();
 
         holder.txtCatName.setText(mProductArray.getName());
         holder.txtPrice.setText(mProductArray.getProduct_Cat_Code());
@@ -90,17 +105,32 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             holder.tax_amount.setText("Rs." + new DecimalFormat("##.##").format(taxAmount));
 
         }
-//        if(!mProductArray.getDis_amt().equals("0")&&!mProductArray.getTax_amt().equals("0")){
-//            holder.totalAmount.setText("Rs."  +String.valueOf(total-Float.parseFloat(mProductArray.getDis_amt())*Float.parseFloat(mProductArray.getTax_amt())/100));
-//        }else if(!mProductArray.getDis_amt().equals("0")){
-//            holder.totalAmount.setText("Rs."  +String.valueOf(total-Float.parseFloat(mProductArray.getDis_amt())));
-//        }else if(!mProductArray.getTax_amt().equals("0")){
-//            holder.totalAmount.setText("Rs."  +(total*Float.parseFloat(mProductArray.getTax_amt()))/100);
-//        }else {
 
             holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
-//        }
+
         holder.item_amount.setText("Rs." + new DecimalFormat("##.##").format(total));
+
+
+       holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               AlertDialogBox.showDialog(v.getContext(), "", "Do you Surely want to delete this order?",
+                       "Yes", "NO", false, new DMS.AlertBox() {
+                           @Override
+                           public void PositiveMethod(DialogInterface dialog, int id) {
+
+                               Log.v("prdid",productid);
+                               deleteTask(mProductArray,productid);
+                           }
+
+                           @Override
+                           public void NegativeMethod(DialogInterface dialog, int id) {
+                           }
+                       });
+
+           }
+       });
+
 
 
 
@@ -134,6 +164,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         TextView tax_amount;
         TextView dis_amount;
         ImageView deleteProduct;
+        ImageView editProduct;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -147,6 +178,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             productImage = (ImageView) itemView.findViewById(R.id.image_product);
             editCount = (TextView) itemView.findViewById(R.id.edit_qty);
             deleteProduct = (ImageView) itemView.findViewById(R.id.delete_product);
+            editProduct=(ImageView) itemView.findViewById(R.id.edit_product);
 
         }
     }
@@ -155,5 +187,44 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     public void filteredContact(List<PrimaryProduct> contacts) {
         this.mProduct_arrays = contacts;
         notifyDataSetChanged();
+    }
+
+
+    private void deleteTask(final PrimaryProduct task, String productID) {
+        class DeleteTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
+                        .contactDao()
+                        .deleteById(productID);
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                Toast.makeText(context,"Sucessfully  Product Deleted",Toast.LENGTH_SHORT).show();
+//                mShared_common_pref = new Shared_Common_Pref(context);
+//               String GrandTotal =  mShared_common_pref.getvalue("GrandTotal");
+//               GrandTotal= String.valueOf(Integer.parseInt(GrandTotal)-Integer.parseInt(task.getSubtotal()));
+//                Gson gson = new Gson();
+//                String jsonCars = gson.toJson(Product_Array_List);
+//                Log.v("Category_Data", jsonCars);
+//                Log.v("Categoryttt_Data", GrandTotal);
+//                Intent mIntent = new Intent(context, ViewCartActivity.class);
+//                mIntent.putExtra("list_as_string", jsonCars);
+//                mIntent.putExtra("GrandTotal", GrandTotal);
+//                context.startActivity(mIntent);
+                context.startActivity(new Intent(context, ViewCartActivity.class));
+            }
+        }
+
+        DeleteTask ut = new  DeleteTask();
+        ut.execute();
     }
 }
