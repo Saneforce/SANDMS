@@ -169,7 +169,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
                 if (STR.equals("0") || STR.equals("0.0")) {
                     Toast.makeText(PrimaryOrderProducts.this, "Please choose to cart", Toast.LENGTH_SHORT).show();
                 } else {
-                    SaveDataValue();
+                    SaveDataValue(STR);
                 }
             }
         });
@@ -338,6 +338,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
                 }
                 grandTotal.setText("" + sum);
                 mShared_common_pref.save("GrandTotal", String.valueOf(sum));
+                mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
             }
         });
 
@@ -360,7 +361,10 @@ public class PrimaryOrderProducts extends AppCompatActivity {
         Log.v("Primary_order", "onStop");
     }
 
-    public void SaveDataValue() {
+    public void SaveDataValue(String GrandTotal) {
+
+        mShared_common_pref.save("GrandTotal", grandTotal.getText().toString());
+        mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
         Gson gson = new Gson();
         String jsonCars = gson.toJson(Product_Array_List);
         Log.v("Category_Data", jsonCars);

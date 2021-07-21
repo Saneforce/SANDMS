@@ -99,6 +99,7 @@ public class ViewCartActivity extends AppCompatActivity {
     int product_count = 0;
     ProgressDialog progressDialog = null;
     String GrandTotal = "";
+    String SubTotal = "";
     TextView viewTotal;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
     List<PrimaryProduct> contacts;
@@ -116,11 +117,30 @@ public class ViewCartActivity extends AppCompatActivity {
         btnSubmt = findViewById(R.id.add_cart);
 
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
-
-        Log.v("viewTotal", GrandTotal);
+        Log.v("grandtttt", GrandTotal);
+         SubTotal=shared_common_pref.getvalue("SubTotal");
+        Log.v("SUBTOT", GrandTotal);
+       // viewTotal.setText(GrandTotal);
+      //  viewTotal.setText(GrandTotal);
 //new code added start
+        try {
+            if(GrandTotal!="0"||GrandTotal!="0.0") {
 
-        viewTotal.setText(GrandTotal);
+
+                if (SubTotal != "0.0" || !("0.0").equals(SubTotal) || !("0").equals(SubTotal)) {
+                    GrandTotal = String.valueOf(Integer.parseInt(GrandTotal) - Integer.parseInt(SubTotal));
+                    viewTotal.setText(GrandTotal);
+                    shared_common_pref.clear_pref("SubTotal");
+                    Log.v("grandsub", GrandTotal);
+                } else {
+                    Log.v("grand", GrandTotal);
+                    viewTotal.setText(GrandTotal);
+                }
+            }
+        }catch (NumberFormatException ee){
+            Log.v("11grand", GrandTotal);
+            viewTotal.setText(GrandTotal);
+        }
 //new code added stop
         contactViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
         contactViewModel.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
@@ -138,7 +158,7 @@ public class ViewCartActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new CustomViewAdapter(ViewCartActivity.this, new DMS.viewProduct() {
+        adapter = new CustomViewAdapter(ViewCartActivity.this,GrandTotal,viewTotal, new DMS.viewProduct() {
 
             @Override
             public void onViewItemClick(String itemID, String productName, String catName, String catImg, Float productQty, Float productRate) {
@@ -562,6 +582,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+   //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
 
     }
 

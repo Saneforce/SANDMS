@@ -97,12 +97,22 @@
                             android:textSize="8dp"
                             android:textStyle="bold"></TextView>
                         <ImageView
+                            android:id="@+id/toolbar_filter"
+                            android:visibility="gone"
+                            android:layout_marginRight="@dimen/C5dp"
+                            android:layout_marginLeft="@dimen/C5dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/filt" />
+                        <ImageView
                             android:id="@+id/toolbar_share"
                             android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:src="@drawable/share" />
+
                         <TextView
                             android:id="@+id/cut_off_time"
                             android:layout_width="wrap_content"

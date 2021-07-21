@@ -15,6 +15,8 @@ import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.ReportModel;
 import com.example.sandms.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -71,7 +73,10 @@ try {
         }
 
         float total = Float.parseFloat(mDate.get(position).getOrderValue());
-        holder.txtValue.setText(new DecimalFormat("##.##").format(total));
+
+        BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+        double totalroundoff= bd.doubleValue();
+        holder.txtValue.setText((int) totalroundoff);
      /*   holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
 
@@ -96,16 +101,12 @@ try {
             holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
         }
 
-
         float total = Float.parseFloat(mDate.get(position).getOrderValue());
-        holder.txtValue.setText(new DecimalFormat("##.##").format(total));
-     /*   holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
 
-            public void onClick(View v) {
-            }
-        });
-*/
+        BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+        float totalroundoff= (float) bd.doubleValue();
+        holder.txtValue.setText(String.valueOf(totalroundoff));
+
 
     } else {
         holder.linearLayout.setVisibility(View.GONE);
@@ -118,7 +119,12 @@ try {
     holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
     holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
     float total = Float.parseFloat(mDate.get(position).getOrderValue());
-    holder.txtValue.setText(new DecimalFormat("##.##").format(total));
+
+    BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+    double totalroundoff= bd.doubleValue();
+    holder.txtValue.setText((int) totalroundoff);
+//    float total = Float.parseFloat(mDate.get(position).getOrderValue());
+//    holder.txtValue.setText(new DecimalFormat("##.##").format(total));
     String reportType=mDate.get(position).getReportType();
     if(reportType.equals("Secondary")) {
         holder.txtRetailerName.setVisibility(View.VISIBLE);

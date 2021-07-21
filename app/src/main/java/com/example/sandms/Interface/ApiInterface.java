@@ -59,7 +59,10 @@ public interface ApiInterface {
 
 
     /*Add New Retailer*/
-    @FormUrlEncoded
+//    @FormUrlEncoded
+//    @POST("db_v14.php?axn=table/list")
+//    Call<JsonObject> retailerClass(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
+//    @FormUrlEncoded
     @POST("db_v14.php?axn=table/list")
     Call<JsonObject> retailerClass(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
 

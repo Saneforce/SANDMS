@@ -65,6 +65,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -386,33 +388,62 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                List<ReportModel> mDReportModels = mReportActivities.getData();
                 if(orderTakenByFilter.equalsIgnoreCase("Payment Pending")){
                     String ordervalue=String.valueOf(mReportActivities.getPaymentPending());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+
+
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+ (int) totalroundoff);
                     Log.e("pay1",ordervalue);
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Payment Verified")){
                     String ordervalue=String.valueOf(mReportActivities.getPaymentVerified());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+String.valueOf(totalroundoff));
+                 //   txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay11",String.valueOf(mReportActivities.getPaymentVerified()));
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Verified")){
                     String ordervalue=String.valueOf(mReportActivities.getCreditVerified());
-                    txtTotalValue.setText("Rs . "+ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+ String.valueOf(totalroundoff));
+                    //txtTotalValue.setText("Rs . "+ordervalue);
                     Log.e("pay111",String.valueOf(mReportActivities.getCreditVerified()));
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Order Dispatched")){
                     String ordervalue=String.valueOf(mReportActivities.getOrderDispatched());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+                    txtTotalValue.setText("Rs . "+ String.valueOf(totalroundoff));
+                  //  txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay122",String.valueOf(mReportActivities.getOrderDispatched()));
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Dispatched")){
                     String ordervalue=String.valueOf(mReportActivities.getCreditDispatched());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+String.valueOf(totalroundoff));
+                    //txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay133",mReportActivities.getCreditDispatched());
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Payment Done")){
                     String ordervalue=String.valueOf(mReportActivities.getPaymentDone());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+String.valueOf(totalroundoff));
+                  //  txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay155",String.valueOf(mReportActivities.getPaymentDone()));
                 }else  if(orderTakenByFilter.equalsIgnoreCase("Credit Raised")){
                     String ordervalue=String.valueOf(mReportActivities.getCreditRaised());
-                    txtTotalValue.setText("Rs . "+ ordervalue);
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff= bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . "+String.valueOf(totalroundoff));
+                  //  txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay15",String.valueOf(mReportActivities.getCreditRaised()));
                 }else{
+
                     txtTotalValue.setText("Rs.0");
                 }
                try
@@ -440,17 +471,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
                             mDReportModels=mReportActivities.getData();
 
-                         //   intSum = intSum +orderValue;
-                     //      intSum= Float.valueOf(intSum+ mReportActivities.getData().get(l).getOrderValue());
-                     //   intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
-                     //      Log.v("JSOn_VAlue1",intSum.toString());
-                     //      txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
                         } else if(orderTakenByFilter.equals("All")||orderTakenByFilter.equalsIgnoreCase("All")) {
                             mDReportModels=mReportActivities.getData();
-                      //      intSum= Float.valueOf(intSum+ mReportActivities.getData().get(l).getOrderValue());
+
                           intSum = intSum +orderValue;
-                           //Log.v("JSOn_VAlue12",intSum.toString());
-                      //   intSum = intSum +Float.valueOf(JsonObject.getString("Order_Value"));
+
                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
 
                         }else{
