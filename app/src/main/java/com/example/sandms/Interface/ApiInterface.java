@@ -129,6 +129,9 @@ public interface ApiInterface {
      @GET("db_v14.php?axn=get/ProfileMas_Stockist")
      Call<JsonObject> getProfile(@Query("Stockist_Code") String Stockist_Code);
 
+    @POST("db_v14.php?axn=save/editpriorderlg")
+    Call<JsonObject> GetOrderId(String data);
+
 }
 
 

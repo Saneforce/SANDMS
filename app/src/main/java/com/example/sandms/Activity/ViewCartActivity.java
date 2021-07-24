@@ -236,7 +236,6 @@ public class ViewCartActivity extends AppCompatActivity {
     public void locationInitialize() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
-
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
