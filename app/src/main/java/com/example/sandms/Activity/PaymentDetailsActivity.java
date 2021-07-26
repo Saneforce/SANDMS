@@ -36,7 +36,9 @@ import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.Order;
+import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultListener;
+import com.razorpay.PaymentResultWithDataListener;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
@@ -68,7 +70,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Master_Interface, PaymentResultListener {
+public class PaymentDetailsActivity extends AppCompatActivity
+        implements DMS.Master_Interface, PaymentResultListener, PaymentResultWithDataListener {//
     TextView productId, productDate, productAmt, offlineMode;
     private RadioGroup radioGroup;
     LinearLayout offView;
@@ -77,6 +80,11 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
     ImageView imgSource;
     EditText edtUTR;
     String orderIDRazorpay;
+    String razorpay_payment_id="";
+            String razorpay_response="";
+    String keyID="";
+    String key_Secret="";
+    String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
     private static final int CAMERA_REQUEST = 1888;
     String str = "", finalPath = "", filePath = "", OrderIDValue = "", DateValue = "",
@@ -86,7 +94,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
     int Amount;
    Double AMOUNTFINAL ;
     SoapPrimitive resultString;
-
+    JSONObject jsonObjectRazorpay;
     String TAG = "Response";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +151,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
             } else {
 
 
-             ProceedPayment();
+             ProceedPayment("nil","nil","nil");
             }
 
         } else {
@@ -169,7 +177,6 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
     public void getOfflineMode() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getOfflineMode("get/paymentmode", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-
         Log.v("KArthic_Retailer", call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -204,7 +211,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
     }
 
 
-    public void ProceedPayment() {
+    public void ProceedPayment(String razorid,String responseid,String signature) {
         JSONObject js = new JSONObject();
         try {
             js.put("OrderID", OrderIDValue);
@@ -217,13 +224,14 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
             if (PaymntMode.equalsIgnoreCase("Online")) {
-//                js.put("OrderID", OrderIDValue);
-//                js.put("OrderID", OrderIDValue);
-//                js.put("OrderID", OrderIDValue);
+               js.put("PaymentID",razorid);
+               js.put("OrderID", responseid);
+                js.put("SignatureID", signature);
             }
             Log.v("JS_VALUE", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
+
             responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
             Log.v("Payment_Request", responseBodyCall.request().toString());
 
@@ -234,7 +242,9 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
                     JsonObject jsonObject = response.body();
                     Log.v("Payment_Response", jsonObject.toString());
                     if (jsonObject.get("success").toString().equalsIgnoreCase("true")) ;
-
+                //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
+               //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
+               //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
                     Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
                     startActivity(a);
 
@@ -260,6 +270,9 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
             e.printStackTrace();
         }
     }
+
+
+
     private class AsyncCallWS extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -278,7 +291,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
             Log.i(TAG, "onPostExecute");
 
           //  Toast.makeText(PaymentDetailsActivity.this, "Response" + orderIDRazorpay.toString(), Toast.LENGTH_LONG).show();
-            getOnlinePayment(orderIDRazorpay);
+            getOnlinePayment(orderIDRazorpay);//working code commented
         }
 
     }
@@ -373,14 +386,46 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
 
 
     public void getOnlinePaymentOrderId() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getPaymentKey( mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+        Log.v("jeevith", call.request().toString());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
+                    if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) ;
+
+                    Log.v("NAME_STRING", response.toString());
+                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                    for (int a = 0; a < jsonArray.length(); a++) {
+
+                        JSONObject jso = jsonArray.getJSONObject(a);
+                       keyID = String.valueOf(jso.get("KeyID"));
+                       key_Secret = String.valueOf(jso.get("Key_Secret"));
+                        Log.v("NAME_STRING1",key_Secret);
+                        Log.v("NAME_STRING",keyID);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+            }
+        });
 
         AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(AmountValue));
 
 
         try {
-
-            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
-                    "O0wqElBi2A5HUrb2MkbyeNQ4");
+            RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret
+                  );
+//            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
+//                    "O0wqElBi2A5HUrb2MkbyeNQ4");
             JSONObject orderRequest = new JSONObject();
             orderRequest.put("amount", AMOUNTFINAL); // amount in the smallest currency unit AmountValue*100
             orderRequest.put("currency", "INR");
@@ -398,6 +443,8 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
                 orderIDRazorpay=jsonObject1.getString("id");
 
                 Log.v("iddd",orderIDRazorpay);
+              //  Log.v("res",jsonObject1.get("razorpay_signature").toString());
+
 
                 //getOnlinePayment(orderIDRazorpay);
 
@@ -409,8 +456,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
             System.out.println(xception .getMessage());
         } catch (Exception e) {//Razorpay
 
-            //  Log.v("orderIDerror", e.getMessage());
-            // Handle Exception
+
              System.out.println(e.getMessage());
         }
         //order id createion jul 22
@@ -423,6 +469,7 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
         // on below line we are getting
         // amount that is entered by user.
         String samount = AmountValue;
+        Log.v("samout",samount);
 
         // rounding off the amount.
         int amount = Math.round(Float.parseFloat(samount) * 100);
@@ -432,8 +479,8 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
         // set your id as below
         //  checkout.setKeyID("rzp_live_ILgsfZCZoFIKMb");
       //  checkout.setKeyID("rzp_test_JOC0wRKpLH1cVW");//demo
+      //  checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
         checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
-
 
         // set image
         checkout.setImage(R.drawable.ic_search_icon);
@@ -464,6 +511,11 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
 
             // open razorpay to checkout activity
             checkout.open(PaymentDetailsActivity.this, object);
+
+
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -476,14 +528,54 @@ public class PaymentDetailsActivity extends AppCompatActivity implements DMS.Mas
 
         Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
 
-        ProceedPayment();
-//        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-//        startActivity(a);
+
+      //  ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
 
     }
 
     @Override
     public void onPaymentError(int i, String s) {
+        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+        startActivity(a);
+    }
+
+
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+             try{
+
+//                    jsonObjectRazorpay = new JSONObject(paymentData.);
+//                    Log.v("LoginResponse1",  jsonObjectRazorpay .toString());
+//                    JSONArray jsonArray =  jsonObjectRazorpay .optJSONArray("events");
+//                    Log.v("LoginResponse771",  jsonArray .toString());
+//                    for (int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                        JSONObject razorpay_payment= jsonObject.getJSONObject("onActivityResult result");
+//
+//                        Log.v("LoginResponse7971", razorpay_payment .toString());
+                        razorpay_payment_id=paymentData.getPaymentId();
+                                //razorpay_payment.getString("razorpay_payment_id");
+                        Log.v("LoginResponse7971i", razorpay_payment_id );
+                        razorpay_response=paymentData.getOrderId();
+                                //razorpay_payment.getString("razorpay_order_id");
+                        Log.v("LoginResponse7971qi", razorpay_response );
+                        razorpay_signature=paymentData.getSignature();
+                                //razorpay_payment.getString("razorpay_signature");
+                        Log.v("LoginResponse7971wi", razorpay_signature);
+
+                 Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
+
+
+                 ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
+                 //   }
+    }catch (Exception eee){
+
+                }
+
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
         Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
         startActivity(a);
     }

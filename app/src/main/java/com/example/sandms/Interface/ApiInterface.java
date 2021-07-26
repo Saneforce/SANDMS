@@ -132,6 +132,9 @@ public interface ApiInterface {
     @POST("db_v14.php?axn=save/editpriorderlg")
     Call<JsonObject> GetOrderId(String data);
 
+    @GET("db_v14.php?axn=get/paymentkeys")
+    Call<JsonObject> getPaymentKey(@Query("Stockist_Code") String Stockist_Code,@Query("DivCode") String disvisonCode);
+
 }
 
 
