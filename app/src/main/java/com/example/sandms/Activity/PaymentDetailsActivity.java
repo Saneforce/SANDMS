@@ -71,7 +71,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PaymentDetailsActivity extends AppCompatActivity
-        implements DMS.Master_Interface, PaymentResultListener, PaymentResultWithDataListener {//
+        implements DMS.Master_Interface,  PaymentResultWithDataListener {//PaymentResultListener,
     TextView productId, productDate, productAmt, offlineMode;
     private RadioGroup radioGroup;
     LinearLayout offView;
@@ -151,7 +151,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             } else {
 
 
-             ProceedPayment("nil","nil","nil");
+             ProceedPayment("","","");
             }
 
         } else {
@@ -184,11 +184,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 try {
                     JSONObject jsonRootObject = new JSONObject(response.body().toString());
                     Log.v("KArthic_Retailer", jsonRootObject.toString());
-
                     JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
                     for (int a = 0; a < jsonArray.length(); a++) {
-
-
                         JSONObject jso = jsonArray.getJSONObject(a);
                         String className = String.valueOf(jso.get("Name"));
                         String id = String.valueOf(jso.get("Code"));
@@ -224,17 +221,19 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
             if (PaymntMode.equalsIgnoreCase("Online")) {
-               js.put("PaymentID",razorid);
-               js.put("OrderID", responseid);
+                js.put("PaymentID",razorid);
+                js.put("RazorOrderID", responseid);
                 js.put("SignatureID", signature);
+            }else{
+                js.put("PaymentID","");
+                js.put("RazorOrderID", "");
+                js.put("SignatureID", "");
             }
-            Log.v("JS_VALUE", js.toString());
+            Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
-
             responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
             Log.v("Payment_Request", responseBodyCall.request().toString());
-
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
@@ -291,7 +290,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Log.i(TAG, "onPostExecute");
 
           //  Toast.makeText(PaymentDetailsActivity.this, "Response" + orderIDRazorpay.toString(), Toast.LENGTH_LONG).show();
-            getOnlinePayment(orderIDRazorpay);//working code commented
+           // getOnlinePayment(orderIDRazorpay);//working code commented
         }
 
     }
@@ -433,10 +432,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
             //orderRequest.put("payment_capture", false);
             Order OR=razorpayClient.Orders.create(orderRequest);
-            Log.v("rzp_live_z2t2tkpQ8YERR0"
-                    , orderRequest.toString());
+           // Log.v("rzp_live_z2t2tkpQ8YERR0", orderRequest.toString());
 
-            Log.v("orderID", OR.toString());
+         //   Log.v("orderID", OR.toString());
             try {
                 JSONObject   jsonObject1 = new JSONObject(OR.toString());
                 Log.e("LoginResponse1",  jsonObject1.toString());
@@ -446,7 +444,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
               //  Log.v("res",jsonObject1.get("razorpay_signature").toString());
 
 
-                //getOnlinePayment(orderIDRazorpay);
+                getOnlinePayment(orderIDRazorpay);
 
             } catch (Exception e) {
 
@@ -521,25 +519,23 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onPaymentSuccess(String s) {
-        Log.v("pay success",s.toString());
-      //  {  "razorpay_payment_id": "pay_29QQoUBi66xm2f",  "razorpay_order_id": "order_9A33XWu170gUtm",  "razorpay_signature": "9ef4dffbfd84f1318f6739a3ce19f9d85851857ae648f114332d8401e0949a3d"}
-
-        Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
-
-
-      //  ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
-
-    }
-
-    @Override
-    public void onPaymentError(int i, String s) {
-        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-        startActivity(a);
-    }
-
-
+//    @Override
+//    public void onPaymentSuccess(String s) {
+//        Log.v("pay success",s.toString());
+//      //  {  "razorpay_payment_id": "pay_29QQoUBi66xm2f",  "razorpay_order_id": "order_9A33XWu170gUtm",  "razorpay_signature": "9ef4dffbfd84f1318f6739a3ce19f9d85851857ae648f114332d8401e0949a3d"}
+//
+//        Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
+//
+//
+//      //  ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
+//
+//    }
+//
+//    @Override
+//    public void onPaymentError(int i, String s) {
+//        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//        startActivity(a);
+//    }
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
              try{
@@ -564,6 +560,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         Log.v("LoginResponse7971wi", razorpay_signature);
 
                  Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
+
 
 
                  ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
