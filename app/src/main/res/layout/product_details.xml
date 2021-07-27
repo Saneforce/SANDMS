@@ -50,8 +50,12 @@
                             android:id="@+id/child_pro_unit"
                             style="@style/TextStyle"
                             android:text="BOX"
+                            android:background="@drawable/oval_background"
                             android:textColor="@color/appColor"
                             android:textSize="@dimen/C15dp"
+                            android:padding="@dimen/C5dp"
+                            android:layout_marginRight="@dimen/C5dp"
+                            android:layout_marginLeft="@dimen/C5dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>

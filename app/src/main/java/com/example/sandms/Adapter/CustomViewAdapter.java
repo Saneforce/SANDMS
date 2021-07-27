@@ -131,8 +131,8 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                            @Override
                            public void PositiveMethod(DialogInterface dialog, int id) {
                                subtotal=mProduct_arrays.get(position).getSubtotal();
-                         subtotal=new DecimalFormat("##.##").format(subtotal);
-                         GrandTotal=new DecimalFormat("##.##").format(GrandTotal);
+                        // subtotal=new DecimalFormat("##.##").format(subtotal);
+                       //  GrandTotal=new DecimalFormat("##.##").format(GrandTotal);
                             //Double ss= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(subtotal));
                           //  Double gg= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(GrandTotal));
 //Double gg=Double.parseDouble(GrandTotal)-Double.parseDouble(subtotal);
@@ -269,6 +269,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
                mShared_common_pref = new Shared_Common_Pref(context);
                mShared_common_pref.save("SubTotal",subtotal);
+               // mShared_common_pref.save("GrandTotal", String.valueOf(gtotal));
 //               String GrandTotal =  mShared_common_pref.getvalue("GrandTotal");
 
 //                Gson gson = new Gson();

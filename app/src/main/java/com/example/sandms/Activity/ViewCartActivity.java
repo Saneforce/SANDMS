@@ -49,6 +49,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -582,6 +583,58 @@ public class ViewCartActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
    //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
+
+    }
+
+
+    @Override
+    protected void onResume() {
+
+
+        super.onResume();
+        Log.v("Primary_order", "onResume");
+//        if (productBarCode.equalsIgnoreCase("")) {
+//            mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
+//            mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
+//                @Override
+//                public void onChanged(List<PrimaryProduct> contacts) {
+//                    priProdAdapter.setContact(contacts, "Nil");
+//                    mPrimaryProduct = contacts;
+//                    Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
+//                    Log.v("mPrimaryProductOrder",new Gson().toJson(contacts));
+//
+//                }
+//            });
+//        } else {
+//
+//            loadFilteredTodos(productBarCode);
+//        }
+        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+        contactViewModels.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+            @Override
+            public void onChanged(List<PrimaryProduct> contacts) {
+                Log.v("TotalviewcartSize", new Gson().toJson(contacts.size()));
+               // item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+               // viewTotal.setText("" + sum);
+                float sum = 0;
+                float tax=0;
+                for (PrimaryProduct cars : contacts) {
+                    sum = sum + Float.parseFloat(cars.getSubtotal());
+                    // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                    ;
+                    //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+                    Log.v("Total_foreviewcart", String.valueOf(sum));
+                }
+                viewTotal.setText("" + sum);
+            shared_common_pref.save("GrandTotal", String.valueOf(sum));
+               // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
+            }
+        });
+
+//        sum= Float.parseFloat(getIntent().getStringExtra("GrandTotal"));
+//        if(!"".equals(sum)|| !("0".equals(sum))||sum!=0){
+//            grandTotal.setText("" + sum);
+//        }
 
     }
 
