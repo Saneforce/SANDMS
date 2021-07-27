@@ -1,7 +1,13 @@
 package com.example.sandms.Activity;
 
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -20,24 +27,32 @@ import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DashBoardActivity extends AppCompatActivity {
+    private static final String TAG =DashBoardActivity.class.getSimpleName();
     Intent dashIntent;
     TextView txtName, txtAddress;
     Shared_Common_Pref shared_common_pref;
@@ -46,7 +61,7 @@ public class DashBoardActivity extends AppCompatActivity {
     ImageView imagView;
     PrimaryProductViewModel mPrimaryProductViewModel;
 
-
+    DBController dbController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,9 +86,106 @@ public class DashBoardActivity extends AppCompatActivity {
             }
         });
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeReceiver, intentFilter);
 
     }
 
+    private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: Constants.isInternetAvailable(DashBoardActivity.this) "+ Constants.isInternetAvailable(DashBoardActivity.this));
+            if (Constants.isInternetAvailable(DashBoardActivity.this)) {
+                Log.d(TAG, "Network Available ");
+
+                // Do something
+                displayNotification("Connectivity", "Available");
+
+                checkData();
+            }
+        }
+    };
+
+    private void checkData(){
+
+            if(dbController == null)
+                dbController = new DBController(DashBoardActivity.this);
+
+            if(shared_common_pref == null)
+                shared_common_pref = new Shared_Common_Pref(DashBoardActivity.this);
+
+            Log.d(TAG, "checkData: " + dbController.getAllDataKey());
+
+            if (dbController.getAllDataKey().size() > 0) {
+                for (HashMap<String, String> i : dbController.getAllDataKey()) {
+                    try {
+                        sendDataToServer(i);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+    }
+
+
+    private void sendDataToServer(HashMap<String, String> data) {
+        Log.d(TAG, "sendDataToServer: data=> " + data);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        RequestBody requestBody = null;
+        try {
+            requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.dataResponse)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.axnKey), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String res = response.body().string();
+                    Log.d(TAG, "onResponse: res "+ res);
+
+                    if(res!=null && !res.equals("")){
+                        JSONObject jsonRootObject = new JSONObject(res);
+                        Log.d(TAG, "onResponse: "+ jsonRootObject);
+
+                        if(jsonRootObject.has("success") && jsonRootObject.getBoolean("success")){
+                            dbController.updateDatakey(data.get(DBController.dataKey));
+                            displayNotification("Order successfull", data.get(DBController.dataKey));
+                        }
+
+                    }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+            }
+        });
+    }
+
+    private void displayNotification(String title, String task) {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            NotificationChannel channel = new NotificationChannel("sandms", "sandms", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "sandms")
+                .setContentTitle(title)
+                .setContentText(task)
+                .setSmallIcon(R.mipmap.ic_launcher);
+
+        notificationManager.notify(1, notification.build());
+    }
 
     private class PopulateDbAsyntask extends AsyncTask<Void, Void, Void> {
         private PrimaryProductDao contactDao;
@@ -286,5 +398,17 @@ public class DashBoardActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+//        unregisterReceiver(networkChangeReceiver);
+    }
 
 }

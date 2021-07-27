@@ -27,15 +27,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.Adapter.CustomViewAdapter;
-import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
-import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,7 +48,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,10 +60,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ViewCartActivity extends AppCompatActivity {
     TextView toolHeader;
@@ -504,7 +498,17 @@ public class ViewCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         totalValueString = sendArray.toString();
 
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        progressDialog.dismiss();
+        DBController dbController = new DBController(ViewCartActivity.this);
+        if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+            Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+
+        }
+        else
+            Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+       /* ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> responseBodyCall = apiInterface.submitValue("dcr/save", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), totalValueString);
         Log.v("View_Cart_Primary", responseBodyCall.request().toString());
         Log.v("View_Cart_Primary", totalValueString.toString());
@@ -552,7 +556,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 });
                 startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
             }
-        });
+        });*/
     }
 
 

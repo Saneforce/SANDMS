@@ -29,16 +29,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.Adapter.secCustomViewAdpater;
-import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.Product_Array;
 import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
-import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,7 +52,6 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -69,10 +67,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ViewSecCartActivity extends AppCompatActivity {
     TextView toolHeader;
@@ -310,7 +304,7 @@ public class ViewSecCartActivity extends AppCompatActivity {
 
     public void SaveProduct(List<SecondaryProduct> carsList) {
 
-
+        progressDialog = createProgressDialog(this);
         /*ActivityReport*/
         DateFormat dfw = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Calendar calobjw = Calendar.getInstance();
@@ -585,8 +579,17 @@ public class ViewSecCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         sendArray.put(JSONPROCEED);
         totalValueString = sendArray.toString();
+        progressDialog.dismiss();
 
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        DBController dbController = new DBController(ViewSecCartActivity.this);
+        if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave")){
+            Toast.makeText(ViewSecCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+        }
+        else
+            Toast.makeText(ViewSecCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+/*        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> responseBodyCall = apiInterface.submitValue("dcr/secordersave", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), totalValueString);
         Log.v("View_Cart_Primary", responseBodyCall.request().toString());
         Log.v("View_Cart_Primary", totalValueString.toString());
@@ -622,7 +625,7 @@ public class ViewSecCartActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        });*/
     }
 
 

@@ -7,6 +7,7 @@ import com.example.sandms.Model.ReportDataList;
 import com.google.gson.JsonObject;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -40,10 +41,11 @@ ApiInterface {
     @POST("db_v14.php?axn=table/list")
     Call<Object> SubCategoryLog(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
 
+
     /*submitValue*/
-    @FormUrlEncoded
+    @Multipart
     @POST("db_v14.php?")
-    Call<JsonObject> submitValue(@Query("axn") String Axn, @Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Field("data") String data);
+    Call<ResponseBody> submitValue(@Query("axn") String Axn, @Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Part("data") RequestBody data);
 
     /*ReportView*/
     @POST("db_v14.php?")
