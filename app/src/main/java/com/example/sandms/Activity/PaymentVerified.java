@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,16 +36,15 @@ public class PaymentVerified extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-
+    ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_verified);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
-
+        getToolbar();
 
         mShared_common_pref = new Shared_Common_Pref(this);
-
         String LoginType = mShared_common_pref.getvalue("Login_details");
         Log.v("LoginType", LoginType);
 
@@ -52,14 +52,22 @@ public class PaymentVerified extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         if (LoginType.equalsIgnoreCase("Logistics")) {
-        ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
-        }else{
+            //below api is omitted because new
+       // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        }else{
+            ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),
+                    mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }
+
+
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.v("Product_Requestresponse", response.toString());
+
+
                 mCommon_class.ProgressdialogShow(1, "");
                 JSONObject jsonObject1;
                 Shared_Common_Pref shared_common_pref;
@@ -91,7 +99,27 @@ public class PaymentVerified extends AppCompatActivity {
             }
         });
     }
+    public void getToolbar() {
 
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+
+        mShared_common_pref = new Shared_Common_Pref(this);
+        String LoginType = mShared_common_pref.getvalue("Login_details");
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              if(  LoginType.equalsIgnoreCase("Logistics")){
+                    startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                    finish();
+                }else{
+
+                    startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
+                    finish();
+                }
+            }
+        });
+
+    }
 }
 
 
@@ -137,11 +165,18 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
+            String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
+            String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
 
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
+            holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
+            if(Payment_Option.equals("Offline")){
+                holder.txtPaymentMode.setVisibility(View.VISIBLE);
+                holder.txtPaymentMode.setText("Payment Mode :"+ Payment_Mode);
+            }
 
             String LoginType = shared_common_pref.getvalue("Login_details");
             Log.v("LoginType", LoginType);
@@ -170,7 +205,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus;
+        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;
         CardView martl_view;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -181,6 +216,12 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             orderDate = itemView.findViewById(R.id.txt_date);
             orderID = itemView.findViewById(R.id.product_order_id);
             martl_view = itemView.findViewById(R.id.card_item);
+            txtPaymentOption=itemView.findViewById(R.id.txt_paymenttaken);
+            txtPaymentMode=itemView.findViewById(R.id.txt_paymentmode);
         }
     }
+
+
+
+
 }

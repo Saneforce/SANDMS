@@ -4,7 +4,7 @@
     android:id="@+id/row_category"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/C5dp"
+    android:layout_margin="@dimen/C1dp"
     android:padding="@dimen/C5dp">
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:padding="@dimen/C5dp"
+        android:padding="@dimen/C2dp"
         tools:ignore="MissingConstraints">
 
         <androidx.cardview.widget.CardView xmlns:card_view="https://schemas.android.com/apk/res-auto"
@@ -44,14 +44,18 @@
                             style="@style/TextStyle"
                             android:layout_weight="1"
                             android:text="SAN Honey-Almond Cold"
-                            android:textSize="@dimen/C17dp" />
+                            android:textSize="@dimen/C15dp" />
 
                         <TextView
                             android:id="@+id/child_pro_unit"
                             style="@style/TextStyle"
                             android:text="BOX"
+                            android:background="@drawable/oval_background"
                             android:textColor="@color/appColor"
-                            android:textSize="@dimen/C17dp"
+                            android:textSize="@dimen/C15dp"
+                            android:padding="@dimen/C5dp"
+                            android:layout_marginRight="@dimen/C5dp"
+                            android:layout_marginLeft="@dimen/C5dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -317,6 +321,7 @@
                             android:layout_height="wrap_content">
 
                             <ImageView
+                                android:visibility="gone"
                                 android:src="@drawable/info"
                                 android:layout_width="@dimen/C30dp"
                                 android:layout_height="@dimen/C30dp"/>

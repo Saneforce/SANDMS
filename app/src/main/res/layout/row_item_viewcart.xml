@@ -118,7 +118,7 @@
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="DisCount :"
+                                android:text="Discount :"
                                 android:textSize="12dp" />
 
                             <TextView
@@ -197,6 +197,15 @@
 
                 </LinearLayout>
 
+
+                <ImageView
+                    android:id="@+id/edit_product"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/edit"
+                    android:visibility="visible" />
                 <ImageView
                     android:id="@+id/delete_product"
                     android:layout_width="30dp"
@@ -204,7 +213,8 @@
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/delete_cart"
-                    android:visibility="gone" />
+                    android:onClick="DeleteOrder"
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

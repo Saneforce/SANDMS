@@ -48,6 +48,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,10 +95,10 @@ public class ViewCartActivity extends AppCompatActivity {
     int product_count = 0;
     ProgressDialog progressDialog = null;
     String GrandTotal = "";
+    String SubTotal = "";
     TextView viewTotal;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
-
-
+    List<PrimaryProduct> contacts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,15 +108,36 @@ public class ViewCartActivity extends AppCompatActivity {
         SF_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         DIVISION_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         String carListAsString = getIntent().getStringExtra("list_as_string");
-        Log.v("carListAsString", carListAsString);
+       // Log.v("carListAsString", carListAsString);
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
 
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
+        Log.v("grandtttt", GrandTotal);
+         SubTotal=shared_common_pref.getvalue("SubTotal");
+        Log.v("SUBTOT", GrandTotal);
+       // viewTotal.setText(GrandTotal);
+      //  viewTotal.setText(GrandTotal);
+//new code added start
+        try {
+            if(GrandTotal!="0"||GrandTotal!="0.0") {
 
-        Log.v("viewTotal", GrandTotal);
-        viewTotal.setText(GrandTotal);
 
+                if (SubTotal != "0.0" || !("0.0").equals(SubTotal) || !("0").equals(SubTotal)) {
+                    GrandTotal = String.valueOf(Integer.parseInt(GrandTotal) - Integer.parseInt(SubTotal));
+                    viewTotal.setText(GrandTotal);
+                    shared_common_pref.clear_pref("SubTotal");
+                    Log.v("grandsub", GrandTotal);
+                } else {
+                    Log.v("grand", GrandTotal);
+                    viewTotal.setText(GrandTotal);
+                }
+            }
+        }catch (NumberFormatException ee){
+            Log.v("11grand", GrandTotal);
+            viewTotal.setText(GrandTotal);
+        }
+//new code added stop
         contactViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
         contactViewModel.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
@@ -131,7 +154,7 @@ public class ViewCartActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new CustomViewAdapter(ViewCartActivity.this, new DMS.viewProduct() {
+        adapter = new CustomViewAdapter(ViewCartActivity.this,GrandTotal,viewTotal, new DMS.viewProduct() {
 
             @Override
             public void onViewItemClick(String itemID, String productName, String catName, String catImg, Float productQty, Float productRate) {
@@ -164,6 +187,9 @@ public class ViewCartActivity extends AppCompatActivity {
                     @Override
                     public void PositiveMethod(DialogInterface dialog, int id) {
                         ViewCartActivity.super.onBackPressed();
+//                        Intent aa=new Intent(ViewCartActivity.this,PrimaryOrderProducts.class);
+//                        aa.putExtra("GrandTotal",GrandTotal);
+//                        startActivity(aa);
                     }
 
                     @Override
@@ -206,7 +232,6 @@ public class ViewCartActivity extends AppCompatActivity {
     public void locationInitialize() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
-
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -562,6 +587,59 @@ public class ViewCartActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+   //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
+
+    }
+
+
+    @Override
+    protected void onResume() {
+
+
+        super.onResume();
+        Log.v("Primary_order", "onResume");
+//        if (productBarCode.equalsIgnoreCase("")) {
+//            mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
+//            mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
+//                @Override
+//                public void onChanged(List<PrimaryProduct> contacts) {
+//                    priProdAdapter.setContact(contacts, "Nil");
+//                    mPrimaryProduct = contacts;
+//                    Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
+//                    Log.v("mPrimaryProductOrder",new Gson().toJson(contacts));
+//
+//                }
+//            });
+//        } else {
+//
+//            loadFilteredTodos(productBarCode);
+//        }
+        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+        contactViewModels.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+            @Override
+            public void onChanged(List<PrimaryProduct> contacts) {
+                Log.v("TotalviewcartSize", new Gson().toJson(contacts.size()));
+               // item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+               // viewTotal.setText("" + sum);
+                float sum = 0;
+                float tax=0;
+                for (PrimaryProduct cars : contacts) {
+                    sum = sum + Float.parseFloat(cars.getSubtotal());
+                    // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                    ;
+                    //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+                    Log.v("Total_foreviewcart", String.valueOf(sum));
+                }
+                viewTotal.setText("" + sum);
+            shared_common_pref.save("GrandTotal", String.valueOf(sum));
+               // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
+            }
+        });
+
+//        sum= Float.parseFloat(getIntent().getStringExtra("GrandTotal"));
+//        if(!"".equals(sum)|| !("0".equals(sum))||sum!=0){
+//            grandTotal.setText("" + sum);
+//        }
 
     }
 

@@ -15,7 +15,10 @@ public class ApiClient {
 
     // public static final String BASE_URL = "http://dms.sanfmcg.com/server/";
   // public static final String BASE_URL = "http://hap.sanfmcg.com/server/";
-   public static final String BASE_URL = "http://govind.sanfmcg.com/server/";
+  public static final String BASE_URL = "http://govind.sanfmcg.com/server/";//working code commented
+  //  public static final String BASE_URL = "http://fmcg.sanfmcg.com/server/";//server
+
+  //  public static final String BASE_URLS = "http://govind.sanfmcg.com/server/";
     private static Retrofit retrofit = null;
 
 
@@ -43,4 +46,15 @@ public class ApiClient {
     public static Gson gson = new GsonBuilder()
             .setLenient()
             .create();
+    public static Retrofit getClient(String BASE_URLS) {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URLS)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofit;
+    }
+
+
 }

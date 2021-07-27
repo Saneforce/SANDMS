@@ -112,11 +112,39 @@
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"/>
 
+
                 </LinearLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/row_reportpayment"
+                android:layout_below="@+id/row_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                tools:ignore="MissingConstraints">
+                <TextView
+                    android:id="@+id/txt_paymenttake"
+                    style="@style/TextStyle"
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:text="Payment Type:"
 
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F" />
+
+                <TextView
+                    android:id="@+id/txt_payment_mode"
+                    style="@style/TextStyle"
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:text="Payment Mode:"
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F" /> </LinearLayout>
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,8 +59,9 @@ public class DashBoardActivity extends AppCompatActivity {
     Shared_Common_Pref shared_common_pref;
     Gson gson;
     Common_Class mCommon_class;
-    ImageView imagView;
+    ImageView imagView,profilePic;
     PrimaryProductViewModel mPrimaryProductViewModel;
+    RelativeLayout profileLayout;
 
     DBController dbController;
     @Override
@@ -73,6 +75,8 @@ public class DashBoardActivity extends AppCompatActivity {
         //productApi();
         txtName = findViewById(R.id.dis_name);
         txtAddress = findViewById(R.id.dis_place);
+        profilePic=findViewById(R.id.profileImg);
+        profileLayout=findViewById(R.id.imageLayout);
         txtName.setText(shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
         txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
        // brandProdutApi();
@@ -191,8 +195,7 @@ public class DashBoardActivity extends AppCompatActivity {
         private PrimaryProductDao contactDao;
 
 
-        public PopulateDbAsyntask(PrimaryProductDatabase contactDaos) {
-            contactDao = contactDaos.contactDao();
+        public PopulateDbAsyntask(PrimaryProductDatabase contactDaos) { contactDao = contactDaos.contactDao();
         }
 
         @Override
@@ -276,7 +279,9 @@ public class DashBoardActivity extends AppCompatActivity {
     public void CounterOrder(View v) {
         startActivity(new Intent(getApplicationContext(), CounterSaleActivity.class));
     }
-
+    public void ProfileImage(View v) {
+        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+    }
     public void MyOrder(View v) {
         startActivity(new Intent(getApplicationContext(), MyOrdersActivity.class));
     }
@@ -372,6 +377,10 @@ public class DashBoardActivity extends AppCompatActivity {
                 mPrimaryProductViewModel.getAllData().observe(DashBoardActivity.this, new Observer<List<PrimaryProduct>>() {
                     @Override
                     public void onChanged(List<PrimaryProduct> contacts) {
+
+
+
+
 
                         Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
 

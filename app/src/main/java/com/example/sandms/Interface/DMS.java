@@ -15,7 +15,8 @@ public interface DMS {
     }
 
     interface DisptachEditing{
-        void onClickParentInter(String position,String Slno,String PCode,String OrderId, String ProductName, String OldCQty,
+        void onClickParentInter(String position,String Slno,String PCode,String OrderId, String ProductName,
+                                String OldCQty,
                                 String Newvalue,String Oldvalue, String Rate,
                                 String Cl_bal, String Unit, String newCQty);
 

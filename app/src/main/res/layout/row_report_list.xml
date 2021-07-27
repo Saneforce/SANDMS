@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+<LinearLayout
 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints"
+    android:orientation="vertical">
     <LinearLayout
         android:id="@+id/row_report"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
@@ -22,7 +28,7 @@
             style="@style/TextStyle"
             android:text="OrderID"
             android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/header_width2" />
+            android:layout_width="@dimen/C80dp" />
 
         <TextView
             android:id="@+id/txt_date"
@@ -30,15 +36,54 @@
             android:textSize="@dimen/C12dp"
             android:layout_width="@dimen/C80dp"
             android:text="OrderDate" />
-
+        <TextView
+            android:id="@+id/txt_status"
+            style="@style/TextStyle"
+            android:textSize="@dimen/C12dp"
+            android:layout_width="@dimen/C80dp"
+            android:text="Status" />
         <TextView
             android:id="@+id/txt_total"
             style="@style/TextStyle"
-            android:layout_width="@dimen/header_width1"
+            android:layout_width="@dimen/header_width2"
             android:text="Value"
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C15dp" />
 
+
+
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/row_retailer"
+        android:layout_below="@+id/row_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:id="@+id/txt_reatiler"
+            style="@style/TextStyle"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:text="Retailer Name:"
+            android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_reporttakenby"
+        android:layout_below="@+id/row_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:id="@+id/txt_ordertaken"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:text="Taken By:"
+            android:textSize="@dimen/C12dp"
+            android:paddingLeft="@dimen/C5dp" />
+    </LinearLayout>
+
+</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

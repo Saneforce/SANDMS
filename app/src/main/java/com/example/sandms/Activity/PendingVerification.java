@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,16 +37,18 @@ public class PendingVerification extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-
+    ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_verification);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
+        getToolbar();
 
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
         Call<JsonObject> ca = apiInterface.getPrimaryVerification(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
 
         Log.v("Product_Request", ca.request().toString());
@@ -81,6 +85,21 @@ public class PendingVerification extends AppCompatActivity {
                 mCommon_class.ProgressdialogShow(2, "");
             }
         });
+    }
+
+
+    public void getToolbar() {
+
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
+                finish();
+            }
+        });
+
     }
 
 }
@@ -124,11 +143,18 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
-
+            Log.v("iage",Imgurl);
+            String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
+            String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
+            holder.txtPaymentOption.setText("Payment Type :"+Payment_Option);
+            if(Payment_Option.equals("Offline")){
+                holder.txtPaymentMode.setVisibility(View.VISIBLE);
+                holder.txtPaymentMode.setText("Payment Mode:"+Payment_Mode);
+            }
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -155,7 +181,7 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus;
+        TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;;
         CardView martl_view;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -166,6 +192,8 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             orderDate = itemView.findViewById(R.id.txt_date);
             orderID = itemView.findViewById(R.id.product_order_id);
             martl_view = itemView.findViewById(R.id.card_item);
+            txtPaymentOption=itemView.findViewById(R.id.txt_paymentpending);
+            txtPaymentMode=itemView.findViewById(R.id.txt_paymentpending_mode);
         }
     }
 }

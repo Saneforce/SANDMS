@@ -19,9 +19,101 @@ public class ReportModel {
     @SerializedName("Order_Date")
     @Expose
     private String orderDate;
+
+    public String getRetailerName() {
+        return retailerName;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    @SerializedName("ReportType")
+    @Expose
+    private String reportType;
+
+
+
+
+
+
+
+
+
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
+
+    @SerializedName("RetName")
+    @Expose
+    private String retailerName;
+
+
+//    public String getPaymentOption() {
+//        return paymentOption;
+//    }
+//
+//    public void setPaymentOption(String paymentOption) {
+//        this.paymentOption = paymentOption;
+//    }
+
     @SerializedName("Order_Value")
     @Expose
     private String orderValue;
+//    private String paymentOption;
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    @SerializedName("taxVal")
+    @Expose
+    private String taxValue;
+
+    public String getOrderTakenBy() {
+        return orderTakenBy;
+    }
+
+    public void setOrderTakenBy(String orderTakenBy) {
+        this.orderTakenBy = orderTakenBy;
+    }
+
+    @SerializedName("Order_Status")
+    @Expose
+    private String orderStatus;
+    @SerializedName("Order_Taken_By")
+    @Expose
+    private String orderTakenBy;
+
+    public String getOrderValueTotal() {
+        return orderValueTotal;
+    }
+
+    public void setOrderValueTotal(String orderValueTotal) {
+        this.orderValueTotal = orderValueTotal;
+    }
+
+    @SerializedName("OrderVal")
+    @Expose
+    private String orderValueTotal;
+    public String getTax() {
+        return tax;
+    }
+
+    public void setTax(String tax) {
+        this.tax = tax;
+    }
+
+    @SerializedName("tax")
+    @Expose
+    private String tax;
 
     public String getSlno() {
         return slno;
@@ -57,6 +149,14 @@ public class ReportModel {
 
     public String getOrderDate() {
         return orderDate;
+    }
+
+    public String getTaxValue() {
+        return taxValue;
+    }
+
+    public void setTaxValue(String taxValue) {
+        this.taxValue = taxValue;
     }
 
     public void setOrderDate(String orderDate) {
