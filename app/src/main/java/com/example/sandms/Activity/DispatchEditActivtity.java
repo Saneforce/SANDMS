@@ -98,11 +98,12 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     pendingRecycle.setNestedScrollingEnabled(false);
                     ViewProductEdit priProdAdapter = new ViewProductEdit(DispatchEditActivtity.this, jsonArray, new DMS.DisptachEditing() {
                         @Override
-                        public void onClickParentInter(String position, String Slno, String PCode, String OrderId,
-                                                       String ProductName, String OldCQty,
-                                                       String Oldvalue, String Newvalue,
-                                                       String Rate, String Cl_bal, String Unit,
-                                                       String newCQty,String OQty) {
+                        public void onClickParentInter(String position, String Slno, String PCode,
+                                                       String OrderId, String ProductName, String OldCQty,
+                                                       String Newvalue, String Oldvalue, String Rate,
+                                                       String Cl_bal, String Unit, String newCQty) {
+
+
                             try {
                                 newQty = Integer.valueOf(newCQty);
                                 OldCQtys = Integer.valueOf(OldCQty);
@@ -115,7 +116,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
                                 } else {
 
-                                    OldQty=OQty;
+//                                    OldQty=OQty;
 
 
                                for (int i = 0; i < jsonArray.length(); i++) {
@@ -285,8 +286,8 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClick.onClickParentInter("", "", "", "", "",
-                        "", "", "", "", "", "", "","");
+               /* itemClick.onClickParentInter("", "", "", "", "",
+                        "", "", "", "", "", "", "","");*/
             }
         });
 
@@ -342,15 +343,15 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                     if (holder.orderValue.getText().toString().equals("") || holder.orderValue.getText()==null||holder.orderValue.getText().equals("0")||
                             holder.orderValue.getText().toString().equalsIgnoreCase("null")) {//||holder.orderValue.getText().equals("0")
                         holder.orderValue.setText("" + 0);
-                        itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
+                       /* itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
                                 Product_Name, holder.orderValue.getText().toString(), "", "",
-                                Rate, Cl_bal, Unit, CQty,OCQty);
+                                Rate, Cl_bal, Unit, CQty,OCQty);*/
                     } else {
-                        itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
+                        /*itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
                                 Product_Name, holder.orderValue.getText().toString(),
                               "", "",
                                 Rate, Cl_bal, Unit,
-                                CQty,OCQty);
+                                CQty,OCQty);*/
                     }
                 }
 
