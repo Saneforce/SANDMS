@@ -64,6 +64,7 @@ public class DashBoardActivity extends AppCompatActivity {
     RelativeLayout profileLayout;
 
     DBController dbController;
+    boolean syncData = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +82,8 @@ public class DashBoardActivity extends AppCompatActivity {
         txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
        // brandProdutApi();
 
+        if(getIntent().hasExtra("syncData"))
+            syncData = getIntent().getBooleanExtra("syncData", false);
 
         imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
@@ -104,12 +107,111 @@ public class DashBoardActivity extends AppCompatActivity {
                 Log.d(TAG, "Network Available ");
 
                 // Do something
-                displayNotification("Connectivity", "Available");
+//                displayNotification("Connectivity", "Available");
 
                 checkData();
+
+                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("0")){
+                    syncData = false;
+                    brandPrimaryApi(true);
+                }
+                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("0")){
+                    syncData = false;
+                    brandSecondaryApi();
+                }
+                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST).equals("0")){
+                    syncData = false;
+                    RetailerType();
+                }
+
+               if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST).equals("0")){
+                    syncData = false;
+                    getTemplate();
+                }
             }
         }
     };
+
+    public void brandSecondaryApi() {
+
+        String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "15", tempalteValue);
+
+        Log.v("Product_Request", ca.request().toString());
+        ca.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
+                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
+                JsonArray jProd = jsonArray.getAsJsonArray("Products");
+                shared_common_pref.save(Shared_Common_Pref.SecProduct_Brand, new Gson().toJson(jBrand));
+                shared_common_pref.save(Shared_Common_Pref.SecProduct_Data, new Gson().toJson(jProd));
+                Log.v("Product_Response", jsonArray.toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mCommon_class.ProgressdialogShow(2, "");
+            }
+        });
+    }
+
+
+    public void RetailerType() {
+        String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", RetailerDetails);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject JsonObject = response.body();
+                try {
+                    JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
+                    shared_common_pref.save(Shared_Common_Pref.RETAILER_LIST, new Gson().toJson(jsonArray));
+
+
+                } catch (Exception io) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("LeaveTypeList", "Error");
+            }
+        });
+    }
+
+    public void getTemplate() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getTemplates(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject JsonObject = response.body();
+                try {
+                    JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
+
+                    shared_common_pref.save(Shared_Common_Pref.TEMPLATE_LIST, new Gson().toJson(jsonArray));
+
+                } catch (Exception io) {
+                    io.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     private void checkData(){
 
@@ -140,11 +242,14 @@ public class DashBoardActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         RequestBody requestBody = null;
         try {
-            requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.dataResponse)));
+            if(data.get(DBController.AXN_KEY)!=null && data.get(DBController.AXN_KEY).equalsIgnoreCase("dcr/retailervisit"))
+                requestBody = Constants.toRequestBody(new JSONObject(data.get(DBController.DATA_RESPONSE)));
+            else
+                requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.axnKey), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody);
+        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody);
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -157,8 +262,8 @@ public class DashBoardActivity extends AppCompatActivity {
                         Log.d(TAG, "onResponse: "+ jsonRootObject);
 
                         if(jsonRootObject.has("success") && jsonRootObject.getBoolean("success")){
-                            dbController.updateDatakey(data.get(DBController.dataKey));
-                            displayNotification("Order successfull", data.get(DBController.dataKey));
+                            dbController.updateDatakey(data.get(DBController.DATA_KEY));
+                            displayNotification("Order successfull", data.get(DBController.DATA_KEY));
                         }
 
                     }
@@ -268,7 +373,16 @@ public class DashBoardActivity extends AppCompatActivity {
     public void PrimaryOrder(View v) {
 
         mCommon_class.ProgressdialogShow(1, "");
-        brandPrimaryApi();
+
+        if(shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand)!=null &&
+                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("") &&
+                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("0") &&
+        shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data)!=null &&
+        !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data).equals("") &&
+                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data).equals("0")){
+            processPrimaryData();
+        }else
+            brandPrimaryApi(false);
     }
 
     public void SecondaryOrder(View v) {
@@ -353,7 +467,7 @@ public class DashBoardActivity extends AppCompatActivity {
         });
     }
 
-    public void brandPrimaryApi() {
+    public void brandPrimaryApi(boolean isUpdateOffline) {
 
         String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -372,32 +486,8 @@ public class DashBoardActivity extends AppCompatActivity {
                 shared_common_pref.save(Shared_Common_Pref.PriProduct_Data, gson.toJson(jProd));
 
                 Log.v("Product_Response", jsonArray.toString());
-
-                mPrimaryProductViewModel = ViewModelProviders.of(DashBoardActivity.this).get(PrimaryProductViewModel.class);
-                mPrimaryProductViewModel.getAllData().observe(DashBoardActivity.this, new Observer<List<PrimaryProduct>>() {
-                    @Override
-                    public void onChanged(List<PrimaryProduct> contacts) {
-
-
-
-
-
-                        Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
-
-                        Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
-
-                        if (ProductCount == 0) {
-                            new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-                        }
-                    }
-                });
-
-
-                dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
-                dashIntent.putExtra("Mode", "0");
-                startActivity(dashIntent);
-                finish();
-                mCommon_class.ProgressdialogShow(2, "");
+                if(!isUpdateOffline)
+                    processPrimaryData();
             }
 
             @Override
@@ -405,6 +495,34 @@ public class DashBoardActivity extends AppCompatActivity {
                 mCommon_class.ProgressdialogShow(2, "");
             }
         });
+    }
+
+    private void processPrimaryData() {
+
+
+
+        mPrimaryProductViewModel = ViewModelProviders.of(DashBoardActivity.this).get(PrimaryProductViewModel.class);
+        mPrimaryProductViewModel.getAllData().observe(DashBoardActivity.this, new Observer<List<PrimaryProduct>>() {
+            @Override
+            public void onChanged(List<PrimaryProduct> contacts) {
+
+
+                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
+
+                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
+
+                if (ProductCount == 0) {
+                    new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                }
+            }
+        });
+
+
+        dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
+        dashIntent.putExtra("Mode", "0");
+        startActivity(dashIntent);
+//        finish();
+        mCommon_class.ProgressdialogShow(2, "");
     }
 
     @Override

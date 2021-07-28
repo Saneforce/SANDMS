@@ -329,10 +329,10 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
 
                         startActivity(intent);
-                        finish
-                                ();
+                        finish();
                     } else {
                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                        intent.putExtra("syncData",true);
                         shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
                         shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
                         shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);

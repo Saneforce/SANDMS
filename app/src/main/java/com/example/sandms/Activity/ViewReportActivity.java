@@ -1,6 +1,7 @@
 
 package com.example.sandms.Activity;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,9 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -44,6 +48,15 @@ import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonObject;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,10 +67,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 public class ViewReportActivity extends AppCompatActivity {
     TextView toolHeader, txtProductId, txtProductDate;
@@ -82,20 +98,17 @@ public class ViewReportActivity extends AppCompatActivity {
     TextView TotalValue,total_value;
     Button PayNow,Delete;
     Double OrderTaxCal,  OrderAmtNew,OrderValueTotal,OderDiscount;
-    View supportLayout;
-    LinearLayout  linearLayout,totalLayout;
-    ScrollView relativeLayout;
+    Toolbar toolbar_top;
+    LinearLayout  linearLayout;
     private Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_report);
-        linearLayout = (LinearLayout) findViewById(R.id.linearproductlayout);
+        linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
 
-        relativeLayout=findViewById(R.id.scrolllayout);
-        supportLayout=findViewById(R.id.customtoolbarlayout);
-        supportLayout.setVisibility(View.VISIBLE);
-        totalLayout=findViewById(R.id.totalLayout);
+        toolbar_top=findViewById(R.id.toolbar_top);
+        toolbar_top.setVisibility(View.VISIBLE);
 
 
         mArrayList = new ArrayList<Integer>();
@@ -147,30 +160,16 @@ public class ViewReportActivity extends AppCompatActivity {
         imgShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supportLayout.setVisibility(View.GONE);
 
-                if (Build.VERSION.SDK_INT >= 23)
-                {
-                    if (checkPermission())
-                    {
-                        // Code for above or equal 23 API Oriented Device
-                        // Your Permission granted already .Do next code
-totalLayout.setVisibility(View.VISIBLE);
-                     //   bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-                       bitmap = loadBitmapFromView(relativeLayout, relativeLayout.getWidth(), relativeLayout.getHeight());
-                        createPdf();
-                    } else {
-                        requestPermission(); // Code for permission
+                if (SDK_INT >= Build.VERSION_CODES.R) {
+                    if(!Environment.isExternalStorageManager())
+                        requestPermission();
+                    else {
+                        saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                     }
+                }else {
+                    checkPermission();
                 }
-                else
-                {
-
-                    // Code for Below 23 API Oriented Device
-                    // Do next code
-                }
-//                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-//                createPdf();
 
             }
         });
@@ -314,7 +313,7 @@ totalLayout.setVisibility(View.VISIBLE);
 
     @Override
     public void onBackPressed() {
-
+        finish();
     }
 
     public void intentMethod() {
@@ -389,7 +388,7 @@ totalLayout.setVisibility(View.VISIBLE);
         // close the document
         document.close();
         Toast.makeText(this, "PDF is created!!!", Toast.LENGTH_SHORT).show();
-        supportLayout.setVisibility(View.VISIBLE);
+        toolbar_top.setVisibility(View.VISIBLE);
         openGeneratedPDF();
 
     }
@@ -432,7 +431,7 @@ totalLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    //openpdf stop
+   /* //openpdf stop
 
     //permission start
     private boolean checkPermission() {
@@ -451,15 +450,15 @@ totalLayout.setVisibility(View.VISIBLE);
         } else {
             ActivityCompat.requestPermissions(ViewReportActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
-    }
+    }*/
 
-    @Override
+  /*  @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("value", "Permission Granted, Now you can use local drive .");
-                    bitmap = loadBitmapFromView(relativeLayout, relativeLayout.getWidth(), relativeLayout.getHeight());
+                    bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                  //   bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
                     createPdf();
                 } else {
@@ -467,6 +466,135 @@ totalLayout.setVisibility(View.VISIBLE);
                 }
                 break;
         }
+    }
+*/
+
+    public Bitmap createBitmap3(View v, int width, int height) {
+        // The measurement makes the view specified size
+        int measuredWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int measuredHeight = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+        v.measure(measuredWidth, measuredHeight);
+        // After calling the layout method, you can get the size of the view
+        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+        Bitmap bmp = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+        c.drawColor(Color.WHITE);
+        v.draw(c);
+        return bmp;
+    }
+
+
+
+    String dirpath = "";
+    String fileName = "";
+    private void saveBitmap(Bitmap bitmap) {
+
+        fileName  = String.valueOf(System.currentTimeMillis());
+
+        dirpath = android.os.Environment.getExternalStorageDirectory().toString();
+        File file = null;
+        try {
+            // Step 1: First save the picture
+            // Save Bitmap pictures to the specified path / sdcard / Boohee /, the file name is named after the current system time, but the pictures saved by this method are not added to the system gallery
+            File appDir = new File (Environment.getExternalStorageDirectory (), "receiptImage");
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+            String fileName = System.currentTimeMillis() + ".jpg";
+            file = new File(appDir, fileName);
+//            file.createNewFile();
+
+            // Create a file output stream object to write data to the file
+            FileOutputStream out = new FileOutputStream(file);
+            // Store the bitmap as a picture in jpg format
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
+            // Refresh the file stream
+            out.flush();
+            out.close();
+//            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Image img = Image.getInstance(file.getAbsolutePath());
+            img.setAbsolutePosition(0, 0);
+
+            Rectangle pagesize = new Rectangle(img.getScaledWidth(), img.getScaledHeight());
+            Document document = new Document(pagesize);
+            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/"+ fileName+".pdf")); //  Change pdf's name.
+            document.open();
+//            float scaler = (img.getHeight() / img.getWidth()) * 100;
+//            img.scalePercent(100);
+//            img.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
+            document.add(img);
+            document.close();
+
+//            Toast.makeText(this, "PDF Generated successfully!..", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ViewReportActivity.this, "image to pdf conversion failure", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        // change with required  application package
+        File file1 = new File( dirpath + "/"+ fileName+".pdf");
+        intent.setPackage("com.whatsapp");
+        if (intent != null && file.exists()) {
+            intent.setType("application/pdf");
+            Uri uri = FileProvider.getUriForFile(ViewReportActivity.this, getApplicationContext().getPackageName()+ ".provider", file1);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Share File"));
+        } else {
+            Toast.makeText(ViewReportActivity.this, "App not found", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    public void checkPermission(){
+        Dexter.withContext(this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+                ).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report)
+            {
+                if(report.areAllPermissionsGranted()){
+
+                    saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
+                }
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+            }
+
+        }).check();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void requestPermission() {
+
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+            startActivityForResult(intent, 2296);
+        } catch (Exception e) {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            startActivityForResult(intent, 2296);
+        }
+
     }
 
     //permision stop

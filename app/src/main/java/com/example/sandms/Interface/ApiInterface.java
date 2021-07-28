@@ -25,7 +25,8 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
-
+//    dms_db_V1
+//    db_v14
     /*Gmail*/
     @GET("db_v14.php?axn=get/StockistGLogin")
     Call<JsonObject> Glogin(@Query("Email") String email);

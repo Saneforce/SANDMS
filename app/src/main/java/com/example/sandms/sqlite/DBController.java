@@ -16,25 +16,25 @@ import java.util.HashMap;
 
 public class DBController extends SQLiteOpenHelper {
     private static final String TAG = DBController.class.getSimpleName();
-    public static final String tablename = "tblSynMaster"; // tablename
-    public static final String dataKey = "dataKey"; // column name
-    private static final String id = "ID"; // auto generated ID column
-    public static final String dataResponse = "dataResponse"; // column name
-    private static final String isUpdatedToServer = "isUpdatedToServer"; // column name
-    public static final String axnKey = "axnKey"; // column name
-    private static final String databasename = "dbSynMaster"; // Dtabasename
-    private static final int versioncode = 7; //versioncode of the database
+    public static final String TABLE_NAME = "tblSynMaster"; // tablename
+    public static final String DATA_KEY = "dataKey"; // column name
+    private static final String ID = "ID"; // auto generated ID column
+    public static final String DATA_RESPONSE = "dataResponse"; // column name
+    private static final String IS_UPDATED_TO_SERVER = "isUpdatedToServer"; // column name
+    public static final String AXN_KEY = "axnKey"; // column name
+    private static final String DATABASE_NAME = "dbSynMaster"; // Dtabasename
+    private static final int VERSION_CODE = 8; //versioncode of the database
 
     Context context;
     public DBController(Context context) {
-        super(context, databasename, null, versioncode);
+        super(context, DATABASE_NAME, null, VERSION_CODE);
         this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
         String query;
-        query = "CREATE TABLE IF NOT EXISTS " + tablename + "(" + id + " integer primary key, "+ dataKey + " text, " + dataResponse + " text, " + isUpdatedToServer + " text, "  + axnKey + " text " +")";
+        query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + ID + " integer primary key, "+ DATA_KEY + " text, " + DATA_RESPONSE + " text, " + IS_UPDATED_TO_SERVER + " text, "  + AXN_KEY + " text " +")";
         database.execSQL(query);
     }
 
@@ -42,7 +42,7 @@ public class DBController extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, int version_old,
                           int current_version) {
         String query;
-        query = "DROP TABLE IF EXISTS " + tablename;
+        query = "DROP TABLE IF EXISTS " + TABLE_NAME;
         database.execSQL(query);
         onCreate(database);
     }
@@ -51,16 +51,16 @@ public class DBController extends SQLiteOpenHelper {
 
         ArrayList<HashMap<String, String>> productList = new ArrayList<>();
         SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + tablename, null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         if (cursor.moveToFirst()) {
             do {
                 if(cursor.getString(3).equals("0")){
                     HashMap<String, String> map = new HashMap<String, String>();
-                    map.put(id, cursor.getString(0));
-                    map.put(dataKey, cursor.getString(1));
-                    map.put(dataResponse, cursor.getString(2));
-                    map.put(isUpdatedToServer, cursor.getString(3));
-                    map.put(axnKey, cursor.getString(4));
+                    map.put(ID, cursor.getString(0));
+                    map.put(DATA_KEY, cursor.getString(1));
+                    map.put(DATA_RESPONSE, cursor.getString(2));
+                    map.put(IS_UPDATED_TO_SERVER, cursor.getString(3));
+                    map.put(AXN_KEY, cursor.getString(4));
                     productList.add(map);
                 }
             } while (cursor.moveToNext());
@@ -77,12 +77,12 @@ public class DBController extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
-            cv.put(dataKey, tableName);
-            cv.put(dataResponse, tableValue);
-            cv.put(isUpdatedToServer, "0");
-            cv.put(DBController.axnKey, axnKey);
+            cv.put(DATA_KEY, tableName);
+            cv.put(DATA_RESPONSE, tableValue);
+            cv.put(IS_UPDATED_TO_SERVER, "0");
+            cv.put(DBController.AXN_KEY, axnKey);
 
-            long value =  db.insert(tablename, null, cv);
+            long value =  db.insert(TABLE_NAME, null, cv);
 
             Log.d(TAG, "addProduct: value "+ value);
 //            db.close();
@@ -99,10 +99,10 @@ public class DBController extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
-            cv.put(dataKey, tableName);
-            cv.put(isUpdatedToServer, "1");
+            cv.put(DATA_KEY, tableName);
+            cv.put(IS_UPDATED_TO_SERVER, "1");
             String[] args = new String[]{tableName};
-            int value = db.update(tablename,cv, dataKey + " = ?" , args);
+            int value = db.update(TABLE_NAME,cv, DATA_KEY + " = ?" , args);
             Log.d(TAG, "updateProduct: " + value);
 
 //            db.close();
@@ -128,13 +128,13 @@ public class DBController extends SQLiteOpenHelper {
         String[] args = new String[]{keyName};
 
 
-        try (SQLiteDatabase database = this.getWritableDatabase(); Cursor cursor = database.rawQuery("SELECT * FROM " + tablename + " WHERE " + dataKey + " = ?", args)) {
+        try (SQLiteDatabase database = this.getWritableDatabase(); Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + DATA_KEY + " = ?", args)) {
             cursor.moveToFirst();
             Log.d(TAG, "getResponse: keyName : "+keyName );
 
             Log.d(TAG, "getResponse: "+ cursor.getCount());
             if(cursor.getCount()> 0 && cursor.getColumnCount()> 0)
-                return cursor.getString(cursor.getColumnIndex(dataResponse));
+                return cursor.getString(cursor.getColumnIndex(DATA_RESPONSE));
             //close cursor & database
 
         } catch (Exception e) {
@@ -143,5 +143,6 @@ public class DBController extends SQLiteOpenHelper {
         }
         return value;
     }
+
 
 }

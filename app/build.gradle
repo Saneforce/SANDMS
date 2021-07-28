@@ -55,6 +55,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     /*picasso*/
     implementation 'com.squareup.picasso:picasso:2.5.2'
@@ -100,9 +101,9 @@ dependencies {
     implementation 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
 
     implementation 'com.madgag:scpkix-jdk15on:1.47.0.1'
-    implementation'com.itextpdf:itextpdf:5.0.6'
+    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.0.6'
 
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+    implementation 'com.karumi:dexter:6.2.2'
 
 }

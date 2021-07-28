@@ -1,5 +1,6 @@
 package com.example.sandms.Activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
@@ -11,12 +12,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,9 +35,11 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,7 +54,15 @@ import com.example.sandms.Utils.Common_Model;
 import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.Gson;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,6 +111,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.os.Build.VERSION.SDK_INT;
 
 public class ReportActivity extends AppCompatActivity implements DMS.Master_Interface{
     TextView toolHeader, txtTotalValue, txtProductDate,  txtName,orderStatus ;
@@ -124,10 +136,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     ArrayList<String> OrderStatusListID;
     LinearLayout linearLayout;
 
-    View supportLayout;
+    Toolbar toolbar_top;
 
     private Bitmap bitmap,bitmapTotal;
-    ScrollView scrollLayout;
 
     // constant code for runtime permissions
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -138,11 +149,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
-        supportLayout=findViewById(R.id.customlayout);
-        supportLayout.setVisibility(View.VISIBLE);
+        toolbar_top=findViewById(R.id.toolbar_top);
+        toolbar_top.setVisibility(View.VISIBLE);
+
         totalLayout=findViewById(R.id.totalLayout);
        // filter=findViewById(R.id.toolbar_filter);
-        scrollLayout=findViewById(R.id.scrolllayout);
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
         Count = getIntent().getIntExtra("count", 100);
@@ -321,40 +332,22 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onClick(View v) {
 
-                if (Build.VERSION.SDK_INT >= 23)
-                {
-                    if (checkPermission())
-                    {
-                        // Code for above or equal 23 API Oriented Device
-                        // Your Permission granted already .Do next code
-                        supportLayout.setVisibility(View.GONE);
-                        //totalLayout.setVisibility(View.VISIBLE);
-                        bitmap = loadBitmapFromView(scrollLayout, scrollLayout.getWidth(), scrollLayout.getHeight());
-                      //  bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-                      //  bitmapTotal = loadBitmapFromView(totalLayout, linearLayout.getWidth(), linearLayout.getHeight());
-
-                        createPdf();
-                    } else {
-                        requestPermission(); // Code for permission
+                if (SDK_INT >= Build.VERSION_CODES.R) {
+                    if(!Environment.isExternalStorageManager())
+                        requestPermission();
+                    else {
+                        saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                     }
+                }else {
+                    checkPermission();
                 }
-                else
-                {
-
-                    // Code for Below 23 API Oriented Device
-                    // Do next code
-                }
-//                supportLayout.setVisibility(View.GONE);
-//                bitmap = loadBitmapFromView(linearLayout, linearLayout.getWidth(), linearLayout.getHeight());
-//                createPdf();
-
             }
         });
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getApplicationContext(), ReportDashBoard.class));
+//                startActivity(new Intent(getApplicationContext(), ReportDashBoard.class));
                 finish();
             }
         });
@@ -383,7 +376,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 ReportDataList mReportActivities = response.body();
                 Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
               //  List<ReportModel> mDReportModels;
-               List<ReportModel> mDReportModels = mReportActivities.getData();
+                List<ReportModel> mDReportModels = new ArrayList<>();
+                if(mReportActivities!=null && mReportActivities.getData()!=null)
+                    mDReportModels = mReportActivities.getData();
                 if(orderTakenByFilter.equalsIgnoreCase("Payment Pending")){
                     String ordervalue=String.valueOf(mReportActivities.getPaymentPending());
 
@@ -679,7 +674,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             Uri  pdfUri;
            pdfUri  = Uri.fromFile(file);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (SDK_INT >= Build.VERSION_CODES.N) {
                  pdfUri = FileProvider.getUriForFile(this, this.getPackageName() + ".provider", file);
             } else {
                   pdfUri = Uri.fromFile(file);
@@ -706,7 +701,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     //openpdf stop
 
-    //permission start
+/*    //permission start
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(ReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -714,8 +709,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         } else {
             return false;
         }
-    }
+    }*/
 
+/*
     private void requestPermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(ReportActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -724,8 +720,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             ActivityCompat.requestPermissions(ReportActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
+*/
 
-    @Override
+/*    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
@@ -742,11 +739,138 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 }
                 break;
         }
-    }
+    }*/
 
     //permision stop
 
 
+    public Bitmap createBitmap3(View v, int width, int height) {
+        // The measurement makes the view specified size
+        int measuredWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int measuredHeight = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+        v.measure(measuredWidth, measuredHeight);
+        // After calling the layout method, you can get the size of the view
+        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+        Bitmap bmp = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+        c.drawColor(Color.WHITE);
+        v.draw(c);
+        return bmp;
+    }
+
+
+
+    String dirpath = "";
+    String fileName = "";
+    private void saveBitmap(Bitmap bitmap) {
+
+            fileName  = String.valueOf(System.currentTimeMillis());
+
+        dirpath = android.os.Environment.getExternalStorageDirectory().toString();
+        File file = null;
+        try {
+            // Step 1: First save the picture
+            // Save Bitmap pictures to the specified path / sdcard / Boohee /, the file name is named after the current system time, but the pictures saved by this method are not added to the system gallery
+            File appDir = new File (Environment.getExternalStorageDirectory (), "receiptImage");
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+            String fileName = System.currentTimeMillis() + ".jpg";
+            file = new File(appDir, fileName);
+//            file.createNewFile();
+
+            // Create a file output stream object to write data to the file
+            FileOutputStream out = new FileOutputStream(file);
+            // Store the bitmap as a picture in jpg format
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
+            // Refresh the file stream
+            out.flush();
+            out.close();
+//            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Image img = Image.getInstance(file.getAbsolutePath());
+            img.setAbsolutePosition(0, 0);
+
+            Rectangle pagesize = new Rectangle(img.getScaledWidth(), img.getScaledHeight());
+            Document document = new Document(pagesize);
+            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/"+ fileName+".pdf")); //  Change pdf's name.
+            document.open();
+//            float scaler = (img.getHeight() / img.getWidth()) * 100;
+//            img.scalePercent(100);
+//            img.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
+            document.add(img);
+            document.close();
+
+//            Toast.makeText(this, "PDF Generated successfully!..", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ReportActivity.this, "image to pdf conversion failure", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        // change with required  application package
+        File file1 = new File( dirpath + "/"+ fileName+".pdf");
+        intent.setPackage("com.whatsapp");
+        if (intent != null && file.exists()) {
+            intent.setType("application/pdf");
+            Uri uri = FileProvider.getUriForFile(ReportActivity.this, getApplicationContext().getPackageName()+ ".provider", file1);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Share File"));
+        } else {
+            Toast.makeText(ReportActivity.this, "App not found", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    public void checkPermission(){
+        Dexter.withContext(this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+                ).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report)
+            {
+                if(report.areAllPermissionsGranted()){
+
+                    saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
+                }
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+            }
+
+        }).check();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void requestPermission() {
+
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+            startActivityForResult(intent, 2296);
+        } catch (Exception e) {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            startActivityForResult(intent, 2296);
+        }
+
+    }
 
 
 }

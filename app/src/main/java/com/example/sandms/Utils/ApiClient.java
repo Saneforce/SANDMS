@@ -16,7 +16,7 @@ public class ApiClient {
     // public static final String BASE_URL = "http://dms.sanfmcg.com/server/";
   // public static final String BASE_URL = "http://hap.sanfmcg.com/server/";
   public static final String BASE_URL = "http://govind.sanfmcg.com/server/";//working code commented
-  //  public static final String BASE_URL = "http://fmcg.sanfmcg.com/server/";//server
+//    public static final String BASE_URL = "http://fmcg.sanfmcg.com/server/";//server
 
   //  public static final String BASE_URLS = "http://govind.sanfmcg.com/server/";
     private static Retrofit retrofit = null;

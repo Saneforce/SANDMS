@@ -33,7 +33,9 @@ public class PrimaryProductViewModel extends AndroidViewModel {
 
     public LiveData<List<PrimaryProduct>> getAllData() {
         return allData;
-    } public LiveData<List<PrimaryProduct>> getFilterDatas() {
+    }
+
+    public LiveData<List<PrimaryProduct>> getFilterDatas() {
         return filterData;
     }
 }

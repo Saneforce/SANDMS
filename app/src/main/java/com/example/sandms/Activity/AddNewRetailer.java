@@ -29,6 +29,7 @@ import com.example.sandms.Interface.DMS;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Model;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -89,9 +90,14 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         setContentView(R.layout.activity_add_new_retailer);
         mShared_common_pref = new Shared_Common_Pref(this);
 
-        getRouteDetails();
-        getRouteClass();
-        getRouteChannel();
+        if(Constants.isInternetAvailable(this)){
+            getRouteDetails();
+            getRouteClass();
+            getRouteChannel();
+
+        }else {
+            Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+        }
 
 
         txtRoute = findViewById(R.id.txt_route);

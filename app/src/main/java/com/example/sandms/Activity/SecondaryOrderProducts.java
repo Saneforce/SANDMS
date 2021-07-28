@@ -98,6 +98,7 @@ public class SecondaryOrderProducts extends AppCompatActivity {
     Common_Class mCommon_class;
     SearchView searchEdit;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -322,7 +323,7 @@ class SecCategoryAdapter extends RecyclerView.Adapter<SecCategoryAdapter.MyViewH
     ArrayList<HashMap<String, String>> contactList;
     DMS.CheckingInterface itemClick;
     String id = "", name = "", Image = "";
-
+    String productImage = "";
     public SecCategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1, DMS.CheckingInterface itemClick) {
         this.context = context;
         this.jsonArray = jsonArray;
@@ -355,11 +356,13 @@ class SecCategoryAdapter extends RecyclerView.Adapter<SecCategoryAdapter.MyViewH
             holder.mText.setText("" + jsFuel.getString("name"));
             String productId = jsFuel.getString("id");
             String productName = jsFuel.getString("name");
-            String productImage = jsFuel.getString("Cat_Image");
+            if(jsFuel.has("Cat_Image"))
+                productImage = jsFuel.getString("Cat_Image");
 
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     itemClick.ProdcutDetails(productId, productName, productImage);
                 }
             });

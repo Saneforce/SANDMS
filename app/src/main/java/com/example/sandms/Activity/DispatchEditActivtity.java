@@ -46,7 +46,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-    ArrayList<Object> listdata = new ArrayList<Object>();
+    ArrayList<Object> listdata = new ArrayList<>();
     String jsonsds = "";
     JSONArray jsonArray = null;
     JSONObject jsonObject = null;
@@ -55,7 +55,8 @@ public class DispatchEditActivtity extends AppCompatActivity {
     Integer newQty;
     Integer OldCQtys;
     Integer Rates;
-        String OldQty;
+    String OldQty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

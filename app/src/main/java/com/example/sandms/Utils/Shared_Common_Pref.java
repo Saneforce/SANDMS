@@ -35,6 +35,10 @@ public class Shared_Common_Pref {
     public static final String SecProduct_Data = "Sec_Product_Data";
 
 
+    public static final String RETAILER_LIST = "retailer_list";
+    public static final String TEMPLATE_LIST = "template_list";
+
+
     public Shared_Common_Pref(Activity Ac) {
         activity = Ac;
         if (activity != null) {

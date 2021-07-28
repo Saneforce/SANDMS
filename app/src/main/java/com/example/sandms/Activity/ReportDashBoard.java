@@ -23,7 +23,7 @@ public class ReportDashBoard extends AppCompatActivity {
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+//                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                 finish();
             }
 
@@ -46,7 +46,7 @@ public class ReportDashBoard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        finish();
     }
 
 

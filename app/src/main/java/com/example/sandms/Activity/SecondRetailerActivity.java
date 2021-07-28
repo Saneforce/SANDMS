@@ -37,10 +37,12 @@ import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.Common_Model;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.SecondaryProductDatabase;
 import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -94,16 +96,33 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         txtMobileTwo = findViewById(R.id.txt_mobile2);
         txtDistributor = findViewById(R.id.txt_distributor);
         shared_common_pref = new Shared_Common_Pref(this);
-        RetailerType();
-        getTemplate();
-
         mCommon_class = new Common_Class(this);
+
+        if(!shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST).equals("0")){
+            processRetailerList(new Gson().fromJson(shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST), JsonArray.class));
+        }else {
+            if(Constants.isInternetAvailable(this))
+                RetailerType();
+            else
+                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+
+        }
+
+        if(!shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST).equals("0")){
+            processTemplateList(new Gson().fromJson(shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST), JsonArray.class));
+        }else {
+            if(Constants.isInternetAvailable(this))
+                getTemplate();
+//            else
+//                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+        }
+
         ImageView imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SecondRetailerActivity.this, DashBoardActivity.class));
-
+//                startActivity(new Intent(SecondRetailerActivity.this, DashBoardActivity.class));
+                finish();
             }
         });
 
@@ -214,15 +233,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-                    for (int a = 0; a < jsonArray.size(); a++) {
-                        JsonObject jsonObject = (JsonObject) jsonArray.get(a);
-                        String id = jsonObject.get("id").getAsString();
-                        String name = jsonObject.get("name").getAsString();
-                        String townName = jsonObject.get("ListedDr_Address1").getAsString();
-                        String phone = jsonObject.get("Mobile_Number").getAsString();
-                        mCommon_model_spinner = new Common_Model(name, id, "flag", townName, phone);
-                        RetailerType.add(mCommon_model_spinner);
-                    }
+                    shared_common_pref.save(Shared_Common_Pref.RETAILER_LIST, new Gson().toJson(jsonArray));
+                    processRetailerList(jsonArray);
+
+
                 } catch (Exception io) {
 
                 }
@@ -233,6 +247,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 Log.d("LeaveTypeList", "Error");
             }
         });
+    }
+
+    private void processRetailerList(JsonArray jsonArray) {
+        for (int a = 0; a < jsonArray.size(); a++) {
+            JsonObject jsonObject = (JsonObject) jsonArray.get(a);
+            String id = jsonObject.get("id").getAsString();
+            String name = jsonObject.get("name").getAsString();
+            String townName = jsonObject.get("ListedDr_Address1").getAsString();
+            String phone = jsonObject.get("Mobile_Number").getAsString();
+            mCommon_model_spinner = new Common_Model(name, id, "flag", townName, phone);
+            RetailerType.add(mCommon_model_spinner);
+        }
     }
 
 
@@ -260,8 +286,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         } /*else if (editRemarks.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Remarks", Toast.LENGTH_SHORT).show();
         }*/ else {
+
             SaveRetials();
-        }
+
+      }
     }
 
     public void RetailerViewDetailsMethod(String retailerID) {
@@ -274,9 +302,14 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject jsonObject = response.body();
-                Log.v("Retailer_Details", jsonObject.toString());
-                txtRetailerChannel.setText(jsonObject.get("DrSpl").getAsString());
-                txtClass.setText(jsonObject.get("DrCat").getAsString());
+                if(jsonObject!=null){
+                    Log.v("Retailer_Details", jsonObject.toString());
+                    if(jsonObject.has("DrSpl"))
+                    txtRetailerChannel.setText(jsonObject.get("DrSpl").getAsString());
+                    if(jsonObject.has("DrCat"))
+                    txtClass.setText(jsonObject.get("DrCat").getAsString());
+
+                }
             }
 
             @Override
@@ -295,15 +328,12 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-                        String className = jsonObject.get("content").getAsString();
-                        Log.v("JSON_OBJECT_VALUE", className);
-                        mCommon_model_spinner = new Common_Model(className, className, "flag");
-                        modelTemplates.add(mCommon_model_spinner);
-                    }
-                } catch (Exception io) {
 
+                    shared_common_pref.save(Shared_Common_Pref.TEMPLATE_LIST, new Gson().toJson(jsonArray));
+
+                    processTemplateList(jsonArray);
+                } catch (Exception io) {
+                    io.printStackTrace();
                 }
 
             }
@@ -313,6 +343,17 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             }
         });
+    }
+
+    private void processTemplateList(JsonArray jsonArray) {
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            String className = jsonObject.get("content").getAsString();
+            Log.v("JSON_OBJECT_VALUE", className);
+            mCommon_model_spinner = new Common_Model(className, className, "flag");
+            modelTemplates.add(mCommon_model_spinner);
+        }
+
     }
 
 
@@ -333,8 +374,37 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("Remark", editRemarks.getText().toString());
 
+            shared_common_pref.save("RetailerID", retailerId);
+            shared_common_pref.save("RetailName", txtRtNme.getText().toString());
+            shared_common_pref.save("Remarks", editRemarks.getText().toString());
+            shared_common_pref.save("orderType", txtOrder.getText().toString());
+            shared_common_pref.save("OrderType", txtOrder.getText().toString());
+            shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
+            shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+
+            mCommon_class.ProgressdialogShow(1, "");
+            brandSecondaryApi();
             Log.v("JS_VALUE", js.toString());
 
+
+            DBController dbController = new DBController(SecondRetailerActivity.this);
+            if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit")){
+
+                if(shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand)!=null &&
+                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("") &&
+                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("0") &&
+                        shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data)!=null &&
+                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data).equals("") &&
+                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data).equals("0")){
+                    processSecondaryOrderList();
+                }else
+                    brandSecondaryApi();
+
+            }
+            else
+                Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+/*
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
 
@@ -359,7 +429,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     Log.v("REPONSE_RETAILER", "JsonObject.toString()");
                 }
-            });
+            });*/
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -385,26 +456,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonArray jProd = jsonArray.getAsJsonArray("Products");
                 shared_common_pref.save(Shared_Common_Pref.SecProduct_Brand, new Gson().toJson(jBrand));
                 shared_common_pref.save(Shared_Common_Pref.SecProduct_Data, new Gson().toJson(jProd));
-
                 Log.v("Product_Response", jsonArray.toString());
 
-                SecViewModel = ViewModelProviders.of(SecondRetailerActivity.this).get(SecondaryProductViewModel.class);
-                SecViewModel.getAllData().observe(SecondRetailerActivity.this, new Observer<List<SecondaryProduct>>() {
-                    @Override
-                    public void onChanged(List<SecondaryProduct> contacts) {
+                processSecondaryOrderList();
 
-                        Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
-
-                        Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
-
-                        if (ProductCount == 0) {
-                            new PopulateDbAsyntasks(SecondaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-                        }
-                    }
-                });
-
-                mCommon_class.ProgressdialogShow(2, "");
-                startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
             }
 
             @Override
@@ -414,6 +469,26 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         });
     }
 
+    private void processSecondaryOrderList() {
+        SecViewModel = ViewModelProviders.of(SecondRetailerActivity.this).get(SecondaryProductViewModel.class);
+        SecViewModel.getAllData().observe(SecondRetailerActivity.this, new Observer<List<SecondaryProduct>>() {
+            @Override
+            public void onChanged(List<SecondaryProduct> contacts) {
+
+                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
+
+                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
+
+                if (ProductCount == 0) {
+                    new PopulateDbAsyntasks(SecondaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                }
+            }
+        });
+
+        mCommon_class.ProgressdialogShow(2, "");
+        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
+
+    }
 
 
     private class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {

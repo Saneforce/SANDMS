@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:id="@+id/scrolllayout"
+<RelativeLayout android:id="@+id/scrolllayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:scrollbars="none"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.sandms.Activity.ReportActivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    tools:context="com.example.sandms.Activity.ReportActivity">
 
+    <include
+        layout="@layout/custom_toolbar" />
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
@@ -27,18 +22,24 @@
 
 
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/ns_order_details"
+        android:layout_below="@+id/toolbar_top"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_back"
                 android:orientation="vertical"
-                android:id="@+id/linearlayout"
                 android:visibility="visible"
-                tools:ignore="MissingConstraints">
-                <include
-                    android:id="@+id/customlayout"
-                    layout="@layout/custom_toolbar" />
+                android:id="@+id/linearlayout">
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -200,7 +201,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/recyclerlinear"
-                    android:layout_below="@+id/headingLayout"
                     android:orientation="vertical">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/report_list"
@@ -239,7 +239,6 @@
                 android:textAlignment="textEnd" />
 
         </LinearLayout>
-
             </LinearLayout>
 
     </LinearLayout>
@@ -276,9 +275,9 @@
 <!--                    android:textAlignment="textEnd" />-->
 
 <!--            </LinearLayout>-->
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</RelativeLayout>
             <!--        <LinearLayout-->
             <!--            android:id="@+id/totalLayout"-->
             <!--            android:layout_width="match_parent"-->

@@ -139,14 +139,15 @@ public class PrimaryOrderProducts extends AppCompatActivity {
                                 @Override
                                 public void onChanged(List<PrimaryProduct> contacts) {
                                     deleteViewModel.delete(contacts);
-                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
+//                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
                                     finish();
                                     Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
                                 }
                             });
 
                         }else{
-                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
+                            finish();
+//                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
                         }
 
                     }
@@ -406,7 +407,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     ArrayList<HashMap<String, String>> contactList;
     DMS.CheckingInterface itemClick;
     String id = "", name = "", Image = "";
-
+    String productImage = "";
 
     public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1, DMS.CheckingInterface itemClick) {
         this.context = context;
@@ -439,7 +440,9 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
             holder.mText.setText("" + jsFuel.getString("name"));
             String productId = jsFuel.getString("id");
             String productName = jsFuel.getString("name");
-            String productImage = jsFuel.getString("Cat_Image");
+            productImage = "";
+            if(jsFuel.has("Cat_Image"))
+            productImage = jsFuel.getString("Cat_Image");
 
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
