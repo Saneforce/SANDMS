@@ -134,6 +134,8 @@ public interface ApiInterface {
 
     @GET("db_v14.php?axn=get/paymentkeys")
     Call<JsonObject> getPaymentKey(@Query("Stockist_Code") String Stockist_Code,@Query("DivCode") String disvisonCode);
+    @GET("db_v14.php?axn=get/productuom")
+    Call<JsonObject> getProductuom(@Query("divisionCode") String disvisonCode);
 
 }
 

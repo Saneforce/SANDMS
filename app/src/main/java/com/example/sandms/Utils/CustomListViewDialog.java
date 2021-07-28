@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +31,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
     public CustomListViewDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
     }
-
+public Context context;
     public Activity activity;
     EditText searchView;
     RecyclerView recyclerView;
@@ -40,6 +41,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
     int type;
     List<Common_Model> mDataset;
     public Button no;
+    TextView productdata;
 
     public CustomListViewDialog(Activity a, List<Common_Model> wk, int type) {
         super(a);
@@ -52,6 +54,28 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
 
     }
 
+    public CustomListViewDialog(Context applicationContext, List<Common_Model> productCodeOffileData, int i) {
+        super(applicationContext);
+
+        this. context= applicationContext;
+       this.type = i;
+        //this.adapter = adapter;
+        this.mDataset =productCodeOffileData;
+
+
+        this.da = new DataAdapter(mDataset, activity, type);
+    }
+    public CustomListViewDialog(Context aa, List<Common_Model> wk, int type, TextView productdata) {
+        super(aa);
+        this.context= aa;
+        this.type = type;
+        //this.adapter = adapter;
+        this.mDataset = wk;
+        this.productdata=productdata;
+
+        this.da = new DataAdapter(mDataset, activity, type);
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

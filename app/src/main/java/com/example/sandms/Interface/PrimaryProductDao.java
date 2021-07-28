@@ -32,7 +32,10 @@ public interface PrimaryProductDao {
     LiveData<List<PrimaryProduct>> getFilterData();
 
     @Query("UPDATE primary_product SET qty = :sQty,Txtqty = :sTxtQty,Subtotal = :sSubTotal,Tax_Value = :sTax_Value,Discount =:sDiscount,Tax_amt = :sTax_amt,Dis_amt =:sDis_amt WHERE PID= :sID")
-    void update(String sID,String sQty,String sTxtQty,String sSubTotal,String sTax_Value,String sDiscount,String sTax_amt,String sDis_amt);
+    void update(String sID,String sQty,String sTxtQty,String sSubTotal,String sTax_Value,String sDiscount,
+                String sTax_amt,String sDis_amt);
+    @Query("UPDATE primary_product SET Product_Sale_Unit = :sPdtQty,Product_Sale_Unit_Cn_Qty = :Product_Sale_Unit_Cn_Qty,Subtotal = :sSubTotal WHERE PID= :sID")
+    void updateDATA(String sID,String sPdtQty,int Product_Sale_Unit_Cn_Qty,String sSubTotal);
 
 
     @Query("DELETE FROM Primary_Product WHERE PID = :Pid")

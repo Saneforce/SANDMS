@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.PrimaryOrderList">
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            tools:ignore="MissingConstraints">
+
+        <include layout="@layout/custom_toolbar" />
+
+
+        <EditText
+            android:id="@+id/edt_serach"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/C10dp"
+            android:lines="1"
+            android:visibility="gone"
+            android:drawableRight="@drawable/ic_search_icon"
+            android:background="@drawable/card_border"
+            android:hint="Search..."
+            android:padding="@dimen/C10dp"/>
+
+
+        <SearchView
+            android:id="@+id/edt_serach_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/C5dp"
+            android:lines="1"
+            android:drawableRight="@drawable/ic_search_icon"
+            android:background="@drawable/card_border"
+            android:hint="Search..." />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rec_checking"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/C5dp"
+                    android:layout_weight=".95"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/C5dp" />
+        </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

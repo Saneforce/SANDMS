@@ -138,7 +138,7 @@ public class DashBoardActivity extends AppCompatActivity {
                     contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                             PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
                             PCon_fac,new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code)));
+                            Product_Code),0));
 
                 }
 

@@ -162,6 +162,7 @@ public class EventCapture extends AppCompatActivity {
 
         loadTask(task);
 
+
     }
 
     private void loadTask(EventCaptureModel task) {

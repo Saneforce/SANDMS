@@ -9,14 +9,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -31,18 +33,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
+import com.example.sandms.Interface.PrimaryProducts;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.Product;
 import com.example.sandms.Model.Product_Array;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
+import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Common_Model;
+import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,12 +62,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static io.realm.Realm.getApplicationContext;
 
 @SuppressWarnings("deprecation")
-public class PrimaryOrderProducts extends AppCompatActivity {
+public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryProducts {//implements DMS.Master_Interface
 //HorizontalScrollView priCategoryRecycler;
     Gson gson;
+   CustomListViewDialog customDialog;
     Shared_Common_Pref mShared_common_pref;
     RecyclerView priCategoryRecycler;
     RecyclerView priProductRecycler;
@@ -67,6 +80,8 @@ public class PrimaryOrderProducts extends AppCompatActivity {
     ProductAdapter priProdAdapter;
     JSONArray jsonBrandCateg = null;
     JSONArray jsonBrandProduct = null;
+    Common_Model mCommon_model_spinner;
+   public   JSONObject jsonProductuom;
     public String a;
     ArrayList<Product_Array> Product_Array_List;
     TextView text_checki;
@@ -93,28 +108,23 @@ public class PrimaryOrderProducts extends AppCompatActivity {
     EditText edt_serach;
     PrimaryProductDatabase primaryProductDatabase;
     PrimaryProductViewModel deleteViewModel;
-    Common_Class mCommon_class;
+   Common_Class mCommon_class;
     int product_count = 0;
     List<PrimaryProduct> mPrimaryProduct = new ArrayList<>();
     String sPrimaryProd = "";
     int mFirst=0, mLast=0;
+    List<Common_Model> productCodeOffileData = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_primary_order_products);
-
         Log.v("Primary_order", "OnCreate");
-
         gson = new Gson();
         grandTotal = (TextView) findViewById(R.id.total_amount);
         item_count = (TextView) findViewById(R.id.item_count);
         mShared_common_pref = new Shared_Common_Pref(this);
         searchEdit = findViewById(R.id.edt_serach_view);
-
-
         sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
-
-
         primaryProductDatabase = Room.databaseBuilder(getApplicationContext(), PrimaryProductDatabase.class, "contact_datbase").fallbackToDestructiveMigration().build();
         mCommon_class = new Common_Class(this);
         ImageView imagView = findViewById(R.id.toolbar_back);
@@ -122,7 +132,7 @@ public class PrimaryOrderProducts extends AppCompatActivity {
 //                .horizontal_scrollview);
         forward=findViewById(R.id.forward);
         backward=findViewById(R.id.backward);
-
+      //  getProductId();
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,33 +183,24 @@ public class PrimaryOrderProducts extends AppCompatActivity {
                 }
             }
         });
-
         text_checki = findViewById(R.id.text_checki);
-
         try {
-
             jsonBrandCateg = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand));
             jsonBrandProduct = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data));
             Log.v("JSON_Band_Product", jsonBrandProduct.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         priCategoryRecycler = findViewById(R.id.rec_checking);
         priCategoryRecycler.setHasFixedSize(true);
         priCategoryRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         priCategoryRecycler.setNestedScrollingEnabled(false);
-
         priProductRecycler = findViewById(R.id.rec_checking1);
         priProductRecycler.setHasFixedSize(true);
-        priProductRecycler.setLayoutManager
-                (new LinearLayoutManager(getApplicationContext()));
+        priProductRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         priProductRecycler.setNestedScrollingEnabled(false);
-        priProdAdapter = new ProductAdapter(this, sPrimaryProd);
+        priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData);
         priProductRecycler.setAdapter(priProdAdapter);
-
-
-
         if (productBarCode.equalsIgnoreCase("a")) {
             mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
             mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
@@ -214,15 +215,17 @@ public class PrimaryOrderProducts extends AppCompatActivity {
         }
         Log.v("productBarCodeproduct", productBarCode);
 
-        priCateAdapter = new CategoryAdapter(getApplicationContext(), jsonBrandCateg, jsonBrandProduct, new DMS.CheckingInterface() {
+        priCateAdapter = new CategoryAdapter(getApplicationContext(),
+                jsonBrandCateg, jsonBrandProduct,jsonProductuom, new DMS.CheckingInterface() {
 
             @Override
             public void ProdcutDetails(String id, String name, String img) {
                 searchEdit.setQuery("", false);
 
-
+               // getProductId();
                 productBarCode = id;
                 loadFilteredTodos(productBarCode);
+
 
                 text_checki.setVisibility(View.VISIBLE);
                 text_checki.setText(name);
@@ -298,6 +301,61 @@ public class PrimaryOrderProducts extends AppCompatActivity {
 
     }
 
+
+    public void getProductId() {
+     //   this.sf_Code=sf_Code;
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getProductuom(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+        Log.v("DMS_REQUEST", call.request().toString());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.v("DMS_RESPONSE", response.body().toString());
+
+                try {
+                    jsonProductuom = new JSONObject(response.body().toString());
+                    Log.e("LoginResponse1",  jsonProductuom.toString());
+                    String js=jsonProductuom.getString(
+                            "success");
+                    Log.e("LoginResponse133w",  js.toString());
+                    JSONArray jss=jsonProductuom.getJSONArray(
+                            "Data");
+                    Log.e("LoginResponse133ws",  jss.toString());
+//                    String GS=new Gson().toJson(jss);
+//                  // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
+//                 Log.e("LoginResponse133",  GS.toString());
+                    for (int i = 0; i < jss.length(); i++) {
+                      JSONObject jsonObject = jss.optJSONObject(i);
+                        String name=jsonObject.getString("name");
+                        Log.v("LoginResponse1nn", name);
+                        String productCode=jsonObject.getString("Product_Code");
+                        Log.v("LoginResponse1nnq", productCode);
+                        String conqty=jsonObject.getString("ConQty");
+                        mCommon_model_spinner = new Common_Model(name, productCode,conqty, "flag");
+                        productCodeOffileData.add(mCommon_model_spinner);
+                        Log.v("daaa",productCodeOffileData.toString());
+                        mShared_common_pref.save("PRODUCTCODE", productCodeOffileData.toString());
+//
+//                        customDialog = new CustomListViewDialog(PrimaryOrderProducts.this, productCodeOffileData, 12);
+//                        Window window = customDialog.getWindow();
+//                        window.setGravity(Gravity.CENTER);
+//                        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+//                        customDialog.show();
+
+                    }
+
+                } catch (Exception e) {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(PrimaryOrderProducts.this, "Invalid products", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     @Override
     protected void onResume() {
 
@@ -397,6 +455,27 @@ public class PrimaryOrderProducts extends AppCompatActivity {
             }
         }.execute(category);
     }
+
+    @Override
+    public void update(int value, int pos) {
+
+    }
+
+
+//    public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
+//        customDialog.dismiss();
+//        if (type == 12) {
+//            //ProductUnit.setText(myDataset.get(position).getName());
+//            //  orderTakenByFilter=myDataset.get(position).getName();
+//            Log.e("order filter",myDataset.get(position).getName());
+//            Log.e("order filter1",myDataset.get(position).getId());
+//            Log.e("order filter2",myDataset.get(position).getAddress());
+//            Log.e("order filter3",myDataset.get(position).getCheckouttime());
+//            //ViewDateReport(orderTakenByFilter);
+//            //  mArrayList.clear();
+//
+//        }
+//    }
 }
 
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
@@ -406,12 +485,14 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     ArrayList<HashMap<String, String>> contactList;
     DMS.CheckingInterface itemClick;
     String id = "", name = "", Image = "";
+    JSONObject jsonProductuom;
 
 
-    public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1, DMS.CheckingInterface itemClick) {
+    public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1,JSONObject jsonProductuom, DMS.CheckingInterface itemClick) {
         this.context = context;
         this.jsonArray = jsonArray;
         this.jsonArray1 = jsonArray1;
+        this.jsonProductuom=jsonProductuom;
         contactList = new ArrayList<>();
         this.itemClick = itemClick;
     }
@@ -441,6 +522,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
             String productName = jsFuel.getString("name");
             String productImage = jsFuel.getString("Cat_Image");
 
+
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -469,15 +551,14 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     }
 }
 
-class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> implements Filterable {
-
+class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
+        implements Filterable{
     private List<PrimaryProduct> exampleList = new ArrayList<>();
     private List<PrimaryProduct> workinglist = new ArrayList<>();
     int schemCount = 0;
     private Integer count = 0;
     private Context mCtx;
     private int ProductCount = 0;
-
     Float tax, taxAmt, disAmt, disValue;
     float finalPrice, disFinalPrice;
     Float valueTotal = Float.valueOf(0);
@@ -486,24 +567,42 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
     String Scheme = "";
     String sPrimaryProd;
     Shared_Common_Pref shared_common_pref;
+    JSONObject jsonProductuom;
+    List<Common_Model>productCodeOffileData;
 
-    public ProductAdapter(Context mCtx, String sPrimaryProd) {
+    Common_Model mCommon_model_spinner;
+    CustomListViewDialog customDialog;
+
+    public ProductAdapter(Context mCtx, String sPrimaryProd,
+                          JSONObject jsonProductuom,List<Common_Model>productCodeOffileData) {
         this.mCtx = mCtx;
         this.sPrimaryProd = sPrimaryProd;
+        this.jsonProductuom=jsonProductuom;
+        this.productCodeOffileData=productCodeOffileData;
         shared_common_pref = new Shared_Common_Pref(mCtx);
     }
 
-    class ContactHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+
+
+
+    class ContactHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener,DMS.Master_Interface {
+
+
+        Common_Model mCommon_model_spinner;
         TextView subProdcutChildName, subProdcutChildRate, productItem,
                 productItemTotal, ProductTax, ProductDis, ProductTaxAmt,
                 ProductDisAmt, ProductUnit;
 
         LinearLayout linPLus, linMinus, linInfo;
         TextView mProductCount;
+       LinearLayout image_dropdown;
+        CustomListViewDialog customDialog;
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
+            image_dropdown=itemView.findViewById(R.id.image_down);
             subProdcutChildName = itemView.findViewById(R.id.child_product_name);
             subProdcutChildRate = itemView.findViewById(R.id.child_product_price);
             productItem = itemView.findViewById(R.id.product_item_qty);
@@ -519,7 +618,60 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
             linMinus = itemView.findViewById(R.id.image_minus);
             itemView.setOnClickListener(this);
 
+
+
+
+
+//
+
+
         }
+
+
+
+//        public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
+//            customDialog.dismiss();
+//            if (type == 12) {
+//                //ProductUnit.setText(myDataset.get(position).getName());
+//                //  orderTakenByFilter=myDataset.get(position).getName();
+//                Log.e("order filter",myDataset.get(position).getName());
+//                Log.e("order filter1",myDataset.get(position).getId());
+//                Log.e("order filter2",myDataset.get(position).getAddress());
+//                Log.e("order filter3",myDataset.get(position).getCheckouttime());
+//                //ViewDateReport(orderTakenByFilter);
+//                //  mArrayList.clear();
+//
+//            }
+//        }
+//public void update(View v){
+//    try {
+//        Log.v("jsonpdt",jsonProductuom.toString());
+////                    jsonProductuom = new JSONObject(response.body().toString());
+////                    Log.e("LoginResponse1",  jsonProductuom.toString());
+//        JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
+//        for (int i = 0; i < jsonArray.length(); i++) {
+//            JSONObject jsonObject = jsonArray.getJSONObject(i);
+//            String name=jsonObject.getString("name");
+//            String productCode=jsonObject.getString("Product_Code");
+//            String conqty=jsonObject.getString("ConQty");
+//
+//            Log.v("nameee",name+productCode+conqty);
+//            mCommon_model_spinner = new Common_Model(name, productCode,conqty, "flag");
+//            productCodeOffileData.add(mCommon_model_spinner);
+//
+//             customDialog = new CustomListViewDialog(CONTEXT, productCodeOffileData, 12);
+//            Window window = customDialog.getWindow();
+//            window.setGravity(Gravity.CENTER);
+//            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+//            customDialog.show();
+//
+//        }
+//
+//    } catch (Exception e) {
+//
+//    }
+//}
+
 
         @Override
         public void onClick(View v) {
@@ -528,6 +680,21 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
             shared_common_pref.save("task", new Gson().toJson(task));
             Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
             mCtx.startActivity(intent);
+        }
+
+        public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
+            customDialog.dismiss();
+            if (type == 12) {
+                ProductUnit.setText(myDataset.get(position).getName());
+                //  orderTakenByFilter=myDataset.get(position).getName();
+                Log.e("order filter",myDataset.get(position).getName());
+                Log.e("order filter1",myDataset.get(position).getId());
+                Log.e("order filter2",myDataset.get(position).getAddress());
+                Log.e("order filter3",myDataset.get(position).getCheckouttime());
+                //ViewDateReport(orderTakenByFilter);
+                //  mArrayList.clear();
+
+            }
         }
     }
 
@@ -542,13 +709,21 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ProductAdapter.ContactHolder holder, int position) {
+
+
+String productdata;
         PrimaryProduct mContact = workinglist.get(position);
+
         Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
         holder.subProdcutChildName.setText(mContact.getPname());
         holder.subProdcutChildRate.setText("Rs:" + mContact.getProduct_Cat_Code());
         holder.ProductTax.setText(mContact.getTax_Value());
         holder.ProductTaxAmt.setText(mContact.getTax_amt());
         Log.v("DISCOUNT_RATE", mContact.getSchemeProducts().getScheme());
+      //  CONTEXT= holder.CONTEXT;
+
+productdata= shared_common_pref.getvalue("PRODUCTCODE");
+
         holder.linInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -556,6 +731,25 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
             }
         });
         holder.ProductUnit.setText(mContact.getProduct_Sale_Unit());
+String orderid=mContact.getUID();
+        holder.image_dropdown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PrimaryProduct task = workinglist.get(position);
+                Log.v("PRODUCTttt_LIST", new Gson().toJson(task));
+                shared_common_pref.save("taskdata", new Gson().toJson(task));
+                Intent aa=new Intent(mCtx,PrimaryOrderList.class);
+                aa.putExtra("orderid",orderid);
+                aa.putExtra("pos",workinglist.get(position).getProduct_Sale_Unit());
+             //   aa.putExtra("productunit",workinglist.get(position).getProduct_Sale_Unit());
+                mCtx.startActivity(aa);
+            }
+        });
+
+
+
+
         tax = Float.valueOf(mContact.getTax_Value());
         if (mContact.getTxtqty().equalsIgnoreCase("")) {
             holder.productItem.setText("0");
@@ -564,8 +758,13 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
         } else {
             holder.productItem.setText(mContact.getTxtqty());
             holder.mProductCount.setText(mContact.getTxtqty());
-            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-           subTotal=Float.valueOf(new DecimalFormat("##.##").format(subTotal));
+           // subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
+                    Float.parseFloat(mContact.getProduct_Cat_Code()
+                           );
+//            *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+//            Log.v("1subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+            subTotal=Float.valueOf(new DecimalFormat("##.##").format(subTotal));
             Log.v("subtotalshow", subTotal.toString());
             //july11
             if ("".equals(mContact.getSchemeProducts().getDiscountvalue()) ||
@@ -656,6 +855,8 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                 } else {
                     //july12
                     subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+//                            *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+//                    Log.v("22ubtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));;
                     Log.v("22subtotalshow", subTotal.toString());
                     subTotal = Float.valueOf(new DecimalFormat("##.##").format( subTotal));
                     Log.v("22subtotalshow1", subTotal.toString());
@@ -721,7 +922,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                         {
                             holder.productItemTotal.setText(subTotal.toString());
                         }else {
-                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
+                                    Float.parseFloat(mContact.getProduct_Cat_Code());
+//                           *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+//                            Log.v("+++subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
                             Log.v("+++subtotalwtaXshow2", String.valueOf(subTotal));
                             subTotal = Float.valueOf(new DecimalFormat("##.##").format( subTotal));
                             holder.productItemTotal.setText(subTotal.toString());
@@ -798,7 +1002,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                 Log.v("countcount_Click", String.valueOf(proCnt));
                 Log.v("countcount_Click_SCHEME", Scheme);
                 holder.mProductCount.setText("" + ProductCount);
-                subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
+                        Float.parseFloat(mContact.getProduct_Cat_Code());
+//                        *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+//                Log.v("+++2subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+
                 Log.v("+++subtotal", String.valueOf(subTotal));
                 subTotal = Float.valueOf(new DecimalFormat("##.##").format( subTotal));
                 holder.productItem.setText(holder.mProductCount.getText().toString());
@@ -929,7 +1137,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                             Log.v("+PRDTaxAMT1", String.valueOf(valueTotal));
                         } else {
                             holder.ProductTaxAmt.setText(mContact.getTax_amt());
-                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
+                                    Float.parseFloat(mContact.getProduct_Cat_Code())
+                             *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+                            Log.v("++00subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+
                             subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
                             Log.v("+++subtotalwithoutaX", String.valueOf(subTotal));
                             holder.productItemTotal.setText(subTotal.toString());
@@ -1044,7 +1256,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder> 
                 if (ProductCount >= 0) {
                    String prdDisAmt;
                     holder.mProductCount.setText("" + ProductCount);
-                    subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                    subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
+                            Float.parseFloat(mContact.getProduct_Cat_Code());
+//                            *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+//                    Log.v("--subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+
                     Log.v("--subtotal", String.valueOf(subTotal));
                     holder.productItem.setText(holder.mProductCount.getText().toString());
 
@@ -1337,6 +1553,62 @@ Log.e("disamt-",mContact.getDis_amt());
     }
 
 
+    public void getProductIds(TextView  productunit) {
+        //   this.sf_Code=sf_Code;
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getProductuom(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+        Log.v("DMS_REQUEST", call.request().toString());
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.v("DMS_RESPONSE", response.body().toString());
+
+                try {
+                    jsonProductuom = new JSONObject(response.body().toString());
+                    Log.e("LoginResponse1",  jsonProductuom.toString());
+                    String js=jsonProductuom.getString(
+                            "success");
+                    Log.e("LoginResponse133w",  js.toString());
+                    JSONArray jss=jsonProductuom.getJSONArray(
+                            "Data");
+                    Log.e("LoginResponse133ws",  jss.toString());
+
+                    for (int i = 0; i < jss.length(); i++) {
+                        JSONObject jsonObject = jss.optJSONObject(i);
+                        String name=jsonObject.getString("name");
+                        Log.v("LoginResponse1nn", name);
+                        String productCode=jsonObject.getString("Product_Code");
+                        Log.v("LoginResponse1nnq", productCode);
+                        String conqty=jsonObject.getString("ConQty");
+                        mCommon_model_spinner = new Common_Model(name, productCode,conqty, "flag");
+                        productCodeOffileData.add(mCommon_model_spinner);
+                        Log.v("daaa",productCodeOffileData.toString());
+                        //mShared_common_pref.save("PRODUCTCODE", productCodeOffileData.toString());
+//
+                        customDialog = new CustomListViewDialog(mCtx, productCodeOffileData,12,productunit);
+                        Window window = customDialog.getWindow();
+                        window.setGravity(Gravity.CENTER);
+                        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                        customDialog.show();
+
+                    }
+
+                } catch (Exception e) {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(mCtx, "Invalid products", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
+
     @Override
     public int getItemCount() {
         return workinglist.size();
@@ -1351,12 +1623,16 @@ Log.e("disamt-",mContact.getDis_amt());
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<PrimaryProduct> filteredList = new ArrayList<>();
+
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(exampleList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 for (PrimaryProduct item : exampleList) {
+                    Log.v("salunit",item.getProduct_Sale_Unit());
                     if (item.getPname().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }else if(item.getProduct_Sale_Unit().contains(filterPattern)){
                         filteredList.add(item);
                     }
                 }
