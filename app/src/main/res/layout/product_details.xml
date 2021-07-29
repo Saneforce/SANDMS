@@ -46,17 +46,56 @@
                             android:text="SAN Honey-Almond Cold"
                             android:textSize="@dimen/C15dp" />
 
+<!--                        android:background="@drawable/oval_background"-->
                         <TextView
                             android:id="@+id/child_pro_unit"
                             style="@style/TextStyle"
                             android:text="BOX"
-                            android:background="@drawable/oval_background"
+
+                            android:layout_weight=".1"
+
                             android:textColor="@color/appColor"
                             android:textSize="@dimen/C15dp"
                             android:padding="@dimen/C5dp"
-                            android:layout_marginRight="@dimen/C5dp"
                             android:layout_marginLeft="@dimen/C5dp"
                             android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/image_down"
+                            android:layout_width="@dimen/c38dp"
+                            android:background="@drawable/oval_background"
+                            android:layout_marginRight="@dimen/C5dp"
+
+                            android:layout_marginTop="@dimen/C5dp"
+                            android:layout_marginBottom="@dimen/C5dp"
+
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+
+                            <LinearLayout
+                                android:layout_width="16dp"
+                                android:layout_height="12dp"
+                                android:layout_marginLeft="1dp"
+                                android:background="@drawable/expan"
+                                android:gravity="center">
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/child_pro_units"-->
+<!--                            android:src="@drawable/expand24"-->
+<!--                            android:textColor="@color/appColor"-->
+<!--                            android:textSize="@dimen/C15dp"-->
+<!--                            android:padding="@dimen/C5dp"-->
+<!--                            android:layout_marginRight="@dimen/C5dp"-->
+<!--                            android:layout_marginLeft="@dimen/C5dp"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:layout_width="24dp"-->
+<!--                            android:layout_height="match_parent" />-->
+<!--                  -->
 
                     </LinearLayout>
 

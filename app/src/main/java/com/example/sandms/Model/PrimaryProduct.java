@@ -29,13 +29,16 @@ public class PrimaryProduct implements Serializable {
     private String Dis_amt;
     private String Tax_amt;
     private String Con_fac;
+    private int Product_Sale_Unit_Cn_Qty;
     @Embedded
     private SchemeProducts schemeProducts;
+
+
 
     public PrimaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                          String Tax_amt, String Con_fac,SchemeProducts schemeProducts) {
+                          String Tax_amt, String Con_fac, SchemeProducts schemeProducts, int Product_Sale_Unit_Cn_Qty ) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -53,10 +56,17 @@ public class PrimaryProduct implements Serializable {
         this.Tax_amt = Tax_amt;
         this.Con_fac = Con_fac;
         this.schemeProducts = schemeProducts;
+        this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
     }
 
 
+    public int getProduct_Sale_Unit_Cn_Qty() {
+        return Product_Sale_Unit_Cn_Qty;
+    }
 
+    public void setProduct_Sale_Unit_Cn_Qty(int product_Sale_Unit_Cn_Qty) {
+        Product_Sale_Unit_Cn_Qty = product_Sale_Unit_Cn_Qty;
+    }
     public String getUID() {
         return UID;
     }

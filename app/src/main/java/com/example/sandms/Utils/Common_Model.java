@@ -62,7 +62,12 @@ public class Common_Model {
         this.name = name;
         this.flag = flag;
     }
-
+//    public Common_Model(String name, String productcode,String conqty, String flag) {
+//        this.id = name;
+//        this.name = productcode;
+//        this.
+//        this.flag = flag;
+//    }
     public Common_Model(String name, String id) {
         this.name = name;
         this.id = id;

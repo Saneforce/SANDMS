@@ -76,7 +76,7 @@ try {
 
         BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
         double totalroundoff= bd.doubleValue();
-        holder.txtValue.setText((int) totalroundoff);
+        holder.txtValue.setText(String.valueOf( totalroundoff));
      /*   holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
 

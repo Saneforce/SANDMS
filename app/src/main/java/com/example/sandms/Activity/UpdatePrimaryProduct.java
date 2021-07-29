@@ -66,7 +66,8 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         loadTask(task);
 
         ProductCount = Integer.parseInt(mProductCount.getText().toString());
-        subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString());
+        subTotal = Float.parseFloat(productQty.getText().toString()) *
+                Float.parseFloat(productPrice.getText().toString());
         Log.v("total", String.valueOf(subTotal));
         float subTT = subTotal + Float.parseFloat(productTaxAmt.getText().toString());
         productTotal.setText("" + subTT);

@@ -361,8 +361,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     public void ViewDateReport(String orderTakenByFilter) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ReportDataList> responseBodyCall;
-
-
         if (OrderType.equalsIgnoreCase("1")) {
             responseBodyCall = apiInterface.reportValues("get/ViewReport", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
         } else {
@@ -585,6 +583,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     }
 
     //open pdf
+
 
 
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
