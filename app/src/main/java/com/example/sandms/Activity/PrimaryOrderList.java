@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,8 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.PrimaryUom;
 import com.example.sandms.R;
+import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Model;
 import com.example.sandms.Utils.CustomListViewDialog;
@@ -59,20 +63,22 @@ public class PrimaryOrderList extends AppCompatActivity {
     public   JSONObject jsonProductuom;
     RecyclerView priUnitRecycler;
     ArrayList<String> ProductNames = new ArrayList<>();
-
+    TextView toolHeader;
+    ImageView imgBack;
     private List<PrimaryUom> productList = new ArrayList<>();
     private  ProducAdapter mAdapter;
     String productid;
     PrimaryProduct pp;
     String ClickedData = "";
     String pos;
+    EditText toolSearch;
     PrimaryProduct task;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_primary_order_list);
+        getToolbar();
         mShared_common_pref = new Shared_Common_Pref(this);
-
         ClickedData = mShared_common_pref.getvalue("taskdata");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         task = gson.fromJson(ClickedData, PrimaryProduct.class);
@@ -86,24 +92,6 @@ public class PrimaryOrderList extends AppCompatActivity {
 //        priUnitRecycler.setNestedScrollingEnabled(false);
 
         getProductId();
-
-
-
-
-
-//        if (productBarCode.equalsIgnoreCase("a")) {
-//            mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
-//            mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
-//                @Override
-//                public void onChanged(List<PrimaryProduct> contacts) {
-//                    priProdAdapter.setContact(contacts, "Nil");
-//                    Log.v("mPrimaryPr", String.valueOf(contacts.size()));
-//                    Log.v("mPrimaryProductOrder11",new Gson().toJson(contacts));
-//
-//                }
-//            });
-//        }
-//     //   Log.v("productBarCodeproduct", productBarCode);
     }
 
     public void getProductId() {
@@ -118,34 +106,34 @@ public class PrimaryOrderList extends AppCompatActivity {
 
                 try {
                     jsonProductuom = new JSONObject(response.body().toString());
-                    Log.e("LoginResponse1",  jsonProductuom.toString());
-                    String js=jsonProductuom.getString(
+                    Log.e("LoginResponse1", jsonProductuom.toString());
+                    String js = jsonProductuom.getString(
                             "success");
-                    Log.e("LoginResponse133w",  js.toString());
-                    JSONArray jss=jsonProductuom.getJSONArray(
+                    Log.e("LoginResponse133w", js.toString());
+                    JSONArray jss = jsonProductuom.getJSONArray(
                             "Data");
-                    Log.e("LoginResponse133ws",  jss.toString());
+                    Log.e("LoginResponse133ws", jss.toString());
 
                     // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
                     //  Log.e("LoginResponse133",  jsonProductuom.toString());
                     for (int i = 0; i < jss.length(); i++) {
                         JSONObject jsonObject = jss.optJSONObject(i);
-                        String name=jsonObject.getString("name");
+                        String name = jsonObject.getString("name");
                         Log.v("LoginResponse1nn", name);
-                        String productCode=jsonObject.getString("Product_Code");
+                        String productCode = jsonObject.getString("Product_Code");
                         Log.v("LoginResponse1nnq", productCode);
-                        String conqty=jsonObject.getString("ConQty");
-                         Log.v("LoginResponse1nnq", conqty);
-                         if(productid.equals(productCode)||productid.contains(productCode)){
-                         PrimaryUom pp=new PrimaryUom(name,productCode,conqty);
-                         productList.add(pp);
-                         }
+                        String conqty = jsonObject.getString("ConQty");
+                        Log.v("LoginResponse1nnq", conqty);
+                        if (productid.equals(productCode) || productid.contains(productCode)) {
+                            PrimaryUom pp = new PrimaryUom(name, productCode, conqty);
+                            productList.add(pp);
+                        }
 //                         priProdAdapter = new ProductsAdapter(PrimaryOrderList.this, name,productCode,conqty);
 //                         priUnitRecycler.setAdapter(priProdAdapter);
 
 
                     }
-                    mAdapter = new ProducAdapter(getApplicationContext(),productList);
+                    mAdapter = new ProducAdapter(getApplicationContext(), productList);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     priUnitRecycler.setLayoutManager(mLayoutManager);
                     priUnitRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -161,16 +149,44 @@ public class PrimaryOrderList extends AppCompatActivity {
                 Toast.makeText(PrimaryOrderList.this, "Invalid products", Toast.LENGTH_LONG).show();
             }
         });
+
     }
+        /*Toolbar*/
+        public void getToolbar() {
+//            TextView toolbartitle=findViewById(R.id.toolbar_title);
+//            toolbartitle.setText("Product Unit Selection");
+
+            imgBack = (ImageView) findViewById(R.id.toolbar_back);
+            imgBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    AlertDialogBox.showDialog(PrimaryOrderList.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+                        @Override
+                        public void PositiveMethod(DialogInterface dialog, int id) {
+                            PrimaryOrderList.super.onBackPressed();
+                        }
+
+                        @Override
+                        public void NegativeMethod(DialogInterface dialog, int id) {
+                        }
+                    });
+                }
+            });
+            toolHeader = (TextView) findViewById(R.id.toolbar_title);
+            toolHeader.setText("Product Unit Selection");
+
+            toolSearch = (EditText) findViewById(R.id.toolbar_search);
+            toolSearch.setVisibility(View.GONE);
+
+        }
+
 
     public class ProducAdapter extends RecyclerView.Adapter<ProducAdapter.MyViewHolder> {
-
-        private List<PrimaryUom> productList;
+            private List<PrimaryUom> productList;
         Context ct;
         Double subtot,subtotal;
         int cqty;
-
-
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView title, year, productvalue;
             LinearLayout image_down;
@@ -182,51 +198,36 @@ public class PrimaryOrderList extends AppCompatActivity {
 
             }
         }
-
-
         public ProducAdapter (Context ct,List<PrimaryUom> productList) {
             this.productList= productList;
             this.ct=ct;
         }
-
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.product_list_rows, parent, false);
-
             return new MyViewHolder(itemView);
         }
-
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PrimaryUom productlist = productList.get(position);
             holder.title.setText(productlist.getName());
             holder.productvalue.setText(productlist.getConQty());
-          //  holder.year.setText(movie.getYear());
             subtotal= Double.valueOf(task.getSubtotal());
             Log.e("subbbb", String.valueOf(subtot));
            cqty= Integer.parseInt(productlist.getConQty());
-//            subtotal=subtot*cqty;
-//            Log.e("subtotal", String.valueOf(subtotal));
-         //   Log.e("subca", String.valueOf(cqty));
+            Log.e("salecnqty", String.valueOf(task.getProduct_Sale_Unit_Cn_Qty()));
             holder.productvalue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-
-
-                    updateTask(task,productList.get(position).getName(),cqty,subtotal);
-
+                    updateTask(task,productList.get(position).getName(),productList.get(position).getConQty(),subtotal);
                     finish();
                 }
             });
-
-
-               holder.image_down.setOnClickListener(new View.OnClickListener() {
+            holder.image_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateTask(task,productList.get(position).getName(),cqty,subtotal);
+                updateTask(task,productList.get(position).getName(),productList.get(position).getConQty(),subtotal);
                 finish();
             }
         });
@@ -238,7 +239,8 @@ public class PrimaryOrderList extends AppCompatActivity {
         }
     }
 
-    private void updateTask(final PrimaryProduct task,final String PRODUCTNAME,int Cnqty, Double subtotal) {
+    private void updateTask(final PrimaryProduct task,final String PRODUCTNAME,final String cnqty, Double subtotal) {
+
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
 
@@ -250,12 +252,13 @@ public class PrimaryOrderList extends AppCompatActivity {
              //   task.setSubtotal();
                 Log.e("subt",subtotal.toString());
                //    task.setSubtotal(String.valueOf(subtotal));
-               task.setProduct_Sale_Unit_Cn_Qty(Cnqty);
+               task.setProduct_Sale_Unit_Cn_Qty(Integer.parseInt(cnqty));
+                Log.e("subtcnqty", String.valueOf(cnqty));
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
                         .updateDATA(task.getPID(),
                                PRODUCTNAME,
-                                Cnqty,
+                                Integer.parseInt(cnqty),
                                 String.valueOf(subtotal)
                         );
                 return null;
