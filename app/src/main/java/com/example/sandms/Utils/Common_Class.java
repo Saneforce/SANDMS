@@ -4,6 +4,8 @@ package com.example.sandms.Utils;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,25 +18,43 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.sandms.Activity.DashBoardActivity;
+import com.example.sandms.Interface.ApiInterface;
+import com.example.sandms.R;
+import com.example.sandms.sqlite.DBController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class Common_Class {
-
+    private static final String TAG =Common_Class.class.getSimpleName();
     Intent intent;
     Activity activity;
     Dialog dialog_invitation = null;
@@ -296,6 +316,93 @@ public class Common_Class {
         SimpleDateFormat dpln = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String plantime = dpln.format(c.getTime());
         return plantime;
+    }
+
+
+
+    public void checkData(DBController dbController, Context context){
+
+        if(dbController == null)
+            dbController = new DBController(context);
+
+        if(shared_common_pref == null)
+            shared_common_pref = new Shared_Common_Pref(context);
+
+        Log.d(TAG, "checkData: " + dbController.getAllDataKey());
+
+        if (dbController.getAllDataKey().size() > 0) {
+            for (HashMap<String, String> i : dbController.getAllDataKey()) {
+                try {
+                    sendDataToServer(i, dbController, context);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+
+    private void sendDataToServer(HashMap<String, String> data, DBController controller, Context context) {
+        Log.d(TAG, "sendDataToServer: data=> " + data);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        RequestBody requestBody = null;
+        try {
+            if(data.get(DBController.AXN_KEY)!=null && data.get(DBController.AXN_KEY).equalsIgnoreCase("dcr/retailervisit"))
+                requestBody = Constants.toRequestBody(new JSONObject(data.get(DBController.DATA_RESPONSE)));
+            else
+                requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody, "24", "MGR");
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String res = response.body().string();
+                    Log.d(TAG, "onResponse: res "+ res);
+
+                    if(res!=null && !res.equals("")){
+                        JSONObject jsonRootObject = new JSONObject(res);
+                        Log.d(TAG, "onResponse: "+ jsonRootObject);
+
+                        if(jsonRootObject.has("success") && jsonRootObject.getBoolean("success")){
+                            controller.updateDataOfflineCalls(data.get(DBController.DATA_KEY));
+                            displayNotification("Order successfull", data.get(DBController.DATA_KEY), context);
+                        }
+
+                    }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+            }
+        });
+    }
+
+
+
+    private void displayNotification(String title, String task, Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            NotificationChannel channel = new NotificationChannel("sandms", "sandms", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "sandms")
+                .setContentTitle(title)
+                .setContentText(task)
+                .setSmallIcon(R.mipmap.ic_launcher);
+
+        notificationManager.notify(1, notification.build());
     }
 
 

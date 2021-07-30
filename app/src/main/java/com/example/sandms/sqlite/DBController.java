@@ -25,6 +25,17 @@ public class DBController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "dbSynMaster"; // Dtabasename
     private static final int VERSION_CODE = 8; //versioncode of the database
 
+    public static final String RETAILER_LIST = "retailer_list"; // Dtabasename
+    public static final String TEMPLATE_LIST = "template_list"; // Dtabasename
+    public static final String ROUTE_LIST = "route_list"; // Dtabasename
+    public static final String CLASS_LIST = "class_list"; // Dtabasename
+    public static final String CHANNEL_LIST = "channel_list"; // Dtabasename
+    public static final String PRIMARY_PRODUCT_BRAND = "primary_product_brand"; // Dtabasename
+    public static final String PRIMARY_PRODUCT_DATA = "primary_product_data"; // Dtabasename
+    public static final String SECONDARY_PRODUCT_BRAND = "secondary_product_brand"; // Dtabasename
+    public static final String SECONDARY_PRODUCT_DATA = "secondary_product_data"; // Dtabasename
+
+
     Context context;
     public DBController(Context context) {
         super(context, DATABASE_NAME, null, VERSION_CODE);
@@ -73,7 +84,7 @@ public class DBController extends SQLiteOpenHelper {
         return productList;
     }
 
-    public boolean addDatakey(String tableName, String tableValue, String axnKey) {
+    public boolean addDataOfflineCalls(String tableName, String tableValue, String axnKey) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
@@ -95,7 +106,7 @@ public class DBController extends SQLiteOpenHelper {
 
     }
 
-    public boolean updateDatakey(String tableName) {
+    public boolean updateDataOfflineCalls(String tableName) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
@@ -144,5 +155,34 @@ public class DBController extends SQLiteOpenHelper {
         return value;
     }
 
+
+    public boolean updateDataResponse(String tableName, String tableValue) {
+        boolean isUpdated = false;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        try {
+
+            cv.put(DATA_KEY, tableName);
+            cv.put(DATA_RESPONSE, tableValue);
+            cv.put(IS_UPDATED_TO_SERVER, "1");
+            cv.put(DBController.AXN_KEY, "");
+
+            String[] args = new String[]{tableName};
+            int value = db.update(TABLE_NAME,cv, DATA_KEY + " = ?" , args);
+            Log.d(TAG, "updateProduct: " + value);
+
+//            db.close();
+
+            isUpdated = value > 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(!isUpdated){
+            if(db.insert(TABLE_NAME, null, cv)>0)
+                isUpdated = true;
+        }
+
+        return isUpdated;
+    }
 
 }

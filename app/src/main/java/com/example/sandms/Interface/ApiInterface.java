@@ -57,7 +57,7 @@ public interface ApiInterface {
     /*submitValue*/
     @Multipart
     @POST("db_v14.php?")
-    Call<ResponseBody> submitValue(@Query("axn") String Axn, @Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Part("data") RequestBody data);
+    Call<ResponseBody> submitValue(@Query("axn") String Axn, @Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Part("data") RequestBody data, @Query("State_Code") String StateCode, @Query("desig") String desig);
 
     /*ReportView*/
     @POST("db_v14.php?")
@@ -72,7 +72,7 @@ public interface ApiInterface {
 //    @FormUrlEncoded
 //    @POST("db_v14.php?axn=table/list")
 //    Call<JsonObject> retailerClass(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
-//    @FormUrlEncoded
+    @FormUrlEncoded
     @POST("db_v14.php?axn=table/list")
     Call<JsonObject> retailerClass(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
 

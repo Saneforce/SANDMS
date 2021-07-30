@@ -44,6 +44,7 @@ import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.SecondaryProductDatabase;
 import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 
@@ -98,7 +99,7 @@ public class SecondaryOrderProducts extends AppCompatActivity {
     Common_Class mCommon_class;
     SearchView searchEdit;
 
-
+    DBController dbController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +110,7 @@ public class SecondaryOrderProducts extends AppCompatActivity {
         item_count = (TextView) findViewById(R.id.item_count);
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
+        dbController = new DBController(this);
         primaryProductDatabase = Room.databaseBuilder(getApplicationContext(), SecondaryProductDatabase.class, "contact_datbase").fallbackToDestructiveMigration().build();
         searchEdit = findViewById(R.id.edt_serach_view);
         ImageView imagView = findViewById(R.id.toolbar_back);
@@ -164,8 +166,8 @@ public class SecondaryOrderProducts extends AppCompatActivity {
 
         try {
 
-            jsonBrandCateg = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand));
-            jsonBrandProduct = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data));
+            jsonBrandCateg = new JSONArray(dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND));
+            jsonBrandProduct = new JSONArray(dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA));
         } catch (JSONException e) {
             e.printStackTrace();
         }

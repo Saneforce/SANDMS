@@ -48,6 +48,7 @@ import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -115,6 +116,9 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     String sPrimaryProd = "";
     int mFirst=0, mLast=0;
     List<Common_Model> productCodeOffileData = new ArrayList<>();
+
+    DBController dbController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,10 +128,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         grandTotal = (TextView) findViewById(R.id.total_amount);
         item_count = (TextView) findViewById(R.id.item_count);
         mShared_common_pref = new Shared_Common_Pref(this);
+        dbController = new DBController(this);
         searchEdit = findViewById(R.id.edt_serach_view);
-        sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
+        sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
         primaryProductDatabase = Room.databaseBuilder(getApplicationContext(), PrimaryProductDatabase.class, "contact_datbase").fallbackToDestructiveMigration().build();
         mCommon_class = new Common_Class(this);
+
         ImageView imagView = findViewById(R.id.toolbar_back);
 //        hsv=findViewById(R.id
 //                .horizontal_scrollview);
@@ -187,8 +193,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         });
         text_checki = findViewById(R.id.text_checki);
         try {
-            jsonBrandCateg = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand));
-            jsonBrandProduct = new JSONArray(mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data));
+            jsonBrandCateg = new JSONArray(dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND));
+            jsonBrandProduct = new JSONArray(dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA));
             Log.v("JSON_Band_Product", jsonBrandProduct.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -477,7 +483,6 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     String productImage = "";
     JSONObject jsonProductuom;
 
-    public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1, DMS.CheckingInterface itemClick) {
 
     public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1,JSONObject jsonProductuom, DMS.CheckingInterface itemClick) {
         this.context = context;

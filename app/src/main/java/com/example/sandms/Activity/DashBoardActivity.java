@@ -28,6 +28,7 @@ import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Common_Model;
 import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
@@ -72,6 +73,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         mCommon_class = new Common_Class(this);
         shared_common_pref = new Shared_Common_Pref(this);
+        dbController = new DBController(this);
         gson = new Gson();
         //productApi();
         txtName = findViewById(R.id.dis_name);
@@ -109,24 +111,39 @@ public class DashBoardActivity extends AppCompatActivity {
                 // Do something
 //                displayNotification("Connectivity", "Available");
 
-                checkData();
+                if(dbController==null)
+                    dbController = new DBController(context);
 
-                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("0")){
+                mCommon_class.checkData(dbController,context);
+
+                if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
                     brandPrimaryApi(true);
                 }
-                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("0")){
+                if(syncData || dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
                     brandSecondaryApi();
                 }
-                if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST).equals("0")){
+                if(syncData || shared_common_pref.getBooleanvalue(Shared_Common_Pref.YET_TO_SYN) || dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
                     syncData = false;
                     RetailerType();
                 }
 
-               if(syncData || shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST).equals("0")){
+               if(syncData || dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
                     syncData = false;
                     getTemplate();
+                }
+               if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
+                    syncData = false;
+                    getRouteDetails();
+                }
+               if(syncData || dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
+                    syncData = false;
+                    getRouteClass();
+                }
+               if(syncData || dbController.getResponseFromKey(DBController.CHANNEL_LIST).equals("")){
+                    syncData = false;
+                    getRouteChannel();
                 }
             }
         }
@@ -147,8 +164,9 @@ public class DashBoardActivity extends AppCompatActivity {
                 JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
                 JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
                 JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                shared_common_pref.save(Shared_Common_Pref.SecProduct_Brand, new Gson().toJson(jBrand));
-                shared_common_pref.save(Shared_Common_Pref.SecProduct_Data, new Gson().toJson(jProd));
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
+
                 Log.v("Product_Response", jsonArray.toString());
 
             }
@@ -172,11 +190,10 @@ public class DashBoardActivity extends AppCompatActivity {
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-                    shared_common_pref.save(Shared_Common_Pref.RETAILER_LIST, new Gson().toJson(jsonArray));
-
-
+                    dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonArray));
+                    shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);
                 } catch (Exception io) {
-
+                    io.printStackTrace();
                 }
             }
 
@@ -196,8 +213,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-
-                    shared_common_pref.save(Shared_Common_Pref.TEMPLATE_LIST, new Gson().toJson(jsonArray));
+                    dbController.updateDataResponse(DBController.TEMPLATE_LIST, new Gson().toJson(jsonArray));
 
                 } catch (Exception io) {
                     io.printStackTrace();
@@ -207,93 +223,92 @@ public class DashBoardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
 
 
-    private void checkData(){
-
-            if(dbController == null)
-                dbController = new DBController(DashBoardActivity.this);
-
-            if(shared_common_pref == null)
-                shared_common_pref = new Shared_Common_Pref(DashBoardActivity.this);
-
-            Log.d(TAG, "checkData: " + dbController.getAllDataKey());
-
-            if (dbController.getAllDataKey().size() > 0) {
-                for (HashMap<String, String> i : dbController.getAllDataKey()) {
-                    try {
-                        sendDataToServer(i);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-    }
-
-
-    private void sendDataToServer(HashMap<String, String> data) {
-        Log.d(TAG, "sendDataToServer: data=> " + data);
+    public void getRouteDetails() {
+        String routeMap = "{\"tableName\":\"vwTown_Master_APP\",\"coloumns\":\"[\\\"town_code as id\\\", \\\"town_name as name\\\",\\\"target\\\",\\\"min_prod\\\",\\\"field_code\\\",\\\"stockist_code\\\"]\",\"where\":\"[\\\"isnull(Town_Activation_Flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        RequestBody requestBody = null;
-        try {
-            if(data.get(DBController.AXN_KEY)!=null && data.get(DBController.AXN_KEY).equalsIgnoreCase("dcr/retailervisit"))
-                requestBody = Constants.toRequestBody(new JSONObject(data.get(DBController.DATA_RESPONSE)));
-            else
-                requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+
+        Log.v("KArthic_Retailer", call.request().toString());
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    String res = response.body().string();
-                    Log.d(TAG, "onResponse: res "+ res);
+                    JsonObject jsonRootObject = response.body();
 
-                    if(res!=null && !res.equals("")){
-                        JSONObject jsonRootObject = new JSONObject(res);
-                        Log.d(TAG, "onResponse: "+ jsonRootObject);
-
-                        if(jsonRootObject.has("success") && jsonRootObject.getBoolean("success")){
-                            dbController.updateDatakey(data.get(DBController.DATA_KEY));
-                            displayNotification("Order successfull", data.get(DBController.DATA_KEY));
-                        }
-
-                    }
-                } catch (IOException | JSONException e) {
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
+                    dbController.updateDataResponse(DBController.ROUTE_LIST, new Gson().toJson(jsonArray));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+                t.printStackTrace();
             }
         });
     }
 
-    private void displayNotification(String title, String task) {
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+    public void getRouteClass() {
+        String routeMap = "{\"tableName\":\"Mas_Doc_Class\",\"coloumns\":\"[\\\"Doc_ClsCode as id\\\", \\\"Doc_ClsSName as name\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    JsonObject jsonRootObject = response.body();
 
-            NotificationChannel channel = new NotificationChannel("sandms", "sandms", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
+                    dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonArray));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "sandms")
-                .setContentTitle(title)
-                .setContentText(task)
-                .setSmallIcon(R.mipmap.ic_launcher);
+            }
 
-        notificationManager.notify(1, notification.build());
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getRouteChannel() {
+        String routeMap = "{\"tableName\":\"Doctor_Specialty\",\"coloumns\":\"[\\\"Specialty_Code as id\\\", \\\"Specialty_Name as name\\\"]\",\"where\":\"[\\\"isnull(Deactivate_flag,0)=0\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                try {
+                    JsonObject jsonRootObject = response.body();
+
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
+                    dbController.updateDataResponse(DBController.CHANNEL_LIST, new Gson().toJson(jsonArray));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+                t.printStackTrace();
+            }
+        });
     }
 
     private class PopulateDbAsyntask extends AsyncTask<Void, Void, Void> {
@@ -317,8 +332,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         Log.v("Data_CHeckng", "Checking_data");
 
-        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
-        String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
+        String sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
         PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
                 .contactDao();
         try {
@@ -374,12 +388,8 @@ public class DashBoardActivity extends AppCompatActivity {
 
         mCommon_class.ProgressdialogShow(1, "");
 
-        if(shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand)!=null &&
-                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("") &&
-                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Brand).equals("0") &&
-        shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data)!=null &&
-        !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data).equals("") &&
-                !shared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data).equals("0")){
+        if(!dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("") &&
+        !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
             processPrimaryData();
         }else
             brandPrimaryApi(false);
@@ -482,8 +492,8 @@ public class DashBoardActivity extends AppCompatActivity {
                 JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
                 JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
                 JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                shared_common_pref.save(Shared_Common_Pref.PriProduct_Brand, gson.toJson(jBrand));
-                shared_common_pref.save(Shared_Common_Pref.PriProduct_Data, gson.toJson(jProd));
+                dbController.updateDataResponse(DBController.PRIMARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                dbController.updateDataResponse(DBController.PRIMARY_PRODUCT_DATA, new Gson().toJson(jProd));
 
                 Log.v("Product_Response", jsonArray.toString());
                 if(!isUpdateOffline)

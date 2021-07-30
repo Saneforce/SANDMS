@@ -32,6 +32,7 @@ import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.example.sandms.sqlite.DBController;
@@ -49,7 +50,6 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -525,7 +525,10 @@ public class ViewCartActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
         DBController dbController = new DBController(ViewCartActivity.this);
-        if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+
+            if(Constants.isInternetAvailable(this))
+                new Common_Class(this).checkData(dbController,getApplicationContext());
             Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
 

@@ -27,16 +27,7 @@ public class Shared_Common_Pref {
     public static final String Product_Brand = "Product_Brand";
     public static final String Product_Data = "Product_Data";
 
-
-    public static final String PriProduct_Brand = "Pri_Product_Brand";
-    public static final String PriProduct_Data = "Pri_Product_Data";
-
-    public static final String SecProduct_Brand = "Sec_Product_Brand";
-    public static final String SecProduct_Data = "Sec_Product_Data";
-
-
-    public static final String RETAILER_LIST = "retailer_list";
-    public static final String TEMPLATE_LIST = "template_list";
+    public static final String YET_TO_SYN = "yet_to_syn";
 
 
     public Shared_Common_Pref(Activity Ac) {
@@ -58,10 +49,21 @@ public class Shared_Common_Pref {
         editor.commit();
     }
 
+    public void save(String key, boolean value) {
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
     public String getvalue(String key) {
         String text = null;
         text = Common_pref.getString(key, "0");
         return text;
+    }
+
+    public boolean getBooleanvalue(String key) {
+        boolean value ;
+        value = Common_pref.getBoolean(key, false);
+        return value;
     }
 
     public void clear_pref(String key) {

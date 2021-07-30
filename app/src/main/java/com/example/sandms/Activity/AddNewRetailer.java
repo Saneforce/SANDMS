@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,15 +29,19 @@ import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
+import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.Common_Model;
 import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.Shared_Common_Pref;
+import com.example.sandms.sqlite.DBController;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -83,6 +88,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     LocationManager locationManager;
     String latitude, longitude;
 
+    DBController dbController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +96,37 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         setContentView(R.layout.activity_add_new_retailer);
         mShared_common_pref = new Shared_Common_Pref(this);
 
-        if(Constants.isInternetAvailable(this)){
-            getRouteDetails();
-            getRouteClass();
-            getRouteChannel();
-
+        dbController = new DBController(this);
+        if(!dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
+            processRouteDetails(new Gson().fromJson(dbController.getResponseFromKey(DBController.ROUTE_LIST), JsonArray.class));
         }else {
-            Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+            if(Constants.isInternetAvailable(this))
+                getRouteDetails();
+            else
+                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+
         }
+
+        if(!dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
+            processClassList(new Gson().fromJson(dbController.getResponseFromKey(DBController.CLASS_LIST), JsonArray.class));
+        }else {
+            if(Constants.isInternetAvailable(this))
+                getRouteClass();
+            else
+                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+
+        }
+
+        if(!dbController.getResponseFromKey(DBController.CHANNEL_LIST).equals("")){
+            processChannelList(new Gson().fromJson(dbController.getResponseFromKey(DBController.CHANNEL_LIST), JsonArray.class));
+        }else {
+            if(Constants.isInternetAvailable(this))
+                getRouteChannel();
+            else
+                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+
+        }
+
 
 
         txtRoute = findViewById(R.id.txt_route);
@@ -206,18 +235,12 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
-                    Log.v("KArthic_Retailer", jsonRootObject.toString());
+                    JsonObject jsonRootObject = response.body();
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
 
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                    for (int a = 0; a < jsonArray.length(); a++) {
-                        JSONObject jso = jsonArray.getJSONObject(a);
-                        String className = String.valueOf(jso.get("name"));
-                        String id = String.valueOf(jso.get("id"));
-                        mCommon_model_spinner = new Common_Model(id, className, "flag");
-                        modelRetailDetails.add(mCommon_model_spinner);
-                    }
-                } catch (JSONException e) {
+                    processRouteDetails(jsonArray);
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -227,6 +250,25 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                 Log.e("Route_response", "ERROR");
             }
         });
+    }
+
+    private void processRouteDetails(JsonArray jsonArray) {
+        try {
+            for (int a = 0; a < jsonArray.size(); a++) {
+                JsonObject jso =(JsonObject) jsonArray.get(a);
+                String className = jso.get("name").getAsString();
+                String id = jso.get("id").getAsString();
+                mCommon_model_spinner = new Common_Model(id, className, "flag");
+                modelRetailDetails.add(mCommon_model_spinner);
+            }
+
+            dbController.updateDataResponse(DBController.ROUTE_LIST, new Gson().toJson(jsonArray));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public void getRouteClass() {
@@ -237,17 +279,12 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                    for (int a = 0; a < jsonArray.length(); a++) {
-                        JSONObject jso = jsonArray.getJSONObject(a);
-                        String className = String.valueOf(jso.get("name"));
-                        String id = String.valueOf(jso.get("id"));
-                        mCommon_model_spinner = new Common_Model(id, className, "flag");
-                        modelRetailClass.add(mCommon_model_spinner);
-                    }
 
-                } catch (JSONException e) {
+
+                    JsonObject jsonRootObject = response.body();
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
+                    processClassList(jsonArray);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -259,6 +296,25 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         });
     }
 
+    private void processClassList(JsonArray jsonArray) {
+        try {
+            for (int a = 0; a < jsonArray.size(); a++) {
+                JsonObject jso = (JsonObject) jsonArray.get(a);
+                String className = jso.get("name").getAsString();
+                String id = jso.get("id").getAsString();
+                mCommon_model_spinner = new Common_Model(id, className, "flag");
+                modelRetailClass.add(mCommon_model_spinner);
+            }
+
+            dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonArray));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     public void getRouteChannel() {
         String routeMap = "{\"tableName\":\"Doctor_Specialty\",\"coloumns\":\"[\\\"Specialty_Code as id\\\", \\\"Specialty_Name as name\\\"]\",\"where\":\"[\\\"isnull(Deactivate_flag,0)=0\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -267,17 +323,13 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                    for (int a = 0; a < jsonArray.length(); a++) {
-                        JSONObject jso = jsonArray.getJSONObject(a);
-                        String className = String.valueOf(jso.get("name"));
-                        String id = String.valueOf(jso.get("id"));
-                        mCommon_model_spinner = new Common_Model(id, className, "flag");
-                        modelRetailChannel.add(mCommon_model_spinner);
-                    }
 
-                } catch (JSONException e) {
+                    JsonObject jsonRootObject = response.body();
+                    JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
+
+                    processChannelList(jsonArray);
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -287,6 +339,24 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                 Log.e("Route_response", "ERROR");
             }
         });
+    }
+
+    private void processChannelList(JsonArray jsonArray) {
+        try {
+            for (int a = 0; a < jsonArray.size(); a++) {
+                JsonObject jso = (JsonObject) jsonArray.get(a);
+                String className = jso.get("name").getAsString();
+                String id = jso.get("id").getAsString();
+                mCommon_model_spinner = new Common_Model(id, className, "flag");
+                modelRetailChannel.add(mCommon_model_spinner);
+            }
+
+            dbController.updateDataResponse(DBController.CHANNEL_LIST, new Gson().toJson(jsonArray));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -371,6 +441,29 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         mainArray.put(docMasterObject);
         String totalValueString = mainArray.toString();
         Log.e("TOTAL_VALUE_STRING", totalValueString);
+
+
+        DBController dbController = new DBController(AddNewRetailer.this);
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+            mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
+            if(Constants.isInternetAvailable(this)){
+                new Common_Class(this).checkData(dbController,getApplicationContext());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RetailerType();
+                    }
+                }, 2000);
+            }else{
+                Toast.makeText(AddNewRetailer.this, "New Retailer will be saved in offline", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+        else
+            Toast.makeText(AddNewRetailer.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+
+/*
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         // addNewRetailer
         Call<JsonObject> call = apiInterface.addNewRetailer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", "MGR", totalValueString);
@@ -389,9 +482,10 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
+*/
 
     }
 
@@ -401,7 +495,33 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     @Override
     public void onBackPressed() {
+        finish();
+    }
 
+
+    public void RetailerType() {
+        String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getRetName(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", RetailerDetails);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject JsonObject = response.body();
+                try {
+                    JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
+                    dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonArray));
+                    finish();
+                } catch (Exception io) {
+                    io.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("LeaveTypeList", "Error");
+            }
+        });
     }
 
 }

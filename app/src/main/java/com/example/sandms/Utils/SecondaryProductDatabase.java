@@ -13,6 +13,7 @@ import com.example.sandms.Interface.PrimaryProductDao;
 import com.example.sandms.Interface.SecProductDao;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.SecondaryProduct;
+import com.example.sandms.sqlite.DBController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,10 +69,11 @@ public abstract class SecondaryProductDatabase extends RoomDatabase {
     }
 
 
+/*
     private static void fillingWithStart(Context context) {
 
         Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(context);
-        String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data);
+        String sPrimaryProd =  dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA);
         SecProductDao contact = getInstance(context).contactDao();
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
@@ -98,6 +100,7 @@ public abstract class SecondaryProductDatabase extends RoomDatabase {
 
 
     }
+*/
 
     public SecondaryProductDatabase getAppDatabase() {
         return instance;

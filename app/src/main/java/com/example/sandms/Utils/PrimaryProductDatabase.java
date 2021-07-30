@@ -13,6 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.sandms.Interface.PrimaryProductDao;
 import com.example.sandms.Model.PrimaryProduct;
+import com.example.sandms.sqlite.DBController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,11 +70,11 @@ public abstract class PrimaryProductDatabase extends RoomDatabase {
 
     }
 
-
+/*
     private static void fillingWithStart(Context context) {
 
         Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(context);
-        String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
+        String sPrimaryProd =mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
         PrimaryProductDao contact = getInstance(context).contactDao();
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
@@ -93,15 +94,15 @@ public abstract class PrimaryProductDatabase extends RoomDatabase {
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
 
-           /*     contact.insert(new xPrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));*/
+           *//*     contact.insert(new xPrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));*//*
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-    }
+    }*/
 
     public PrimaryProductDatabase getAppDatabase() {
         return instance;

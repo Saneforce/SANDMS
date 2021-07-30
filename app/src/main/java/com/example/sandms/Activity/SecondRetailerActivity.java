@@ -30,10 +30,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Interface.SecProductDao;
-import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
-import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.Common_Model;
@@ -77,6 +75,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     Common_Class mCommon_class;
     TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtReamrks, txtMobile, txtMobileTwo, txtDistributor;
     SecondaryProductViewModel SecViewModel;
+    DBController dbController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,19 +96,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         txtDistributor = findViewById(R.id.txt_distributor);
         shared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
+        dbController = new DBController(this);
 
-        if(!shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST).equals("0")){
-            processRetailerList(new Gson().fromJson(shared_common_pref.getvalue(Shared_Common_Pref.RETAILER_LIST), JsonArray.class));
-        }else {
-            if(Constants.isInternetAvailable(this))
-                RetailerType();
-            else
-                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
 
-        }
-
-        if(!shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST).equals("0")){
-            processTemplateList(new Gson().fromJson(shared_common_pref.getvalue(Shared_Common_Pref.TEMPLATE_LIST), JsonArray.class));
+        if(!dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
+            processTemplateList(new Gson().fromJson(dbController.getResponseFromKey(DBController.TEMPLATE_LIST), JsonArray.class));
         }else {
             if(Constants.isInternetAvailable(this))
                 getTemplate();
@@ -233,32 +224,42 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-                    shared_common_pref.save(Shared_Common_Pref.RETAILER_LIST, new Gson().toJson(jsonArray));
+//                    shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);
+
                     processRetailerList(jsonArray);
 
-
                 } catch (Exception io) {
-
+                    io.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.d("LeaveTypeList", "Error");
+                t.printStackTrace();
             }
         });
     }
 
     private void processRetailerList(JsonArray jsonArray) {
-        for (int a = 0; a < jsonArray.size(); a++) {
-            JsonObject jsonObject = (JsonObject) jsonArray.get(a);
-            String id = jsonObject.get("id").getAsString();
-            String name = jsonObject.get("name").getAsString();
-            String townName = jsonObject.get("ListedDr_Address1").getAsString();
-            String phone = jsonObject.get("Mobile_Number").getAsString();
-            mCommon_model_spinner = new Common_Model(name, id, "flag", townName, phone);
-            RetailerType.add(mCommon_model_spinner);
+        if(jsonArray.size()>0)
+            RetailerType.clear();
+        try {
+            for (int a = 0; a < jsonArray.size(); a++) {
+                JsonObject jsonObject = (JsonObject) jsonArray.get(a);
+                String id = jsonObject.get("id").getAsString();
+                String name = jsonObject.get("name").getAsString();
+                String townName = jsonObject.get("ListedDr_Address1").getAsString();
+                String phone = jsonObject.get("Mobile_Number").getAsString();
+                mCommon_model_spinner = new Common_Model(name, id, "flag", townName, phone);
+                RetailerType.add(mCommon_model_spinner);
+            }
+
+            dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonArray));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 
@@ -328,8 +329,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonObject JsonObject = response.body();
                 try {
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
-
-                    shared_common_pref.save(Shared_Common_Pref.TEMPLATE_LIST, new Gson().toJson(jsonArray));
+                    dbController.updateDataResponse(DBController.TEMPLATE_LIST, new Gson().toJson(jsonArray));
 
                     processTemplateList(jsonArray);
                 } catch (Exception io) {
@@ -383,19 +383,15 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             shared_common_pref.save("editRemarks", editRemarks.getText().toString());
 
             mCommon_class.ProgressdialogShow(1, "");
-            brandSecondaryApi();
+//            brandSecondaryApi();
             Log.v("JS_VALUE", js.toString());
 
 
-            DBController dbController = new DBController(SecondRetailerActivity.this);
-            if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit")){
+            dbController = new DBController(SecondRetailerActivity.this);
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit")){
 
-                if(shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand)!=null &&
-                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("") &&
-                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Brand).equals("0") &&
-                        shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data)!=null &&
-                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data).equals("") &&
-                        !shared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data).equals("0")){
+                if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                        !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
                     processSecondaryOrderList();
                 }else
                     brandSecondaryApi();
@@ -454,8 +450,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
                 JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
                 JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                shared_common_pref.save(Shared_Common_Pref.SecProduct_Brand, new Gson().toJson(jBrand));
-                shared_common_pref.save(Shared_Common_Pref.SecProduct_Data, new Gson().toJson(jProd));
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
                 Log.v("Product_Response", jsonArray.toString());
 
                 processSecondaryOrderList();
@@ -514,8 +510,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         Log.v("Data_CHeckng", "Checking_data");
 
 
-        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
-        String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.SecProduct_Data);
+        String sPrimaryProd = dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA);
         SecProductDao contact = SecondaryProductDatabase.getInstance(this).getAppDatabase().contactDao();
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
@@ -564,5 +559,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(shared_common_pref.getBooleanvalue(Shared_Common_Pref.YET_TO_SYN) || !dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
+            processRetailerList(new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JsonArray.class));
+        }else {
+            if(Constants.isInternetAvailable(this))
+                RetailerType();
+            else
+                Toast.makeText(this, "Empty retailer list, please sync it", Toast.LENGTH_SHORT).show();
+        }
     }
 }

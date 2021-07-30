@@ -35,6 +35,7 @@ import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.example.sandms.sqlite.DBController;
@@ -582,9 +583,14 @@ public class ViewSecCartActivity extends AppCompatActivity {
         progressDialog.dismiss();
 
         DBController dbController = new DBController(ViewSecCartActivity.this);
-        if(dbController.addDatakey(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave")){
+
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave")){
+            if(Constants.isInternetAvailable(this))
+                new Common_Class(this).checkData(dbController,getApplicationContext());
             Toast.makeText(ViewSecCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+
+
         }
         else
             Toast.makeText(ViewSecCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
