@@ -10,6 +10,8 @@ import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -60,5 +62,16 @@ public class Constants {
 		}
 		return isConnected;
 	}
+
+	public static String roundTwoDecimals(double d) {
+		try {
+			DecimalFormat twoDForm = new DecimalFormat("#.##");
+			return twoDForm.format(d);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return String.valueOf(d);
+		}
+	}
+
 
 }

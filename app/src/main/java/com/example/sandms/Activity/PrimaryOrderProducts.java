@@ -44,6 +44,7 @@ import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.Common_Model;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
@@ -83,7 +84,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     JSONArray jsonBrandCateg = null;
     JSONArray jsonBrandProduct = null;
     Common_Model mCommon_model_spinner;
-   public   JSONObject jsonProductuom;
+   public JSONObject jsonProductuom;
     public String a;
     ArrayList<Product_Array> Product_Array_List;
     TextView text_checki;
@@ -392,7 +393,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void onChanged(List<PrimaryProduct> contacts) {
                 Log.v("TotalSize", new Gson().toJson(contacts.size()));
                 item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-                grandTotal.setText("" + sum);
+                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
                 float sum = 0;
                         float tax=0;
                 for (PrimaryProduct cars : contacts) {
@@ -402,7 +403,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
              //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
                    Log.v("Total_valuebefore", String.valueOf(sum));
                 }
-                grandTotal.setText("" + sum);
+                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
                 mShared_common_pref.save("GrandTotal", String.valueOf(sum));
                 mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
             }
@@ -559,10 +560,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
     private int ProductCount = 0;
     Float tax, taxAmt, disAmt, disValue;
     float finalPrice, disFinalPrice;
-    Float valueTotal = Float.valueOf(0);
-    Float subTotal = Float.valueOf(0);
-    Float dissubTotal = Float.valueOf(0);
-    String Scheme = "";
+    Float valueTotal = 0f;
+    Float subTotal = 0f;
+    Float dissubTotal = 0f;
+
     String sPrimaryProd;
     Shared_Common_Pref shared_common_pref;
     JSONObject jsonProductuom;
@@ -598,6 +599,13 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
        LinearLayout image_dropdown;
         CustomListViewDialog customDialog;
 
+        LinearLayout ll_free_qty;
+        LinearLayout ll_disc;
+        TextView tv_free_qty;
+        LinearLayout ll_disc_reduction;
+        TextView tv_disc_amt;
+        TextView tv_disc_amt_total;
+
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
             image_dropdown=itemView.findViewById(R.id.image_down);
@@ -614,6 +622,12 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             linInfo = itemView.findViewById(R.id.item_info);
             mProductCount = itemView.findViewById(R.id.text_view_count);
             linMinus = itemView.findViewById(R.id.image_minus);
+            ll_free_qty = itemView.findViewById(R.id.ll_free_qty);
+            tv_free_qty = itemView.findViewById(R.id.tv_free_qty);
+            ll_disc = itemView.findViewById(R.id.ll_disc);
+            ll_disc_reduction = itemView.findViewById(R.id.ll_disc_reduction);
+            tv_disc_amt = itemView.findViewById(R.id.tv_disc_amt);
+            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
             itemView.setOnClickListener(this);
 
 
@@ -624,6 +638,9 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             Log.v("PRODUCT_LIST", new Gson().toJson(task));
             shared_common_pref.save("task", new Gson().toJson(task));
             Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
+//            intent.putExtra("Scheme", Scheme);
+//            intent.putExtra("discount", discount);
+
             mCtx.startActivity(intent);
         }
 
@@ -647,7 +664,6 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
     @Override
     public ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_details, parent, false);
         return new ContactHolder(itemView);
     }
@@ -655,7 +671,6 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
     @Override
     public void onBindViewHolder(@NonNull ProductAdapter.ContactHolder holder, int position) {
         String productdata;
-int product_Sale_Unit_Cn_Qty=0;
         PrimaryProduct mContact = workinglist.get(position);
         String productCNQTY;
         Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
@@ -663,9 +678,7 @@ int product_Sale_Unit_Cn_Qty=0;
         holder.subProdcutChildRate.setText("Rs:" + mContact.getProduct_Cat_Code());
         holder.ProductTax.setText(mContact.getTax_Value());
         holder.ProductTaxAmt.setText(mContact.getTax_amt());
-        product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
-        Log.v("Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-        Log.v("DISCOUNT_RATE", mContact.getSchemeProducts().getScheme());
+
       //  CONTEXT= holder.CONTEXT;
 
 productdata= shared_common_pref.getvalue("PRODUCTCODE");
@@ -693,8 +706,14 @@ String orderid=mContact.getUID();
             }
         });
 
+//        selectedScheme = mContact.getSelectedSchemeProduct();
+        updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder);
 
 
+
+
+        int product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+        Log.v("Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
 
         tax = Float.valueOf(mContact.getTax_Value());
         if (mContact.getTxtqty().equalsIgnoreCase("")) {
@@ -704,17 +723,17 @@ String orderid=mContact.getUID();
         } else {
             holder.productItem.setText(mContact.getTxtqty());
             holder.mProductCount.setText(mContact.getTxtqty());
-           // subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+            // subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
             subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
                     Float.parseFloat(mContact.getProduct_Cat_Code()
-                           );
+                    );
 //            *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
 //            Log.v("1subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
             subTotal=Float.valueOf(new DecimalFormat("##.##").format(subTotal));
             Log.v("subtotalshow", subTotal.toString());
             //july11
-            if ("".equals(mContact.getSchemeProducts().getDiscountvalue()) ||
-                    ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+            if (selectedScheme!=null && ("".equals(selectedScheme.getDiscountvalue()) ||
+                    ("0").equals(selectedScheme.getDiscountvalue()))
             ) {
                 holder.ProductDisAmt.setText("0");
                 finalPrice = 0;
@@ -729,15 +748,15 @@ String orderid=mContact.getUID();
 
             }
             //jul 11
-            if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+            if (selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
+                schemCount = Integer.parseInt(selectedScheme.getScheme());
                 if (ProductCount == schemCount || ProductCount > schemCount) {
-                    disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                    disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                     Log.v("+disvalueshow", String.valueOf(disValue));
                     if("".equals(mContact.getDis_amt())||
                             ("0").equals(mContact.getDis_amt())||("0.0").equals(mContact.getDis_amt())){
 
-                   // if(disValue.equals("0")||disValue.equals("")){//july 14 commented
+                        // if(disValue.equals("0")||disValue.equals("")){//july 14 commented
 
                         holder.ProductDisAmt.setText("0");
                         finalPrice=0;
@@ -749,13 +768,13 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("1Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else{
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }
                         }
                     }else {
-                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                         finalPrice = (subTotal * disValue) / 100;
                         Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
                         subTotal=subTotal-finalPrice;
@@ -766,9 +785,9 @@ String orderid=mContact.getUID();
                         if(product_Sale_Unit_Cn_Qty!=0) {
                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                             Log.v("11Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                            holder.productItemTotal.setText("" + subTotal);//new july 10
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                         }else{
-                            holder.productItemTotal.setText("" + subTotal);//new july 10
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                         }
                     }
                     if (tax != 0.0) {
@@ -787,9 +806,9 @@ String orderid=mContact.getUID();
                         if(product_Sale_Unit_Cn_Qty!=0) {
                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                             Log.v("11Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                            holder.productItemTotal.setText("" + subTotal);//workig code commented
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//workig code commented
                         }else{
-                            holder.productItemTotal.setText("" + subTotal);
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                         }
                         holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                         Log.v("+Totalshow", "=" + subTotal);
@@ -822,10 +841,10 @@ String orderid=mContact.getUID();
                     Log.v("22subtotalshow", subTotal.toString());
                     subTotal = Float.valueOf(new DecimalFormat("##.##").format( subTotal));
                     Log.v("22subtotalshow1", subTotal.toString());
-                    disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                    disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                     Log.v("+0disvalueelseshow", String.valueOf(mContact.getDis_amt()));
                     if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0.0")||mContact.getDis_amt().equals("0")){
-                   // if(("0").equals(disValue)||("").equals(disValue)){
+                        // if(("0").equals(disValue)||("").equals(disValue)){
                         holder.ProductDisAmt.setText("0");
                         finalPrice=0;
                         holder.ProductDis.setText("0");
@@ -839,14 +858,14 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("21Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }
                         }
                     }else {
-                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                        holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                         finalPrice = (subTotal * disValue) / 100;
                         Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
 
@@ -858,9 +877,9 @@ String orderid=mContact.getUID();
                         if(product_Sale_Unit_Cn_Qty!=0) {
                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                             Log.v("22Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                            holder.productItemTotal.setText("" + subTotal);//new july10
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                         }else {
-                            holder.productItemTotal.setText("" + subTotal);//new july 10
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                         }
                     }
 
@@ -871,22 +890,22 @@ String orderid=mContact.getUID();
                         if(product_Sale_Unit_Cn_Qty!=0) {
                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                             Log.v("22Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                            holder.productItemTotal.setText("" + subTotal);
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                         }else {
-                            holder.productItemTotal.setText("" + subTotal);
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                         }
                         Log.v("+++Total_Dist1show2", "=" + subTotal);
                         Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
                         Log.v("+++Total_calode1show2", "=" + mContact.getProduct_Cat_Code());
                         Log.v("++++Total_product1show2", "=" + holder.mProductCount.getText().toString());
-                       if(!("0").equals(disValue
-                       )|| !(("").equals(disValue)))  {
-                           valueTotal =( subTotal-calculate)+finalPrice;
-                           Log.v("+PRDTaxAMTdisshow2", String.valueOf(finalPrice));
-                           Log.v("+PRDTaxAMT1+disshow2", String.valueOf(valueTotal));
-                       }else{
-                           valueTotal = subTotal - calculate;
-                       }
+                        if(!("0").equals(disValue
+                        )|| !(("").equals(disValue)))  {
+                            valueTotal =( subTotal-calculate)+finalPrice;
+                            Log.v("+PRDTaxAMTdisshow2", String.valueOf(finalPrice));
+                            Log.v("+PRDTaxAMT1+disshow2", String.valueOf(valueTotal));
+                        }else{
+                            valueTotal = subTotal - calculate;
+                        }
                         holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                         Log.v("+PRDTaxAMT1show2", String.valueOf(valueTotal));
                     } else {
@@ -897,9 +916,9 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("23Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }else {
-                                holder.productItemTotal.setText(subTotal.toString());
+                                holder.productItemTotal.setText(Constants.roundTwoDecimals(subTotal));
                             }
                         }else {
                             subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
@@ -911,14 +930,14 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("24Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText(subTotal.toString());
+                                holder.productItemTotal.setText(Constants.roundTwoDecimals(subTotal));
                             }
                         }
                     }
                     //new code tax stop
-                 // String  prdDisAmt=mContact.getDis_amt();
+                    // String  prdDisAmt=mContact.getDis_amt();
                     if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
                         Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ finalPrice);
@@ -945,9 +964,9 @@ String orderid=mContact.getUID();
                     if(product_Sale_Unit_Cn_Qty!=0) {
                         subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                         Log.v("25Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                        holder.productItemTotal.setText("" + subTotal);//new july10
+                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                     }else {
-                        holder.productItemTotal.setText("" + subTotal);
+                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                     }
                     Log.v("q+PRDTaxAMT1", String.valueOf(valueTotal));
                 } else {
@@ -961,9 +980,9 @@ String orderid=mContact.getUID();
                     if(product_Sale_Unit_Cn_Qty!=0) {
                         subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                         Log.v("26Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                        holder.productItemTotal.setText("" + subTotal);//new july10
+                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                     }else {
-                        holder.productItemTotal.setText("" + subTotal);
+                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                     }
                     //  holder.ProductTaxAmt.setText(mContact.getTax_amt());
                 }
@@ -974,6 +993,9 @@ String orderid=mContact.getUID();
                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
             }//new stop
         }  //jul 11
+
+
+
 
 
 
@@ -989,10 +1011,10 @@ String orderid=mContact.getUID();
                 count = count + 1;
                 ProductCount = Integer.parseInt(holder.mProductCount.getText().toString());
                 ProductCount = ProductCount + 1;
-                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = selectedScheme.getScheme();
                 String proCnt = String.valueOf(ProductCount);
-                Log.v("countcount_Click", String.valueOf(proCnt));
-                Log.v("countcount_Click_SCHEME", Scheme);
+//                Log.v("countcount_Click", String.valueOf(proCnt));
+//                Log.v("countcount_Click_SCHEME", Scheme);
                 holder.mProductCount.setText("" + ProductCount);
                 subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
                         Float.parseFloat(mContact.getProduct_Cat_Code());
@@ -1005,12 +1027,12 @@ String orderid=mContact.getUID();
 
 //                disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
 //                Log.v("+++disvalue", String.valueOf(disValue));
-                if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
-                        ("0").equals(mContact.getSchemeProducts().getDiscountvalue())) {
+                if(selectedScheme!=null && ("".equals(selectedScheme.getDiscountvalue())||
+                        ("0").equals(selectedScheme.getDiscountvalue()))) {
                     holder.ProductDisAmt.setText("0");
                     finalPrice=0;
                 }
-             //   holder.productItemTotal.setText("" + subTotal);//working code commented
+                //   holder.productItemTotal.setText("" + subTotal);//working code commented
                 if("".equals(mContact.getTax_Value())||
                         ("0").equals(mContact.getTax_Value())){
                     tax= Float.valueOf("0.0");
@@ -1021,11 +1043,11 @@ String orderid=mContact.getUID();
                     Log.v("tax",tax.toString());
                 }
                 //tax = Float.valueOf(mContact.getTax_Value());
-                if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                    schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+                if (selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
+                    schemCount = Integer.parseInt(selectedScheme.getScheme());
                     if (ProductCount == schemCount || ProductCount > schemCount) {
 
-                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                        disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                         Log.v("+disvalue", String.valueOf(disValue));
                         if(disValue.equals("0")||disValue.equals("")){
                             holder.ProductDisAmt.setText("0");
@@ -1035,10 +1057,10 @@ String orderid=mContact.getUID();
                             if(subTotal.equals("0")){
                                 holder.productItemTotal.setText("0.0");//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }
                         }else {
-                            holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                            holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                             finalPrice = (subTotal * disValue) / 100;
                             Log.v("+finalPrice*disvalue", String.valueOf(finalPrice));
                             subTotal=subTotal-finalPrice;
@@ -1048,15 +1070,15 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("30Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);//new july 10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                             }
                         }
                         if (tax != 0.0) {
                             taxAmt = 100 + tax;
                             Log.v("+TaxAMTll", String.valueOf(taxAmt));
-                           // subTotal=subTotal-finalPrice;
+                            // subTotal=subTotal-finalPrice;
                             Log.v("disamt",String.valueOf(finalPrice));
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
 
@@ -1067,13 +1089,13 @@ String orderid=mContact.getUID();
                             valueTotal = subTotal*tax/100;
                             subTotal = (taxAmt* subTotal) / 100;
 
-                         //   valueTotal = subTotal - calculate;//working code commented
+                            //   valueTotal = subTotal - calculate;//working code commented
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("31Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }//workig code commented
                             holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                             Log.v("+Total", "=" + subTotal);
@@ -1096,7 +1118,7 @@ String orderid=mContact.getUID();
                             Log.e("cntup00",subTotal+""+finalPrice+""+valueTotal);
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice));
-                         //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                            //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                         }
                         Log.v("taxamt+", valueTotal.toString());
                         Log.v("updatedval++",  mContact.getTax_amt()+finalPrice);
@@ -1114,9 +1136,9 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("34Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }
                             Log.v("+++++Total_Distcount1", "=" + subTotal);
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
@@ -1129,7 +1151,7 @@ String orderid=mContact.getUID();
                             holder.ProductTaxAmt.setText(mContact.getTax_amt());
                             subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
                                     Float.parseFloat(mContact.getProduct_Cat_Code())
-                             *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+                                    *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
                             Log.v("++00subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
 
                             subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
@@ -1137,9 +1159,9 @@ String orderid=mContact.getUID();
                             if(product_Sale_Unit_Cn_Qty!=0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("35Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                             }else {
-                                holder.productItemTotal.setText(subTotal.toString());
+                                holder.productItemTotal.setText(Constants.roundTwoDecimals(subTotal));
                             }
                         }
                         //new code tax stop
@@ -1151,53 +1173,54 @@ String orderid=mContact.getUID();
                         }else{
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
                             Log.v("updatedval++else22",    String.valueOf(valueTotal)+ mContact.getDis_amt());
-                    }
+                        }
                     }
 
                 }
                 else {//new start
-                  //  disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                    //  disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                     //new code jul12
-                     if("".equals(mContact.getSchemeProducts().getDiscountvalue())||
-                            ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
-                    ) {
+                    if(selectedScheme!=null && selectedScheme.getDiscountvalue()!=null)
+                        if( ("".equals(selectedScheme.getDiscountvalue())||
+                                ("0").equals(selectedScheme.getDiscountvalue()))
+                        ) {
 
-                        holder.ProductDisAmt.setText("0");
-                        finalPrice=0;
-                        holder.ProductDis.setText("0");
+                            holder.ProductDisAmt.setText("0");
+                            finalPrice=0;
+                            holder.ProductDis.setText("0");
 
-                        if(subTotal.equals("0")){
+                            if(subTotal.equals("0")){
 
-                            subTotal=Float.parseFloat("0.0");
-                            holder.productItemTotal.setText("0.0");//new july10
-                        }else {
-                            subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
-                            if(product_Sale_Unit_Cn_Qty!=0) {
-                                subTotal = subTotal * product_Sale_Unit_Cn_Qty;
-                                Log.v("36Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                subTotal=Float.parseFloat("0.0");
+                                holder.productItemTotal.setText("0.0");//new july10
                             }else {
-                                holder.productItemTotal.setText("" + subTotal);//new july10
+                                subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
+                                if(product_Sale_Unit_Cn_Qty!=0) {
+                                    subTotal = subTotal * product_Sale_Unit_Cn_Qty;
+                                    Log.v("36Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
+                                }else {
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
+                                }
                             }
                         }
-                    }
-                     else {
-                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
-                        finalPrice = (subTotal * disValue) / 100;
-                        Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
-                        subTotal=subTotal-finalPrice;
-                        subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
-                        Log.v("disamttotshow",String.valueOf(finalPrice));
-                        holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
-                         if(product_Sale_Unit_Cn_Qty!=0) {
-                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
-                             Log.v("37Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                             holder.productItemTotal.setText("" + subTotal);//new july10
-                         }else {
-                             holder.productItemTotal.setText("" + subTotal);//new july 10
-                         }
-                    }//new code jul12
+                        else {
+                            disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                            holder.ProductDis.setText(selectedScheme.getDiscountvalue());
+                            finalPrice = (subTotal * disValue) / 100;
+                            Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
+                            subTotal=subTotal-finalPrice;
+                            subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
+                            Log.v("disamttotshow",String.valueOf(finalPrice));
+                            holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
+                            if(product_Sale_Unit_Cn_Qty!=0) {
+                                subTotal = subTotal * product_Sale_Unit_Cn_Qty;
+                                Log.v("37Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
+                            }else {
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
+                            }
+                        }//new code jul12
                     if (tax != 0.0) {
                         taxAmt = 100 + tax;
                         Log.v("q+TaxAMT1", String.valueOf(taxAmt));
@@ -1207,7 +1230,7 @@ String orderid=mContact.getUID();
 //                        Log.v("q+Totaxtotal+", "=" + new DecimalFormat("##.#").format(subTotal+(tax*subTotal)/100)
 //                        );
                         //holder.productItemTotal.setText("" + (taxAmt * subTotal) / 100);
-                       holder.productItemTotal.setText("" + subTotal);
+                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                         Log.v("q+Total_Distcount1", "=" + subTotal);
                         Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
                         Log.v("q+Total_calctcode1", "=" + mContact.getProduct_Cat_Code());
@@ -1227,9 +1250,9 @@ String orderid=mContact.getUID();
                         if(product_Sale_Unit_Cn_Qty!=0) {
                             subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                             Log.v("38Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                            holder.productItemTotal.setText("" + subTotal);//new july10
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                         }else {
-                            holder.productItemTotal.setText("" + (subTotal));
+                            holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                         }
                     }
 
@@ -1238,6 +1261,8 @@ String orderid=mContact.getUID();
                     Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
                     updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
                 }
+                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount , mContact, holder);
+
             }
         });
 
@@ -1251,10 +1276,10 @@ String orderid=mContact.getUID();
                 int product_Sale_Unit_Cn_Qty = 0;
                 product_Sale_Unit_Cn_Qty = mContact.getProduct_Sale_Unit_Cn_Qty();
                 Log.v("-saleunitcnqty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = selectedScheme.getScheme();
                 proCnt = String.valueOf(ProductCount);
-                Log.v("-countcount_Click", String.valueOf(proCnt));
-                Log.v("-countcount_ClSCHEME", Scheme);
+//                Log.v("-countcount_Click", String.valueOf(proCnt));
+//                Log.v("-countcount_ClSCHEME", Scheme);
                 if (ProductCount >= 0) {
                     String prdDisAmt;
                     holder.mProductCount.setText("" + ProductCount);
@@ -1266,15 +1291,15 @@ String orderid=mContact.getUID();
                     Log.v("--subtotal", String.valueOf(subTotal));
                     holder.productItem.setText(holder.mProductCount.getText().toString());
 
-//                disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+//                disValue = Float.valueOf(selectedScheme.getDiscountvalue());
 //                Log.v("+++disvalue", String.valueOf(disValue));
-                    if ("".equals(mContact.getSchemeProducts().getDiscountvalue()) ||
-                            ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+                    if (selectedScheme==null || "".equals(selectedScheme.getDiscountvalue()) ||
+                            ("0").equals(selectedScheme.getDiscountvalue())
                     ) {
                         holder.ProductDisAmt.setText("0");
                         finalPrice = 0;
                     }
-                    //   holder.productItemTotal.setText("" + subTotal);//working code commented
+                    //   holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//working code commented
                     if ("".equals(mContact.getTax_Value()) ||
                             ("0").equals(mContact.getTax_Value())) {
                         tax = Float.valueOf("0.0");
@@ -1284,17 +1309,17 @@ String orderid=mContact.getUID();
                         tax = Float.valueOf(mContact.getTax_Value());
                         Log.v("tax", tax.toString());
                     }
-                    //    holder.productItemTotal.setText("" + subTotal);//working code commented
+                    //    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//working code commented
                     // tax = Float.valueOf(mContact.getTax_Value());
-                    if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                        //  schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+                    if (selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
+                        //  schemCount = Integer.parseInt(selectedScheme.getScheme());
                         //jul 12
-                        Scheme = mContact.getSchemeProducts().getScheme();
+//                        Scheme = selectedScheme.getScheme();
                         proCnt = String.valueOf(ProductCount);
                         Log.v("--prdcnt", proCnt);
-                        Log.v("-schemecnt", Scheme);
-                        if (Integer.parseInt(proCnt) == Integer.parseInt(Scheme) || Integer.parseInt(proCnt) > Integer.parseInt(Scheme)) {
-                            disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+//                        Log.v("-schemecnt", Scheme);
+                        if (Integer.parseInt(proCnt) == Integer.parseInt(selectedScheme.getScheme()) || Integer.parseInt(proCnt) > Integer.parseInt(selectedScheme.getScheme())) {
+                            disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                             Log.v("-disvalue", String.valueOf(disValue));
                             if (disValue.equals("0") || disValue.equals("")) {
                                 holder.ProductDisAmt.setText("0");
@@ -1307,13 +1332,13 @@ String orderid=mContact.getUID();
                                     if (product_Sale_Unit_Cn_Qty != 0) {
                                         subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                         Log.v("40Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                        holder.productItemTotal.setText("" + subTotal);
+                                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                     } else {
-                                        holder.productItemTotal.setText("" + subTotal);//new july10
+                                        holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                                     }
                                 }
                             } else {
-                                holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                                holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                                 finalPrice = (subTotal * disValue) / 100;
                                 Log.v("-finalPrice*disvalue", String.valueOf(finalPrice));
                                 subTotal = subTotal - finalPrice;
@@ -1323,9 +1348,9 @@ String orderid=mContact.getUID();
                                 if (product_Sale_Unit_Cn_Qty != 0) {
                                     subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                     Log.v("41Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 } else {
-                                    holder.productItemTotal.setText("" + subTotal);//new july 10
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                                 }
                             }
                             if (tax != 0.0) {
@@ -1346,9 +1371,9 @@ String orderid=mContact.getUID();
                                 if (product_Sale_Unit_Cn_Qty != 0) {
                                     subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                     Log.v("42Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 } else {
-                                    holder.productItemTotal.setText("" + subTotal);//workig code commented
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//workig code commented
                                 }
                                 holder.ProductTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                                 Log.v("-Total", "=" + subTotal);
@@ -1399,9 +1424,9 @@ String orderid=mContact.getUID();
                                 if (product_Sale_Unit_Cn_Qty != 0) {
                                     subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                     Log.v("44Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 } else {
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 }
                                 Log.v("--+Total_Distcount1", "=" + subTotal);
                                 Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
@@ -1418,7 +1443,7 @@ String orderid=mContact.getUID();
                                 if (product_Sale_Unit_Cn_Qty != 0) {
                                     subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                     Log.v("45Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 } else {
                                     holder.productItemTotal.setText(new DecimalFormat("##.##").format(subTotal).toString());
                                 }
@@ -1432,10 +1457,10 @@ String orderid=mContact.getUID();
                     }
                     //
                     else {//new start
-                        //  disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
+                        //  disValue = Float.valueOf(selectedScheme.getDiscountvalue());
                         //new code jul12
-                        if ("".equals(mContact.getSchemeProducts().getDiscountvalue()) ||
-                                ("0").equals(mContact.getSchemeProducts().getDiscountvalue())
+                        if (selectedScheme == null || "".equals(selectedScheme.getDiscountvalue()) ||
+                                ("0").equals(selectedScheme.getDiscountvalue())
                         ) {
 
                             holder.ProductDisAmt.setText("0");
@@ -1451,14 +1476,14 @@ String orderid=mContact.getUID();
                                 if (product_Sale_Unit_Cn_Qty != 0) {
                                     subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                     Log.v("46Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                    holder.productItemTotal.setText("" + subTotal);
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                                 } else {
-                                    holder.productItemTotal.setText("" + subTotal);//new july10
+                                    holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july10
                                 }
                             }
                         } else {
-                            disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                            holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                            disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                            holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                             finalPrice = (subTotal * disValue) / 100;
                             Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
                             subTotal = subTotal - finalPrice;
@@ -1467,9 +1492,9 @@ String orderid=mContact.getUID();
                             if (product_Sale_Unit_Cn_Qty != 0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("47Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             } else {
-                                holder.productItemTotal.setText("" + subTotal);//new july 10
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));//new july 10
                             }
                         }
 
@@ -1488,9 +1513,9 @@ String orderid=mContact.getUID();
                             if (product_Sale_Unit_Cn_Qty != 0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("48Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             } else {
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }
                             Log.v("-q+Total_Distcount1", "=" + subTotal);
                             Float calculate = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
@@ -1510,9 +1535,9 @@ String orderid=mContact.getUID();
                             if (product_Sale_Unit_Cn_Qty != 0) {
                                 subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                 Log.v("49Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
-                                holder.productItemTotal.setText("" + subTotal);
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             } else {
-                                holder.productItemTotal.setText("" + (subTotal));
+                                holder.productItemTotal.setText("" + Constants.roundTwoDecimals(subTotal));
                             }
                         }
 
@@ -1522,8 +1547,126 @@ String orderid=mContact.getUID();
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
                     }
                 }
+                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder);
+
             }
         });
+
+
+
+
+        /*if(mContact.getSchemeProducts().size()>0){
+            holder.ll_free_qty.setVisibility(View.VISIBLE);
+            holder.mProductCount.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if(!editable.toString().equals("")){
+                        int qty = Integer.parseInt(editable.toString());
+//                    ll_free_qty
+                        if(qty>0)
+                            updateSchemeData(position, holder.tv_free_qty, mContact.getSchemeProducts(), qty, mContact, holder);
+
+                    }
+                }
+            });
+        }else {
+            holder.ll_free_qty.setVisibility(View.GONE);
+        }*/
+    }
+    PrimaryProduct.SchemeProducts selectedScheme = null;
+
+    private void updateSchemeData(TextView tv_free_qty, List<PrimaryProduct.SchemeProducts> schemeProducts, int qty, PrimaryProduct mContact, ContactHolder holder) {
+        selectedScheme = null;
+        int previousSchemeCount = 0;
+        for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
+            if(!scheme.getScheme().equals("")) {
+                int currentSchemeCount = Integer.parseInt(scheme.getScheme());
+                if(previousSchemeCount < currentSchemeCount &&  currentSchemeCount <= qty){
+                    previousSchemeCount =currentSchemeCount;
+                    selectedScheme = scheme;
+                }
+            }
+        }
+
+
+        if(selectedScheme != null){
+
+            String packageType = selectedScheme.getPackage();
+
+            double freeQty = 0;
+            double packageCalc = 0;
+            switch (packageType){
+                case "N":
+                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+                case "Y":
+                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+//                default:
+
+            }
+            if(!selectedScheme.getFree().equals(""))
+                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+
+            tv_free_qty.setText(String.valueOf(freeQty));
+
+
+            String discountType = selectedScheme.getDiscount_Type();
+
+            double discountValue = 0;
+            double totalAmt = 0;
+            double productAmt = 0;
+            double schemeDisc = 0;
+
+            if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
+                productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
+
+            if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
+                schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
+
+            switch (discountType){
+                case "%":
+                    discountValue = (productAmt * qty) * (schemeDisc/100);
+                    holder.ll_disc.setVisibility(View.VISIBLE);
+                    holder.ProductDis.setText(selectedScheme.getDiscountvalue());
+                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    break;
+                case "Rs":
+                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    holder.ll_disc.setVisibility(View.GONE);
+                    break;
+                default:
+                    holder.ll_disc_reduction.setVisibility(View.GONE);
+                    break;
+            }
+
+
+            if(discountValue>0){
+                totalAmt = (productAmt * qty) -discountValue;
+                holder.ll_disc_reduction.setVisibility(View.VISIBLE);
+                holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));
+
+            }else {
+                holder.ll_disc_reduction.setVisibility(View.GONE);
+            }
+
+        }else {
+            holder.ll_disc_reduction.setVisibility(View.GONE);
+            holder.ll_disc.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -1601,7 +1744,7 @@ String orderid=mContact.getUID();
                     }
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
             }

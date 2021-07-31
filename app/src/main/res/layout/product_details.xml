@@ -162,8 +162,10 @@
                                 android:layout_height="wrap_content">
 
                                 <LinearLayout
+                                    android:id="@+id/ll_disc"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/C10dp"
                                     android:layout_marginTop="@dimen/C4dp">
 
                                     <TextView
@@ -184,7 +186,6 @@
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/C10dp"
                                     android:layout_marginTop="@dimen/C4dp">
 
                                     <TextView
@@ -202,6 +203,29 @@
                                 </LinearLayout>
 
                             </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/ll_free_qty"
+                                android:visibility="visible"
+                                android:layout_marginTop="@dimen/C4dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:layout_margin="-10dp"
+                                    android:text="Free : "
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_free_qty"
+                                    style="@style/TextStyle"
+                                    android:text="0"
+                                    android:layout_margin="-10dp"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
                         </LinearLayout>
 
                         <RelativeLayout
@@ -352,6 +376,52 @@
                                 android:text=""
                                 android:textColor="@android:color/black"
                                 android:textSize="14dp"/>
+
+                            <LinearLayout
+                                android:id="@+id/ll_disc_reduction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text=" - "
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_disc_amt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text="0"
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text=" = "
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_disc_amt_total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="4dp"
+                                android:text="0"
+                                android:textColor="@android:color/black"
+                                android:textSize="14dp"/>
+
+
+
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout

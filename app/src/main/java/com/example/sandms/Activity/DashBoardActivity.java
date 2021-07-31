@@ -44,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -340,7 +341,7 @@ public class DashBoardActivity extends AppCompatActivity {
             JSONObject jsonObject = null;
             JSONObject jsonObject1 = null;
 
-            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="";
+            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 String id = String.valueOf(jsonObject.get("id"));
@@ -357,6 +358,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
 
+                List<PrimaryProduct.SchemeProducts> schemeList = new ArrayList<>();
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     jsonObject1 = jsonArray1.getJSONObject(j);
@@ -365,16 +367,20 @@ public class DashBoardActivity extends AppCompatActivity {
                     Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
                     Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
                     Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
+                    Package = String.valueOf(jsonObject1.get("Package"));
+                    Free = String.valueOf(jsonObject1.get("Free"));
+                    Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
 
                     Log.v("JSON_Array_SCHEMA",Scheme);
                     Log.v("JSON_Array_DIS",Discount);
-                    contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                            PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                            PCon_fac,new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code),0));
+                    schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                            Product_Code, Package, Free, Discount_Type));
 
                 }
 
+                contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
+                        PCon_fac,schemeList,0));
 
             }
         } catch (JSONException e) {

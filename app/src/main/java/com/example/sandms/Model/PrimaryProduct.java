@@ -1,10 +1,18 @@
 package com.example.sandms.Model;
 
 
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +38,28 @@ public class PrimaryProduct implements Serializable {
     private String Tax_amt;
     private String Con_fac;
     private int Product_Sale_Unit_Cn_Qty;
-    @Embedded
-    private SchemeProducts schemeProducts;
+
+    @TypeConverters({Converter.class})
+    List<SchemeProducts> schemeProducts;
 
 
+    public static class Converter {
 
+        @TypeConverter
+        public  List<SchemeProducts> restoreBankList(String listOfString) {
+            return new Gson().fromJson(listOfString, new TypeToken<List<SchemeProducts>>() {}.getType());
+        }
+
+        @TypeConverter
+        public String saveListAsString(List<SchemeProducts> listOfString) {
+            return new Gson().toJson(listOfString);
+        }
+
+    }
     public PrimaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                          String Tax_amt, String Con_fac, SchemeProducts schemeProducts, int Product_Sale_Unit_Cn_Qty ) {
+                          String Tax_amt, String Con_fac, List<SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty ) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -58,7 +79,6 @@ public class PrimaryProduct implements Serializable {
         this.schemeProducts = schemeProducts;
         this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
     }
-
 
     public int getProduct_Sale_Unit_Cn_Qty() {
         return Product_Sale_Unit_Cn_Qty;
@@ -204,13 +224,14 @@ public class PrimaryProduct implements Serializable {
         Subtotal = subtotal;
     }
 
-    public SchemeProducts getSchemeProducts() {
+    public List<SchemeProducts> getSchemeProducts() {
         return schemeProducts;
     }
 
-    public void setSchemeProducts(SchemeProducts schemeProducts) {
+    public void setSchemeProducts(List<SchemeProducts>  schemeProducts) {
         this.schemeProducts = schemeProducts;
     }
+
 
     public static class SchemeProducts{
 
@@ -219,14 +240,43 @@ public class PrimaryProduct implements Serializable {
         private String Scheme_Unit;
         private String Product_Name;
         private String Product_Code;
+        private String Package;
+        private String Free;
+        private String Discount_Type;
 
+        public String getFree() {
+            return Free;
+        }
 
-        public SchemeProducts(String Scheme, String Discountvalue, String Scheme_Unit, String Product_Name, String Product_Code) {
+        public SchemeProducts(String Scheme, String Discountvalue, String Scheme_Unit, String Product_Name, String Product_Code, String Package, String Free, String Discount_Type) {
             this.Scheme = Scheme;
             this.Discountvalue = Discountvalue;
             this.Scheme_Unit = Scheme_Unit;
             this.Product_Name = Product_Name;
             this.Product_Code = Product_Code;
+            this.Package = Package;
+            this.Free = Free;
+            this.Discount_Type = Discount_Type;
+        }
+
+        public String getDiscount_Type() {
+            return Discount_Type;
+        }
+
+        public void setDiscount_Type(String discount_Type) {
+            Discount_Type = discount_Type;
+        }
+
+        public void setFree(String free) {
+            Free = free;
+        }
+
+        public String getPackage() {
+            return Package;
+        }
+
+        public void setPackage(String aPackage) {
+            Package = aPackage;
         }
 
         public String getScheme() {
@@ -269,6 +319,10 @@ public class PrimaryProduct implements Serializable {
             Product_Code = product_Code;
         }
     }
+
+
+
+
 }
 
 

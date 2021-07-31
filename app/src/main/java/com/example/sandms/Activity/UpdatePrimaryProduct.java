@@ -1,5 +1,6 @@
 package com.example.sandms.Activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,6 +41,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
     float finalPrice = 0, disValue = 0, minusCount = 0;
     int schemCount =0;
     Float   valueTotal;
+    String discountValue = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,13 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         productDisAmt = findViewById(R.id.txt_dis_amt);
         linPLus = findViewById(R.id.image_plus);
         linMinus = findViewById(R.id.image_minus);
+
+        Intent intent = getIntent();
+        if(intent.hasCategory("Scheme"))
+            Scheme = intent.getStringExtra("Scheme");
+
+        if(intent.hasCategory("discount"))
+            discountValue = intent.getStringExtra("discount");
 
         loadTask(task);
 
@@ -242,18 +251,18 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                     }
 
 
-                    if (!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                        schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
+                    if (!Scheme.equalsIgnoreCase("")) {
+                        schemCount = Integer.parseInt(Scheme);
                         ProductCount = Integer.parseInt(mProductCount.getText().toString());
                         Log.e("prdcount1", String.valueOf(ProductCount));
                         Log.e("scheme2", String.valueOf(schemCount));
                         if (ProductCount == schemCount || ProductCount > schemCount||schemCount<ProductCount) {
-                            disValue = Float.parseFloat(task.getSchemeProducts().getDiscountvalue());
+                            disValue = Float.parseFloat(discountValue);
                             Log.v("+disvalueshow77", String.valueOf(disValue));
                             Log.v("getdis",task.getDiscount());
                             if( disValue!=0|| disValue!=0.0){
                            // if(!task.getSchemeProducts().getDiscountvalue().equals("0")||!task.getSchemeProducts().getDiscountvalue().equals("0.0")) {
-                                productDis.setText(task.getSchemeProducts().getDiscountvalue());
+                                productDis.setText(discountValue);
                                 finalPrice = (subTotal * disValue) / 100;
                                 Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
                                 subTotal=subTotal-finalPrice;
@@ -320,7 +329,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
                         } else {
                             //july12
-                            disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
+                            disValue = Float.valueOf(discountValue);
                             Log.v("+00disvalueelseshow", String.valueOf(task.getDiscount()));
                           //  if(task.getDiscount().equals("")||task.getDiscount().equals("0.0")||task.getDiscount().equals("0")){
                                 // if(("0").equals(disValue)||("").equals(disValue)){
@@ -341,8 +350,8 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                     productTotal.setText("" + subTotal);//new july10
                                 }
                          //   }else {
-//                                disValue = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
-//                                productDis.setText(task.getSchemeProducts().getDiscountvalue());
+//                                disValue = Float.valueOf(discountValue);
+//                                productDis.setText(discountValue);
 //                                finalPrice = (subTotal * disValue) / 100;
 //                                Log.v("+finalPrice*disvueshow", String.valueOf(finalPrice));
 //                                subTotal=subTotal-finalPrice;
@@ -389,13 +398,6 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
 
                     }
-
-
-
-
-
-
-
 
                     else {//new start
                         if (tax != 0.0) {
@@ -447,7 +449,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         productQty.setText(task.getTxtqty());
         mProductCount.setText(task.getQty());
         productTax.setText(task.getTax_Value());
-        productDis.setText(task.getSchemeProducts().getDiscountvalue());
+        productDis.setText(discountValue);
         productUnit.setText(task.getProduct_Sale_Unit());
        if(task.getTax_amt().equals("")||task.getTax_amt().equals("0")){
            productTaxAmt.setText("0");
@@ -455,9 +457,9 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
        }else {
            productTaxAmt.setText(task.getTax_amt());
        }
-        if(!task.getSchemeProducts().getDiscountvalue().equalsIgnoreCase("")){
-            productDis.setText(task.getSchemeProducts().getDiscountvalue());
-            disPercent = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
+        if(!discountValue.equalsIgnoreCase("")){
+            productDis.setText(discountValue);
+            disPercent = Float.valueOf(discountValue);
             if (disPercent != 0) {
                 productDisAmt.setText(task.getDis_amt());
             } else {
@@ -465,15 +467,15 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             //    productDisAmt.setText("0");
                 productDisAmt.setText(task.getDis_amt());
             }
-            disValue = Float.parseFloat(task.getSchemeProducts().getDiscountvalue());
+            disValue = Float.parseFloat(discountValue);
         }
 
-        if(!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-            schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
+        if(!Scheme.equalsIgnoreCase("")) {
+            schemCount = Integer.parseInt(Scheme);
         }
 
         tax = Float.valueOf(task.getTax_Value());
-        Scheme = task.getSchemeProducts().getScheme();
+//        Scheme = task.getSchemeProducts().getScheme();
 
     }
 
@@ -498,7 +500,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                 productQty.getText().toString(),
                                 String.valueOf(subTotal),
                                 productTax.getText().toString(),
-                                task.getSchemeProducts().getDiscountvalue(),
+                                discountValue,
                                 productTaxAmt.getText().toString(),
                                 String.valueOf(finalPrice));
                 return null;
