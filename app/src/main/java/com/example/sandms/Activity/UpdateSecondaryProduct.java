@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -42,6 +43,8 @@ public class UpdateSecondaryProduct extends AppCompatActivity {
     float disPercent = 0, plusCount = 0, minusCount = 0;
     float finalPrice = 0, disValue = 0;
 
+    String discountValue = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,12 @@ public class UpdateSecondaryProduct extends AppCompatActivity {
 
         linPLus = findViewById(R.id.image_plus);
         linMinus = findViewById(R.id.image_minus);
+        Intent intent = getIntent();
+        if(intent.hasCategory("Scheme"))
+            Scheme = task.getSelectedScheme();
+
+        if(intent.hasCategory("discount"))
+            discountValue = task.getSelectedDisValue();
 
         loadTask(task);
 
@@ -259,26 +268,25 @@ public class UpdateSecondaryProduct extends AppCompatActivity {
         productQty.setText(task.getTxtqty());
         mProductCount.setText(task.getQty());
         productTax.setText(task.getTax_Value());
-        productDis.setText(task.getSchemeProducts().getDiscountvalue());
+        productDis.setText(discountValue);
         productUnit.setText(task.getProduct_Sale_Unit());
         productTaxAmt.setText(task.getTax_amt());
-        if(!task.getSchemeProducts().getDiscountvalue().equalsIgnoreCase("")){
-            productDis.setText(task.getSchemeProducts().getDiscountvalue());
-            disPercent = Float.valueOf(task.getSchemeProducts().getDiscountvalue());
+        if(!discountValue.equalsIgnoreCase("")){
+            productDis.setText(discountValue);
+            disPercent = Float.valueOf(discountValue);
             if (disPercent != 0) {
                 productDisAmt.setText(task.getDis_amt());
             } else {
                 productDisAmt.setText("0");
             }
-            disValue = Float.parseFloat(task.getSchemeProducts().getDiscountvalue());
+            disValue = Float.parseFloat(discountValue);
         }
 
-        if(!task.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-            schemCount = Integer.parseInt(task.getSchemeProducts().getScheme());
+        if(!Scheme.equalsIgnoreCase("")) {
+            schemCount = Integer.parseInt(Scheme);
         }
 
         tax = Float.valueOf(task.getTax_Value());
-        Scheme = task.getSchemeProducts().getScheme();
 
     }
 

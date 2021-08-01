@@ -32,13 +32,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.sandms.Interface.DMS;
-import com.example.sandms.Model.PrimaryProduct;
+import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.Model.Product;
 import com.example.sandms.Model.Product_Array;
 import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.Common_Class;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.SecondaryProductDatabase;
@@ -239,6 +240,8 @@ public class SecondaryOrderProducts extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     @Override
@@ -406,7 +409,7 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
     Float subTotal = Float.valueOf(0);
     float edtCount = 0, plusCount = 0, minusCount = 0;
     Shared_Common_Pref shared_common_pref;
-    String Scheme = "";
+//    String Scheme = "";
     Float disAmt, disValue;
     float finalPrice,disFinalPrice;
 
@@ -425,8 +428,16 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
         TextView mProductCount;
         float subTotal = 0;
         PrimaryProductViewModel contactViewModel;
-        PrimaryProduct task;
+//        PrimaryProduct task;
         String FilteredData = "";
+
+
+        LinearLayout ll_free_qty;
+        LinearLayout ll_disc;
+        TextView tv_free_qty;
+//        LinearLayout ll_disc_reduction;
+//        TextView tv_disc_amt;
+//        TextView tv_disc_amt_total;
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
@@ -442,6 +453,12 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
             linPLus = itemView.findViewById(R.id.image_plus);
             mProductCount = itemView.findViewById(R.id.text_view_count);
             linMinus = itemView.findViewById(R.id.image_minus);
+            ll_free_qty = itemView.findViewById(R.id.ll_free_qty);
+            tv_free_qty = itemView.findViewById(R.id.tv_free_qty);
+            ll_disc = itemView.findViewById(R.id.ll_disc);
+//            ll_disc_reduction = itemView.findViewById(R.id.ll_disc_reduction);
+//            tv_disc_amt = itemView.findViewById(R.id.tv_disc_amt);
+//            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
             itemView.setOnClickListener(this);
 
         }
@@ -474,6 +491,10 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
     // holder.ProductDisAmt.setText(mContact.getDiscount());
         holder.ProductUnit.setText(mContact.getProduct_Sale_Unit());
 
+        updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder, position);
+
+
+
         tax = Float.valueOf(mContact.getTax_Value());
         if (mContact.getTxtqty().equalsIgnoreCase("")) {
             holder.productItem.setText("0");
@@ -485,10 +506,10 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
 
             float pc = Float.parseFloat((mContact.getTxtqty()));
-            if(!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
+            if(selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
                 if (pc == schemCount || pc > schemCount) {
-                    disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                    holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                    disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                    holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                     finalPrice = (subTotal * disValue) / 100;
                     Log.v("finalPrice", String.valueOf(finalPrice));
                     holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
@@ -529,11 +550,11 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
                 ProductCount = Integer.parseInt(holder.mProductCount.getText().toString());
                 ProductCount = ProductCount + 1;
-                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = mContact.getSchemeProducts().getScheme();
                 String proCnt = String.valueOf(ProductCount);
 
-                Log.v("countcount_Click", String.valueOf(proCnt));
-                Log.v("countcount_Click_SCHEME", Scheme);
+//                Log.v("countcount_Click", String.valueOf(proCnt));
+//                Log.v("countcount_Click_SCHEME", Scheme);
 
                 holder.mProductCount.setText("" + ProductCount);
                 subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) * Float.parseFloat(mContact.getProduct_Cat_Code());
@@ -541,11 +562,11 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                 holder.productItem.setText(holder.mProductCount.getText().toString());
                 holder.productItemTotal.setText("" + subTotal);
                 tax = Float.valueOf(mContact.getTax_Value());
-                if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                    schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+                if (selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
+                    schemCount = Integer.parseInt(selectedScheme.getScheme());
                     if (ProductCount == schemCount || ProductCount > schemCount) {
-                        disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                        holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                        disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                        holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                         finalPrice = (subTotal * disValue) / 100;
                         Log.v("finalPrice", String.valueOf(finalPrice));
                         holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
@@ -575,6 +596,8 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                 }
 
                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder, position);
+
             }
         });
 
@@ -587,10 +610,10 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
                 ProductCount = ProductCount - 1;
 
-                Scheme = mContact.getSchemeProducts().getScheme();
+//                Scheme = mContact.getSchemeProducts().getScheme();
                 String proCnt = String.valueOf(ProductCount);
                 Log.v("countcount_Click", String.valueOf(proCnt));
-                Log.v("countcount_Click_SCHEME", Scheme);
+//                Log.v("countcount_Click_SCHEME", Scheme);
 
                 if (ProductCount >= 0) {
                     //  mProductCount.setText("" + ProductCount);
@@ -599,11 +622,11 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                     holder.productItem.setText(holder.mProductCount.getText().toString());
                     holder.productItemTotal.setText("" + subTotal);
                     tax = Float.valueOf(mContact.getTax_Value());
-                    if (!mContact.getSchemeProducts().getScheme().equalsIgnoreCase("")) {
-                        schemCount = Integer.parseInt(mContact.getSchemeProducts().getScheme());
+                    if (selectedScheme!=null && !selectedScheme.getScheme().equalsIgnoreCase("")) {
+                        schemCount = Integer.parseInt(selectedScheme.getScheme());
                         if (ProductCount == schemCount || ProductCount > schemCount) {
-                            disValue = Float.valueOf(mContact.getSchemeProducts().getDiscountvalue());
-                            holder.ProductDis.setText(mContact.getSchemeProducts().getDiscountvalue());
+                            disValue = Float.valueOf(selectedScheme.getDiscountvalue());
+                            holder.ProductDis.setText(selectedScheme.getDiscountvalue());
                             finalPrice = (subTotal * disValue) / 100;
                             Log.v("finalPrice", String.valueOf(finalPrice));
                             holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
@@ -634,11 +657,108 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                     holder.mProductCount.setText("" + 0);
                 }
                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder, position);
 
             }
         });
 
     }
+
+
+    SecondaryProduct.SchemeProducts selectedScheme = null;
+
+    private void updateSchemeData(TextView tv_free_qty, List<SecondaryProduct.SchemeProducts> schemeProducts, int qty, SecondaryProduct mContact, secProductAdapter.ContactHolder holder, int position) {
+        selectedScheme = null;
+        int previousSchemeCount = 0;
+        for(SecondaryProduct.SchemeProducts scheme : schemeProducts){
+            if(!scheme.getScheme().equals("")) {
+                int currentSchemeCount = Integer.parseInt(scheme.getScheme());
+                if(previousSchemeCount < currentSchemeCount &&  currentSchemeCount <= qty){
+                    previousSchemeCount =currentSchemeCount;
+                    selectedScheme = scheme;
+                }
+            }
+        }
+
+        String discountType = "";
+
+        if(selectedScheme != null){
+            discountType= selectedScheme.getDiscount_Type();
+
+            if(discountType.equals("Rs"))
+                holder.ll_disc.setVisibility(View.GONE);
+            else
+                holder.ll_disc.setVisibility(View.VISIBLE);
+
+            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
+            workinglist.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
+            String packageType = selectedScheme.getPackage();
+
+            double freeQty = 0;
+            double packageCalc = 0;
+            switch (packageType){
+                case "N":
+                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+                case "Y":
+                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+//                default:
+
+            }
+            if(!selectedScheme.getFree().equals(""))
+                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+
+            tv_free_qty.setText(String.valueOf(freeQty));
+
+
+            double discountValue = 0;
+            double totalAmt = 0;
+            double productAmt = 0;
+            double schemeDisc = 0;
+
+            if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
+                productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
+
+            if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
+                schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
+
+            switch (discountType){
+                case "%":
+                    discountValue = (productAmt * qty) * (schemeDisc/100);
+                    holder.ll_disc.setVisibility(View.VISIBLE);
+                    holder.ProductDis.setText(selectedScheme.getDiscountvalue());
+                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    break;
+                case "Rs":
+                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    holder.ll_disc.setVisibility(View.GONE);
+                    break;
+                default:
+//                    holder.ll_disc_reduction.setVisibility(View.GONE);
+//                    break;
+            }
+
+
+            if(discountValue>0){
+                totalAmt = (productAmt * qty) -discountValue;
+//                holder.ll_disc_reduction.setVisibility(View.VISIBLE);
+//                holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+//                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));
+
+            }else {
+//                holder.ll_disc_reduction.setVisibility(View.GONE);
+            }
+
+        }else {
+//            holder.ll_disc_reduction.setVisibility(View.GONE);
+            holder.ll_disc.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
 
     private void updateTask(final SecondaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {

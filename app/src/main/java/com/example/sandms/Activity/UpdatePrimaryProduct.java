@@ -42,6 +42,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
     int schemCount =0;
     Float   valueTotal;
     String discountValue = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +68,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasCategory("Scheme"))
-            Scheme = intent.getStringExtra("Scheme");
+            Scheme = task.getSelectedScheme();
 
         if(intent.hasCategory("discount"))
-            discountValue = intent.getStringExtra("discount");
+            discountValue = task.getSelectedDisValue();
 
         loadTask(task);
 
@@ -502,7 +503,11 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                 productTax.getText().toString(),
                                 discountValue,
                                 productTaxAmt.getText().toString(),
-                                String.valueOf(finalPrice));
+                                String.valueOf(finalPrice),
+                                task.getSelectedDisValue(),
+                                task.getSelectedFree(),
+                                task.getSelectedFree(),
+                                task.getOff_Pro_code(),task.getOff_Pro_name(), task.getOff_Pro_Unit());
                 return null;
             }
 

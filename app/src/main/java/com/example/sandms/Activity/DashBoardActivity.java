@@ -342,6 +342,7 @@ public class DashBoardActivity extends AppCompatActivity {
             JSONObject jsonObject1 = null;
 
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
+            int unitQty = 1;
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 String id = String.valueOf(jsonObject.get("id"));
@@ -370,6 +371,8 @@ public class DashBoardActivity extends AppCompatActivity {
                     Package = String.valueOf(jsonObject1.get("Package"));
                     Free = String.valueOf(jsonObject1.get("Free"));
                     Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+                    if(jsonObject1.has("Default_UOMQty"))
+                    unitQty = jsonObject1.getInt("Default_UOMQty");
 
                     Log.v("JSON_Array_SCHEMA",Scheme);
                     Log.v("JSON_Array_DIS",Discount);
@@ -380,7 +383,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        PCon_fac,schemeList,0));
+                        PCon_fac,schemeList,unitQty));
 
             }
         } catch (JSONException e) {
@@ -515,21 +518,19 @@ public class DashBoardActivity extends AppCompatActivity {
 
     private void processPrimaryData() {
 
-
-
         mPrimaryProductViewModel = ViewModelProviders.of(DashBoardActivity.this).get(PrimaryProductViewModel.class);
         mPrimaryProductViewModel.getAllData().observe(DashBoardActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
 
 
-                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
+//                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
 
-                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
+//                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
 
-                if (ProductCount == 0) {
+//                if (ProductCount == 0) {
                     new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-                }
+//                }
             }
         });
 

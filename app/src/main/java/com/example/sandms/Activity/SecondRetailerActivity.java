@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Interface.SecProductDao;
+import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
@@ -519,7 +520,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 
 
-            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="";
+            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
@@ -537,6 +538,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
 
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
+
+                List<SecondaryProduct.SchemeProducts> schemeList = new ArrayList<>();
+
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     jsonObject1 = jsonArray1.getJSONObject(j);
                     Scheme = String.valueOf(jsonObject1.get("Scheme"));
@@ -544,13 +548,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
                     Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
                     Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
+                    Package = String.valueOf(jsonObject1.get("Package"));
+                    Free = String.valueOf(jsonObject1.get("Free"));
+                    if(jsonObject1.has("Discount_Type"))
+                    Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
 
-                    contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                            PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                            PCon_fac,new SecondaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code)));
+                    schemeList.add(new SecondaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                            Product_Code, Package, Free, Discount_Type));
 
                 }
+                contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
+                        PCon_fac,schemeList));
 
              /*   contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));

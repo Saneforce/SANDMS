@@ -19,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Database(entities = {SecondaryProduct.class}, version = 1)
+@Database(entities = {SecondaryProduct.class}, version = 2)
 public abstract class SecondaryProductDatabase extends RoomDatabase {
 
 

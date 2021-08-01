@@ -129,6 +129,21 @@
                         </LinearLayout>
 
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                style="@style/TextStyle"
+                                android:text="Free : "
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_free_qty"
+                                style="@style/TextStyle"
+                                android:text="0"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
                     </LinearLayout>
 

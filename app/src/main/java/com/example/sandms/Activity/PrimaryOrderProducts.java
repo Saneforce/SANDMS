@@ -308,9 +308,28 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         });
 
 
+        if(jsonBrandCateg.length()>0){
+            try {
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(0);
+                String productId = jsonObject.getString("id");
+                String productName = jsonObject.getString("name");
+//                String productImage = jsonObject.getString("Cat_Image");
+                // getProductId();
+                productBarCode = productId;
+                loadFilteredTodos(productBarCode);
+
+                text_checki.setVisibility(View.VISIBLE);
+                text_checki.setText(productName);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 
+/*
     public void getProductId() {
      //   this.sf_Code=sf_Code;
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -365,6 +384,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             }
         });
     }
+*/
     @Override
     protected void onResume() {
 
@@ -414,6 +434,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 //            grandTotal.setText("" + sum);
 //        }
 
+        try {
+            if(priProdAdapter!=null)
+                priProdAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -589,7 +615,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             View.OnClickListener,DMS.Master_Interface {
 
 
-        Common_Model mCommon_model_spinner;
+//        Common_Model mCommon_model_spinner;
         TextView subProdcutChildName, subProdcutChildRate, productItem,
                 productItemTotal, ProductTax, ProductDis, ProductTaxAmt,
                 ProductDisAmt, ProductUnit;
@@ -602,9 +628,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
         LinearLayout ll_free_qty;
         LinearLayout ll_disc;
         TextView tv_free_qty;
-        LinearLayout ll_disc_reduction;
-        TextView tv_disc_amt;
-        TextView tv_disc_amt_total;
+//        LinearLayout ll_disc_reduction;
+//        TextView tv_disc_amt;
+//        TextView tv_disc_amt_total;
+        TextView tv_final_total_amt;
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
@@ -625,9 +652,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             ll_free_qty = itemView.findViewById(R.id.ll_free_qty);
             tv_free_qty = itemView.findViewById(R.id.tv_free_qty);
             ll_disc = itemView.findViewById(R.id.ll_disc);
-            ll_disc_reduction = itemView.findViewById(R.id.ll_disc_reduction);
-            tv_disc_amt = itemView.findViewById(R.id.tv_disc_amt);
-            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
+//            ll_disc_reduction = itemView.findViewById(R.id.ll_disc_reduction);
+//            tv_disc_amt = itemView.findViewById(R.id.tv_disc_amt);
+//            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
+            tv_final_total_amt = itemView.findViewById(R.id.tv_final_total_amt);
             itemView.setOnClickListener(this);
 
 
@@ -638,9 +666,6 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             Log.v("PRODUCT_LIST", new Gson().toJson(task));
             shared_common_pref.save("task", new Gson().toJson(task));
             Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
-//            intent.putExtra("Scheme", Scheme);
-//            intent.putExtra("discount", discount);
-
             mCtx.startActivity(intent);
         }
 
@@ -670,18 +695,22 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ProductAdapter.ContactHolder holder, int position) {
-        String productdata;
+//        String productdata;
         PrimaryProduct mContact = workinglist.get(position);
-        String productCNQTY;
-        Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
+//        String productCNQTY;
+
+        int product_Sale_Unit_Cn_Qty = 1;
+        if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
+        product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+//        Log.v("Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
+
+//        Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
         holder.subProdcutChildName.setText(mContact.getPname());
-        holder.subProdcutChildRate.setText("Rs:" + mContact.getProduct_Cat_Code());
-        holder.ProductTax.setText(mContact.getTax_Value());
-        holder.ProductTaxAmt.setText(mContact.getTax_amt());
+
 
       //  CONTEXT= holder.CONTEXT;
 
-productdata= shared_common_pref.getvalue("PRODUCTCODE");
+//productdata= shared_common_pref.getvalue("PRODUCTCODE");
 
         holder.linInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -707,13 +736,9 @@ String orderid=mContact.getUID();
         });
 
 //        selectedScheme = mContact.getSelectedSchemeProduct();
-        updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder);
 
 
 
-
-        int product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
-        Log.v("Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
 
         tax = Float.valueOf(mContact.getTax_Value());
         if (mContact.getTxtqty().equalsIgnoreCase("")) {
@@ -814,7 +839,9 @@ String orderid=mContact.getUID();
                         Log.v("+Totalshow", "=" + subTotal);
                         Log.v("+PRDTaxAMTshow", String.valueOf(valueTotal));
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                         Log.v("ifupdatedval++show",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
                     } else {
                         if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
@@ -828,7 +855,9 @@ String orderid=mContact.getUID();
 
                         Log.e("cntup00show",subTotal+""+finalPrice+""+valueTotal);
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
 
                     }
 
@@ -939,11 +968,15 @@ String orderid=mContact.getUID();
                     //new code tax stop
                     // String  prdDisAmt=mContact.getDis_amt();
                     if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
-                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                         Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ finalPrice);
 
                     }else{
-                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal),String.valueOf(finalPrice));
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal),String.valueOf(finalPrice),
+                                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                         Log.v("updatshow++else22",    subTotal+""+String.valueOf(valueTotal)+ finalPrice);
                     }
                 }
@@ -990,13 +1023,16 @@ String orderid=mContact.getUID();
                 Log.v("5Taxamt",mContact.getTax_amt().toString());
                 Log.v("55taxamt",valueTotal.toString());
                 Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
-                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                        mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
             }//new stop
         }  //jul 11
 
 
 
 
+        updateSchemeData(mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder, position, mContact);
 
 
         Log.v("countcount", String.valueOf(count));
@@ -1102,7 +1138,9 @@ String orderid=mContact.getUID();
 
                             Log.v("+PRDTaxAMT", String.valueOf(valueTotal));
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                    String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                    String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                             Log.v("ifupdatedval++",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
                         } else {
 
@@ -1117,7 +1155,9 @@ String orderid=mContact.getUID();
 
                             Log.e("cntup00",subTotal+""+finalPrice+""+valueTotal);
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                    String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                    String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                             //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                         }
                         Log.v("taxamt+", valueTotal.toString());
@@ -1151,7 +1191,7 @@ String orderid=mContact.getUID();
                             holder.ProductTaxAmt.setText(mContact.getTax_amt());
                             subTotal = Float.parseFloat(holder.mProductCount.getText().toString()) *
                                     Float.parseFloat(mContact.getProduct_Cat_Code())
-                                    *Integer.parseInt(String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
+                                    *product_Sale_Unit_Cn_Qty;
                             Log.v("++00subtotalshow", String.valueOf(mContact.getProduct_Sale_Unit_Cn_Qty()));
 
                             subTotal= Float.valueOf(new DecimalFormat("##.##").format(subTotal));
@@ -1167,11 +1207,15 @@ String orderid=mContact.getUID();
                         //new code tax stop
                         prdDisAmt=mContact.getDis_amt();
                         if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
-                            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0");
+                            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0",
+                                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                             Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ prdDisAmt);
 
                         }else{
-                            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt());
+                            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt(),
+                                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                             Log.v("updatedval++else22",    String.valueOf(valueTotal)+ mContact.getDis_amt());
                         }
                     }
@@ -1259,9 +1303,11 @@ String orderid=mContact.getUID();
                     Log.v("5Taxamt",mContact.getTax_amt().toString());
                     Log.v("55taxamt",valueTotal.toString());
                     Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
-                    updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                    updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                            mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                            mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                 }
-                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount , mContact, holder);
+                updateSchemeData(mContact.getSchemeProducts(), ProductCount , mContact, holder, position, mContact);
 
             }
         });
@@ -1380,7 +1426,9 @@ String orderid=mContact.getUID();
                                 // holder.productItemTotal.setText("" + subTotal);
                                 Log.v("-PRDTaxAMT", String.valueOf(valueTotal));
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                        String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                        String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                        mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                                 Log.v("--ifupdatedval++", subTotal + "" + String.valueOf(valueTotal) + String.valueOf(finalPrice));
                             } else {
 
@@ -1396,7 +1444,9 @@ String orderid=mContact.getUID();
 
                                 Log.e("---cntup00", subTotal + "" + finalPrice + "" + valueTotal);
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                        String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                        String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                        mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                                 //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                             }
 
@@ -1450,7 +1500,9 @@ String orderid=mContact.getUID();
                             }
 
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
-                                    String.valueOf(valueTotal), String.valueOf(finalPrice));
+                                    String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                             Log.v("--updatedval++else11", subTotal + "" + String.valueOf(valueTotal) + finalPrice);
                         }
 
@@ -1544,10 +1596,12 @@ String orderid=mContact.getUID();
                         Log.v("-5Taxamt", mContact.getTax_amt().toString());
                         Log.v("-55taxamt", valueTotal.toString());
                         Log.v("-55update", subTotal + "" + valueTotal.toString() + finalPrice);
-                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+                        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
                     }
                 }
-                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder);
+                updateSchemeData(mContact.getSchemeProducts(), ProductCount, mContact, holder, position, mContact);
 
             }
         });
@@ -1585,21 +1639,64 @@ String orderid=mContact.getUID();
     }
     PrimaryProduct.SchemeProducts selectedScheme = null;
 
-    private void updateSchemeData(TextView tv_free_qty, List<PrimaryProduct.SchemeProducts> schemeProducts, int qty, PrimaryProduct mContact, ContactHolder holder) {
+    private void updateSchemeData(List<PrimaryProduct.SchemeProducts> schemeProducts, int qty, PrimaryProduct mContact, ContactHolder holder, int position, PrimaryProduct contact) {
+        int product_Sale_Unit_Cn_Qty = 1;
+        if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
+            product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+/*
+        double value=
+        subTotal = Double.parseDouble(mContact.getProduct_Cat_Code()) * mContact.getProduct_Sale_Unit_Cn_Qty();
+
+        tax = Float.valueOf(mContact.getTax_Value());
+
+        mContact.getTxtqty()
+        valueTotal = subTotal*tax/100;
+        subTotal = (taxAmt* subTotal) / 100;
+        subTotal = subTotal * mContact.getProduct_Sale_Unit_Cn_Qty();
+
+
+*/
+
+
         selectedScheme = null;
         int previousSchemeCount = 0;
         for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
                 int currentSchemeCount = Integer.parseInt(scheme.getScheme());
-                if(previousSchemeCount < currentSchemeCount &&  currentSchemeCount <= qty){
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
                 }
             }
         }
 
+        String discountType = "";
 
+        double discountValue = 0;
+        double productAmt = 0;
+        double schemeDisc = 0;
         if(selectedScheme != null){
+            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
+            contact.setSelectedScheme(selectedScheme.getScheme());
+
+            workinglist.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
+            contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+
+            workinglist.get(position).setOff_Pro_code(selectedScheme.getProduct_Code());
+            contact.setOff_Pro_code(selectedScheme.getProduct_Code());
+
+            workinglist.get(position).setOff_Pro_name(selectedScheme.getProduct_Name());
+            contact.setOff_Pro_name(selectedScheme.getProduct_Name());
+
+            workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            discountType= selectedScheme.getDiscount_Type();
+
+
+            if(discountType.equals("Rs"))
+                holder.ll_disc.setVisibility(View.GONE);
+            else
+                holder.ll_disc.setVisibility(View.VISIBLE);
 
             String packageType = selectedScheme.getPackage();
 
@@ -1618,15 +1715,12 @@ String orderid=mContact.getUID();
             if(!selectedScheme.getFree().equals(""))
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
 
-            tv_free_qty.setText(String.valueOf(freeQty));
+            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
+            contact.setSelectedFree(String.valueOf(freeQty));
+
+            holder.tv_free_qty.setText(String.valueOf(freeQty));
 
 
-            String discountType = selectedScheme.getDiscount_Type();
-
-            double discountValue = 0;
-            double totalAmt = 0;
-            double productAmt = 0;
-            double schemeDisc = 0;
 
             if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
                 productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
@@ -1636,9 +1730,9 @@ String orderid=mContact.getUID();
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * qty) * (schemeDisc/100);
+                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
                     holder.ll_disc.setVisibility(View.VISIBLE);
-                    holder.ProductDis.setText(selectedScheme.getDiscountvalue());
+                    holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
@@ -1646,31 +1740,65 @@ String orderid=mContact.getUID();
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
-                default:
-                    holder.ll_disc_reduction.setVisibility(View.GONE);
-                    break;
+//                default:
             }
 
 
             if(discountValue>0){
-                totalAmt = (productAmt * qty) -discountValue;
+                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+
+                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
+                contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+/*
+                totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
                 holder.ll_disc_reduction.setVisibility(View.VISIBLE);
                 holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
-                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));
+                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
 
-            }else {
-                holder.ll_disc_reduction.setVisibility(View.GONE);
             }
 
         }else {
-            holder.ll_disc_reduction.setVisibility(View.GONE);
             holder.ll_disc.setVisibility(View.VISIBLE);
+            holder.tv_free_qty.setText("0");
         }
+        double totalAmt = 0;
+        double taxPercent = 0;
+        double taxAmt = 0;
+
+        try {
+            totalAmt = Double.parseDouble(mContact.getProduct_Cat_Code()) * (qty *product_Sale_Unit_Cn_Qty);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            taxPercent = Double.parseDouble(mContact.getTax_Value());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())));
+        holder.productItem.setText(String.valueOf(qty *product_Sale_Unit_Cn_Qty));
+        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
+
+
+        holder.ProductTax.setText(String.valueOf(taxPercent));
+
+        try {
+            taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        holder.ProductTaxAmt.setText(Constants.roundTwoDecimals(taxAmt));
+        holder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
 
     }
 
 
-    private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt) {
+    private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt,
+                            String selectedScheme, String selectedDisValue, String selectedFree,
+                            String Off_Pro_code, String Off_Pro_name, String Off_Pro_Unit) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
             @Override
@@ -1688,7 +1816,13 @@ String orderid=mContact.getUID();
                                 task.getTax_Value(),
                                 task.getDiscount(),
                                 taxAmt,
-                                disAmt);
+                                disAmt,
+                                selectedScheme,
+                                selectedDisValue,
+                                selectedFree,
+                                Off_Pro_code,
+                                Off_Pro_name,
+                                Off_Pro_Unit);
                 return null;
             }
 

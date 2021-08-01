@@ -1,5 +1,7 @@
 package com.example.sandms.Adapter;
 
+import static io.realm.Realm.getApplicationContext;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.Activity.UpdatePrimaryProduct;
-import com.example.sandms.Activity.ViewCartActivity;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.Product_Array;
@@ -28,12 +29,8 @@ import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import static io.realm.Realm.getApplicationContext;
 
 public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.MyViewHolder> {
     String subtotal;
@@ -89,7 +86,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         Log.v("gdtot",GrandTotal.toString());
         String productid=mProductArray.getPID();
 //        mShared_common_pref.clear_pref("SubTotal");
-      //  mShared_common_pref.clear_pref("ItemTotal");
+        //  mShared_common_pref.clear_pref("ItemTotal");
         holder.txtCatName.setText(mProductArray.getName());
         holder.txtPrice.setText(mProductArray.getProduct_Cat_Code());
         holder.txtQty.setText(mProductArray.getQty());
@@ -101,7 +98,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         rate = Float.parseFloat(mProductArray.getProduct_Cat_Code());
         total = qty * rate;
         taxAmount=Float.parseFloat( mProduct_arrays.get(position).getTax_amt());
-     //   taxAmount = Float.parseFloat(mProductArray.getTax_amt());
+        //   taxAmount = Float.parseFloat(mProductArray.getTax_amt());
         Log.v("taxcart", String.valueOf(taxAmount));
         Log.v("discart",   mProduct_arrays.get(position).getDis_amt());
         Log.v("totalcart",mProductArray.getSubtotal());
@@ -118,47 +115,49 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
         }
 
-            holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
+        holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
+
+        holder.tv_free_qty.setText(String.valueOf(mProductArray.getSelectedFree()));
 
         holder.item_amount.setText("Rs." + new DecimalFormat("##.##").format(total));
 
 //        GrandTotal =  mShared_common_pref.getvalue("GrandTotal");
-       holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               AlertDialogBox.showDialog(v.getContext(), "", "Do you Surely want to delete this order?",
-                       "Yes", "NO", false, new DMS.AlertBox() {
-                           @Override
-                           public void PositiveMethod(DialogInterface dialog, int id) {
-                               subtotal=mProduct_arrays.get(position).getSubtotal();
-                        // subtotal=new DecimalFormat("##.##").format(subtotal);
-                       //  GrandTotal=new DecimalFormat("##.##").format(GrandTotal);
-                            //Double ss= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(subtotal));
-                          //  Double gg= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(GrandTotal));
+        holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialogBox.showDialog(v.getContext(), "", "Do you Surely want to delete this order?",
+                        "Yes", "NO", false, new DMS.AlertBox() {
+                            @Override
+                            public void PositiveMethod(DialogInterface dialog, int id) {
+                                subtotal=mProduct_arrays.get(position).getSubtotal();
+                                // subtotal=new DecimalFormat("##.##").format(subtotal);
+                                //  GrandTotal=new DecimalFormat("##.##").format(GrandTotal);
+                                //Double ss= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(subtotal));
+                                //  Double gg= Double.valueOf(NumberFormat.getNumberInstance(Locale.getDefault()).format(GrandTotal));
 //Double gg=Double.parseDouble(GrandTotal)-Double.parseDouble(subtotal);
-                        // viewTotal.setText(String.valueOf(gg));
+                                // viewTotal.setText(String.valueOf(gg));
 
-                              // Log.v("prdid1", String.valueOf(gg));
-                               mShared_common_pref = new Shared_Common_Pref(context);
-                               mShared_common_pref.save("SubTotal", subtotal);
-                             //  mShared_common_pref.save("ItemTotal", mProduct_arrays.get(position).getQty());
-                             //  Log.v("prdid2",GrandTotal);
-                               Log.v("prdid",productid);
-                              // gtotal= GrandTotal-subtotal;
-                             //  GrandTotal = String.valueOf(GrandTotal) - String.valueOf(subtotal);
-                           //  gtotal= Integer.parseInt(GrandTotal)-Integer.parseInt(subtotal);
-                               Log.v("prdid3", String.valueOf(gtotal));
-                              // GrandTotal = GrandTotal - subtotal;
-                               deleteTask(mProductArray,productid,subtotal);
-                           }
+                                // Log.v("prdid1", String.valueOf(gg));
+                                mShared_common_pref = new Shared_Common_Pref(context);
+                                mShared_common_pref.save("SubTotal", subtotal);
+                                //  mShared_common_pref.save("ItemTotal", mProduct_arrays.get(position).getQty());
+                                //  Log.v("prdid2",GrandTotal);
+                                Log.v("prdid",productid);
+                                // gtotal= GrandTotal-subtotal;
+                                //  GrandTotal = String.valueOf(GrandTotal) - String.valueOf(subtotal);
+                                //  gtotal= Integer.parseInt(GrandTotal)-Integer.parseInt(subtotal);
+                                Log.v("prdid3", String.valueOf(gtotal));
+                                // GrandTotal = GrandTotal - subtotal;
+                                deleteTask(mProductArray,productid,subtotal);
+                            }
 
-                           @Override
-                           public void NegativeMethod(DialogInterface dialog, int id) {
-                           }
-                       });
+                            @Override
+                            public void NegativeMethod(DialogInterface dialog, int id) {
+                            }
+                        });
 
-           }
-       });
+            }
+        });
         holder.editProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,7 +171,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                                 PrimaryProduct task = mProduct_arrays.get(position);
                                 Log.v("PRODUCT_LIST", new Gson().toJson(task));
                                 shared_common_pref.save("task", new Gson().toJson(task));
-                               // mShared_common_pref.save("SubTotal", String.valueOf(subtotal));
+                                // mShared_common_pref.save("SubTotal", String.valueOf(subtotal));
                                 Intent intent = new Intent(context, UpdatePrimaryProduct.class);
                                 context.startActivity(intent);
                             }
@@ -219,6 +218,8 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         ImageView deleteProduct;
         ImageView editProduct;
 
+        TextView tv_free_qty;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             txtQty = (TextView) itemView.findViewById(R.id.item_qty);
@@ -232,6 +233,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             editCount = (TextView) itemView.findViewById(R.id.edit_qty);
             deleteProduct = (ImageView) itemView.findViewById(R.id.delete_product);
             editProduct=(ImageView) itemView.findViewById(R.id.edit_product);
+            tv_free_qty= itemView.findViewById(R.id.tv_free_qty);
 
         }
     }
@@ -245,7 +247,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
     private void deleteTask(final PrimaryProduct task, String productID,String subtotal) {
         this.subtotal=subtotal;
-       // this.GrandTotal=GrandTotal;
+        // this.GrandTotal=GrandTotal;
 
         class DeleteTask extends AsyncTask<Void, Void, Void> {
 
@@ -267,9 +269,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 Toast.makeText(context,"Sucessfully  Product Deleted",Toast.LENGTH_SHORT).show();
 
 
-               mShared_common_pref = new Shared_Common_Pref(context);
-               mShared_common_pref.save("SubTotal",subtotal);
-               // mShared_common_pref.save("GrandTotal", String.valueOf(gtotal));
+                mShared_common_pref = new Shared_Common_Pref(context);
+                mShared_common_pref.save("SubTotal",subtotal);
+                // mShared_common_pref.save("GrandTotal", String.valueOf(gtotal));
 //               String GrandTotal =  mShared_common_pref.getvalue("GrandTotal");
 
 //                Gson gson = new Gson();
@@ -282,7 +284,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //                mIntent.putExtra("SubTotal",subtotal);
 //
 //                context.startActivity(mIntent);
-              //  context.startActivity(new Intent(context, ViewCartActivity.class));
+                //  context.startActivity(new Intent(context, ViewCartActivity.class));
             }
         }
 

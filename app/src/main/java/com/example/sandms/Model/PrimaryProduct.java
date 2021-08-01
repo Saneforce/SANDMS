@@ -39,9 +39,17 @@ public class PrimaryProduct implements Serializable {
     private String Con_fac;
     private int Product_Sale_Unit_Cn_Qty;
 
+    private String selectedScheme = "";
+    private String selectedDisValue = "";
+
+    private String selectedFree = "";
+    private String Off_Pro_code = "";
+    private String Off_Pro_name = "";
+    private String Off_Pro_Unit = "";
+
+
     @TypeConverters({Converter.class})
     List<SchemeProducts> schemeProducts;
-
 
     public static class Converter {
 
@@ -56,10 +64,43 @@ public class PrimaryProduct implements Serializable {
         }
 
     }
+
+    public String getSelectedFree() {
+        return selectedFree;
+    }
+
+    public void setSelectedFree(String selectedFree) {
+        this.selectedFree = selectedFree;
+    }
+
+    public String getOff_Pro_code() {
+        return Off_Pro_code;
+    }
+
+    public void setOff_Pro_code(String off_Pro_code) {
+        Off_Pro_code = off_Pro_code;
+    }
+
+    public String getOff_Pro_name() {
+        return Off_Pro_name;
+    }
+
+    public void setOff_Pro_name(String off_Pro_name) {
+        Off_Pro_name = off_Pro_name;
+    }
+
+    public String getOff_Pro_Unit() {
+        return Off_Pro_Unit;
+    }
+
+    public void setOff_Pro_Unit(String off_Pro_Unit) {
+        Off_Pro_Unit = off_Pro_Unit;
+    }
+
     public PrimaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                          String Tax_amt, String Con_fac, List<SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty ) {
+                          String Tax_amt, String Con_fac, List<SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -78,6 +119,22 @@ public class PrimaryProduct implements Serializable {
         this.Con_fac = Con_fac;
         this.schemeProducts = schemeProducts;
         this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
+    }
+
+    public String getSelectedScheme() {
+        return selectedScheme;
+    }
+
+    public void setSelectedScheme(String selectedScheme) {
+        this.selectedScheme = selectedScheme;
+    }
+
+    public String getSelectedDisValue() {
+        return selectedDisValue;
+    }
+
+    public void setSelectedDisValue(String selectedDisValue) {
+        this.selectedDisValue = selectedDisValue;
     }
 
     public int getProduct_Sale_Unit_Cn_Qty() {

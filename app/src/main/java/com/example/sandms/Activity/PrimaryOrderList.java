@@ -2,6 +2,7 @@ package com.example.sandms.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -139,7 +140,7 @@ public class PrimaryOrderList extends AppCompatActivity {
                     priUnitRecycler.setItemAnimator(new DefaultItemAnimator());
                     priUnitRecycler.setAdapter(mAdapter);
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
             }
@@ -160,21 +161,23 @@ public class PrimaryOrderList extends AppCompatActivity {
             imgBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    onBackPressed();
+/*
                     AlertDialogBox.showDialog(PrimaryOrderList.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
                         @Override
                         public void PositiveMethod(DialogInterface dialog, int id) {
-                            PrimaryOrderList.super.onBackPressed();
+                            onBackPressed();
                         }
 
                         @Override
                         public void NegativeMethod(DialogInterface dialog, int id) {
                         }
                     });
+*/
                 }
             });
             toolHeader = (TextView) findViewById(R.id.toolbar_title);
-            toolHeader.setText("Product Unit Selection");
+            toolHeader.setText("Select UOM");
 
             toolSearch = (EditText) findViewById(R.id.toolbar_search);
             toolSearch.setVisibility(View.GONE);
@@ -190,11 +193,13 @@ public class PrimaryOrderList extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView title, year, productvalue;
             LinearLayout image_down;
+            ConstraintLayout row_category;
             public MyViewHolder(View view) {
                 super(view);
                 title = (TextView) view.findViewById(R.id.child_product_name);
                 productvalue = (TextView) view.findViewById(R.id.child_pro_unit);
                 image_down=view.findViewById(R.id.image_down);
+                row_category=view.findViewById(R.id.row_category);
 
             }
         }
@@ -216,7 +221,7 @@ public class PrimaryOrderList extends AppCompatActivity {
             subtotal= Double.valueOf(task.getSubtotal());
             Log.e("subbbb", String.valueOf(subtot));
            cqty= Integer.parseInt(productlist.getConQty());
-            Log.e("salecnqty", String.valueOf(task.getProduct_Sale_Unit_Cn_Qty()));
+
             holder.productvalue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -224,7 +229,7 @@ public class PrimaryOrderList extends AppCompatActivity {
                     finish();
                 }
             });
-            holder.image_down.setOnClickListener(new View.OnClickListener() {
+            holder.row_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateTask(task,productList.get(position).getName(),productList.get(position).getConQty(),subtotal);
@@ -272,5 +277,10 @@ public class PrimaryOrderList extends AppCompatActivity {
 
         UpdateTask ut = new UpdateTask();
         ut.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

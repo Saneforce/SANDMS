@@ -4,8 +4,14 @@ package com.example.sandms.Model;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(tableName = "Secondary_Product")
 public class SecondaryProduct implements Serializable {
@@ -29,13 +35,34 @@ public class SecondaryProduct implements Serializable {
     private String Tax_amt;
     private String Con_fac;
 
-    @Embedded
-    private SchemeProducts schemeProducts;
+
+    private String selectedScheme = "";
+    private String selectedDisValue = "";
+
+
+    @TypeConverters({Converter.class})
+    List<SecondaryProduct.SchemeProducts> schemeProducts;
+
+
+    public static class Converter {
+
+        @TypeConverter
+        public  List<SecondaryProduct.SchemeProducts> restoreBankList(String listOfString) {
+            return new Gson().fromJson(listOfString, new TypeToken<List<SecondaryProduct.SchemeProducts>>() {}.getType());
+        }
+
+        @TypeConverter
+        public String saveListAsString(List<SecondaryProduct.SchemeProducts> listOfString) {
+            return new Gson().toJson(listOfString);
+        }
+
+    }
+
 
     public SecondaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                             String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                             String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                            String Tax_amt, String Con_fac, SchemeProducts schemeProducts) {
+                            String Tax_amt, String Con_fac, List<SecondaryProduct.SchemeProducts> schemeProducts) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -52,6 +79,26 @@ public class SecondaryProduct implements Serializable {
         this.Dis_amt = Dis_amt;
         this.Tax_amt = Tax_amt;
         this.Con_fac = Con_fac;
+        this.schemeProducts = schemeProducts;
+    }
+
+    public String getSelectedScheme() {
+        return selectedScheme;
+    }
+
+    public void setSelectedScheme(String selectedScheme) {
+        this.selectedScheme = selectedScheme;
+    }
+
+    public String getSelectedDisValue() {
+        return selectedDisValue;
+    }
+
+    public void setSelectedDisValue(String selectedDisValue) {
+        this.selectedDisValue = selectedDisValue;
+    }
+
+    public void setSchemeProducts(List<SecondaryProduct.SchemeProducts> schemeProducts) {
         this.schemeProducts = schemeProducts;
     }
 
@@ -192,12 +239,8 @@ public class SecondaryProduct implements Serializable {
         Subtotal = subtotal;
     }
 
-    public SchemeProducts getSchemeProducts() {
+    public List<SecondaryProduct.SchemeProducts> getSchemeProducts() {
         return schemeProducts;
-    }
-
-    public void setSchemeProducts(SchemeProducts schemeProducts) {
-        this.schemeProducts = schemeProducts;
     }
 
     public static class SchemeProducts{
@@ -207,14 +250,45 @@ public class SecondaryProduct implements Serializable {
         private String Scheme_Unit;
         private String Product_Name;
         private String Product_Code;
+        private String Package;
+        private String Free;
+        private String Discount_Type;
 
 
-        public SchemeProducts(String Scheme, String Discountvalue, String Scheme_Unit, String Product_Name, String Product_Code) {
+        public SchemeProducts(String Scheme, String Discountvalue, String Scheme_Unit, String Product_Name, String Product_Code, String Package, String Free, String Discount_Type) {
             this.Scheme = Scheme;
             this.Discountvalue = Discountvalue;
             this.Scheme_Unit = Scheme_Unit;
             this.Product_Name = Product_Name;
             this.Product_Code = Product_Code;
+            this.Package = Package;
+            this.Free = Free;
+            this.Discount_Type = Discount_Type;
+
+        }
+
+        public String getPackage() {
+            return Package;
+        }
+
+        public void setPackage(String aPackage) {
+            Package = aPackage;
+        }
+
+        public String getFree() {
+            return Free;
+        }
+
+        public void setFree(String free) {
+            Free = free;
+        }
+
+        public String getDiscount_Type() {
+            return Discount_Type;
+        }
+
+        public void setDiscount_Type(String discount_Type) {
+            Discount_Type = discount_Type;
         }
 
         public String getScheme() {
