@@ -51,20 +51,15 @@ public class DashBoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         mCommon_class = new Common_Class(this);
         shared_common_pref = new Shared_Common_Pref(this);
         gson = new Gson();
-        //productApi();
         txtName = findViewById(R.id.dis_name);
         txtAddress = findViewById(R.id.dis_place);
         profilePic=findViewById(R.id.profileImg);
         profileLayout=findViewById(R.id.imageLayout);
         txtName.setText(shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
         txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-       // brandProdutApi();
-
-
         imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,32 +67,20 @@ public class DashBoardActivity extends AppCompatActivity {
                 moveTaskToBack(true);
             }
         });
-
-
     }
-
-
     private class PopulateDbAsyntask extends AsyncTask<Void, Void, Void> {
         private PrimaryProductDao contactDao;
-
-
         public PopulateDbAsyntask(PrimaryProductDatabase contactDaos) { contactDao = contactDaos.contactDao();
         }
-
         @Override
         protected Void doInBackground(Void... voids) {
             fillingWithStart();
             Log.v("Data_CHeckng", "Checking_data");
             return null;
         }
-
     }
-
-
     private void fillingWithStart() {
-
         Log.v("Data_CHeckng", "Checking_data");
-
         Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
         String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
         PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
@@ -106,7 +89,6 @@ public class DashBoardActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
             JSONObject jsonObject = null;
             JSONObject jsonObject1 = null;
-
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="";
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
@@ -123,8 +105,6 @@ public class DashBoardActivity extends AppCompatActivity {
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
                 Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
-
-
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     jsonObject1 = jsonArray1.getJSONObject(j);
                     Scheme = String.valueOf(jsonObject1.get("Scheme"));
@@ -132,34 +112,24 @@ public class DashBoardActivity extends AppCompatActivity {
                     Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
                     Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
                     Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
-
                     Log.v("JSON_Array_SCHEMA",Scheme);
                     Log.v("JSON_Array_DIS",Discount);
                     contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                             PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
                             PCon_fac,new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
                             Product_Code),0));
-
                 }
-
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
-
-
     public void PrimaryOrder(View v) {
-
         mCommon_class.ProgressdialogShow(1, "");
         brandPrimaryApi();
     }
-
     public void SecondaryOrder(View v) {
         startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
-
     }
 
     public void CounterOrder(View v) {
@@ -171,21 +141,21 @@ public class DashBoardActivity extends AppCompatActivity {
     public void MyOrder(View v) {
         startActivity(new Intent(getApplicationContext(), MyOrdersActivity.class));
     }
-
     public void ReportData(View v) {
         startActivity(new Intent(getApplicationContext(), ReportDashBoard.class));
     }
-
     public void Payment(View v) {
         startActivity(new Intent(getApplicationContext(), PaymentDashAcitivity.class));
     }
-
+    public void Company(View v) {
+        startActivity(new Intent(getApplicationContext(), CompanyProfile.class));
+    }
+    public void PrivacyPolicy(View v) {
+        startActivity(new Intent(getApplicationContext(), CompanyProfile.class));
+    }
     @Override
     public void onBackPressed() {
-
     }
-
-
     public void productApi() {
 
         String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";

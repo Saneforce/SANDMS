@@ -215,6 +215,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/C10dp"
+                android:visibility="visible"
+                android:id="@+id/company_profile"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="Company"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+
+
+
+
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Company_profiles" />
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/company_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="PrivacyPolicy"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Privacy_policy" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
                 android:visibility="invisible"
                 android:layout_weight="1"
                 android:background="@drawable/text_bg"
@@ -222,6 +276,11 @@
                 android:onClick="Payment"
                 android:orientation="vertical"
                 android:padding="@dimen/C20dp">
+
+
+
+
+
 
                 <ImageView
                     style="@style/ImageViewHeader"
@@ -233,7 +292,6 @@
 
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,7 +26,8 @@
         android:theme="@style/AppBaseTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="p">
-        <activity android:name=".Activity.PrimaryOrderList"></activity>
+        <activity android:name=".Activity.CompanyProfile"></activity>
+        <activity android:name=".Activity.PrimaryOrderList" />
         <activity android:name=".Activity.ProfileActivity" />
         <activity android:name=".Activity.DispatchCreditedActivity" />
         <activity android:name=".Activity.DispatchEditActivtity" />
