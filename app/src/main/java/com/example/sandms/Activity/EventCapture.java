@@ -43,8 +43,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 public class EventCapture extends AppCompatActivity {
-
-
     Button TakeEventPicture;
     TextView txtRetailerName, txtRoute, txtDistributorName;
     int count = 0, countInt = 0;
@@ -53,8 +51,6 @@ public class EventCapture extends AppCompatActivity {
     EventCaptureAdapter mEventCaptureAdapter;
     ApiInterface apiInterface;
     EventCaptureModel taskOne = new EventCaptureModel();
-
-
     EditText editextTitle, editTextDescrption;
     List<EventCaptureModel> taskList;
     int eventDbCount = 0;
@@ -62,7 +58,6 @@ public class EventCapture extends AppCompatActivity {
     String RetailerChannel = "", Retailerclass = "", OrderAmount = "", LastVisited = "", Remarks = "", textMobile = "",
             PhoneNumber = "", selectOrder = "", RetailerNames = "", eventListStr, EventFileName, keyEk = "EK", KeyDate,
             keyCodeValue, RoomDataBase = "", RetailerName, RouteName, DistributorName;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +66,6 @@ public class EventCapture extends AppCompatActivity {
     }
 
     private void initialize() {
-
-
         ImageView backView = findViewById(R.id.imag_back);
         backView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,29 +73,18 @@ public class EventCapture extends AppCompatActivity {
                 mOnBackPressedDispatcher.onBackPressed();
             }
         });
-
         getTasks();
-
-
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-
-
-
         eventCapture = new ArrayList<>();
         TakeEventPicture = findViewById(R.id.btn_take_photo);
         txtRetailerName = findViewById(R.id.txt_reatiler_name);
         txtRoute = findViewById(R.id.txt_route);
         txtDistributorName = findViewById(R.id.txt_distributor_name);
-
         txtRetailerName.setText(RetailerName);
-
         txtRoute.setText(RouteName);
         txtDistributorName.setText(DistributorName);
-
         editextTitle = findViewById(R.id.editTextDesc);
         editTextDescrption = findViewById(R.id.editTextFinishBy);
-
-        Log.e("NEW_COUNT_VALULE", "Heeeee");
 
         mEventCapture = findViewById(R.id.event_capture_list);
         mEventCapture.setHasFixedSize(true);
@@ -145,7 +127,6 @@ public class EventCapture extends AppCompatActivity {
                 } else {
                     Log.e("Count_Value", String.valueOf(countInt));
                 }
-
                 taskOne.addToQuantity();
                 count = taskOne.getmQuantity() + countInt;
                 EventFileName = "EventCapture" + keyCodeValue + ".jpeg";
@@ -157,12 +138,8 @@ public class EventCapture extends AppCompatActivity {
 
             }
         });
-
         task = (EventCaptureModel) getIntent().getSerializableExtra("task");
-
         loadTask(task);
-
-
     }
 
     private void loadTask(EventCaptureModel task) {
@@ -176,8 +153,6 @@ public class EventCapture extends AppCompatActivity {
             @Override
             protected List<EventCaptureModel> doInBackground(Void... voids) {
                 taskList = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().taskDao().getAll();
-
-
                 return taskList;
             }
 
@@ -188,8 +163,6 @@ public class EventCapture extends AppCompatActivity {
                     @Override
                     public void onIntentClick(int Name) {
                         Log.e("Delete_Position", String.valueOf(tasks.get(Name)));
-
-
                         AlertDialogBox.showDialog(EventCapture.this, "", "Are you surely want to delete?", "Yes", "No", false, new DMS.AlertBox() {
                             @Override
                             public void PositiveMethod(DialogInterface dialog, int id) {
@@ -210,12 +183,10 @@ public class EventCapture extends AppCompatActivity {
         GetTasks gt = new GetTasks();
         gt.execute();
     }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case 2:
                 if (resultCode == RESULT_OK) {
@@ -382,7 +353,6 @@ public class EventCapture extends AppCompatActivity {
 
     private void deleteTask(EventCaptureModel task) {
         class DeleteTask extends AsyncTask<Void, Void, Void> {
-
             @Override
             protected Void doInBackground(Void... voids) {
                 DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
@@ -390,7 +360,6 @@ public class EventCapture extends AppCompatActivity {
                         .delete(task);
                 return null;
             }
-
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -398,9 +367,7 @@ public class EventCapture extends AppCompatActivity {
                 Toast.makeText(EventCapture.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
             }
         }
-
         DeleteTask dt = new DeleteTask();
         dt.execute();
-
     }
 }
