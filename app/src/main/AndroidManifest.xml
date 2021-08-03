@@ -23,6 +23,10 @@
         android:theme="@style/AppBaseTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="p">
+        
+        <activity android:name=".Activity.CompanyProfile"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".Activity.PrimaryOrderList"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />

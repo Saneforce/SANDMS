@@ -6,6 +6,8 @@
     <string name="counter_orders">Counter Orders</string>
     <string name="my_orders">My Orders</string>
     <string name="Rep_orders">Reports</string>
+    <string name="Privacy_policy">Privacy Policy</string>
+    <string name="Company_profiles">Company Profile</string>
     <string name="Pri_Rep_orders">Primary Reports</string>
     <string name="Sec_Rep_orders">Secondary Reports</string>
     <string name="View_Rep">View Report</string>
