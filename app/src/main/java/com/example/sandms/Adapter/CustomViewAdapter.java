@@ -1,6 +1,7 @@
 package com.example.sandms.Adapter;
 
 import static io.realm.Realm.getApplicationContext;
+import static io.realm.Realm.getApplicationContext;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,12 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sandms.Activity.UpdatePrimaryProduct;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
-import com.example.sandms.Model.Product_Array;
 import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
+import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -36,32 +40,31 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     String subtotal;
 
     Shared_Common_Pref mShared_common_pref;
-    Float quntaity, price;
+//    Float quntaity, price;
     private List<PrimaryProduct> mProduct_arrays = new ArrayList<>();
     DMS.viewProduct viewProd;
     Context context;
-    AlertDialog.Builder builder;
-    String productname;
-    String catName;
-    String catImg;
-    String productID;
-    String productcode;
-    Float productqty;
-    Float productRate;
-    Product_Array newProductArray;
-    ArrayList<PrimaryProduct> Product_Array_List;
+//    AlertDialog.Builder builder;
+//    String productname;
+//    String catName;
+//    String catImg;
+//    String productID;
+//    String productcode;
+//    Float productqty;
+//    Float productRate;
+//    Product_Array newProductArray;
+//    ArrayList<PrimaryProduct> Product_Array_List;
     Shared_Common_Pref shared_common_pref;
     String GrandTotal;
     int gtotal;
-    float sum = 0;
+//    float sum = 0;
     TextView viewTotal;
-    ArrayList<String> totalArray = new ArrayList<>();
+//    ArrayList<String> totalArray = new ArrayList<>();
     // viewProduct mProducrtDelete;
 
     public CustomViewAdapter(Context context ,String grandTotal,TextView viewTotal,DMS.viewProduct viewProd) {
         this.context = context;
         this.viewProd = viewProd;
-        this.mProduct_arrays = mProduct_arrays;
         this.GrandTotal=grandTotal;
         this.viewTotal=viewTotal;
 
@@ -184,8 +187,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             }
         });
 
-
-
+        updateSchemeData(mProductArray.getSchemeProducts(), mProductArray.getTxtqty().equals("") ? 0 : Integer.parseInt(mProductArray.getTxtqty()), holder, position, mProductArray);
 
     }
 
@@ -219,6 +221,11 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         ImageView editProduct;
 
         TextView tv_free_qty;
+        TextView tv_final_total_amt;
+        TextView tv_dis;
+        LinearLayout ll_disc;
+        TextView item_tax;
+        TextView child_pro_unit;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -234,7 +241,11 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             deleteProduct = (ImageView) itemView.findViewById(R.id.delete_product);
             editProduct=(ImageView) itemView.findViewById(R.id.edit_product);
             tv_free_qty= itemView.findViewById(R.id.tv_free_qty);
-
+            tv_final_total_amt= itemView.findViewById(R.id.tv_final_total_amt);
+            ll_disc= itemView.findViewById(R.id.ll_disc);
+            tv_dis= itemView.findViewById(R.id.txt_dis);
+            item_tax= itemView.findViewById(R.id.item_tax);
+            child_pro_unit = itemView.findViewById(R.id.child_pro_unit);
         }
     }
 
@@ -291,4 +302,174 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         DeleteTask ut = new  DeleteTask();
         ut.execute();
     }
+
+    PrimaryProduct.SchemeProducts selectedScheme = null;
+
+    private void updateSchemeData(List<PrimaryProduct.SchemeProducts> schemeProducts, int qty, MyViewHolder viewHolder, int position, PrimaryProduct contact) {
+        viewHolder.child_pro_unit.setText(contact.getProduct_Sale_Unit());
+        int product_Sale_Unit_Cn_Qty = 1;
+        if(contact.getProduct_Sale_Unit_Cn_Qty()!=0)
+            product_Sale_Unit_Cn_Qty= contact.getProduct_Sale_Unit_Cn_Qty();
+/*
+        double value=
+        subTotal = Double.parseDouble(contact.getProduct_Cat_Code()) * contact.getProduct_Sale_Unit_Cn_Qty();
+
+        tax = Float.valueOf(contact.getTax_Value());
+
+        contact.getTxtqty()
+        valueTotal = subTotal*tax/100;
+        subTotal = (taxAmt* subTotal) / 100;
+        subTotal = subTotal * contact.getProduct_Sale_Unit_Cn_Qty();
+
+
+*/
+
+
+        selectedScheme = null;
+        int previousSchemeCount = 0;
+        for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
+            if(!scheme.getScheme().equals("")) {
+                int currentSchemeCount = Integer.parseInt(scheme.getScheme());
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
+                    previousSchemeCount =currentSchemeCount;
+                    selectedScheme = scheme;
+                }
+            }
+        }
+
+        String discountType = "";
+
+        double discountValue = 0;
+        double productAmt = 0;
+        double schemeDisc = 0;
+        if(selectedScheme != null){
+            mProduct_arrays.get(position).setSelectedScheme(selectedScheme.getScheme());
+            contact.setSelectedScheme(selectedScheme.getScheme());
+
+            mProduct_arrays.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
+            contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+
+            mProduct_arrays.get(position).setOff_Pro_code(selectedScheme.getProduct_Code());
+            contact.setOff_Pro_code(selectedScheme.getProduct_Code());
+
+            mProduct_arrays.get(position).setOff_Pro_name(selectedScheme.getProduct_Name());
+            contact.setOff_Pro_name(selectedScheme.getProduct_Name());
+
+            mProduct_arrays.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            discountType= selectedScheme.getDiscount_Type();
+
+
+            if(discountType.equals("Rs"))
+                viewHolder.ll_disc.setVisibility(View.GONE);
+            else
+                viewHolder.ll_disc.setVisibility(View.VISIBLE);
+
+            String packageType = selectedScheme.getPackage();
+
+            double freeQty = 0;
+            double packageCalc = 0;
+            switch (packageType){
+                case "N":
+                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+                case "Y":
+                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    break;
+//                default:
+
+            }
+            if(!selectedScheme.getFree().equals(""))
+                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+
+            mProduct_arrays.get(position).setSelectedFree(String.valueOf(freeQty));
+            contact.setSelectedFree(String.valueOf(freeQty));
+
+            viewHolder.tv_free_qty.setText(String.valueOf(freeQty));
+
+
+
+            if(contact.getProduct_Cat_Code()!=null && !contact.getProduct_Cat_Code().equals(""))
+                productAmt = Double.parseDouble(contact.getProduct_Cat_Code());
+
+            if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
+                schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
+
+            switch (discountType){
+                case "%":
+                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    viewHolder.ll_disc.setVisibility(View.VISIBLE);
+
+
+                    viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                    viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    break;
+                case "Rs":
+                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    viewHolder.ll_disc.setVisibility(View.GONE);
+                    break;
+//                default:
+            }
+
+
+            if(discountValue>0){
+                mProduct_arrays.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+
+                mProduct_arrays.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
+                contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+/*
+                totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
+                viewHolder.ll_disc_reduction.setVisibility(View.VISIBLE);
+                viewHolder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                viewHolder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
+
+            }
+
+        }else {
+            viewHolder.ll_disc.setVisibility(View.VISIBLE);
+            viewHolder.tv_free_qty.setText("0");
+        }
+        double totalAmt = 0;
+        double taxPercent = 0;
+        double taxAmt = 0;
+
+        try {
+            totalAmt = Double.parseDouble(contact.getProduct_Cat_Code()) * (qty *product_Sale_Unit_Cn_Qty);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            taxPercent = Double.parseDouble(contact.getTax_Value());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        double itemPrice = 0;
+//        if(totalAmt==0)
+        itemPrice = Double.parseDouble(contact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
+//        else
+//            itemPrice = totalAmt;
+
+        viewHolder.txtPrice.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
+        viewHolder.txtQty.setText(String.valueOf(qty));
+        viewHolder.item_amount.setText(Constants.roundTwoDecimals(totalAmt));
+
+
+        viewHolder.item_tax.setText(String.valueOf(taxPercent));
+
+        try {
+            taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        viewHolder.tax_amount.setText(Constants.roundTwoDecimals(taxAmt));
+        viewHolder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
+
+    }
+
+
 }

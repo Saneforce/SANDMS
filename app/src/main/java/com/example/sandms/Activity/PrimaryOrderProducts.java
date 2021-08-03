@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -83,7 +84,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     ProductAdapter priProdAdapter;
     JSONArray jsonBrandCateg = null;
     JSONArray jsonBrandProduct = null;
-    Common_Model mCommon_model_spinner;
+//    Common_Model mCommon_model_spinner;
    public JSONObject jsonProductuom;
     public String a;
     ArrayList<Product_Array> Product_Array_List;
@@ -108,11 +109,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     PrimaryProductViewModel mPrimaryProductViewModel;
     String productBarCode = "a", productBarCodes = "";
     SearchView searchEdit;
-    EditText edt_serach;
+//    EditText edt_serach;
     PrimaryProductDatabase primaryProductDatabase;
     PrimaryProductViewModel deleteViewModel;
    Common_Class mCommon_class;
-    int product_count = 0;
+//    int product_count = 0;
     List<PrimaryProduct> mPrimaryProduct = new ArrayList<>();
     String sPrimaryProd = "";
     int mFirst=0, mLast=0;
@@ -275,8 +276,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                 llm.scrollToPositionWithOffset(mFirst - 2,priCateAdapter.jsonArray.length());
             }
         });
-        edt_serach = findViewById(R.id.edt_serach);
-        edt_serach.addTextChangedListener(new TextWatcher() {
+//        edt_serach = findViewById(R.id.edt_serach);
+       /* edt_serach.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -291,9 +292,13 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void afterTextChanged(Editable s) {
 
             }
+        });*/
+        searchEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchEdit.onActionViewExpanded();
+            }
         });
-
-
         searchEdit.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -307,7 +312,16 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             }
         });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadFirstItem();
+            }
+        }, 2000);
 
+    }
+
+    private void loadFirstItem() {
         if(jsonBrandCateg.length()>0){
             try {
                 JSONObject jsonObject = jsonBrandCateg.getJSONObject(0);
@@ -324,71 +338,70 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+        }else
+            Toast.makeText(this, "Empty Data", Toast.LENGTH_SHORT).show();
 
     }
 
 
-/*
-    public void getProductId() {
-     //   this.sf_Code=sf_Code;
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getProductuom(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-        Log.v("DMS_REQUEST", call.request().toString());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("DMS_RESPONSE", response.body().toString());
+    /*
+        public void getProductId() {
+         //   this.sf_Code=sf_Code;
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> call = apiInterface.getProductuom(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            Log.v("DMS_REQUEST", call.request().toString());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.v("DMS_RESPONSE", response.body().toString());
 
-                try {
-                    jsonProductuom = new JSONObject(response.body().toString());
-                    Log.e("LoginResponse1",  jsonProductuom.toString());
-                    String js=jsonProductuom.getString(
-                            "success");
-                    Log.e("LoginResponse133w",  js.toString());
-                    JSONArray jss=jsonProductuom.getJSONArray(
-                            "Data");
-                    Log.e("LoginResponse133ws",  jss.toString());
-//                    String GS=new Gson().toJson(jss);
-//                  // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
-//                 Log.e("LoginResponse133",  GS.toString());
-                    for (int i = 0; i < jss.length(); i++) {
-                      JSONObject jsonObject = jss.optJSONObject(i);
-                        String name=jsonObject.getString("name");
-                        Log.v("LoginResponse1nn", name);
-                        String productCode=jsonObject.getString("Product_Code");
-                        Log.v("LoginResponse1nnq", productCode);
-                        String conqty=jsonObject.getString("ConQty");
-                        mCommon_model_spinner = new Common_Model(name, productCode,conqty, "flag");
-                        productCodeOffileData.add(mCommon_model_spinner);
-                        Log.v("daaa",productCodeOffileData.toString());
-                        mShared_common_pref.save("PRODUCTCODE", productCodeOffileData.toString());
-//
-//                        customDialog = new CustomListViewDialog(PrimaryOrderProducts.this, productCodeOffileData, 12);
-//                        Window window = customDialog.getWindow();
-//                        window.setGravity(Gravity.CENTER);
-//                        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//                        customDialog.show();
+                    try {
+                        jsonProductuom = new JSONObject(response.body().toString());
+                        Log.e("LoginResponse1",  jsonProductuom.toString());
+                        String js=jsonProductuom.getString(
+                                "success");
+                        Log.e("LoginResponse133w",  js.toString());
+                        JSONArray jss=jsonProductuom.getJSONArray(
+                                "Data");
+                        Log.e("LoginResponse133ws",  jss.toString());
+    //                    String GS=new Gson().toJson(jss);
+    //                  // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
+    //                 Log.e("LoginResponse133",  GS.toString());
+                        for (int i = 0; i < jss.length(); i++) {
+                          JSONObject jsonObject = jss.optJSONObject(i);
+                            String name=jsonObject.getString("name");
+                            Log.v("LoginResponse1nn", name);
+                            String productCode=jsonObject.getString("Product_Code");
+                            Log.v("LoginResponse1nnq", productCode);
+                            String conqty=jsonObject.getString("ConQty");
+                            mCommon_model_spinner = new Common_Model(name, productCode,conqty, "flag");
+                            productCodeOffileData.add(mCommon_model_spinner);
+                            Log.v("daaa",productCodeOffileData.toString());
+                            mShared_common_pref.save("PRODUCTCODE", productCodeOffileData.toString());
+    //
+    //                        customDialog = new CustomListViewDialog(PrimaryOrderProducts.this, productCodeOffileData, 12);
+    //                        Window window = customDialog.getWindow();
+    //                        window.setGravity(Gravity.CENTER);
+    //                        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+    //                        customDialog.show();
+
+                        }
+
+                    } catch (Exception e) {
 
                     }
 
-                } catch (Exception e) {
-
                 }
 
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(PrimaryOrderProducts.this, "Invalid products", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-*/
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Toast.makeText(PrimaryOrderProducts.this, "Invalid products", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    */
     @Override
     protected void onResume() {
-
-
         super.onResume();
         Log.v("Primary_order", "onResume");
         if (productBarCode.equalsIgnoreCase("")) {
@@ -730,6 +743,7 @@ String orderid=mContact.getUID();
                 Intent aa=new Intent(mCtx,PrimaryOrderList.class);
                 aa.putExtra("orderid",orderid);
                 aa.putExtra("pos",workinglist.get(position).getProduct_Sale_Unit());
+                aa.putExtra("uomList",workinglist.get(position).getUOMList());
              //   aa.putExtra("productunit",workinglist.get(position).getProduct_Sale_Unit());
                 mCtx.startActivity(aa);
             }
@@ -841,7 +855,7 @@ String orderid=mContact.getUID();
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                 String.valueOf(valueTotal), String.valueOf(finalPrice),
                                 mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                         Log.v("ifupdatedval++show",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
                     } else {
                         if(mContact.getTax_Value().equals("")||mContact.getTax_Value().equals("0")){
@@ -857,7 +871,7 @@ String orderid=mContact.getUID();
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                 String.valueOf(valueTotal), String.valueOf(finalPrice),
                                 mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
 
                     }
 
@@ -970,13 +984,13 @@ String orderid=mContact.getUID();
                     if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
                                 mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                         Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ finalPrice);
 
                     }else{
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal),String.valueOf(finalPrice),
                                 mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                         Log.v("updatshow++else22",    subTotal+""+String.valueOf(valueTotal)+ finalPrice);
                     }
                 }
@@ -1025,7 +1039,7 @@ String orderid=mContact.getUID();
                 Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
                         mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
             }//new stop
         }  //jul 11
 
@@ -1140,7 +1154,7 @@ String orderid=mContact.getUID();
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice),
                                     mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                             Log.v("ifupdatedval++",   subTotal+""+String.valueOf(valueTotal)+String.valueOf(finalPrice));
                         } else {
 
@@ -1157,7 +1171,7 @@ String orderid=mContact.getUID();
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice),
                                     mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                             //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                         }
                         Log.v("taxamt+", valueTotal.toString());
@@ -1209,13 +1223,13 @@ String orderid=mContact.getUID();
                         if(mContact.getDis_amt().equals("")||mContact.getDis_amt().equals("0")){
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), "0",
                                     mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                             Log.v("updatedval++else11",   subTotal+""+String.valueOf(valueTotal)+ prdDisAmt);
 
                         }else{
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), mContact.getDis_amt(),
                                     mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                             Log.v("updatedval++else22",    String.valueOf(valueTotal)+ mContact.getDis_amt());
                         }
                     }
@@ -1305,7 +1319,7 @@ String orderid=mContact.getUID();
                     Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
                     updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
                             mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                            mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                            mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                 }
                 updateSchemeData(mContact.getSchemeProducts(), ProductCount , mContact, holder, position, mContact);
 
@@ -1428,7 +1442,7 @@ String orderid=mContact.getUID();
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                         String.valueOf(valueTotal), String.valueOf(finalPrice),
                                         mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                                 Log.v("--ifupdatedval++", subTotal + "" + String.valueOf(valueTotal) + String.valueOf(finalPrice));
                             } else {
 
@@ -1446,7 +1460,7 @@ String orderid=mContact.getUID();
                                 updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                         String.valueOf(valueTotal), String.valueOf(finalPrice),
                                         mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                                 //   holder.ProductDisAmt.setText("" + new DecimalFormat("##.##").format(finalPrice));
                             }
 
@@ -1502,7 +1516,7 @@ String orderid=mContact.getUID();
                             updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
                                     String.valueOf(valueTotal), String.valueOf(finalPrice),
                                     mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                             Log.v("--updatedval++else11", subTotal + "" + String.valueOf(valueTotal) + finalPrice);
                         }
 
@@ -1598,10 +1612,11 @@ String orderid=mContact.getUID();
                         Log.v("-55update", subTotal + "" + valueTotal.toString() + finalPrice);
                         updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
                                 mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
-                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),mContact.getOff_disc_type());
                     }
+                    updateSchemeData(mContact.getSchemeProducts(), ProductCount, mContact, holder, position, mContact);
+
                 }
-                updateSchemeData(mContact.getSchemeProducts(), ProductCount, mContact, holder, position, mContact);
 
             }
         });
@@ -1776,8 +1791,13 @@ String orderid=mContact.getUID();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())));
-        holder.productItem.setText(String.valueOf(qty *product_Sale_Unit_Cn_Qty));
+        double itemPrice = 0;
+    /*    if(totalAmt==0)
+            itemPrice = totalAmt;
+        else*/
+            itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
+        holder.subProdcutChildRate.setText("Rs:" + itemPrice);
+        holder.productItem.setText(String.valueOf(qty));
         holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
 
 
@@ -1792,13 +1812,19 @@ String orderid=mContact.getUID();
 
         holder.ProductTaxAmt.setText(Constants.roundTwoDecimals(taxAmt));
         holder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
-
+        subTotal = (float) totalAmt;
+        valueTotal = (float) taxAmt;
+        finalPrice = (float) ((totalAmt - discountValue) + taxAmt);
+        updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal),
+                String.valueOf(valueTotal), String.valueOf(finalPrice),
+                mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree(),
+                mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit(),discountType);
     }
 
 
     private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt,
                             String selectedScheme, String selectedDisValue, String selectedFree,
-                            String Off_Pro_code, String Off_Pro_name, String Off_Pro_Unit) {
+                            String Off_Pro_code, String Off_Pro_name, String Off_Pro_Unit, String Off_disc_type) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
             @Override
@@ -1808,8 +1834,6 @@ String orderid=mContact.getUID();
                 task.setSubtotal(subTotal);
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
-
-
                         .update(task.getPID(),
                                 Qty, Qty,
                                 String.valueOf(subTotal),
@@ -1822,7 +1846,8 @@ String orderid=mContact.getUID();
                                 selectedFree,
                                 Off_Pro_code,
                                 Off_Pro_name,
-                                Off_Pro_Unit);
+                                Off_Pro_Unit,
+                                Off_disc_type);
                 return null;
             }
 

@@ -310,9 +310,13 @@ public class UpdateSecondaryProduct extends AppCompatActivity {
                                 productQty.getText().toString(),
                                 String.valueOf(subTotal),
                                 productTax.getText().toString(),
-                                productDis.getText().toString(),
+                                discountValue,
                                 productTaxAmt.getText().toString(),
-                                productDisAmt.getText().toString());
+                                String.valueOf(finalPrice),
+                                task.getSelectedDisValue(),
+                                task.getSelectedFree(),
+                                task.getSelectedFree(),
+                                task.getOff_Pro_code(),task.getOff_Pro_name(), task.getOff_Pro_Unit());
                 return null;
             }
 

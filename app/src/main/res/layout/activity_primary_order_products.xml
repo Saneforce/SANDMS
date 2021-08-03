@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/C5dp"
             android:lines="1"
-            android:drawableRight="@drawable/ic_search_icon"
+            android:drawableEnd="@drawable/ic_search_icon"
             android:background="@drawable/card_border"
             android:hint="Search..." />
         <LinearLayout
@@ -92,7 +92,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/C50dp"
-            android:padding="@dimen/C5dp"
             tools:listitem="@layout/product_details" />
 
     </LinearLayout>

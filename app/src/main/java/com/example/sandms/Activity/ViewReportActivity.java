@@ -241,8 +241,9 @@ public class ViewReportActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                     //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
-
+                        if(jsonObject.has("OrderVal"))
                         OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
+                        if(jsonObject.has("taxval"))
                         OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
                       //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
                         TotalValue.setText("Rs."+jsonObject.getString("OrderVal"));

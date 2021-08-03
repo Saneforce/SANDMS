@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-@Database(entities = {PrimaryProduct.class}, version = 4)
+@Database(entities = {PrimaryProduct.class}, version = 6)
 public abstract class PrimaryProductDatabase extends RoomDatabase {
 
 

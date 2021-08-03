@@ -30,7 +30,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Interface.SecProductDao;
-import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
@@ -521,6 +520,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
+            int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
@@ -532,16 +532,20 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("Product_Sale_Unit"));
+                String PSaleUnit = String.valueOf(jsonObject.get("product_unit"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
 
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
+                JSONArray uomArray = null;
+                if(jsonObject.has("UOMList"))
+                    uomArray = jsonObject.getJSONArray("UOMList");
 
                 List<SecondaryProduct.SchemeProducts> schemeList = new ArrayList<>();
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
+                    try {
                     jsonObject1 = jsonArray1.getJSONObject(j);
                     Scheme = String.valueOf(jsonObject1.get("Scheme"));
                     Discount = String.valueOf(jsonObject1.get("Discount"));
@@ -552,14 +556,46 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Free = String.valueOf(jsonObject1.get("Free"));
                     if(jsonObject1.has("Discount_Type"))
                     Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+                    if(jsonObject1.has("Default_UOMQty"))
+                        unitQty = jsonObject1.getInt("Default_UOMQty");
 
+                    Log.v("JSON_Array_SCHEMA",Scheme);
+                    Log.v("JSON_Array_DIS",Discount);
                     schemeList.add(new SecondaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
                             Product_Code, Package, Free, Discount_Type));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
+
+                ArrayList<SecondaryProduct.UOMlist> uomList = new ArrayList<>();
+
+                if(uomArray!=null)
+                    for (int j = 0; j < uomArray.length(); j++) {
+                        try {
+                            JSONObject uomObject = uomArray.getJSONObject(j);
+                            String uomId = "", uomProduct_Code = "", uomName = "", uomConQty = "";
+
+                            if(uomObject.has("id"))
+                                uomId = uomObject.getString("id");
+
+                            if(uomObject.has("name"))
+                                uomName = uomObject.getString("name");
+
+                            if(uomObject.has("ConQty"))
+                                uomConQty = uomObject.getString("ConQty");
+
+                            uomList.add(new SecondaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
                 contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        PCon_fac,schemeList));
+                        PCon_fac,schemeList,unitQty, uomList));
 
              /*   contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));

@@ -167,11 +167,11 @@ public class ViewCartActivity extends AppCompatActivity {
         viewRecyclerview.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         viewRecyclerview.setLayoutManager(layoutManager);
+        viewRecyclerview.setAdapter(adapter);
         DateTime();
         currentTime();
         locationInitialize();
         startLocationUpdates();
-        viewRecyclerview.setAdapter(adapter);
     }
 
 
@@ -454,7 +454,7 @@ public class ViewCartActivity extends AppCompatActivity {
             JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-            JsonObjtHead.put("order_value", GrandTotal);
+            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
             JsonObjtHead.put("sub_tot", 0);
             JsonObjtHead.put("dis_tot", 0);
             JsonObjtHead.put("tax_tot", 0);
@@ -488,14 +488,15 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
                 person1.put("dis", carsList.get(z).getDiscount());
                 person1.put("tax", carsList.get(z).getTax_Value());
-                person1.put("dis_value", carsList.get(z).getDis_amt().toString().replace("-", ""));
-                person1.put("tax_value", carsList.get(z).getTax_amt().toString().replace("-", ""));
+                person1.put("dis_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
+                person1.put("tax_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name", carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_Pro_Unit());
                 person1.put("Con_Fac", carsList.get(z).getCon_fac());
                 person1.put("UOM", carsList.get(z).getUOM());
-                person1.put("Val", carsList.get(z).getSubtotal());
+                person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
+                person1.put("discount_type", carsList.get(z).getOff_disc_type());
                 fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
                 myJSONObjects.add(person1);
                 listV.add(String.valueOf((person1)));
@@ -503,9 +504,9 @@ public class ViewCartActivity extends AppCompatActivity {
 
                 personarray.put(person1);
                 PersonObjectArray.put("Activity_Stk_POB_Report", personarray);
-                String JsonData = PersonObjectArray.toString();
+//                String JsonData = PersonObjectArray.toString();
 
-                System.out.println("Activity_Stk_POB_Report: " + JsonData);
+//                System.out.println("Activity_Stk_POB_Report: " + JsonData);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -529,8 +530,25 @@ public class ViewCartActivity extends AppCompatActivity {
 
             if(Constants.isInternetAvailable(this))
                 new Common_Class(this).checkData(dbController,getApplicationContext());
-            Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+            else
+                Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
+
+            if (product_count != 0) {
+
+                deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+                deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                    @Override
+                    public void onChanged(List<PrimaryProduct> contacts) {
+                        deleteViewModel.delete(contacts);
+                        progressDialog.dismiss();
+                    }
+                });
+
+                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+            } else {
+                finish();
+            }
 
         }
         else
@@ -633,7 +651,7 @@ public class ViewCartActivity extends AppCompatActivity {
                     //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
                     Log.v("Total_foreviewcart", String.valueOf(sum));
                 }
-                viewTotal.setText("" + sum);
+                viewTotal.setText("" + Constants.roundTwoDecimals(sum));
             shared_common_pref.save("GrandTotal", String.valueOf(sum));
                // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
             }

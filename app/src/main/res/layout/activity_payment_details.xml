@@ -96,11 +96,11 @@
                         android:layout_margin="@dimen/C10dp"
                         android:layout_weight="1">
 
-                        <RadioButton
+                      <!--  <RadioButton
                             android:id="@+id/online"
                             style="@style/TextStyle"
                             android:checked="false"
-                            android:text="Online - payment" />
+                            android:text="Online - payment" />-->
 
                         <RadioButton
                             android:id="@+id/offline"

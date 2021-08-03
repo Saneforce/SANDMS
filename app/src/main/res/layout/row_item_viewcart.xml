@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="https://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/C5dp"
     android:padding="@dimen/C5dp">
 
-    <com.google.android.material.card.MaterialCardView xmlns:card_view="https://schemas.android.com/apk/res-auto"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.MaterialComponents.Light"
@@ -58,11 +59,37 @@
                         android:layout_marginLeft="@dimen/C10dp"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/item_product_name"
-                            style="@style/TextStyle"
-                            android:text="xccxcxz"
-                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:gravity="center_vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:id="@+id/item_product_name"
+                                style="@style/TextStyle"
+                                android:gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:text="xccxcxz"
+                                android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/child_pro_unit"
+                                    style="@style/TextStyle"
+                                    android:background="@drawable/oval_background"
+                                    android:text="BOX"
+                                    android:padding="5dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/appColor"
+                                    android:textSize="13sp"
+                                    android:maxLines="1"
+                                    android:layout_gravity=""
+                                    android:maxLength="5"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -73,29 +100,74 @@
                             <TextView
                                 android:id="@+id/item_price"
                                 style="@style/TextStyle"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 style="@style/TextStyle"
                                 android:text="X"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/item_qty"
                                 style="@style/TextStyle"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 style="@style/TextStyle"
                                 android:text="="
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/item_amount"
                                 style="@style/TextStyle"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
+
+                            <LinearLayout
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <LinearLayout
+                                    android:id="@+id/ll_disc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <TextView
+                                        style="@style/TextStyle"
+                                        android:text="Dis : "
+                                        android:textSize="12sp"
+                                         />
+
+                                    <TextView
+                                        android:id="@+id/txt_dis"
+                                        style="@style/TextStyle"
+                                        android:text="0"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                style="@style/TextStyle"
+                                android:text="Dis Amt:"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/item_dis_amount"
+                                style="@style/TextStyle"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+                            </LinearLayout>
+
+                        <LinearLayout
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -103,47 +175,71 @@
                             <TextView
                                 style="@style/TextStyle"
                                 android:text="Tax :"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/item_tax_amount"
+                                android:id="@+id/item_tax"
                                 style="@style/TextStyle"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
-
-                        <LinearLayout
+                            <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="Discount :"
-                                android:textSize="12dp" />
+                                android:text="Tax Amt:"
+                                android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/item_dis_amount"
+                                android:id="@+id/item_tax_amount"
                                 style="@style/TextStyle"
-                                android:textSize="12dp" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
-
+                        </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/TextStyle"
-                                android:text="Free : "
-                                android:textSize="14sp"/>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
 
-                            <TextView
-                                android:id="@+id/tv_free_qty"
-                                style="@style/TextStyle"
-                                android:text="0"
-                                android:textSize="12sp" />
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:text="Free : "
+                                    android:textSize="14sp"/>
+
+                                <TextView
+                                    android:id="@+id/tv_free_qty"
+                                    style="@style/TextStyle"
+                                    android:text="0"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="visible"
+                                android:layout_marginStart="3dp">
+
+                                <TextView
+                                    style="@style/TextStyle"
+                                    android:text="Total : "
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_final_total_amt"
+                                    style="@style/TextStyle"
+                                    android:text="0"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
                         </LinearLayout>
+
 
                     </LinearLayout>
 

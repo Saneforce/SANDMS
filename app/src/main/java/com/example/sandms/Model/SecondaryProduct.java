@@ -1,7 +1,7 @@
 package com.example.sandms.Model;
 
 
-import androidx.room.Embedded;
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "Secondary_Product")
@@ -34,35 +35,75 @@ public class SecondaryProduct implements Serializable {
     private String Dis_amt;
     private String Tax_amt;
     private String Con_fac;
-
-
+    private int Product_Sale_Unit_Cn_Qty;
     private String selectedScheme = "";
     private String selectedDisValue = "";
+    private String selectedFree = "";
+    private String Off_Pro_code = "";
+    private String Off_Pro_name = "";
+    private String Off_Pro_Unit = "";
+    private String Off_disc_type = "";
 
-
-    @TypeConverters({Converter.class})
+    @TypeConverters({SecondaryProduct.SchemeConverter.class})
     List<SecondaryProduct.SchemeProducts> schemeProducts;
 
+    @TypeConverters({SecondaryProduct.UOMConverter.class})
+    ArrayList<SecondaryProduct.UOMlist> UOMList;
 
-    public static class Converter {
 
-        @TypeConverter
-        public  List<SecondaryProduct.SchemeProducts> restoreBankList(String listOfString) {
-            return new Gson().fromJson(listOfString, new TypeToken<List<SecondaryProduct.SchemeProducts>>() {}.getType());
-        }
-
-        @TypeConverter
-        public String saveListAsString(List<SecondaryProduct.SchemeProducts> listOfString) {
-            return new Gson().toJson(listOfString);
-        }
-
+    public String getOff_disc_type() {
+        return Off_disc_type;
     }
 
+    public void setOff_disc_type(String off_disc_type) {
+        Off_disc_type = off_disc_type;
+    }
+
+    public ArrayList<SecondaryProduct.UOMlist> getUOMList() {
+        return UOMList;
+    }
+
+    public void setUOMList(ArrayList<SecondaryProduct.UOMlist> UOMList) {
+        this.UOMList = UOMList;
+    }
+
+    public String getSelectedFree() {
+        return selectedFree;
+    }
+
+    public void setSelectedFree(String selectedFree) {
+        this.selectedFree = selectedFree;
+    }
+
+    public String getOff_Pro_code() {
+        return Off_Pro_code;
+    }
+
+    public void setOff_Pro_code(String off_Pro_code) {
+        Off_Pro_code = off_Pro_code;
+    }
+
+    public String getOff_Pro_name() {
+        return Off_Pro_name;
+    }
+
+    public void setOff_Pro_name(String off_Pro_name) {
+        Off_Pro_name = off_Pro_name;
+    }
+
+    public String getOff_Pro_Unit() {
+        return Off_Pro_Unit;
+    }
+
+    public void setOff_Pro_Unit(String off_Pro_Unit) {
+        Off_Pro_Unit = off_Pro_Unit;
+    }
 
     public SecondaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                             String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                             String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                            String Tax_amt, String Con_fac, List<SecondaryProduct.SchemeProducts> schemeProducts) {
+                            String Tax_amt, String Con_fac, List<SecondaryProduct.SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty,
+                            ArrayList<SecondaryProduct.UOMlist> UOMList) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -80,6 +121,8 @@ public class SecondaryProduct implements Serializable {
         this.Tax_amt = Tax_amt;
         this.Con_fac = Con_fac;
         this.schemeProducts = schemeProducts;
+        this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
+        this.UOMList=UOMList;
     }
 
     public String getSelectedScheme() {
@@ -98,10 +141,13 @@ public class SecondaryProduct implements Serializable {
         this.selectedDisValue = selectedDisValue;
     }
 
-    public void setSchemeProducts(List<SecondaryProduct.SchemeProducts> schemeProducts) {
-        this.schemeProducts = schemeProducts;
+    public int getProduct_Sale_Unit_Cn_Qty() {
+        return Product_Sale_Unit_Cn_Qty;
     }
 
+    public void setProduct_Sale_Unit_Cn_Qty(int product_Sale_Unit_Cn_Qty) {
+        Product_Sale_Unit_Cn_Qty = product_Sale_Unit_Cn_Qty;
+    }
     public String getUID() {
         return UID;
     }
@@ -243,6 +289,11 @@ public class SecondaryProduct implements Serializable {
         return schemeProducts;
     }
 
+    public void setSchemeProducts(List<SecondaryProduct.SchemeProducts>  schemeProducts) {
+        this.schemeProducts = schemeProducts;
+    }
+
+
     public static class SchemeProducts{
 
         private String Scheme;
@@ -330,6 +381,93 @@ public class SecondaryProduct implements Serializable {
         public void setProduct_Code(String product_Code) {
             Product_Code = product_Code;
         }
+    }
+
+    public static class UOMlist implements Serializable {
+
+        private String id;
+        private String Product_Code;
+        private String name;
+        private String ConQty;
+
+        public UOMlist(String id, String product_Code, String name, String conQty) {
+            this.id = id;
+            Product_Code = product_Code;
+            this.name = name;
+            ConQty = conQty;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getProduct_Code() {
+            return Product_Code;
+        }
+
+        public void setProduct_Code(String product_Code) {
+            Product_Code = product_Code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getConQty() {
+            return ConQty;
+        }
+
+        public void setConQty(String conQty) {
+            ConQty = conQty;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "UOMlist{" +
+                    "id='" + id + '\'' +
+                    ", Product_Code='" + Product_Code + '\'' +
+                    ", name='" + name + '\'' +
+                    ", ConQty='" + ConQty + '\'' +
+                    '}';
+        }
+    }
+
+
+    public static class UOMConverter {
+
+        @TypeConverter
+        public  ArrayList<SecondaryProduct.UOMlist> restoreBankList(String listOfString) {
+            return new Gson().fromJson(listOfString, new TypeToken<ArrayList<SecondaryProduct.UOMlist>>() {}.getType());
+        }
+
+        @TypeConverter
+        public String saveListAsString(ArrayList<SecondaryProduct.UOMlist> listOfString) {
+            return new Gson().toJson(listOfString);
+        }
+
+    }
+
+    public static class SchemeConverter {
+
+        @TypeConverter
+        public  List<SecondaryProduct.SchemeProducts> restoreBankList(String listOfString) {
+            return new Gson().fromJson(listOfString, new TypeToken<List<SecondaryProduct.SchemeProducts>>() {}.getType());
+        }
+
+        @TypeConverter
+        public String saveListAsString(List<SecondaryProduct.SchemeProducts> listOfString) {
+            return new Gson().toJson(listOfString);
+        }
+
     }
 
 }

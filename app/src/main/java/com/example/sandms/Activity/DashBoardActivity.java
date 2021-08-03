@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,12 +62,13 @@ public class DashBoardActivity extends AppCompatActivity {
     Shared_Common_Pref shared_common_pref;
     Gson gson;
     Common_Class mCommon_class;
-    ImageView imagView,profilePic;
+    ImageView imagView,profilePic, ib_logout;
     PrimaryProductViewModel mPrimaryProductViewModel;
     RelativeLayout profileLayout;
 
     DBController dbController;
     boolean syncData = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,17 +84,26 @@ public class DashBoardActivity extends AppCompatActivity {
         profilePic=findViewById(R.id.profileImg);
         profileLayout=findViewById(R.id.imageLayout);
         txtName.setText(shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
-        txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
+        txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Address));
        // brandProdutApi();
 
         if(getIntent().hasExtra("syncData"))
             syncData = getIntent().getBooleanExtra("syncData", false);
 
         imagView = findViewById(R.id.toolbar_back);
+        ib_logout = findViewById(R.id.ib_logout);
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveTaskToBack(true);
+            }
+        });
+
+        ib_logout.setVisibility(View.VISIBLE);
+        ib_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shared_common_pref.logoutUser(DashBoardActivity.this);
             }
         });
 
@@ -352,38 +363,70 @@ public class DashBoardActivity extends AppCompatActivity {
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("Product_Sale_Unit"));
+                String PSaleUnit = String.valueOf(jsonObject.get("product_unit"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
                 Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
+                JSONArray uomArray = null;
+                if(jsonObject.has("UOMList"))
+                uomArray = jsonObject.getJSONArray("UOMList");
 
                 List<PrimaryProduct.SchemeProducts> schemeList = new ArrayList<>();
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
-                    jsonObject1 = jsonArray1.getJSONObject(j);
-                    Scheme = String.valueOf(jsonObject1.get("Scheme"));
-                    Discount = String.valueOf(jsonObject1.get("Discount"));
-                    Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
-                    Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
-                    Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
-                    Package = String.valueOf(jsonObject1.get("Package"));
-                    Free = String.valueOf(jsonObject1.get("Free"));
-                    Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
-                    if(jsonObject1.has("Default_UOMQty"))
-                    unitQty = jsonObject1.getInt("Default_UOMQty");
+                    try {
+                        jsonObject1 = jsonArray1.getJSONObject(j);
+                        Scheme = String.valueOf(jsonObject1.get("Scheme"));
+                        Discount = String.valueOf(jsonObject1.get("Discount"));
+                        Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
+                        Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
+                        Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
+                        Package = String.valueOf(jsonObject1.get("Package"));
+                        Free = String.valueOf(jsonObject1.get("Free"));
+                        if(jsonObject1.has("Discount_Type"))
+                            Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+                        if(jsonObject1.has("Default_UOMQty"))
+                        unitQty = jsonObject1.getInt("Default_UOMQty");
 
-                    Log.v("JSON_Array_SCHEMA",Scheme);
-                    Log.v("JSON_Array_DIS",Discount);
-                    schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code, Package, Free, Discount_Type));
+                        Log.v("JSON_Array_SCHEMA",Scheme);
+                        Log.v("JSON_Array_DIS",Discount);
+                        schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                                Product_Code, Package, Free, Discount_Type));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                ArrayList<PrimaryProduct.UOMlist> uomList = new ArrayList<>();
+
+                if(uomArray!=null)
+                for (int j = 0; j < uomArray.length(); j++) {
+                    try {
+                        JSONObject uomObject = uomArray.getJSONObject(j);
+                        String uomId = "", uomProduct_Code = "", uomName = "", uomConQty = "";
+
+                        if(uomObject.has("id"))
+                            uomId = uomObject.getString("id");
+
+                        if(uomObject.has("name"))
+                            uomName = uomObject.getString("name");
+
+                        if(uomObject.has("ConQty"))
+                            uomConQty = uomObject.getString("ConQty");
+
+                        uomList.add(new PrimaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        PCon_fac,schemeList,unitQty));
+                        PCon_fac,schemeList,unitQty, uomList));
 
             }
         } catch (JSONException e) {
@@ -524,13 +567,13 @@ public class DashBoardActivity extends AppCompatActivity {
             public void onChanged(List<PrimaryProduct> contacts) {
 
 
-//                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
-
-//                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
-
-//                if (ProductCount == 0) {
+                Integer ProductCount = Integer.valueOf(new Gson().toJson(contacts.size()));
+//
+                Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
+//
+                if (ProductCount == 0) {
                     new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-//                }
+                }
             }
         });
 

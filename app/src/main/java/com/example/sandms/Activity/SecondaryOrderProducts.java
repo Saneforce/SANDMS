@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,6 +34,7 @@ import androidx.room.Room;
 
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.SecondaryProduct;
+import com.example.sandms.Model.SecondaryProduct;
 import com.example.sandms.Model.Product;
 import com.example.sandms.Model.Product_Array;
 import com.example.sandms.Model.SecondaryProduct;
@@ -40,8 +42,9 @@ import com.example.sandms.R;
 import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.Common_Class;
 import com.example.sandms.Utils.Constants;
-import com.example.sandms.Utils.PrimaryProductDatabase;
-import com.example.sandms.Utils.PrimaryProductViewModel;
+import com.example.sandms.Utils.CustomListViewDialog;
+import com.example.sandms.Utils.SecondaryProductDatabase;
+import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.SecondaryProductDatabase;
 import com.example.sandms.Utils.SecondaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
@@ -128,13 +131,14 @@ public class SecondaryOrderProducts extends AppCompatActivity {
                                 @Override
                                 public void onChanged(List<SecondaryProduct> contacts) {
                                     deleteViewModel.delete(contacts);
-                                    startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
+//                                    startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
                                     finish();
                                     Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
                                 }
                             });
 
                         }else{
+                            finish();
                             startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
                         }
                     }
@@ -205,7 +209,9 @@ public class SecondaryOrderProducts extends AppCompatActivity {
                 text_checki.setText(name);
             }
         });
+        priCategoryRecycler.setAdapter(priCateAdapter);
 
+/*
 
         edt_serach = findViewById(R.id.edt_serach);
         edt_serach.addTextChangedListener(new TextWatcher() {
@@ -223,10 +229,13 @@ public class SecondaryOrderProducts extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
             }
+        });*/
+        searchEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchEdit.onActionViewExpanded();
+            }
         });
-
-        priCategoryRecycler.setAdapter(priCateAdapter);
-
         searchEdit.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -240,10 +249,37 @@ public class SecondaryOrderProducts extends AppCompatActivity {
             }
         });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadFirstItem();
+            }
+        }, 2000);
+
 
 
     }
+    private void loadFirstItem() {
+        if(jsonBrandCateg.length()>0){
+            try {
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(0);
+                String productId = jsonObject.getString("id");
+                String productName = jsonObject.getString("name");
+//                String productImage = jsonObject.getString("Cat_Image");
+                // getProductId();
+                productBarCode = productId;
+                loadFilteredTodos(productBarCode);
 
+                text_checki.setVisibility(View.VISIBLE);
+                text_checki.setText(productName);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else
+            Toast.makeText(this, "Empty Data", Toast.LENGTH_SHORT).show();
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -277,11 +313,24 @@ public class SecondaryOrderProducts extends AppCompatActivity {
                 }
                 grandTotal.setText("" + sum);
                 mShared_common_pref.save("GrandTotal", String.valueOf(sum));
+                mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
+
             }
         });
+
+        try {
+            if(priProdAdapter!=null)
+                priProdAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void SaveDataValue() {
+
+        mShared_common_pref.save("GrandTotal", grandTotal.getText().toString());
+        mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
+
         Gson gson = new Gson();
         String jsonCars = gson.toJson(Product_Array_List);
         Log.e("Category_Data", jsonCars);
@@ -361,6 +410,7 @@ class SecCategoryAdapter extends RecyclerView.Adapter<SecCategoryAdapter.MyViewH
             holder.mText.setText("" + jsFuel.getString("name"));
             String productId = jsFuel.getString("id");
             String productName = jsFuel.getString("name");
+            productImage = "";
             if(jsFuel.has("Cat_Image"))
                 productImage = jsFuel.getString("Cat_Image");
 
@@ -405,8 +455,8 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
     private int ProductCount = 0;
     int schemCount;
     Float tax, taxAmt, taxTotal;
-    Float valueTotal = Float.valueOf(0);
-    Float subTotal = Float.valueOf(0);
+    Float valueTotal = 0f;
+    Float subTotal = 0f;
     float edtCount = 0, plusCount = 0, minusCount = 0;
     Shared_Common_Pref shared_common_pref;
 //    String Scheme = "";
@@ -427,10 +477,11 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
         LinearLayout linPLus, linMinus;
         TextView mProductCount;
         float subTotal = 0;
-        PrimaryProductViewModel contactViewModel;
+//        PrimaryProductViewModel contactViewModel;
 //        PrimaryProduct task;
-        String FilteredData = "";
-
+//        String FilteredData = "";
+        LinearLayout image_dropdown;
+        CustomListViewDialog customDialog;
 
         LinearLayout ll_free_qty;
         LinearLayout ll_disc;
@@ -438,9 +489,11 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 //        LinearLayout ll_disc_reduction;
 //        TextView tv_disc_amt;
 //        TextView tv_disc_amt_total;
+        TextView tv_final_total_amt;
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
+            image_dropdown=itemView.findViewById(R.id.image_down);
             subProdcutChildName = itemView.findViewById(R.id.child_product_name);
             subProdcutChildRate = itemView.findViewById(R.id.child_product_price);
             productItem = itemView.findViewById(R.id.product_item_qty);
@@ -459,6 +512,8 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 //            ll_disc_reduction = itemView.findViewById(R.id.ll_disc_reduction);
 //            tv_disc_amt = itemView.findViewById(R.id.tv_disc_amt);
 //            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
+            tv_final_total_amt = itemView.findViewById(R.id.tv_final_total_amt);
+
             itemView.setOnClickListener(this);
 
         }
@@ -490,8 +545,22 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
         holder.ProductTaxAmt.setText(mContact.getTax_amt());
     // holder.ProductDisAmt.setText(mContact.getDiscount());
         holder.ProductUnit.setText(mContact.getProduct_Sale_Unit());
+        String orderid=mContact.getUID();
+        holder.image_dropdown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder, position);
+                SecondaryProduct task = workinglist.get(position);
+                Log.v("PRODUCTttt_LIST", new Gson().toJson(task));
+                shared_common_pref.save("taskdata", new Gson().toJson(task));
+                Intent aa=new Intent(mCtx,PrimaryOrderList.class);
+                aa.putExtra("orderid",orderid);
+                aa.putExtra("pos",workinglist.get(position).getProduct_Sale_Unit());
+                aa.putExtra("uomList",workinglist.get(position).getUOMList());
+                //   aa.putExtra("productunit",workinglist.get(position).getProduct_Sale_Unit());
+                mCtx.startActivity(aa);
+            }
+        });
 
 
 
@@ -535,7 +604,9 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                 holder.ProductTaxAmt.setText(mContact.getTax_amt());
             }
             holder.productItemTotal.setText("" + subTotal);
-            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
+            updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                    mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                    mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
 
         }
 
@@ -595,8 +666,10 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                     holder.ProductTaxAmt.setText(mContact.getTax_amt());
                 }
 
-                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
-                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder, position);
+                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                        mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                        mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                updateSchemeData(mContact.getSchemeProducts(), ProductCount, mContact, holder, position, mContact);
 
             }
         });
@@ -652,28 +725,50 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                         holder.ProductTaxAmt.setText(mContact.getTax_amt());
                     }
 
+                    updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice),
+                            mContact.getSelectedScheme(),mContact.getSelectedDisValue(),mContact.getSelectedFree() ,
+                            mContact.getOff_Pro_code() ,mContact.getOff_Pro_name() ,mContact.getOff_Pro_Unit());
+                    updateSchemeData(mContact.getSchemeProducts(), ProductCount, mContact, holder, position, mContact);
+
                 } else {
                     ProductCount = 0;
                     holder.mProductCount.setText("" + 0);
                 }
-                updateTask(mContact, holder.mProductCount.getText().toString(), String.valueOf(subTotal), String.valueOf(valueTotal), String.valueOf(finalPrice));
-                updateSchemeData(holder.tv_free_qty, mContact.getSchemeProducts(), ProductCount, mContact, holder, position);
 
             }
         });
+        updateSchemeData(mContact.getSchemeProducts(), mContact.getTxtqty().equals("") ? 0 : Integer.parseInt(mContact.getTxtqty()) , mContact, holder, position, mContact);
 
     }
 
-
     SecondaryProduct.SchemeProducts selectedScheme = null;
 
-    private void updateSchemeData(TextView tv_free_qty, List<SecondaryProduct.SchemeProducts> schemeProducts, int qty, SecondaryProduct mContact, secProductAdapter.ContactHolder holder, int position) {
+    private void updateSchemeData(List<SecondaryProduct.SchemeProducts> schemeProducts, int qty, SecondaryProduct
+ mContact, secProductAdapter.ContactHolder holder, int position, SecondaryProduct contact) {
+        int product_Sale_Unit_Cn_Qty = 1;
+        if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
+            product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+/*
+        double value=
+        subTotal = Double.parseDouble(mContact.getProduct_Cat_Code()) * mContact.getProduct_Sale_Unit_Cn_Qty();
+
+        tax = Float.valueOf(mContact.getTax_Value());
+
+        mContact.getTxtqty()
+        valueTotal = subTotal*tax/100;
+        subTotal = (taxAmt* subTotal) / 100;
+        subTotal = subTotal * mContact.getProduct_Sale_Unit_Cn_Qty();
+
+
+*/
+
+
         selectedScheme = null;
         int previousSchemeCount = 0;
         for(SecondaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
                 int currentSchemeCount = Integer.parseInt(scheme.getScheme());
-                if(previousSchemeCount < currentSchemeCount &&  currentSchemeCount <= qty){
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
                 }
@@ -682,16 +777,32 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
         String discountType = "";
 
+        double discountValue = 0;
+        double productAmt = 0;
+        double schemeDisc = 0;
         if(selectedScheme != null){
+            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
+            contact.setSelectedScheme(selectedScheme.getScheme());
+
+            workinglist.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
+            contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+
+            workinglist.get(position).setOff_Pro_code(selectedScheme.getProduct_Code());
+            contact.setOff_Pro_code(selectedScheme.getProduct_Code());
+
+            workinglist.get(position).setOff_Pro_name(selectedScheme.getProduct_Name());
+            contact.setOff_Pro_name(selectedScheme.getProduct_Name());
+
+            workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             discountType= selectedScheme.getDiscount_Type();
+
 
             if(discountType.equals("Rs"))
                 holder.ll_disc.setVisibility(View.GONE);
             else
                 holder.ll_disc.setVisibility(View.VISIBLE);
 
-            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
-            workinglist.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
             String packageType = selectedScheme.getPackage();
 
             double freeQty = 0;
@@ -709,13 +820,12 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
             if(!selectedScheme.getFree().equals(""))
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
 
-            tv_free_qty.setText(String.valueOf(freeQty));
+            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
+            contact.setSelectedFree(String.valueOf(freeQty));
+
+            holder.tv_free_qty.setText(String.valueOf(freeQty));
 
 
-            double discountValue = 0;
-            double totalAmt = 0;
-            double productAmt = 0;
-            double schemeDisc = 0;
 
             if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
                 productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
@@ -725,9 +835,9 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * qty) * (schemeDisc/100);
+                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
                     holder.ll_disc.setVisibility(View.VISIBLE);
-                    holder.ProductDis.setText(selectedScheme.getDiscountvalue());
+                    holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
@@ -735,32 +845,66 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
-                default:
-//                    holder.ll_disc_reduction.setVisibility(View.GONE);
-//                    break;
+//                default:
             }
 
 
             if(discountValue>0){
-                totalAmt = (productAmt * qty) -discountValue;
-//                holder.ll_disc_reduction.setVisibility(View.VISIBLE);
-//                holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
-//                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));
+                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 
-            }else {
-//                holder.ll_disc_reduction.setVisibility(View.GONE);
+                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
+                contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+/*
+                totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
+                holder.ll_disc_reduction.setVisibility(View.VISIBLE);
+                holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
+
             }
 
         }else {
-//            holder.ll_disc_reduction.setVisibility(View.GONE);
             holder.ll_disc.setVisibility(View.VISIBLE);
+            holder.tv_free_qty.setText("0");
         }
+        double totalAmt = 0;
+        double taxPercent = 0;
+        double taxAmt = 0;
+
+        try {
+            totalAmt = Double.parseDouble(mContact.getProduct_Cat_Code()) * (qty *product_Sale_Unit_Cn_Qty);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            taxPercent = Double.parseDouble(mContact.getTax_Value());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())));
+        holder.productItem.setText(String.valueOf(qty *product_Sale_Unit_Cn_Qty));
+        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
+
+
+        holder.ProductTax.setText(String.valueOf(taxPercent));
+
+        try {
+            taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        holder.ProductTaxAmt.setText(Constants.roundTwoDecimals(taxAmt));
+        holder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
 
     }
 
 
 
-    private void updateTask(final SecondaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt) {
+    private void updateTask(final SecondaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt,
+                            String selectedScheme, String selectedDisValue, String selectedFree,
+                            String Off_Pro_code, String Off_Pro_name, String Off_Pro_Unit) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
 
@@ -777,7 +921,13 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                                 task.getTax_Value(),
                                 task.getDiscount(),
                                 taxAmt,
-                                disAmt);
+                                disAmt,
+                                selectedScheme,
+                                selectedDisValue,
+                                selectedFree,
+                                Off_Pro_code,
+                                Off_Pro_name,
+                                Off_Pro_Unit);
                 return null;
             }
 
@@ -811,6 +961,8 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 for (SecondaryProduct item : exampleList) {
                     if (item.getPname().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }else if(item.getProduct_Sale_Unit().contains(filterPattern)){
                         filteredList.add(item);
                     }
                 }

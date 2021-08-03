@@ -1,63 +1,47 @@
 package com.example.sandms.Activity;
 
-import androidx.annotation.NonNull;
+import static com.example.sandms.Activity.ViewCartActivity.createProgressDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sandms.Interface.ApiInterface;
-import com.example.sandms.Interface.DMS;
 import com.example.sandms.Model.PrimaryProduct;
-import com.example.sandms.Model.PrimaryUom;
 import com.example.sandms.R;
-import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
-import com.example.sandms.Utils.Common_Model;
-import com.example.sandms.Utils.CustomListViewDialog;
 import com.example.sandms.Utils.PrimaryProductDatabase;
-import com.example.sandms.Utils.PrimaryProductViewModel;
 import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static io.realm.Realm.getApplicationContext;
 
 public class PrimaryOrderList extends AppCompatActivity {
     Shared_Common_Pref mShared_common_pref;
@@ -66,7 +50,6 @@ public class PrimaryOrderList extends AppCompatActivity {
     ArrayList<String> ProductNames = new ArrayList<>();
     TextView toolHeader;
     ImageView imgBack;
-    private List<PrimaryUom> productList = new ArrayList<>();
     private  ProducAdapter mAdapter;
     String productid;
     PrimaryProduct pp;
@@ -74,6 +57,9 @@ public class PrimaryOrderList extends AppCompatActivity {
     String pos;
     EditText toolSearch;
     PrimaryProduct task;
+
+    List<PrimaryProduct.UOMlist> uoMlistList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,18 +70,32 @@ public class PrimaryOrderList extends AppCompatActivity {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         task = gson.fromJson(ClickedData, PrimaryProduct.class);
         priUnitRecycler = findViewById(R.id.rec_checking);
+        Intent intent = getIntent();
         productid=getIntent().getStringExtra("orderid");
         pos=getIntent().getStringExtra("pos");
-        Log.e("LoginResponse199",  productid.toString());
-        Log.e("Logi",  pos.toString());
+        uoMlistList.clear();
+        if(intent.hasExtra("uomList"))
+            uoMlistList.addAll((ArrayList<PrimaryProduct.UOMlist>) intent.getSerializableExtra("uomList"));
+
+        Log.e("LoginResponse199", ""+ productid);
+        Log.e("Logi",  ""+pos);
 //        priUnitRecycler.setHasFixedSize(true);
 //        priUnitRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        priUnitRecycler.setNestedScrollingEnabled(false);
 
-        getProductId();
+        mAdapter = new ProducAdapter(getApplicationContext(), uoMlistList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        priUnitRecycler.setLayoutManager(mLayoutManager);
+        priUnitRecycler.setItemAnimator(new DefaultItemAnimator());
+        priUnitRecycler.setAdapter(mAdapter);
+
+        if(uoMlistList.size()==0){
+            getProductId();
+        }
     }
 
     public void getProductId() {
+        ProgressDialog progressDialog = createProgressDialog(this);
         //   this.sf_Code=sf_Code;
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getProductuom(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
@@ -104,7 +104,7 @@ public class PrimaryOrderList extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.v("DMS_RESPONSE", response.body().toString());
-
+                progressDialog.dismiss();
                 try {
                     jsonProductuom = new JSONObject(response.body().toString());
                     Log.e("LoginResponse1", jsonProductuom.toString());
@@ -119,6 +119,9 @@ public class PrimaryOrderList extends AppCompatActivity {
                     //  Log.e("LoginResponse133",  jsonProductuom.toString());
                     for (int i = 0; i < jss.length(); i++) {
                         JSONObject jsonObject = jss.optJSONObject(i);
+                        String id = "";
+                        if(jsonObject.has("id"))
+                        id = jsonObject.getString("id");
                         String name = jsonObject.getString("name");
                         Log.v("LoginResponse1nn", name);
                         String productCode = jsonObject.getString("Product_Code");
@@ -126,19 +129,15 @@ public class PrimaryOrderList extends AppCompatActivity {
                         String conqty = jsonObject.getString("ConQty");
                         Log.v("LoginResponse1nnq", conqty);
                         if (productid.equals(productCode) || productid.contains(productCode)) {
-                            PrimaryUom pp = new PrimaryUom(name, productCode, conqty);
-                            productList.add(pp);
+                            PrimaryProduct.UOMlist pp = new PrimaryProduct.UOMlist(id, name, productCode, conqty);
+                            uoMlistList.add(pp);
                         }
 //                         priProdAdapter = new ProductsAdapter(PrimaryOrderList.this, name,productCode,conqty);
 //                         priUnitRecycler.setAdapter(priProdAdapter);
 
-
+                        mAdapter.notifyDataSetChanged();
                     }
-                    mAdapter = new ProducAdapter(getApplicationContext(), productList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    priUnitRecycler.setLayoutManager(mLayoutManager);
-                    priUnitRecycler.setItemAnimator(new DefaultItemAnimator());
-                    priUnitRecycler.setAdapter(mAdapter);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -147,6 +146,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(PrimaryOrderList.this, "Invalid products", Toast.LENGTH_LONG).show();
             }
         });
@@ -186,7 +186,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
 
     public class ProducAdapter extends RecyclerView.Adapter<ProducAdapter.MyViewHolder> {
-            private List<PrimaryUom> productList;
+            private List<PrimaryProduct.UOMlist> productList;
         Context ct;
         Double subtot,subtotal;
         int cqty;
@@ -203,7 +203,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
             }
         }
-        public ProducAdapter (Context ct,List<PrimaryUom> productList) {
+        public ProducAdapter (Context ct,List<PrimaryProduct.UOMlist> productList) {
             this.productList= productList;
             this.ct=ct;
         }
@@ -215,25 +215,28 @@ public class PrimaryOrderList extends AppCompatActivity {
         }
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            PrimaryUom productlist = productList.get(position);
+            PrimaryProduct.UOMlist productlist = productList.get(position);
             holder.title.setText(productlist.getName());
             holder.productvalue.setText(productlist.getConQty());
             subtotal= Double.valueOf(task.getSubtotal());
             Log.e("subbbb", String.valueOf(subtot));
-           cqty= Integer.parseInt(productlist.getConQty());
+            if(productlist.getConQty()!=null && !productlist.getConQty().equals(""))
+                cqty= Integer.parseInt(productlist.getConQty());
+            else
+                cqty = 1;
 
             holder.productvalue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     updateTask(task,productList.get(position).getName(),productList.get(position).getConQty(),subtotal);
-                    finish();
+                    onBackPressed();
                 }
             });
             holder.row_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateTask(task,productList.get(position).getName(),productList.get(position).getConQty(),subtotal);
-                finish();
+                onBackPressed();
             }
         });
     }

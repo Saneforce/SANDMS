@@ -121,11 +121,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.online) {
+               /* if (checkedId == R.id.online) {
                     offView.setVisibility(View.GONE);
                     PaymntMode = "Online";
 
-                } else if (checkedId == R.id.offline) {
+                } else*/ if (checkedId == R.id.offline) {
                     offView.setVisibility(View.VISIBLE);
                     PaymntMode = "Offline";
                 } else {
@@ -184,15 +184,18 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 try {
                     JSONObject jsonRootObject = new JSONObject(response.body().toString());
                     Log.v("KArthic_Retailer", jsonRootObject.toString());
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                    for (int a = 0; a < jsonArray.length(); a++) {
-                        JSONObject jso = jsonArray.getJSONObject(a);
-                        String className = String.valueOf(jso.get("Name"));
-                        String id = String.valueOf(jso.get("Code"));
-                        mCommon_model_spinner = new Common_Model(id, className, "flag");
-                        modelOffileData.add(mCommon_model_spinner);
+                    if(jsonRootObject.has("Data")){
+                        JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                        for (int a = 0; a < jsonArray.length(); a++) {
+                            JSONObject jso = jsonArray.getJSONObject(a);
+                            String className = String.valueOf(jso.get("Name"));
+                            String id = String.valueOf(jso.get("Code"));
+                            mCommon_model_spinner = new Common_Model(id, className, "flag");
+                            modelOffileData.add(mCommon_model_spinner);
 
-                        Log.v("NAME_STRING", className);
+                            Log.v("NAME_STRING", className);
+                        }
+
                     }
 
                 } catch (JSONException e) {

@@ -2,7 +2,13 @@ package com.example.sandms.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.example.sandms.Activity.LoginActivity;
 
 public class Shared_Common_Pref {
     SharedPreferences Common_pref;
@@ -69,5 +75,23 @@ public class Shared_Common_Pref {
     public void clear_pref(String key) {
         Common_pref.edit().remove(key).apply();
     }
+
+    public void logoutUser(Activity context) {
+        editor.clear();
+        editor.commit();
+
+        // After logout redirect user to Loing Activity
+        Intent i = new Intent(context, LoginActivity.class);
+        // Closing all the Activities
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // Add new Flag to start new Activity
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Staring Login Activity
+        context.startActivity(i);
+        context.finishAffinity();
+
+    }
+
+
 
 }
