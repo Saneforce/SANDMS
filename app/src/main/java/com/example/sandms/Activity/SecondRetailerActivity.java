@@ -98,7 +98,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         mCommon_class = new Common_Class(this);
         dbController = new DBController(this);
 
-
+/*
         if(!dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
             processTemplateList(new Gson().fromJson(dbController.getResponseFromKey(DBController.TEMPLATE_LIST), JsonArray.class));
         }else {
@@ -106,14 +106,14 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 getTemplate();
 //            else
 //                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
-        }
+        }*/
 
         ImageView imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                startActivity(new Intent(SecondRetailerActivity.this, DashBoardActivity.class));
-                finish();
+                onBackPressed();
             }
         });
 
@@ -320,7 +320,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         });
     }
 
-    public void getTemplate() {
+    /*public void getTemplate() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getTemplates(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         call.enqueue(new Callback<JsonObject>() {
@@ -343,7 +343,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             }
         });
-    }
+    }*/
 
     private void processTemplateList(JsonArray jsonArray) {
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -359,7 +359,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     @Override
     public void onBackPressed() {
-
+        finish();
     }
 
 
@@ -556,8 +556,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Free = String.valueOf(jsonObject1.get("Free"));
                     if(jsonObject1.has("Discount_Type"))
                     Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
-                    if(jsonObject1.has("Default_UOMQty"))
-                        unitQty = jsonObject1.getInt("Default_UOMQty");
+
 
                     Log.v("JSON_Array_SCHEMA",Scheme);
                     Log.v("JSON_Array_DIS",Discount);

@@ -105,7 +105,7 @@ public class PrimaryProduct implements Serializable {
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
                           String Tax_amt, String Con_fac, List<SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty,
-                          ArrayList<UOMlist> UOMList) {
+                          ArrayList<UOMlist> UOMList ) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;

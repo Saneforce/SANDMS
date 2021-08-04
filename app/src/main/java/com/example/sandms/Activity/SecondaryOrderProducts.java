@@ -121,32 +121,7 @@ public class SecondaryOrderProducts extends AppCompatActivity {
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialogBox.showDialog(SecondaryOrderProducts.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
-                    @Override
-                    public void PositiveMethod(DialogInterface dialog, int id) {
-                        if (mPrimaryProduct.size() != 0) {
-                            mCommon_class.ProgressdialogShow(1, "");
-                            deleteViewModel = ViewModelProviders.of(SecondaryOrderProducts.this).get(SecondaryProductViewModel.class);
-                            deleteViewModel.getAllData().observe(SecondaryOrderProducts.this, new Observer<List<SecondaryProduct>>() {
-                                @Override
-                                public void onChanged(List<SecondaryProduct> contacts) {
-                                    deleteViewModel.delete(contacts);
-//                                    startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
-                                    finish();
-                                    Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
-                                }
-                            });
-
-                        }else{
-                            finish();
-                            startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
-                        }
-                    }
-
-                    @Override
-                    public void NegativeMethod(DialogInterface dialog, int id) {
-                    }
-                });
+                showExitDialog();
 
             }
         });
@@ -343,6 +318,37 @@ public class SecondaryOrderProducts extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        showExitDialog();
+    }
+
+    private void showExitDialog() {
+        AlertDialogBox.showDialog(SecondaryOrderProducts.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                if (mPrimaryProduct.size() != 0) {
+                    mCommon_class.ProgressdialogShow(1, "");
+                    deleteViewModel = ViewModelProviders.of(SecondaryOrderProducts.this).get(SecondaryProductViewModel.class);
+                    deleteViewModel.getAllData().observe(SecondaryOrderProducts.this, new Observer<List<SecondaryProduct>>() {
+                        @Override
+                        public void onChanged(List<SecondaryProduct> contacts) {
+                            deleteViewModel.delete(contacts);
+//                                    startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
+                            finish();
+                            Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
+                        }
+                    });
+
+                }else{
+                    finish();
+                    startActivity(new Intent(SecondaryOrderProducts.this, DashBoardActivity.class));
+                }
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
     }
 
 

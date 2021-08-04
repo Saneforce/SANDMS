@@ -1,5 +1,6 @@
 package com.example.sandms.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ import androidx.core.content.FileProvider;
 import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.Interface.DMS;
 import com.example.sandms.R;
+import com.example.sandms.Utils.AlertDialogBox;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.CameraPermission;
 import com.example.sandms.Utils.Common_Model;
@@ -128,12 +130,16 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 } else*/ if (checkedId == R.id.offline) {
                     offView.setVisibility(View.VISIBLE);
                     PaymntMode = "Offline";
-                } else {
+                } /*else  if (checkedId == R.id.cred){
                     PaymntMode = "Credit";
                     offView.setVisibility(View.GONE);
-                }
+                }*/
             }
         });
+        PaymntMode = "Offline";
+        offView.setVisibility(View.VISIBLE);
+
+        getToolbar();
     }
 
     public void LinearOfflineMode(View v) {
@@ -578,5 +584,24 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public void onPaymentError(int i, String s, PaymentData paymentData) {
         Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
         startActivity(a);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+
+    public void getToolbar() {
+        ImageView imgBack;
+
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               onBackPressed();
+            }
+        });
+
     }
 }

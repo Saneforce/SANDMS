@@ -84,9 +84,6 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     public void onBindViewHolder(MyViewHolder holder, int position) {
         PrimaryProduct mProductArray = mProduct_arrays.get(position);
         shared_common_pref = new Shared_Common_Pref(context);
-        GrandTotal = shared_common_pref.getvalue("GrandTotal");
-        viewTotal.setText(GrandTotal);
-        Log.v("gdtot",GrandTotal.toString());
         String productid=mProductArray.getPID();
 //        mShared_common_pref.clear_pref("SubTotal");
         //  mShared_common_pref.clear_pref("ItemTotal");
@@ -107,9 +104,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         Log.v("totalcart",mProductArray.getSubtotal());
 
         if( mProduct_arrays.get(position).getDis_amt().equals("0")||mProduct_arrays.get(position).getDis_amt().equals("")){
-            holder.dis_amount.setText("Rs." +"0");
+            holder.dis_amount.setText("0");
         }else{
-            holder.dis_amount.setText("Rs." +  mProduct_arrays.get(position).getDis_amt());
+            holder.dis_amount.setText(mProduct_arrays.get(position).getDis_amt());
         }
         if( mProduct_arrays.get(position).getTax_amt().equals("0")||mProduct_arrays.get(position).getTax_amt().equals("")){
             holder.tax_amount.setText("Rs." +"0");
@@ -118,7 +115,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
         }
 
-        holder.totalAmount.setText("Rs." + mProductArray.getSubtotal());
+        holder.totalAmount.setText("Rs." + Constants.roundTwoDecimals(Double.parseDouble(mProductArray.getSubtotal())));
 
         holder.tv_free_qty.setText(String.valueOf(mProductArray.getSelectedFree()));
 
@@ -206,6 +203,10 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         return mProduct_arrays.size();
     }
 
+    public List<PrimaryProduct> getData() {
+        return mProduct_arrays;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtQty;
@@ -221,7 +222,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         ImageView editProduct;
 
         TextView tv_free_qty;
-        TextView tv_final_total_amt;
+//        TextView tv_final_total_amt;
         TextView tv_dis;
         LinearLayout ll_disc;
         TextView item_tax;
@@ -241,7 +242,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             deleteProduct = (ImageView) itemView.findViewById(R.id.delete_product);
             editProduct=(ImageView) itemView.findViewById(R.id.edit_product);
             tv_free_qty= itemView.findViewById(R.id.tv_free_qty);
-            tv_final_total_amt= itemView.findViewById(R.id.tv_final_total_amt);
+//            tv_final_total_amt= itemView.findViewById(R.id.tv_final_total_amt);
             ll_disc= itemView.findViewById(R.id.ll_disc);
             tv_dis= itemView.findViewById(R.id.txt_dis);
             item_tax= itemView.findViewById(R.id.item_tax);
@@ -277,6 +278,12 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+
+                try {
+                    notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(context,"Sucessfully  Product Deleted",Toast.LENGTH_SHORT).show();
 
 
@@ -345,10 +352,6 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         if(selectedScheme != null){
             mProduct_arrays.get(position).setSelectedScheme(selectedScheme.getScheme());
             contact.setSelectedScheme(selectedScheme.getScheme());
-
-            mProduct_arrays.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
-            contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
-
             mProduct_arrays.get(position).setOff_Pro_code(selectedScheme.getProduct_Code());
             contact.setOff_Pro_code(selectedScheme.getProduct_Code());
 
@@ -376,7 +379,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 case "Y":
                     packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
-//                default:
+                default:
 
             }
             if(!selectedScheme.getFree().equals(""))
@@ -409,8 +412,13 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     viewHolder.ll_disc.setVisibility(View.GONE);
                     break;
-//                default:
+                default:
+                    viewHolder.dis_amount.setText("0");
+                    viewHolder.tv_dis.setText("0");
             }
+
+            mProduct_arrays.get(position).setSelectedDisValue(String.valueOf(discountValue));
+            contact.setSelectedDisValue(String.valueOf(discountValue));
 
 
             if(discountValue>0){
@@ -430,6 +438,11 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         }else {
             viewHolder.ll_disc.setVisibility(View.VISIBLE);
             viewHolder.tv_free_qty.setText("0");
+
+            viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+            viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+            contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+
         }
         double totalAmt = 0;
         double taxPercent = 0;
@@ -467,9 +480,11 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         }
 
         viewHolder.tax_amount.setText(Constants.roundTwoDecimals(taxAmt));
-        viewHolder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
+//        viewHolder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
+        viewHolder.totalAmount.setText("Rs." + Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
 
     }
+
 
 
 }

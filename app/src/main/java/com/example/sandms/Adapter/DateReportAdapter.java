@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.R;
+import com.example.sandms.Utils.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +47,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             holder.txtRate.setText(jsonObjec.getString("Rate"));
             taxRate=jsonObjec.getString("taxRate");
             holder.txtTax.setText((taxRate));
-            holder.txtTotal.setText(jsonObjec.getString("taxval"));
+            holder.txtTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(jsonObjec.getString("value"))));
             holder.txtDis.setText(jsonObjec.getString("discount_price"));
             //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
 

@@ -260,8 +260,18 @@ public class PrimaryOrderList extends AppCompatActivity {
              //   task.setSubtotal();
                 Log.e("subt",subtotal.toString());
                //    task.setSubtotal(String.valueOf(subtotal));
-               task.setProduct_Sale_Unit_Cn_Qty(Integer.parseInt(cnqty));
+                int cnqtyInt =1;
+                try {
+                    cnqtyInt = Integer.parseInt(cnqty);
+                    if(cnqtyInt ==0)
+                        cnqtyInt =1;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    cnqtyInt =1;
+                }
+                task.setProduct_Sale_Unit_Cn_Qty(cnqtyInt);
                 Log.e("subtcnqty", String.valueOf(cnqty));
+
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
                         .updateDATA(task.getPID(),

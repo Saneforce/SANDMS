@@ -346,9 +346,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+            onBackPressed();
 //                startActivity(new Intent(getApplicationContext(), ReportDashBoard.class));
-                finish();
+
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
@@ -450,7 +450,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
 
 
-                   for (int l = 0; l <= jsonArray.length(); l++) {
+                   for (int l = 0; l < jsonArray.length(); l++) {
                         JsonObject = jsonArray.getJSONObject(l);
                         String orderStatus = JsonObject.getString("Order_Status");
                         Log.e("datareportmodels", String.valueOf(mReportActivities.getData()));
@@ -475,7 +475,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     }
 
                 }catch (Exception e){
-
+                    e.printStackTrace();
                 }
                try {
 
@@ -485,7 +485,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
                    }
                }catch (Exception ee){
-
+                    ee.printStackTrace();
                }
                 Log.v("DATA_COMING", new Gson().toJson(mDReportModels));
               //  Float intSum = Float.valueOf(0);
@@ -557,7 +557,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
             @Override
             public void onFailure(Call<ReportDataList> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -565,6 +565,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     @Override
     public void onBackPressed() {
+        finish();
     }
 
 

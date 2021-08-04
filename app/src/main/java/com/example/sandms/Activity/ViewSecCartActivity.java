@@ -170,16 +170,7 @@ public class ViewSecCartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialogBox.showDialog(ViewSecCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
-                    @Override
-                    public void PositiveMethod(DialogInterface dialog, int id) {
-                        ViewSecCartActivity.super.onBackPressed();
-                    }
-
-                    @Override
-                    public void NegativeMethod(DialogInterface dialog, int id) {
-                    }
-                });
+                showExitDialog();
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
@@ -654,7 +645,23 @@ public class ViewSecCartActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        showExitDialog();
     }
+
+    private void showExitDialog() {
+        AlertDialogBox.showDialog(ViewSecCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                finish();
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+
 
 }

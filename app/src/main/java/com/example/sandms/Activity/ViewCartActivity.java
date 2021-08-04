@@ -66,9 +66,8 @@ import java.util.Locale;
 public class ViewCartActivity extends AppCompatActivity {
     TextView toolHeader;
     ImageView imgBack;
-    LinearLayout proceedCart;
     String SF_CODE, DIVISION_CODE, totalValueString, locationValue, dateTime, dateTime1, checkInTime, keyEk = "EK",
-            KeyDate, KeyHyp = "-", keyCodeValue, disTaxAmt="", time;
+            KeyDate, KeyHyp = "-", keyCodeValue, time;
     CustomViewAdapter adapter;
     LinearLayout btnSubmt;
 
@@ -98,7 +97,8 @@ public class ViewCartActivity extends AppCompatActivity {
     String SubTotal = "";
     TextView viewTotal;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
-    List<PrimaryProduct> contacts;
+//    List<PrimaryProduct> contacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,16 +108,16 @@ public class ViewCartActivity extends AppCompatActivity {
         SF_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         DIVISION_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         String carListAsString = getIntent().getStringExtra("list_as_string");
-       // Log.v("carListAsString", carListAsString);
+        // Log.v("carListAsString", carListAsString);
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
 
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
         Log.v("grandtttt", GrandTotal);
-         SubTotal=shared_common_pref.getvalue("SubTotal");
+        SubTotal=shared_common_pref.getvalue("SubTotal");
         Log.v("SUBTOT", GrandTotal);
-       // viewTotal.setText(GrandTotal);
-      //  viewTotal.setText(GrandTotal);
+        // viewTotal.setText(GrandTotal);
+        //  viewTotal.setText(GrandTotal);
 //new code added start
         try {
             if(GrandTotal!="0"||GrandTotal!="0.0") {
@@ -125,32 +125,43 @@ public class ViewCartActivity extends AppCompatActivity {
 
                 if (SubTotal != "0.0" || !("0.0").equals(SubTotal) || !("0").equals(SubTotal)) {
                     GrandTotal = String.valueOf(Integer.parseInt(GrandTotal) - Integer.parseInt(SubTotal));
-                    viewTotal.setText(GrandTotal);
+                    viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
                     shared_common_pref.clear_pref("SubTotal");
                     Log.v("grandsub", GrandTotal);
                 } else {
                     Log.v("grand", GrandTotal);
-                    viewTotal.setText(GrandTotal);
+                    viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
                 }
             }
         }catch (NumberFormatException ee){
             Log.v("11grand", GrandTotal);
-            viewTotal.setText(GrandTotal);
+            viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
         }
 //new code added stop
         contactViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
         contactViewModel.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
-                adapter.filteredContact(contacts);
+                    adapter.filteredContact(contacts);
 
+                updateTotal(contacts);
+/*
                 btnSubmt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         SaveProduct(contacts);
                     }
                 });
+*/
 
+            }
+        });
+
+
+        btnSubmt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaveProduct(adapter.getData());
             }
         });
 
@@ -182,20 +193,7 @@ public class ViewCartActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                AlertDialogBox.showDialog(ViewCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
-                    @Override
-                    public void PositiveMethod(DialogInterface dialog, int id) {
-                        ViewCartActivity.super.onBackPressed();
-//                        Intent aa=new Intent(ViewCartActivity.this,PrimaryOrderProducts.class);
-//                        aa.putExtra("GrandTotal",GrandTotal);
-//                        startActivity(aa);
-                    }
-
-                    @Override
-                    public void NegativeMethod(DialogInterface dialog, int id) {
-                    }
-                });
+                showExitDialog();
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
@@ -203,6 +201,23 @@ public class ViewCartActivity extends AppCompatActivity {
         toolSearch = (EditText) findViewById(R.id.toolbar_search);
         toolSearch.setVisibility(View.GONE);
 
+    }
+
+    private void showExitDialog() {
+        AlertDialogBox.showDialog(ViewCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                finish();
+//                        Intent aa=new Intent(ViewCartActivity.this,PrimaryOrderProducts.class);
+//                        aa.putExtra("GrandTotal",GrandTotal);
+//                        startActivity(aa);
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
     }
 
 
@@ -454,7 +469,7 @@ public class ViewCartActivity extends AppCompatActivity {
             JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
+            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             JsonObjtHead.put("sub_tot", 0);
             JsonObjtHead.put("dis_tot", 0);
             JsonObjtHead.put("tax_tot", 0);
@@ -493,7 +508,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name", carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_Pro_Unit());
-                person1.put("Con_Fac", carsList.get(z).getCon_fac());
+                person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
                 person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());
@@ -608,15 +623,13 @@ public class ViewCartActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-   //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
-
+        //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
+        showExitDialog();
     }
 
 
     @Override
     protected void onResume() {
-
-
         super.onResume();
         Log.v("Primary_order", "onResume");
 //        if (productBarCode.equalsIgnoreCase("")) {
@@ -640,20 +653,10 @@ public class ViewCartActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
                 Log.v("TotalviewcartSize", new Gson().toJson(contacts.size()));
-               // item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-               // viewTotal.setText("" + sum);
-                float sum = 0;
-                float tax=0;
-                for (PrimaryProduct cars : contacts) {
-                    sum = sum + Float.parseFloat(cars.getSubtotal());
-                    // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
-                    ;
-                    //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
-                    Log.v("Total_foreviewcart", String.valueOf(sum));
-                }
-                viewTotal.setText("" + Constants.roundTwoDecimals(sum));
-            shared_common_pref.save("GrandTotal", String.valueOf(sum));
-               // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
+                // item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+                // viewTotal.setText("" + sum);
+                updateTotal(contacts);
+                // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
             }
         });
 
@@ -662,6 +665,41 @@ public class ViewCartActivity extends AppCompatActivity {
 //            grandTotal.setText("" + sum);
 //        }
 
+
+    }
+
+    private void updateTotal(List<PrimaryProduct> contacts) {
+        double itemTotal = 0;
+        for (PrimaryProduct cars : contacts) {
+
+            double discountValue = 0;
+            double taxValue = 0;
+            double totalAmt = 0;
+            if(!cars.getSelectedDisValue().equals("") )
+                discountValue = Double.parseDouble(cars.getSelectedDisValue());
+            int unitQty = 1;
+            if(cars.getProduct_Sale_Unit_Cn_Qty()!=0)
+                unitQty = cars.getProduct_Sale_Unit_Cn_Qty();
+            totalAmt = Double.parseDouble(cars.getProduct_Cat_Code()) * (Double.parseDouble(cars.getQty()) * unitQty);
+            if(!cars.getTax_amt().equals(""))
+                taxValue = Double.parseDouble(cars.getTax_amt());
+
+            itemTotal = itemTotal + ((totalAmt- discountValue)+ taxValue);
+
+//                    sum = sum + Float.parseFloat(cars.getSubtotal());
+            // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+            ;
+            //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+            Log.v("Total_foreviewcart", String.valueOf(itemTotal));
+        }
+        viewTotal.setText("" + Constants.roundTwoDecimals(itemTotal));
+        shared_common_pref.save("GrandTotal", String.valueOf(itemTotal));
+
+        try {
+            adapter.filteredContact(contacts);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

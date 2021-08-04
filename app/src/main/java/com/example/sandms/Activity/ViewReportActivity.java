@@ -177,8 +177,8 @@ public class ViewReportActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentMethod();
-                finish();
+//                intentMethod();
+                onBackPressed();
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
@@ -269,7 +269,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

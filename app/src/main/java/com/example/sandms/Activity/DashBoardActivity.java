@@ -1,8 +1,6 @@
 package com.example.sandms.Activity;
 
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -29,7 +25,6 @@ import com.example.sandms.Model.PrimaryProduct;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
 import com.example.sandms.Utils.Common_Class;
-import com.example.sandms.Utils.Common_Model;
 import com.example.sandms.Utils.Constants;
 import com.example.sandms.Utils.PrimaryProductDatabase;
 import com.example.sandms.Utils.PrimaryProductViewModel;
@@ -44,13 +39,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,7 +78,7 @@ public class DashBoardActivity extends AppCompatActivity {
         if(getIntent().hasExtra("syncData"))
             syncData = getIntent().getBooleanExtra("syncData", false);
 
-        txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
+        txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Address));
         imagView = findViewById(R.id.toolbar_back);
         ib_logout = findViewById(R.id.ib_logout);
         imagView.setOnClickListener(new View.OnClickListener() {
@@ -123,8 +114,8 @@ public class DashBoardActivity extends AppCompatActivity {
 
                 if(dbController==null)
                     dbController = new DBController(context);
-
-                mCommon_class.checkData(dbController,context);
+                if(!Common_Class.isOnProgress)
+                    mCommon_class.checkData(dbController,context);
 
                 if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
@@ -139,10 +130,10 @@ public class DashBoardActivity extends AppCompatActivity {
                     RetailerType();
                 }
 
-               if(syncData || dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
+              /* if(syncData || dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
                     syncData = false;
                     getTemplate();
-                }
+                }*/
                if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
                     syncData = false;
                     getRouteDetails();
@@ -214,7 +205,7 @@ public class DashBoardActivity extends AppCompatActivity {
         });
     }
 
-    public void getTemplate() {
+  /*  public void getTemplate() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getTemplates(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         call.enqueue(new Callback<JsonObject>() {
@@ -237,7 +228,7 @@ public class DashBoardActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
 
     public void getRouteDetails() {
         String routeMap = "{\"tableName\":\"vwTown_Master_APP\",\"coloumns\":\"[\\\"town_code as id\\\", \\\"town_name as name\\\",\\\"target\\\",\\\"min_prod\\\",\\\"field_code\\\",\\\"stockist_code\\\"]\",\"where\":\"[\\\"isnull(Town_Activation_Flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
@@ -321,7 +312,6 @@ public class DashBoardActivity extends AppCompatActivity {
         });
     }
 
-    }
     private class PopulateDbAsyntask extends AsyncTask<Void, Void, Void> {
         private PrimaryProductDao contactDao;
         public PopulateDbAsyntask(PrimaryProductDatabase contactDaos) { contactDao = contactDaos.contactDao();
@@ -333,12 +323,12 @@ public class DashBoardActivity extends AppCompatActivity {
             return null;
         }
     }
+
     private void fillingWithStart() {
         Log.v("Data_CHeckng", "Checking_data");
 
         String sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
         Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
-        String sPrimaryProd = mShared_common_pref.getvalue(Shared_Common_Pref.PriProduct_Data);
         PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
                 .contactDao();
         try {
@@ -348,7 +338,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
             int unitQty = 1;
-            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="";
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 String id = String.valueOf(jsonObject.get("id"));
@@ -362,6 +352,8 @@ public class DashBoardActivity extends AppCompatActivity {
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
                 String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
+                if(jsonObject.has("Default_UOMQty"))
+                    unitQty = jsonObject.getInt("Default_UOMQty");
                 Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
                 JSONArray uomArray = null;
@@ -382,8 +374,7 @@ public class DashBoardActivity extends AppCompatActivity {
                         Free = String.valueOf(jsonObject1.get("Free"));
                         if(jsonObject1.has("Discount_Type"))
                             Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
-                        if(jsonObject1.has("Default_UOMQty"))
-                        unitQty = jsonObject1.getInt("Default_UOMQty");
+
 
                         Log.v("JSON_Array_SCHEMA",Scheme);
                         Log.v("JSON_Array_DIS",Discount);
@@ -456,11 +447,16 @@ public class DashBoardActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), PaymentDashAcitivity.class));
     }
     public void Company(View v) {
-        startActivity(new Intent(getApplicationContext(), CompanyProfile.class));
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "CompanyProfile.html");
+        startActivity(intent);
     }
     public void PrivacyPolicy(View v) {
-        startActivity(new Intent(getApplicationContext(), CompanyProfile.class));
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "PrivacyPolicy.html");
+        startActivity(intent);
     }
+
     @Override
     public void onBackPressed() {
     }

@@ -146,35 +146,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 Log.v("mPrimaryProduct", String.valueOf(mPrimaryProduct.size()));
-
-                AlertDialogBox.showDialog(PrimaryOrderProducts.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
-                    @Override
-                    public void PositiveMethod(DialogInterface dialog, int id) {
-
-                        if (mPrimaryProduct.size() != 0) {
-                            mCommon_class.ProgressdialogShow(1, "");
-                            deleteViewModel = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
-                            deleteViewModel.getAllData().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
-                                @Override
-                                public void onChanged(List<PrimaryProduct> contacts) {
-                                    deleteViewModel.delete(contacts);
-//                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
-                                    finish();
-                                    Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
-                                }
-                            });
-
-                        }else{
-                            finish();
-//                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
-                        }
-
-                    }
-
-                    @Override
-                    public void NegativeMethod(DialogInterface dialog, int id) {
-                    }
-                });
+                showExitDialog();
 
             }
         });
@@ -317,8 +289,41 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void run() {
                 loadFirstItem();
             }
-        }, 2000);
+        }, 1000);
 
+    }
+
+    private void showExitDialog() {
+
+        AlertDialogBox.showDialog(PrimaryOrderProducts.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+
+                if (mPrimaryProduct.size() != 0) {
+                    mCommon_class.ProgressdialogShow(1, "");
+                    deleteViewModel = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
+                    deleteViewModel.getAllData().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
+                        @Override
+                        public void onChanged(List<PrimaryProduct> contacts) {
+                            deleteViewModel.delete(contacts);
+//                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
+                            finish();
+                            Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
+                        }
+                    });
+
+                }else{
+                    finish();
+//                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
+                }
+
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void loadFirstItem() {
@@ -482,6 +487,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
     @Override
     public void onBackPressed() {
+        showExitDialog();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -1776,6 +1782,10 @@ String orderid=mContact.getUID();
         }else {
             holder.ll_disc.setVisibility(View.VISIBLE);
             holder.tv_free_qty.setText("0");
+            holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+            holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+            workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
+            contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
         }
         double totalAmt = 0;
         double taxPercent = 0;
@@ -1822,7 +1832,7 @@ String orderid=mContact.getUID();
     }
 
 
-    private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String disAmt,
+    private void updateTask(final PrimaryProduct task, String Qty, String subTotal, String taxAmt, String finalTotal,
                             String selectedScheme, String selectedDisValue, String selectedFree,
                             String Off_Pro_code, String Off_Pro_name, String Off_Pro_Unit, String Off_disc_type) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
@@ -1831,16 +1841,16 @@ String orderid=mContact.getUID();
             protected Void doInBackground(Void... voids) {
                 task.setQty(Qty);
                 task.setTxtqty(Qty);
-                task.setSubtotal(subTotal);
+                task.setSubtotal(finalTotal);
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
                         .update(task.getPID(),
                                 Qty, Qty,
-                                String.valueOf(subTotal),
+                                String.valueOf(finalTotal),
                                 task.getTax_Value(),
                                 task.getDiscount(),
                                 taxAmt,
-                                disAmt,
+                                selectedDisValue,
                                 selectedScheme,
                                 selectedDisValue,
                                 selectedFree,

@@ -105,14 +105,14 @@
                         <RadioButton
                             android:id="@+id/offline"
                             style="@style/TextStyle"
-                            android:checked="false"
+                            android:checked="true"
                             android:text="Offline - payment" />
 
-                        <RadioButton
+                     <!--   <RadioButton
                             android:id="@+id/cred"
                             style="@style/TextStyle"
                             android:checked="false"
-                            android:text="Credit" />
+                            android:text="Credit" />-->
                     </RadioGroup>
 
 

@@ -222,6 +222,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(mProductCount.getText().toString().equals(""))
+                    return;
+
+                ProductCount = Integer.parseInt(mProductCount.getText().toString());
 
                 if (mProductCount.getText().toString().equalsIgnoreCase("")) {
                     productQty.setText("0");
@@ -434,7 +438,9 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                         Log.v("55update",subTotal+""+valueTotal.toString()+finalPrice);
                          }//new stop
                 }  //jul 11
-                    
+
+                if(ProductCount>0)
+                updateSchemeData(task.getSchemeProducts(), ProductCount, task);
 
             }
 
@@ -444,7 +450,6 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             }
         });
         updateSchemeData(task.getSchemeProducts(), ProductCount, task);
-
     }
 
     private void loadTask(PrimaryProduct task) {
@@ -493,14 +498,12 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
     private void updateTask(final PrimaryProduct task, float subTotal, Float valueTotal, float finalPrice) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
-
-
             @Override
             protected Void doInBackground(Void... voids) {
 
                 task.setQty(mProductCount.getText().toString());
                 task.setTxtqty(mProductCount.getText().toString());
-                task.setSubtotal(String.valueOf(UpdatePrimaryProduct.this.subTotal));
+                task.setSubtotal(String.valueOf(finalPrice));
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
                         .update(task.getPID(),
@@ -508,11 +511,11 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                 mProductCount.getText().toString(),
                                 String.valueOf(subTotal),
                                 task.getTax_Value(),
-                                discountValue,
+                                task.getDiscount(),
                                 String.valueOf(valueTotal),
-                                String.valueOf(finalPrice),
+                                discountValue,
+                                task.getSelectedScheme(),
                                 task.getSelectedDisValue(),
-                                task.getSelectedFree(),
                                 task.getSelectedFree(),
                                 task.getOff_Pro_code(),
                                 task.getOff_Pro_name(),
@@ -520,7 +523,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                 task.getOff_disc_type());
                 return null;
             }
-
+//String.valueOf(finalPrice)
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -570,19 +573,19 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         double schemeDisc = 0;
         if(selectedScheme != null){
 //            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
-            mContact.setSelectedScheme(selectedScheme.getScheme());
+            task.setSelectedScheme(selectedScheme.getScheme());
 
 //            workinglist.get(position).setSelectedDisValue(selectedScheme.getDiscountvalue());
-            mContact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+            task.setSelectedDisValue(selectedScheme.getDiscountvalue());
 
 //            workinglist.get(position).setOff_Pro_code(selectedScheme.getProduct_Code());
-            mContact.setOff_Pro_code(selectedScheme.getProduct_Code());
+            task.setOff_Pro_code(selectedScheme.getProduct_Code());
 
 //            workinglist.get(position).setOff_Pro_name(selectedScheme.getProduct_Name());
-            mContact.setOff_Pro_name(selectedScheme.getProduct_Name());
+            task.setOff_Pro_name(selectedScheme.getProduct_Name());
 
 //            workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
-            mContact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+            task.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             discountType= selectedScheme.getDiscount_Type();
 
 
@@ -609,14 +612,14 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
 
 //            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
-            mContact.setSelectedFree(String.valueOf(freeQty));
+            task.setSelectedFree(String.valueOf(freeQty));
 
 //            holder.tv_free_qty.setText(String.valueOf(freeQty));
 
 
 
-            if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
-                productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
+            if(task.getProduct_Cat_Code()!=null && !task.getProduct_Cat_Code().equals(""))
+                productAmt = Double.parseDouble(task.getProduct_Cat_Code());
 
             if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
                 schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
@@ -639,10 +642,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             if(discountValue>0){
 //                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
-                mContact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                task.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 
 //                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
-                mContact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+                task.setDis_amt(Constants.roundTwoDecimals(discountValue));
 /*
                 totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
                 holder.ll_disc_reduction.setVisibility(View.VISIBLE);
@@ -654,25 +657,31 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         }else {
 //            holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.tv_free_qty.setText("0");
+
+//            viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+//            viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+            task.setDis_amt(Constants.roundTwoDecimals(discountValue));
+            task.setSelectedFree("0");
+
         }
         double totalAmt = 0;
         double taxPercent = 0;
         double taxAmt = 0;
 
         try {
-            totalAmt = Double.parseDouble(mContact.getProduct_Cat_Code()) * (qty *product_Sale_Unit_Cn_Qty);
+            totalAmt = Double.parseDouble(task.getProduct_Cat_Code()) * (qty *product_Sale_Unit_Cn_Qty);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         try {
-            taxPercent = Double.parseDouble(mContact.getTax_Value());
+            taxPercent = Double.parseDouble(task.getTax_Value());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
         double itemPrice = 0;
 //        if(totalAmt==0)
-            itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
+            itemPrice = Double.parseDouble(task.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
 //        else
 //            itemPrice = totalAmt;
 

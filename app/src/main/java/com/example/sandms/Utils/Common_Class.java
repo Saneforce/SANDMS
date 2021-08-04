@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -317,11 +318,10 @@ public class Common_Class {
         String plantime = dpln.format(c.getTime());
         return plantime;
     }
-
-
+    public static boolean isOnProgress = false;
 
     public void checkData(DBController dbController, Context context){
-
+        isOnProgress = true;
         if(dbController == null)
             dbController = new DBController(context);
 
@@ -340,6 +340,13 @@ public class Common_Class {
             }
 
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isOnProgress = false;
+            }
+        }, 3000);
+
 
     }
 
