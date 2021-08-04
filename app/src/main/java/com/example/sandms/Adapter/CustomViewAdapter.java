@@ -317,6 +317,8 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         int product_Sale_Unit_Cn_Qty = 1;
         if(contact.getProduct_Sale_Unit_Cn_Qty()!=0)
             product_Sale_Unit_Cn_Qty= contact.getProduct_Sale_Unit_Cn_Qty();
+
+        int tempQty = qty * product_Sale_Unit_Cn_Qty;
 /*
         double value=
         subTotal = Double.parseDouble(contact.getProduct_Cat_Code()) * contact.getProduct_Sale_Unit_Cn_Qty();
@@ -337,7 +339,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
                 int currentSchemeCount = Integer.parseInt(scheme.getScheme());
-                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= tempQty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
                 }
@@ -374,10 +376,10 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             double packageCalc = 0;
             switch (packageType){
                 case "N":
-                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (int)(tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
                 case "Y":
-                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (double) (tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
                 default:
 
@@ -400,7 +402,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
                     viewHolder.ll_disc.setVisibility(View.VISIBLE);
 
 
@@ -408,7 +410,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     viewHolder.ll_disc.setVisibility(View.GONE);
                     break;
