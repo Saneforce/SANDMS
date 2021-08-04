@@ -305,10 +305,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                     deleteViewModel.getAllData().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
                         @Override
                         public void onChanged(List<PrimaryProduct> contacts) {
+                            Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
+
                             deleteViewModel.delete(contacts);
 //                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
                             finish();
-                            Log.v("mPrimaryProduct_123456", String.valueOf(contacts.size()));
                         }
                     });
 
@@ -1770,13 +1771,23 @@ String orderid=mContact.getUID();
                 contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 
                 workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
+                workinglist.get(position).setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
                 contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+                contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
 /*
                 totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
                 holder.ll_disc_reduction.setVisibility(View.VISIBLE);
                 holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                 holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
 
+            }else {
+                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+
+                workinglist.get(position).setDis_amt("0");
+                workinglist.get(position).setSelectedDisValue("0");
+                contact.setDis_amt("0");
+                contact.setSelectedDisValue("0");
             }
 
         }else {
@@ -1786,6 +1797,24 @@ String orderid=mContact.getUID();
             holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
             workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
             contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+
+            workinglist.get(position).setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+            contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+
+
+
+            workinglist.get(position).setSelectedScheme("");
+            contact.setSelectedScheme("");
+
+            workinglist.get(position).setOff_Pro_code("");
+            contact.setOff_Pro_code("");
+
+            workinglist.get(position).setOff_Pro_name("");
+            contact.setOff_Pro_name("");
+
+            workinglist.get(position).setOff_Pro_Unit("");
+            contact.setOff_Pro_Unit("");
+
         }
         double totalAmt = 0;
         double taxPercent = 0;
@@ -1806,7 +1835,7 @@ String orderid=mContact.getUID();
             itemPrice = totalAmt;
         else*/
             itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
-        holder.subProdcutChildRate.setText("Rs:" + itemPrice);
+        holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
         holder.productItem.setText(String.valueOf(qty));
         holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
 

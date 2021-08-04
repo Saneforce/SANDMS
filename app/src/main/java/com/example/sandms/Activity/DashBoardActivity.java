@@ -446,16 +446,6 @@ public class DashBoardActivity extends AppCompatActivity {
     public void Payment(View v) {
         startActivity(new Intent(getApplicationContext(), PaymentDashAcitivity.class));
     }
-    public void Company(View v) {
-        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
-        intent.putExtra("fileName", "CompanyProfile.html");
-        startActivity(intent);
-    }
-    public void PrivacyPolicy(View v) {
-        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
-        intent.putExtra("fileName", "PrivacyPolicy.html");
-        startActivity(intent);
-    }
 
     @Override
     public void onBackPressed() {
