@@ -853,6 +853,7 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
                     break;
 //                default:
             }
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(discountValue>0){

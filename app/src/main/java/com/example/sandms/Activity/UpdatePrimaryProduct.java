@@ -639,6 +639,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                default:
             }
 
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
             if(discountValue>0){
 //                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));

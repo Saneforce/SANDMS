@@ -1764,6 +1764,7 @@ String orderid=mContact.getUID();
                     break;
 //                default:
             }
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(discountValue>0){
