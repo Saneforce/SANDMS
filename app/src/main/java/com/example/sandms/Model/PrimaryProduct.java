@@ -431,7 +431,6 @@ public class PrimaryProduct implements Serializable {
             ConQty = conQty;
         }
 
-        @NonNull
         @Override
         public String toString() {
             return "UOMlist{" +
