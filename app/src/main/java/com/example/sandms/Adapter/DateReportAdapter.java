@@ -47,7 +47,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             holder.txtRate.setText(jsonObjec.getString("Rate"));
             taxRate=jsonObjec.getString("taxRate");
             holder.txtTax.setText((taxRate));
-            holder.txtTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(jsonObjec.getString("value"))));
+            holder.txtTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(jsonObjec.getString("taxval"))));
             holder.txtDis.setText(jsonObjec.getString("discount_price"));
             //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
 

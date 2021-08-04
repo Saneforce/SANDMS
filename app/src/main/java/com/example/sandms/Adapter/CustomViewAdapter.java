@@ -420,6 +420,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             mProduct_arrays.get(position).setSelectedDisValue(String.valueOf(discountValue));
             contact.setSelectedDisValue(String.valueOf(discountValue));
 
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
             if(discountValue>0){
                 mProduct_arrays.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));

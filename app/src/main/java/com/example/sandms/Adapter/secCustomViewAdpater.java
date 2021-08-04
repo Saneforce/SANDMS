@@ -388,6 +388,7 @@ public class secCustomViewAdpater extends RecyclerView.Adapter<secCustomViewAdpa
                     break;
 //                default:
             }
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(discountValue>0){
