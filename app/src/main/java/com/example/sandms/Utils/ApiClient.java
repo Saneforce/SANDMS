@@ -19,7 +19,7 @@ public class ApiClient {
 
     public static final String BASE_FMCG ="http://fmcg.sanfmcg.com/";
     public static final String BASE_GOVIND ="http://govind.sanfmcg.com/";
-    public static final String BASE =BASE_GOVIND;
+    public static final String BASE =BASE_FMCG;
 
     //  public static final String BASE_URL = "http://govind.sanfmcg.com/server/";//working code commented
     public static final String BASE_URL = BASE+"server/";//server
