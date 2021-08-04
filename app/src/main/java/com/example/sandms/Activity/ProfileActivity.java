@@ -115,4 +115,16 @@ TextView toolbarTitle;
             }
         });
     }
+
+    public void Company(View v) {
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "CompanyProfile.html");
+        startActivity(intent);
+    }
+    public void PrivacyPolicy(View v) {
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "PrivacyPolicy.html");
+        startActivity(intent);
+    }
+
 }

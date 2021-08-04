@@ -123,21 +123,19 @@ public class PaymentDetailsActivity extends AppCompatActivity
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-               /* if (checkedId == R.id.online) {
+                if (checkedId == R.id.online) {
                     offView.setVisibility(View.GONE);
                     PaymntMode = "Online";
 
-                } else*/ if (checkedId == R.id.offline) {
+                } else if (checkedId == R.id.offline) {
                     offView.setVisibility(View.VISIBLE);
                     PaymntMode = "Offline";
-                } /*else  if (checkedId == R.id.cred){
+                } else {
                     PaymntMode = "Credit";
                     offView.setVisibility(View.GONE);
-                }*/
+                }
             }
         });
-        PaymntMode = "Offline";
-        offView.setVisibility(View.VISIBLE);
 
         getToolbar();
     }

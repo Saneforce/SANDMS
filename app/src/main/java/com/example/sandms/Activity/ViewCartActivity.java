@@ -111,6 +111,7 @@ public class ViewCartActivity extends AppCompatActivity {
         // Log.v("carListAsString", carListAsString);
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
+        deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
 
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
         Log.v("grandtttt", GrandTotal);
@@ -550,7 +551,6 @@ public class ViewCartActivity extends AppCompatActivity {
 
             if (product_count != 0) {
 
-                deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
                 deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
                     @Override
                     public void onChanged(List<PrimaryProduct> contacts) {

@@ -458,7 +458,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //        if(totalAmt==0)
         itemPrice = Double.parseDouble(task.getProduct_Cat_Code())*task.getProduct_Sale_Unit_Cn_Qty();
 
-        productPrice.setText(String.valueOf(itemPrice));
+        productPrice.setText(Constants.roundTwoDecimals(itemPrice));
         productQty.setText(task.getTxtqty());
         mProductCount.setText(task.getQty());
         productTax.setText(task.getTax_Value());
@@ -652,6 +652,9 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 holder.tv_disc_amt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                 holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
 
+            }else {
+                task.setDiscount("0");
+                task.setDis_amt("0");
             }
 
         }else {
@@ -660,8 +663,15 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
 //            viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 //            viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
-            task.setDis_amt(Constants.roundTwoDecimals(discountValue));
+            task.setDis_amt("0");
             task.setSelectedFree("0");
+            task.setSelectedScheme("");
+            task.setSelectedDisValue("0");
+            task.setOff_Pro_code("0");
+            task.setOff_Pro_name("0");
+            task.setOff_Pro_Unit("0");
+
+
 
         }
         double totalAmt = 0;
@@ -685,7 +695,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //        else
 //            itemPrice = totalAmt;
 
-        productPrice.setText("Rs:" + itemPrice);
+        productPrice.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
         productQty.setText(String.valueOf(qty));
 
 //        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
