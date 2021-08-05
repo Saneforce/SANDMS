@@ -175,8 +175,8 @@ public class ViewSecCartActivity extends AppCompatActivity {
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
         toolHeader.setText(R.string.view_cart);
-        toolSearch = (EditText) findViewById(R.id.toolbar_search);
-        toolSearch.setVisibility(View.GONE);
+//        toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//        toolSearch.setVisibility(View.GONE);
 
     }
 
@@ -574,7 +574,7 @@ public class ViewSecCartActivity extends AppCompatActivity {
 
         DBController dbController = new DBController(ViewSecCartActivity.this);
 
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave")){
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave", 1)){
             if(Constants.isInternetAvailable(this))
                 new Common_Class(this).checkData(dbController,getApplicationContext());
             else

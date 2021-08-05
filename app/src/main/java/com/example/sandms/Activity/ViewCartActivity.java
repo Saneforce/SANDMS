@@ -199,8 +199,8 @@ public class ViewCartActivity extends AppCompatActivity {
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
         toolHeader.setText(R.string.view_cart);
-        toolSearch = (EditText) findViewById(R.id.toolbar_search);
-        toolSearch.setVisibility(View.GONE);
+//        toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//        toolSearch.setVisibility(View.GONE);
 
     }
 
@@ -552,7 +552,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
         DBController dbController = new DBController(ViewCartActivity.this);
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 1)){
 
             if(Constants.isInternetAvailable(this))
                 new Common_Class(this).checkData(dbController,getApplicationContext());

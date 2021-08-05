@@ -168,8 +168,8 @@ public class MyOrdersActivity extends AppCompatActivity {
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
         toolHeader.setText(R.string.my_orders);
-        toolSearch = (EditText) findViewById(R.id.toolbar_search);
-        toolSearch.setVisibility(View.GONE);
+//        toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//        toolSearch.setVisibility(View.GONE);
     }
 
     public void getMenu() {

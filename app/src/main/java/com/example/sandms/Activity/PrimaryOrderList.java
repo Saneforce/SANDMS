@@ -179,8 +179,8 @@ public class PrimaryOrderList extends AppCompatActivity {
             toolHeader = (TextView) findViewById(R.id.toolbar_title);
             toolHeader.setText("Select UOM");
 
-            toolSearch = (EditText) findViewById(R.id.toolbar_search);
-            toolSearch.setVisibility(View.GONE);
+//            toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//            toolSearch.setVisibility(View.GONE);
 
         }
 

@@ -183,8 +183,8 @@ public class ViewReportActivity extends AppCompatActivity {
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
         toolHeader.setText(R.string.View_Rep);
-        toolSearch = (EditText) findViewById(R.id.toolbar_search);
-        toolSearch.setVisibility(View.GONE);
+//        toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//        toolSearch.setVisibility(View.GONE);
 
     }
 

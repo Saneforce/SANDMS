@@ -444,7 +444,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
 
         DBController dbController = new DBController(AddNewRetailer.this);
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save")){
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 0)){
             mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
             if(Constants.isInternetAvailable(this)){
                 new Common_Class(this).checkData(dbController,getApplicationContext());
