@@ -459,6 +459,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            searchEdit.onActionViewCollapsed();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

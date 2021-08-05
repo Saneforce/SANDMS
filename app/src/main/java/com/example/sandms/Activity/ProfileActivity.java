@@ -87,6 +87,7 @@ TextView toolbarTitle;
                        Log.e("LoginResponse", name.toString());
                        edtName.setText(name);
                        String email=jsonObject.getString("Stockist_Address1");
+                       if(email!=null && !email.equals("") && !email.equals("null"))
                        edtEmail.setText(email);
                        String stocklistname=jsonObject.getString("Stockist_ContactPerson");
                        edtStoclistName.setText(stocklistname);
@@ -99,12 +100,10 @@ TextView toolbarTitle;
                        String gst=jsonObject.getString("gstn");
                        edtGst.setText(gst);
 
-
-
                    }
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
             }

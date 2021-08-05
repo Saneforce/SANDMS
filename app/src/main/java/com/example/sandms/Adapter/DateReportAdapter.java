@@ -40,15 +40,32 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         try {
-            String taxRate;
             JSONObject jsonObjec = jsonArray.getJSONObject(position);
             holder.txtName.setText(jsonObjec.getString("Product_Name"));
             holder.txtQty.setText(jsonObjec.getString("CQty"));
             holder.txtRate.setText(jsonObjec.getString("Rate"));
-            taxRate=jsonObjec.getString("taxRate");
-            holder.txtTax.setText((taxRate));
-            holder.txtTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(jsonObjec.getString("taxval"))));
-            holder.txtDis.setText(jsonObjec.getString("discount_price"));
+
+
+            String taxRate = "0";
+            if(jsonObjec.has("taxRate") && jsonObjec.getString("taxRate")!=null  && !jsonObjec.getString("taxRate").equals(""))
+                taxRate =Constants.roundTwoDecimals(jsonObjec.getDouble("taxRate"));
+            holder.txtTax.setText(taxRate);
+
+            String taxVal = "0";
+            if(jsonObjec.has("taxval") && jsonObjec.getString("taxval")!=null  && !jsonObjec.getString("taxval").equals("") )
+                taxVal =Constants.roundTwoDecimals(jsonObjec.getDouble("taxval"));
+            holder.txtTotal.setText(taxVal);
+
+            String disPrice = "0";
+            if(jsonObjec.has("discount_price") && jsonObjec.getString("discount_price")!=null  && !jsonObjec.getString("discount_price").equals("") )
+                disPrice =Constants.roundTwoDecimals(jsonObjec.getDouble("discount_price"));
+
+            holder.txtDis.setText(disPrice);
+
+            String free = "0";
+            if(jsonObjec.has("Free") && jsonObjec.getString("Free")!=null  && !jsonObjec.getString("Free").equals(""))
+                free =Constants.roundTwoDecimals(jsonObjec.getDouble("Free"));
+            holder.txt_free.setText(free);
             //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
 
             //NEW CODE
@@ -67,7 +84,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtName,txtQty,txtRate,txtTotal,txtTax,txtDis;
+        TextView txtName,txtQty,txtRate,txtTotal,txtTax,txtDis,txt_free ;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,6 +94,7 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             txtTotal = (TextView) itemView.findViewById(R.id.txt_total);
             txtTax=itemView.findViewById(R.id.txt_tax);
             txtDis=itemView.findViewById(R.id.txt_discount);
+            txt_free=itemView.findViewById(R.id.txt_free);
 
 
         }

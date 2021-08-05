@@ -35,6 +35,10 @@ public interface PrimaryProductDao {
     void update(String sID,String sQty,String sTxtQty,String sSubTotal,String sTax_Value,String sDiscount,
                 String sTax_amt,String sDis_amt,String selectedScheme,String selectedDisValue,String selectedFree,String Off_Pro_code,
                 String Off_Pro_name,String Off_Pro_Unit,String Off_disc_type);
+
+    @Query("UPDATE primary_product SET qty = :sQty,Txtqty = :sTxtQty WHERE PID= :sID")
+    void update(String sID,String sQty,String sTxtQty);
+
     @Query("UPDATE primary_product SET Product_Sale_Unit = :sPdtQty,Product_Sale_Unit_Cn_Qty = :Product_Sale_Unit_Cn_Qty,Subtotal = :sSubTotal WHERE PID= :sID")
     void updateDATA(String sID,String sPdtQty,int Product_Sale_Unit_Cn_Qty,String sSubTotal);
 

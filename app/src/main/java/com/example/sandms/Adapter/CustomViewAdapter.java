@@ -268,9 +268,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
-                        .deleteById(productID);
-
-
+                        .update(task.getPID(),
+                                "0",
+                                "0");
 
                 return null;
             }

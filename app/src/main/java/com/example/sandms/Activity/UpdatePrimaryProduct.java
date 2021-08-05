@@ -649,6 +649,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
 //                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
                 task.setDis_amt(Constants.roundTwoDecimals(discountValue));
+                task.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
 /*
                 totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
                 holder.ll_disc_reduction.setVisibility(View.VISIBLE);
@@ -666,6 +667,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
 //            viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 //            viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+            task.setDiscount("0");
             task.setDis_amt("0");
             task.setSelectedFree("0");
             task.setSelectedScheme("");
