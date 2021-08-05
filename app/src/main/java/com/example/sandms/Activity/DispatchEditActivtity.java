@@ -56,7 +56,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     Integer OldCQtys;
     Integer Rates;
     String OldQty;
-
+    ViewProductEdit priProdAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +97,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     pendingRecycle.setHasFixedSize(true);
                     pendingRecycle.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     pendingRecycle.setNestedScrollingEnabled(false);
-                    ViewProductEdit priProdAdapter = new ViewProductEdit(DispatchEditActivtity.this, jsonArray, new DMS.DisptachEditing() {
+                    priProdAdapter = new ViewProductEdit(DispatchEditActivtity.this, jsonArray, new DMS.DisptachEditing() {
                         @Override
                         public void onClickParentInter(String position, String Slno, String PCode,
                                                        String OrderId, String ProductName, String OldCQty,
@@ -127,13 +127,13 @@ public class DispatchEditActivtity extends AppCompatActivity {
                                            jsonObject.put("PCode", PCode);
                                            jsonObject.put("OrderId", OrderId);
                                            jsonObject.put("ProductName", ProductName);
-                                           jsonObject.put("OldCQty", OldCQtys);
-                                           jsonObject.put("Newvalue", Float.valueOf(NewValue));
-                                           jsonObject.put("Oldvalue", Float.valueOf(OldValues));
+                                           jsonObject.put("OldCQty", OldCQtys); //old value 10
+                                           jsonObject.put("Newvalue", Float.valueOf(NewValue)); //6 * Rates
+                                           jsonObject.put("Oldvalue", Float.valueOf(OldValues));//4 * Rates
                                            jsonObject.put("Rate", Rates);
                                            jsonObject.put("Cl_bal", Cl_bal);
                                            jsonObject.put("Unit", Unit);
-                                           jsonObject.put("newCQty", NewOrder);
+                                           jsonObject.put("newCQty", NewOrder); // 10-4 = 6
                                            listdata.set(Integer.parseInt(position), jsonObject.toString());
                                        }else {
 
@@ -178,6 +178,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     }
 
     public void dipatchItem(View v) {
+//        listdata = adap
         try {
             if (OldCQtys > newQty) {
                 Toast.makeText(DispatchEditActivtity.this, "Please select quantity equal or below value", Toast.LENGTH_SHORT).show();
@@ -321,13 +322,13 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
             Log.v("newqty",nCQty);
 
 
-            holder.orderID.setText("" + String.valueOf(jsonObject.get("Product_Name")));
-            holder.orderValue.setText("" + String.valueOf(jsonObject.get("OldCQty")));
-            holder.orderDistributor.setText("" + String.valueOf(jsonObject.get("Unit")));
+            holder.orderID.setText("" + jsonObject.get("Product_Name"));
+            holder.orderValue.setText("" + jsonObject.get("OldCQty"));
+            holder.orderDistributor.setText("" + jsonObject.get("Unit"));
             Log.v("JSONDETIAILS", String.valueOf(jsonObject.get("Product_Name")));
            // holder.orderValue.setFilters(new InputFilter[]{new InputFilterMinMax("1", CQty)});
             OCQty = String.valueOf(jsonObject.get("OldCQty"));
-
+//            holder.orderValue.setText(s.toString());
             holder.orderValue.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -335,29 +336,53 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                 }
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    Log.e("ordervalue",holder.orderValue.getText().toString());
-                    Log.e("textchange",s.toString());
-                    Log.e("orderval",CQty);
-                  String OrderVal=holder.orderValue.getText().toString();
 
 
-                    if (holder.orderValue.getText().toString().equals("") || holder.orderValue.getText()==null||holder.orderValue.getText().equals("0")||
+/*                    if (holder.orderValue.getText().toString().equals("") || holder.orderValue.getText()==null||holder.orderValue.getText().equals("0")||
                             holder.orderValue.getText().toString().equalsIgnoreCase("null")) {//||holder.orderValue.getText().equals("0")
                         holder.orderValue.setText("" + 0);
-                       /* itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
+                       *//* itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
                                 Product_Name, holder.orderValue.getText().toString(), "", "",
-                                Rate, Cl_bal, Unit, CQty,OCQty);*/
+                                Rate, Cl_bal, Unit, CQty,OCQty);*//*
                     } else {
-                        /*itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
+                        *//*itemClick.onClickParentInter(String.valueOf(position), Slno, PCode, orderID,
                                 Product_Name, holder.orderValue.getText().toString(),
                               "", "",
                                 Rate, Cl_bal, Unit,
-                                CQty,OCQty);*/
-                    }
+                                CQty,OCQty);*//*
+                    }*/
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    Log.e("ordervalue",holder.orderValue.getText().toString());
+                    Log.e("textchange",s.toString());
+                    Log.e("orderval",CQty);
+                    String OrderVal=s.toString();
+                    int oldValue =0, newValue = 0;
+                    try {
+                        oldValue = jsonObject.getInt("OldCQty");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(!OrderVal.equals("") && Integer.parseInt(OrderVal)<=oldValue){
+                        newValue = Integer.parseInt(OrderVal);
+                        try {
+
+                            JSONObject jsonObject  = jsonArray.getJSONObject(position);
+                            jsonObject.put("OldCQty",s.toString());
+//                            jsonObject.put("Newvalue", oldValue -newValue);
+//                            jsonObject.put("Oldvalue", oldValue);
+                            jsonArray.put(position, jsonObject);
+                            holder.orderValue.setSelection(holder.orderValue.getText().length());
+//                            notifyItemChanged(position);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+//                    else
+//                        Toast.makeText(context,"Please select quantity equal or below value",Toast.LENGTH_SHORT).show();
 
                 }
             });
@@ -385,6 +410,9 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
             orderDistributor = itemView.findViewById(R.id.child_pro_unit);
             orderValue = itemView.findViewById(R.id.text_view_count);
         }
+    }
+    private JSONArray getData(){
+        return jsonArray;
     }
 }
 
