@@ -300,7 +300,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void PositiveMethod(DialogInterface dialog, int id) {
 
                 if (mPrimaryProduct.size() != 0) {
-                    mCommon_class.ProgressdialogShow(1, "");
+                    mCommon_class.ProgressdialogShow(2, "");
                     deleteViewModel = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
                     deleteViewModel.getAllData().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
                         @Override
@@ -456,6 +456,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         try {
             if(priProdAdapter!=null)
                 priProdAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            searchEdit.onActionViewCollapsed();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1665,6 +1670,7 @@ String orderid=mContact.getUID();
         int product_Sale_Unit_Cn_Qty = 1;
         if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
             product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+        int tempQty = qty * product_Sale_Unit_Cn_Qty;
 /*
         double value=
         subTotal = Double.parseDouble(mContact.getProduct_Cat_Code()) * mContact.getProduct_Sale_Unit_Cn_Qty();
@@ -1685,7 +1691,7 @@ String orderid=mContact.getUID();
         for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
                 int currentSchemeCount = Integer.parseInt(scheme.getScheme());
-                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= tempQty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
                 }
@@ -1726,10 +1732,10 @@ String orderid=mContact.getUID();
             double packageCalc = 0;
             switch (packageType){
                 case "N":
-                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (int)(tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
                 case "Y":
-                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (double) (tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
 //                default:
 
@@ -1752,18 +1758,19 @@ String orderid=mContact.getUID();
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
                     holder.ll_disc.setVisibility(View.VISIBLE);
                     holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
 //                default:
             }
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(discountValue>0){
@@ -1800,7 +1807,6 @@ String orderid=mContact.getUID();
 
             workinglist.get(position).setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
             contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
-
 
 
             workinglist.get(position).setSelectedScheme("");

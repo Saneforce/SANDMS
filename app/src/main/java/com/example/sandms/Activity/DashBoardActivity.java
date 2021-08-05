@@ -318,6 +318,7 @@ public class DashBoardActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... voids) {
+            PrimaryProductDatabase.getInstance(DashBoardActivity.this).clearAllTables();
             fillingWithStart();
             Log.v("Data_CHeckng", "Checking_data");
             return null;
@@ -328,9 +329,10 @@ public class DashBoardActivity extends AppCompatActivity {
         Log.v("Data_CHeckng", "Checking_data");
 
         String sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
-        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
+//        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
         PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
                 .contactDao();
+
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
             JSONObject jsonObject = null;
@@ -534,7 +536,9 @@ public class DashBoardActivity extends AppCompatActivity {
     }
 
     private void processPrimaryData() {
+        new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
 
+/*
         mPrimaryProductViewModel = ViewModelProviders.of(DashBoardActivity.this).get(PrimaryProductViewModel.class);
         mPrimaryProductViewModel.getAllData().observe(DashBoardActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
@@ -545,12 +549,12 @@ public class DashBoardActivity extends AppCompatActivity {
 //
                 Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
 //
-                if (ProductCount == 0) {
-                    new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-                }
+//                if (ProductCount == 0) {
+//                }
             }
         });
 
+*/
 
         dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
         dashIntent.putExtra("Mode", "0");

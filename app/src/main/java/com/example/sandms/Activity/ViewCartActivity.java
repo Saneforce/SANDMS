@@ -143,7 +143,7 @@ public class ViewCartActivity extends AppCompatActivity {
         contactViewModel.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
-                    adapter.filteredContact(contacts);
+
 
                 updateTotal(contacts);
 /*
@@ -412,9 +412,9 @@ public class ViewCartActivity extends AppCompatActivity {
         JSONObject fkeyEcap = new JSONObject();
 
         try {
-            eventCapturesObject.put("imgurl", "'1585714374958.jpg'");
-            eventCapturesObject.put("title", "'Primary capture'");
-            eventCapturesObject.put("remarks", "'Testing for native'");
+            eventCapturesObject.put("imgurl", "''");
+            eventCapturesObject.put("title", "''");
+            eventCapturesObject.put("remarks", "''");
             eventCapturesObject.put("f_key", fkeyEcap);
             fkeyEcap.put("Activity_Report_Code", "Activity_Report_APP");
             eventCapturesArray.put(eventCapturesObject);
@@ -504,14 +504,24 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
                 person1.put("dis", carsList.get(z).getDiscount());
                 person1.put("tax", carsList.get(z).getTax_Value());
-                person1.put("dis_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
-                person1.put("tax_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
+                String disAmt = "0";
+                if(!carsList.get(z).getDis_amt().equals(""))
+                    disAmt = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", "")));
+                person1.put("dis_value", disAmt);
+
+                String taxAmt = "0";
+                if(!carsList.get(z).getTax_amt().equals(""))
+                    taxAmt = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", "")));
+                person1.put("tax_value", taxAmt);
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name", carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_Pro_Unit());
                 person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
-                person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
+                String subTot = "0";
+                if(!carsList.get(z).getSubtotal().equals(""))
+                    subTot = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal()));
+                person1.put("Val", subTot);
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());
                 fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
                 myJSONObjects.add(person1);
@@ -648,7 +658,7 @@ public class ViewCartActivity extends AppCompatActivity {
 //
 //            loadFilteredTodos(productBarCode);
 //        }
-        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+        /*PrimaryProductViewModel contactViewModels = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
         contactViewModels.getFilterDatas().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
@@ -658,7 +668,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 updateTotal(contacts);
                 // mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
             }
-        });
+        });*/
 
 //        sum= Float.parseFloat(getIntent().getStringExtra("GrandTotal"));
 //        if(!"".equals(sum)|| !("0".equals(sum))||sum!=0){

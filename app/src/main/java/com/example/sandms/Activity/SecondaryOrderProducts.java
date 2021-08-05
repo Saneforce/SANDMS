@@ -326,7 +326,7 @@ public class SecondaryOrderProducts extends AppCompatActivity {
             @Override
             public void PositiveMethod(DialogInterface dialog, int id) {
                 if (mPrimaryProduct.size() != 0) {
-                    mCommon_class.ProgressdialogShow(1, "");
+                    mCommon_class.ProgressdialogShow(2, "");
                     deleteViewModel = ViewModelProviders.of(SecondaryOrderProducts.this).get(SecondaryProductViewModel.class);
                     deleteViewModel.getAllData().observe(SecondaryOrderProducts.this, new Observer<List<SecondaryProduct>>() {
                         @Override
@@ -738,7 +738,7 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
                 } else {
                     ProductCount = 0;
-                    holder.mProductCount.setText("" + 0);
+                    holder.mProductCount.setText("0");
                 }
 
             }
@@ -754,6 +754,8 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
         int product_Sale_Unit_Cn_Qty = 1;
         if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
             product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+
+        int tempQty = qty * product_Sale_Unit_Cn_Qty;
 /*
         double value=
         subTotal = Double.parseDouble(mContact.getProduct_Cat_Code()) * mContact.getProduct_Sale_Unit_Cn_Qty();
@@ -774,7 +776,7 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
         for(SecondaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
                 int currentSchemeCount = Integer.parseInt(scheme.getScheme());
-                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= qty){
+                if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= tempQty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
                 }
@@ -815,10 +817,10 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
             double packageCalc = 0;
             switch (packageType){
                 case "N":
-                    packageCalc = (int)(qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (int)(tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
                 case "Y":
-                    packageCalc = (double) (qty/Integer.parseInt(selectedScheme.getScheme()));
+                    packageCalc = (double) (tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
 //                default:
 
@@ -841,18 +843,19 @@ class secProductAdapter extends RecyclerView.Adapter<secProductAdapter.ContactHo
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
                     holder.ll_disc.setVisibility(View.VISIBLE);
                     holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) qty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
 //                default:
             }
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(discountValue>0){

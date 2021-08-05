@@ -169,8 +169,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 task.execute();
 
             }else{
-                Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-                startActivity(a);
+                onBackPressed();
+//                Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//                startActivity(a);
             }
 
         }
@@ -251,8 +252,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
                //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
                //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
-                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-                    startActivity(a);
+                    onBackPressed();
+//                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//                    startActivity(a);
 
                     //  startActivity(new Intent(PaymentDetailsActivity.this,RazorPayment.class));
 //                    if (PaymntMode.equalsIgnoreCase("Online")) {
@@ -580,8 +582,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
-        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-        startActivity(a);
+        onBackPressed();
+//        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//        startActivity(a);
     }
 
     @Override
