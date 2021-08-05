@@ -345,6 +345,13 @@
                                     android:text="0"
                                     android:layout_margin="-10dp"
                                     android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tv_free_unit"
+                                    style="@style/TextStyle"
+                                    android:layout_marginStart="3dp"
+                                    android:text=""
+                                    android:layout_margin="-10dp"
+                                    android:textSize="13sp" />
                             </LinearLayout>
 
                             <LinearLayout
