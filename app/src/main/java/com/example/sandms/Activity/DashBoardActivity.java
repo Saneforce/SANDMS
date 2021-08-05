@@ -449,6 +449,12 @@ public class DashBoardActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), PaymentDashAcitivity.class));
     }
 
+    public void onclickOutbox(View view) {
+        startActivity(new Intent(getApplicationContext(), OutboxActivity.class));
+    }
+
+
+
     @Override
     public void onBackPressed() {
     }

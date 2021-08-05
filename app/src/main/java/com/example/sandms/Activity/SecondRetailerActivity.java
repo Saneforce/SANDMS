@@ -388,7 +388,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 
             dbController = new DBController(SecondRetailerActivity.this);
-            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit")){
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
 
                 if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
                         !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){

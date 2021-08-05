@@ -76,7 +76,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 //HorizontalScrollView priCategoryRecycler;
     Gson gson;
 
-   CustomListViewDialog customDialog;
+//   CustomListViewDialog customDialog;
     Shared_Common_Pref mShared_common_pref;
     RecyclerView priCategoryRecycler;
     RecyclerView priProductRecycler;
@@ -92,20 +92,20 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     TextView grandTotal, item_count;
     float sum = 0;
     Button forward,backward;
-    Product_Array product_array;
-    ArrayList<String> list;
+//    Product_Array product_array;
+//    ArrayList<String> list;
     /* Submit button */
     LinearLayout proceedCart;
-    JSONObject person1;
-    JSONObject PersonObjectArray;
-    ArrayList<String> listV = new ArrayList<>();
+//    JSONObject person1;
+//    JSONObject PersonObjectArray;
+//    ArrayList<String> listV = new ArrayList<>();
     String JsonDatas;
     LinearLayout bottomLinear;
-    Type listType;
-    String ZeroPosId = "", ZeroPosNam = "", ZeroImg = "";
-    List<Product> eventsArrayList;
-    List<Product> Product_Modal;
-    List<Product> Product_ModalSetAdapter;
+//    Type listType;
+//    String ZeroPosId = "", ZeroPosNam = "", ZeroImg = "";
+//    List<Product> eventsArrayList;
+//    List<Product> Product_Modal;
+//    List<Product> Product_ModalSetAdapter;
     PrimaryProductViewModel mPrimaryProductViewModel;
     String productBarCode = "a", productBarCodes = "";
     SearchView searchEdit;

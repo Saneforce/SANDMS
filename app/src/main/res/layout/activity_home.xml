@@ -219,23 +219,24 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/C10dp"
                 android:layout_weight="0.5"
                 android:background="@drawable/text_bg"
                 android:elevation="2dp"
-                android:onClick="ReportData"
+                android:onClick="onclickOutbox"
                 android:orientation="vertical"
                 android:padding="@dimen/C20dp">
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/report" />
+                    android:src="@drawable/report"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"
-                    android:text="@string/Rep_orders" />
+                    android:text="@string/outbox" />
 
             </LinearLayout>
 

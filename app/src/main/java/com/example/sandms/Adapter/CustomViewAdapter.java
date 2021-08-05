@@ -381,7 +381,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 case "Y":
                     packageCalc = (double) (tempQty/Integer.parseInt(selectedScheme.getScheme()));
                     break;
-                default:
+//                default:
 
             }
             if(!selectedScheme.getFree().equals(""))

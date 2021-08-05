@@ -22,8 +22,9 @@ public class DBController extends SQLiteOpenHelper {
     public static final String DATA_RESPONSE = "dataResponse"; // column name
     private static final String IS_UPDATED_TO_SERVER = "isUpdatedToServer"; // column name
     public static final String AXN_KEY = "axnKey"; // column name
+    public static final String IS_ORDER_KEY = "isOrder"; // column name
     private static final String DATABASE_NAME = "dbSynMaster"; // Dtabasename
-    private static final int VERSION_CODE = 8; //versioncode of the database
+    private static final int VERSION_CODE = 9; //versioncode of the database
 
     public static final String RETAILER_LIST = "retailer_list"; // Dtabasename
     public static final String TEMPLATE_LIST = "template_list"; // Dtabasename
@@ -45,7 +46,7 @@ public class DBController extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         String query;
-        query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + ID + " integer primary key, "+ DATA_KEY + " text, " + DATA_RESPONSE + " text, " + IS_UPDATED_TO_SERVER + " text, "  + AXN_KEY + " text " +")";
+        query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + ID + " integer primary key, "+ DATA_KEY + " text, " + DATA_RESPONSE + " text, " + IS_UPDATED_TO_SERVER + " text, "  + AXN_KEY + " text, " +   IS_ORDER_KEY + " integer " +")";
         database.execSQL(query);
     }
 
@@ -84,7 +85,7 @@ public class DBController extends SQLiteOpenHelper {
         return productList;
     }
 
-    public boolean addDataOfflineCalls(String tableName, String tableValue, String axnKey) {
+    public boolean addDataOfflineCalls(String tableName, String tableValue, String axnKey, int isOrder) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
@@ -92,6 +93,7 @@ public class DBController extends SQLiteOpenHelper {
             cv.put(DATA_RESPONSE, tableValue);
             cv.put(IS_UPDATED_TO_SERVER, "0");
             cv.put(DBController.AXN_KEY, axnKey);
+            cv.put(DBController.IS_ORDER_KEY, isOrder);
 
             long value =  db.insert(TABLE_NAME, null, cv);
 
@@ -185,4 +187,31 @@ public class DBController extends SQLiteOpenHelper {
         return isUpdated;
     }
 
+    public String getOfflineCount(String axn, int isOrder) {
+
+        int count = 0;
+
+        SQLiteDatabase database = null;
+        Cursor cursor = null;
+        try {
+            database = this.getWritableDatabase();
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    if(cursor.getString(3).equals("0") && cursor.getInt(5)==isOrder && cursor.getString(4).equals(axn)){
+                        count++;
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            database.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        return String.valueOf(count);
+    }
 }

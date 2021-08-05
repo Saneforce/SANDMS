@@ -45,6 +45,10 @@
     <string name="redirect_url">Redirect Url</string>
     <string name="cancel_url">Cancel Url</string>
     <string name="rsa_url">RSA Key Url</string>
+    <string name="outbox">OUTBOX</string>
+    <string name="secondary_orders">Secondary Orders</string>
+    <string name="primary_orders">Primary Orders</string>
+    <string name="new_retailer">New Retailer</string>
 
 
 </resources>

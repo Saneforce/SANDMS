@@ -61,8 +61,8 @@ public class CompanyProfile extends AppCompatActivity {
             toolHeader.setText("Privacy Policy");
         else
             toolHeader.setText("Organisation Info");
-        toolSearch = (EditText) findViewById(R.id.toolbar_search);
-        toolSearch.setVisibility(View.GONE);
+//        toolSearch = (EditText) findViewById(R.id.toolbar_search);
+//        toolSearch.setVisibility(View.GONE);
 
     }
 }
