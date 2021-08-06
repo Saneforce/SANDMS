@@ -613,7 +613,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             if(!selectedScheme.getFree().equals(""))
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
-            freeQty = (int) freeQty;
+//            freeQty = (int) freeQty;
 //            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
             task.setSelectedFree(String.valueOf((int) freeQty));
 
@@ -639,12 +639,13 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
 //                    holder.ll_disc.setVisibility(View.GONE);
                     break;
-//                default:
+                default:
+                    discountValue = 0;
             }
 
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
-            if(discountValue>0){
+            if(!discountType.equals("") && discountValue>0){
 //                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                 task.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 
@@ -658,6 +659,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 holder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
 
             }else {
+                task.setSelectedDisValue("0");
                 task.setDiscount("0");
                 task.setDis_amt("0");
             }

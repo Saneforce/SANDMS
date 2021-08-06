@@ -368,8 +368,8 @@ public class DashBoardActivity extends AppCompatActivity {
                         Scheme = String.valueOf(jsonObject1.get("Scheme"));
                         Discount = String.valueOf(jsonObject1.get("Discount"));
                         Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
-                        Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
-                        Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
+                        Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
+                        Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
                         Package = String.valueOf(jsonObject1.get("Package"));
                         Free = String.valueOf(jsonObject1.get("Free"));
                         if(jsonObject1.has("Discount_Type"))

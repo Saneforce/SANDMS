@@ -66,9 +66,10 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             String free = "0";
             if(jsonObjec.has("Free") && jsonObjec.getString("Free")!=null  && !jsonObjec.getString("Free").equals(""))
                 free =Constants.roundTwoDecimals(jsonObjec.getDouble("Free"));
+
             String free_unit = "";
-            if(jsonObjec.has("Free_Unit") && jsonObjec.getString("Free_Unit")!=null  && !jsonObjec.getString("Free_Unit").equals(""))
-                free_unit =Constants.roundTwoDecimals(jsonObjec.getDouble("Free_Unit"));
+            if(jsonObjec.has("Offer_Product_Unit") && jsonObjec.getString("Offer_Product_Unit")!=null  && !jsonObjec.getString("Offer_Product_Unit").equals(""))
+                free_unit =jsonObjec.getString("Offer_Product_Unit");
 
             holder.txt_free.setText(free+ " "+ free_unit);
             //  holder.txtTotal.setText(new DecimalFormat("##.##").format(totalValue));
