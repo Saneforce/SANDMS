@@ -1768,7 +1768,7 @@ String orderid=mContact.getUID();
             }*/
             if(!selectedScheme.getFree().equals(""))
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
-            freeQty = (int) freeQty;
+//            freeQty = (int) freeQty;
 
             workinglist.get(position).setSelectedFree(String.valueOf((int) freeQty));
             contact.setSelectedFree(String.valueOf((int) freeQty));
@@ -1795,18 +1795,22 @@ String orderid=mContact.getUID();
                     holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
-//                default:
+                default:
+                    holder.ProductDis.setText("0");
+                    holder.ProductDisAmt.setText("0");
+                    discountValue = 0;
             }
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
-            if(discountValue>0){
+            if(!discountType.equals("") && discountValue>0){
                 workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                 contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 
                 workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
-                workinglist.get(position).setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
                 contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+
+                workinglist.get(position).setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
                 contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
 /*
                 totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
@@ -1822,14 +1826,18 @@ String orderid=mContact.getUID();
                 workinglist.get(position).setSelectedDisValue("0");
                 contact.setDis_amt("0");
                 contact.setSelectedDisValue("0");
+                holder.ProductDis.setText("0");
+                holder.ProductDisAmt.setText("0");
             }
 
         }else {
 
             holder.ll_disc.setVisibility(View.VISIBLE);
             holder.tv_free_qty.setText("0");
+
             holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
             holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+
             workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
             contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
 
@@ -1849,9 +1857,14 @@ String orderid=mContact.getUID();
             workinglist.get(position).setOff_Pro_Unit("");
             contact.setOff_Pro_Unit("");
 
+            workinglist.get(position).setSelectedFree("0");
+            contact.setSelectedFree("0");
+
         }
 
         holder.tv_free_unit.setText(OffFreeUnit);
+        contact.setOff_free_unit(OffFreeUnit);
+
         double totalAmt = 0;
         double taxPercent = 0;
         double taxAmt = 0;

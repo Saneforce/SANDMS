@@ -29,11 +29,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText profileName, profilePlace;
+//    EditText profileName, profilePlace;
     Shared_Common_Pref shared_common_pref;
     String sf_Code;
     JSONObject jsonObject1;
-    JsonArray jsonArray;
+//    JsonArray jsonArray;
     ImageView imagView;
     TextInputEditText edtName, edtAddress, edtMobile, edtDesignation, edtStoclistName, edtGst, edtEmail;
 TextView toolbarTitle;

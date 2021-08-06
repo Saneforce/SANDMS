@@ -380,40 +380,14 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("Remark", editRemarks.getText().toString());
             js.put("save_order", 1);
-            shared_common_pref.save("RetailerID", retailerId);
-            shared_common_pref.save("RetailName", txtRtNme.getText().toString());
-            shared_common_pref.save("Remarks", editRemarks.getText().toString());
-            shared_common_pref.save("orderType", txtOrder.getText().toString());
-            shared_common_pref.save("OrderType", txtOrder.getText().toString());
-            shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
-            shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+
 
             mCommon_class.ProgressdialogShow(1, "");
 //            brandSecondaryApi();
             Log.v("JS_VALUE", js.toString());
 
-
-            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
-
-                if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
-                        !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                    processSecondaryOrderList();
-                }else
-                    brandSecondaryApi();
-
-            }
-            else
-                Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-
-/*
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
-
-            Log.v("REQUEST_VALUE", call.request().toString());
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    JsonObject JsonObject = response.body();
+            if(!Constants.isInternetAvailable(SecondRetailerActivity.this)){
+                if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
                     shared_common_pref.save("RetailerID", retailerId);
                     shared_common_pref.save("RetailName", txtRtNme.getText().toString());
                     shared_common_pref.save("Remarks", editRemarks.getText().toString());
@@ -422,15 +396,52 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
                     shared_common_pref.save("editRemarks", editRemarks.getText().toString());
 
-                    mCommon_class.ProgressdialogShow(1, "");
-                    brandSecondaryApi();
-                }
+                    if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                            !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                        processSecondaryOrderList();
+                    }else
+                        brandSecondaryApi();
 
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.v("REPONSE_RETAILER", "JsonObject.toString()");
                 }
-            });*/
+                else
+                    Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+            }else {
+                ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+                Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
+
+                Log.v("REQUEST_VALUE", call.request().toString());
+                call.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        JsonObject JsonObject = response.body();
+                        shared_common_pref.save("RetailerID", retailerId);
+                        shared_common_pref.save("RetailName", txtRtNme.getText().toString());
+                        shared_common_pref.save("Remarks", editRemarks.getText().toString());
+                        shared_common_pref.save("orderType", txtOrder.getText().toString());
+                        shared_common_pref.save("OrderType", txtOrder.getText().toString());
+                        shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
+                        shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+
+                            if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                                    !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                                processSecondaryOrderList();
+                            }else
+                                brandSecondaryApi();
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.v("REPONSE_RETAILER", "JsonObject.toString()");
+                        Toast.makeText(SecondRetailerActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -638,8 +649,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Scheme = String.valueOf(jsonObject1.get("Scheme"));
                     Discount = String.valueOf(jsonObject1.get("Discount"));
                     Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
-                    Product_Name = String.valueOf(jsonObject1.get("Product_Name"));
-                    Product_Code = String.valueOf(jsonObject1.get("Product_Code"));
+                    Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
+                    Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
                     Package = String.valueOf(jsonObject1.get("Package"));
                     Free = String.valueOf(jsonObject1.get("Free"));
                     if(jsonObject1.has("Discount_Type"))
