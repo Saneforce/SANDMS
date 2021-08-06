@@ -384,16 +384,30 @@
         android:id="@+id/bottom_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/linearlayout">
+
+        <Button
+            android:id="@+id/btn_no_order"
+            style="@style/ButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_bg"
+            android:onClick="onclickNoOrder"
+            android:text="@string/no_order"
+            android:textAlignment="center"
+            android:textAllCaps="true" />
+<!--        android:drawableRight="@drawable/forward"-->
 
         <Button
             android:id="@+id/Linear_proceed_cart"
             style="@style/ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/sign_bg"
-            android:drawableRight="@drawable/forward"
+            android:drawableEnd="@drawable/forward"
             android:onClick="SaveSecndry"
             android:text="@string/secondary"
             android:textAlignment="center"

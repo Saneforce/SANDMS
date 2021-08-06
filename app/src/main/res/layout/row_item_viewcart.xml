@@ -220,6 +220,13 @@
                                     style="@style/TextStyle"
                                     android:text="0"
                                     android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_free_unit"
+                                    style="@style/TextStyle"
+                                    android:layout_marginStart="3dp"
+                                    android:text=""
+                                    android:textSize="12sp" />
                             </LinearLayout>
 
                            <!-- <LinearLayout

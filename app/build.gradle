@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.dms"
+        applicationId "com.saneforce.dms"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 3
@@ -66,12 +66,12 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
 
     /*Firebase for GOOGLE sign-in auth*/
+    implementation 'com.google.firebase:firebase-core:18.0.2'
     implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.2'
     implementation 'com.google.firebase:firebase-auth:20.0.2'
-    implementation 'com.google.firebase:firebase-core:18.0.2'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+//    implementation platform('com.google.firebase:firebase-bom:26.0.0')
 
     /*Location*/
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
