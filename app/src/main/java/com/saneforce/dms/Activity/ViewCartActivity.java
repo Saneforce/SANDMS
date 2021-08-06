@@ -43,11 +43,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.saneforce.dms.Adapter.CustomViewAdapter;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Model.PrimaryProduct;
+import com.saneforce.dms.Model.SecondaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
 import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.PrimaryProductViewModel;
+import com.saneforce.dms.Utils.SecondaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
@@ -56,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,6 +101,7 @@ public class ViewCartActivity extends AppCompatActivity {
     PrimaryProductViewModel contactViewModel, deleteViewModel;
 //    List<PrimaryProduct> contacts;
 
+    int orderType = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +115,9 @@ public class ViewCartActivity extends AppCompatActivity {
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
         deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+
+        if(getIntent().hasExtra("order_type"))
+            orderType = getIntent().getIntExtra("order_type", 1);
 
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
         Log.v("grandtttt", GrandTotal);
@@ -161,11 +168,15 @@ public class ViewCartActivity extends AppCompatActivity {
         btnSubmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaveProduct(adapter.getData());
+                if(orderType == 1)
+                    SaveProduct(adapter.getData());
+                else
+                    SaveSecondaryProduct(adapter.getData());
+
             }
         });
 
-        adapter = new CustomViewAdapter(ViewCartActivity.this,GrandTotal,viewTotal, new DMS.viewProduct() {
+        adapter = new CustomViewAdapter(ViewCartActivity.this,GrandTotal,viewTotal, orderType, new DMS.viewProduct() {
 
             @Override
             public void onViewItemClick(String itemID, String productName, String catName, String catImg, Float productQty, Float productRate) {
@@ -514,8 +525,8 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("tax_value", taxAmt);
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name", carsList.get(z).getOff_Pro_name());
-                person1.put("Off_Pro_Unit", carsList.get(z).getOff_Pro_Unit());
-                person1.put("Free_Unit", carsList.get(z).getOff_free_unit());
+                person1.put("Off_Pro_Unit", carsList.get(z).getOff_free_unit());
+                person1.put("Off_Scheme_Unit", carsList.get(z).getOff_Pro_Unit());
                 person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
                 String subTot = "0";
@@ -569,7 +580,7 @@ public class ViewCartActivity extends AppCompatActivity {
                     }
                 });
 
-                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
             } else {
                 finish();
@@ -710,6 +721,323 @@ public class ViewCartActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    public void SaveSecondaryProduct(List<PrimaryProduct> carsList) {
+
+        progressDialog = createProgressDialog(this);
+        /*ActivityReport*/
+        DateFormat dfw = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Calendar calobjw = Calendar.getInstance();
+        KeyDate = SF_CODE;
+        keyCodeValue = keyEk + KeyDate + KeyHyp + dfw.format(calobjw.getTime()).hashCode();
+
+        JSONObject reportObject = new JSONObject();
+        reportObjectArray = new JSONObject();
+        String sFCODE = "'" + SF_CODE + "'";
+        try {
+            reportObject.put("Worktype_code", "'6'");
+            reportObject.put("Town_code", "'11'");
+            reportObject.put("dcr_activity_date", dateTime1);
+            reportObject.put("Daywise_Remarks", "''");
+            reportObject.put("eKey", keyCodeValue);
+            reportObject.put("rx", "'1'");
+            reportObject.put("rx_t", "''");
+            reportObject.put("DataSF", sFCODE);
+            reportObjectArray.put("Activity_Report_APP", reportObject);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        /*StockListReport*/
+        JSONObject stockReportObject = new JSONObject();
+        stockReportObjectArray = new JSONObject();
+        JSONObject fkeyStock = new JSONObject();
+
+        try {
+            stockReportObject.put("Stockist_POB", 0);
+            stockReportObject.put("Super_Stck_code", "'SS96'");
+            stockReportObject.put("Worked_With", "''");
+            stockReportObject.put("location", locationValue);
+            stockReportObject.put("geoaddress", "");
+            stockReportObject.put("stockist_code", sFCODE);
+            stockReportObject.put("superstockistid", "''");
+            stockReportObject.put("Stk_Meet_Time", dateTime);
+            stockReportObject.put("modified_time", dateTime);
+            stockReportObject.put("orderValue", 5370);
+            stockReportObject.put("Aob", 69);
+            stockReportObject.put("CheckinTime", checkInTime);
+            stockReportObject.put("CheckoutTime", checkInTime);
+            stockReportObject.put("f_key", fkeyStock);
+            fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
+            stockReportObject.put("PhoneOrderTypes", 1);
+            stockReportObjectArray.put("Activity_Stockist_Report", stockReportObject);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        String stockReport = stockReportObjectArray.toString();
+
+        System.out.println(" Activity_Stockist_Report" + stockReport);
+
+
+        /*Activity_Stk_Sample_Report*/
+        JSONArray sampleReportArray = new JSONArray();
+        sampleReportObjectArray = new JSONObject();
+
+        try {
+
+            sampleReportObjectArray.put("Activity_Stk_Sample_Report", sampleReportArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String sampleReport = sampleReportObjectArray.toString();
+        System.out.println(" Activity_Stk_Sample_Report" + sampleReport);
+
+        /*Activity_Event_Captures*/
+        JSONObject eventCapturesObject = new JSONObject();
+        JSONArray eventCapturesArray = new JSONArray();
+        eventCapturesObjectArray = new JSONObject();
+        JSONObject fkeyEcap = new JSONObject();
+
+        try {
+            eventCapturesObject.put("imgurl", "'1585714374958.jpg'");
+            eventCapturesObject.put("title", "'Primary capture'");
+            eventCapturesObject.put("remarks", "'Testing for native'");
+            eventCapturesObject.put("f_key", fkeyEcap);
+            fkeyEcap.put("Activity_Report_Code", "Activity_Report_APP");
+            eventCapturesArray.put(eventCapturesObject);
+            eventCapturesObjectArray.put("Activity_Event_Captures", eventCapturesArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String EventCap = eventCapturesObjectArray.toString();
+        System.out.println("Activity_Event_Captures" + EventCap);
+
+        /*PENDING_Bills*/
+        JSONArray pendingBillArray = new JSONArray();
+        pendingBillObjectArray = new JSONObject();
+
+        try {
+            pendingBillObjectArray.put("PENDING_Bills", pendingBillArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String PendingBill = pendingBillObjectArray.toString();
+        System.out.println(" PENDING_Bills" + PendingBill);
+
+        /*Compititor_Product*/
+        JSONArray ComProductArray = new JSONArray();
+        ComProductObjectArray = new JSONObject();
+
+        try {
+            ComProductObjectArray.put("Compititor_Product", ComProductArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String ComProduct = ComProductObjectArray.toString();
+        System.out.println(" Compititor_Product" + ComProduct);
+
+
+
+        /*product_order_list*/
+        List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(carsList.size());
+
+        JSONArray personarray = new JSONArray();
+        PersonObjectArray = new JSONObject();
+        JSONObject fkeyprodcut = new JSONObject();
+
+        for (int z = 0; z < carsList.size(); z++) {
+            person1 = new JSONObject();
+
+            try {
+                //adding items to first json object
+                person1.put("Productname", carsList.get(z).getPname());
+                person1.put("ProductCode", carsList.get(z).getUID());
+                person1.put("Qty", carsList.get(z).getQty());
+                person1.put("Rate", carsList.get(z).getProduct_Cat_Code());
+                person1.put("cb_qty", 0);
+                person1.put("ProductRate", carsList.get(z).getProduct_Cat_Code());
+                person1.put("free", carsList.get(z).getSelectedFree());
+                person1.put("f_key", fkeyprodcut);
+                person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
+                person1.put("dis", carsList.get(z).getDiscount());
+                person1.put("tax", carsList.get(z).getTax_Value());
+                person1.put("dis_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
+                person1.put("tax_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
+                person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
+                person1.put("Off_Pro_name",carsList.get(z).getOff_Pro_name());
+                person1.put("Off_Pro_Unit", carsList.get(z).getOff_free_unit());
+                person1.put("Off_Scheme_Unit", carsList.get(z).getOff_Pro_Unit());
+                person1.put("Con_Fac", carsList.get(z).getCon_fac());
+                person1.put("UOM", carsList.get(z).getUOM());
+                person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
+                person1.put("discount_type", carsList.get(z).getOff_disc_type());
+                fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
+                myJSONObjects.add(person1);
+                listV.add(String.valueOf((person1)));
+                product_count = myJSONObjects.size();
+
+                personarray.put(person1);
+                PersonObjectArray.put("Activity_Stk_POB_Report", personarray);
+                String JsonData = PersonObjectArray.toString();
+
+                System.out.println("Activity_Stk_POB_Report: " + JsonData);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        /*    try {
+                //adding items to first json object
+                person1.put("Productname", carsList.get(z).getProductName());
+                person1.put("ProductCode", carsList.get(z).getProductcode());
+                person1.put("Qty", carsList.get(z).getProductqty());
+                person1.put("Rate", carsList.get(z).getProductRate());
+                person1.put("cb_qty", 0);
+                person1.put("ProductRate", carsList.get(z).getProductActualTotal());
+                person1.put("free", 0);
+                person1.put("f_key", fkeyprodcut);
+                person1.put("Productunit", carsList.get(z).getProductUnit());
+                person1.put("dis", carsList.get(z).getDiscount());
+                person1.put("tax", carsList.get(z).getTaxValue());
+                person1.put("dis_value", carsList.get(z).getDisAmt().toString().replace("-",""));
+                person1.put("tax_value", carsList.get(z).getTaxAmt().toString().replace("-",""));
+                person1.put("Off_Pro_code", "0");
+                person1.put("Off_Pro_name", "0");
+                person1.put("Off_Pro_Unit", "0");
+                person1.put("Con_Fac", carsList.get(z).getConFac());
+
+                person1.put("Val",new DecimalFormat("##0.00").format(totalVal));
+
+                person1.put("UOM", carsList.get(z).getProductUOM());
+                fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
+                myJSONObjects.add(person1);
+                listV.add(String.valueOf((person1)));
+                product_count = myJSONObjects.size();
+
+                personarray.put(person1);
+                PersonObjectArray.put("Activity_Stk_POB_Report", personarray);
+                String JsonData = PersonObjectArray.toString();
+
+                System.out.println("Activity_Stk_POB_Report: " + JsonData);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }*/
+        }
+
+
+
+
+        /*Head Details*/
+        JSONArray JsonArryHead = new JSONArray();
+        JSONHEAD = new JSONObject();
+        JSONObject JsonObjtHead = new JSONObject();
+
+        double OrderValue = Float.parseFloat(GrandTotal);
+        Log.v("OrderValue", String.valueOf(OrderValue));
+        try {
+            //adding items to first json object
+            JsonObjtHead.put("bill_add", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Address));
+            JsonObjtHead.put("ship_add", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Address));
+            JsonObjtHead.put("order_date", Common_Class.GetDate());
+            JsonObjtHead.put("exp_date", Common_Class.GetDate());
+            JsonObjtHead.put("div_code", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            JsonObjtHead.put("sup_no", shared_common_pref.getvalue(Shared_Common_Pref.sup_code));
+            JsonObjtHead.put("sup_name", shared_common_pref.getvalue(Shared_Common_Pref.sup_name));
+            JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+            JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
+            JsonObjtHead.put("order_value", new DecimalFormat("##0.00").format(OrderValue));
+            JsonObjtHead.put("sub_tot", 0);
+            JsonObjtHead.put("dis_tot", 0);
+            JsonObjtHead.put("tax_tot", 0);
+            JsonArryHead.put(JsonObjtHead);
+            JSONHEAD.put("Json_Head", JsonArryHead);
+            Log.v("VIEW_CART_ACTIVITY", JSONHEAD.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray JsonArryProceed = new JSONArray();
+        JSONObject JSONPROCEED = new JSONObject();
+        JSONObject js = new JSONObject();
+        try {
+
+            js.put("Retcode", shared_common_pref.getvalue("RetailerID"));
+            js.put("Retname", shared_common_pref.getvalue("RetailName"));
+            js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
+            js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("Remark", shared_common_pref.getvalue("Remarks"));
+            JsonArryProceed.put(js);
+            JSONPROCEED.put("Json_proceed", js);
+            Log.v("VIEW_CART_ACTIVITY", JSONPROCEED.toString());
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        sendArray = new JSONArray();
+        /*sendArray.put(reportObjectArray);
+        sendArray.put(stockReportObjectArray);*/
+        sendArray.put(PersonObjectArray);
+        /* sendArray.put(sampleReportObjectArray);
+        sendArray.put(eventCapturesObjectArray);
+        sendArray.put(pendingBillObjectArray);
+        sendArray.put(ComProductObjectArray);*/
+        sendArray.put(JSONHEAD);
+        sendArray.put(JSONPROCEED);
+        totalValueString = sendArray.toString();
+        progressDialog.dismiss();
+
+        DBController dbController = new DBController(ViewCartActivity.this);
+
+        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave", 1)){
+            if(Constants.isInternetAvailable(this))
+                new Common_Class(this).checkData(dbController,getApplicationContext());
+            else
+                Toast.makeText(ViewCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+
+
+        }
+        else
+            Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+
+        if (product_count != 0) {
+
+            deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+            deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                @Override
+                public void onChanged(List<PrimaryProduct> contacts) {
+                    deleteViewModel.delete(contacts);
+                    progressDialog.dismiss();
+                }
+            });
+
+            Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+        } else {
+            finish();
+        }
+
     }
 
 }

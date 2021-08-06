@@ -560,7 +560,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                  ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
                  //   }
     }catch (Exception eee){
-
+        eee.printStackTrace();
                 }
 
     }
