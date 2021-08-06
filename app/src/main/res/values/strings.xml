@@ -49,6 +49,9 @@
     <string name="secondary_orders">Secondary Orders</string>
     <string name="primary_orders">Primary Orders</string>
     <string name="new_retailer">New Retailer</string>
+    <string name="retailer_visit">Retailer Visit</string>
+    <string name="no_order">No Order</string>
+    <string name="non_productive_calls">Non Productive Calls</string>
 
 
 </resources>

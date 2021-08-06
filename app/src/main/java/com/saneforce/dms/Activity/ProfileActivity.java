@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -53,7 +54,13 @@ TextView toolbarTitle;
         edtGst = findViewById(R.id.gst_edt);
         edtEmail = findViewById(R.id.ema_edt);
         Log.v("sfcode", sf_Code);
-        getProfileData(sf_Code);
+        if(Constants.isInternetAvailable(this))
+            getProfileData(sf_Code);
+        else{
+            Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
 
         imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +83,11 @@ TextView toolbarTitle;
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("DMS_RESPONSE", response.body().toString());
+                String res = response.body().toString();
+                Log.v("DMS_RESPONSE", res);
 
               try {
-                   jsonObject1 = new JSONObject(response.body().toString());
+                   jsonObject1 = new JSONObject(res);
                    Log.e("LoginResponse1",  jsonObject1.toString());
                    JSONArray jsonArray = jsonObject1.optJSONArray("Data");
                    for (int i = 0; i < jsonArray.length(); i++) {
@@ -111,7 +119,7 @@ TextView toolbarTitle;
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Invalid profile", Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         });
     }

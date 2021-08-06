@@ -31,9 +31,11 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
-import com.saneforce.dms.Interface.SecProductDao;
+import com.saneforce.dms.Interface.PrimaryProductDao;
+import com.saneforce.dms.Model.PrimaryProduct;
 import com.saneforce.dms.Model.SecondaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
@@ -42,7 +44,7 @@ import com.saneforce.dms.Utils.Common_Model;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.CustomListViewDialog;
 import com.saneforce.dms.Utils.PrimaryProductDatabase;
-import com.saneforce.dms.Utils.SecondaryProductDatabase;
+import com.saneforce.dms.Utils.PrimaryProductDatabase;
 import com.saneforce.dms.Utils.SecondaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
@@ -76,7 +78,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     String latitude, longitude;
     Common_Class mCommon_class;
     TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtReamrks, txtMobile, txtMobileTwo, txtDistributor;
-    SecondaryProductViewModel SecViewModel;
+//    SecondaryProductViewModel SecViewModel;
     DBController dbController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,7 +379,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("Remark", editRemarks.getText().toString());
-
+            js.put("save_order", 1);
             shared_common_pref.save("RetailerID", retailerId);
             shared_common_pref.save("RetailName", txtRtNme.getText().toString());
             shared_common_pref.save("Remarks", editRemarks.getText().toString());
@@ -391,7 +393,6 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             Log.v("JS_VALUE", js.toString());
 
 
-            dbController = new DBController(SecondRetailerActivity.this);
             if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
 
                 if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
@@ -471,7 +472,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     private void processSecondaryOrderList() {
 
-        new PopulateDbAsyntasks(SecondaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+        new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
 
 /*        SecViewModel = ViewModelProviders.of(SecondRetailerActivity.this).get(SecondaryProductViewModel.class);
         SecViewModel.getAllData().observe(SecondRetailerActivity.this, new Observer<List<SecondaryProduct>>() {
@@ -483,25 +484,105 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 Log.v("DASH_BOARD_COUNT", String.valueOf(ProductCount));
 
                 if (ProductCount == 0) {
-                    new PopulateDbAsyntasks(SecondaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                    new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
                 }
             }
         });*/
 
     }
 
+    public void onclickNoOrder(View view) {
+
+        if (txtOrder.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter Retailer Order", Toast.LENGTH_SHORT).show();
+        } else if (txtRtNme.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter Retailer Name", Toast.LENGTH_SHORT).show();
+        } /*else if (editRemarks.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter Retailer Remarks", Toast.LENGTH_SHORT).show();
+        }*/ else {
+
+            noOrderCall();
+
+        }
+    }
+
+    private void noOrderCall() {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("Retcode", retailerId);
+            js.put("Retname", txtRtNme.getText().toString());
+            js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
+            js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("Remark", editRemarks.getText().toString());
+            js.put("save_order", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+            shared_common_pref.save("RetailerID", retailerId);
+            shared_common_pref.save("RetailName", txtRtNme.getText().toString());
+            shared_common_pref.save("Remarks", editRemarks.getText().toString());
+            shared_common_pref.save("orderType", txtOrder.getText().toString());
+            shared_common_pref.save("OrderType", txtOrder.getText().toString());
+            shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
+            shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+
+//            brandSecondaryApi();
+            Log.v("JS_VALUE", js.toString());
+
+            if(!Constants.isInternetAvailable(this)){
+                if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 1)){
+                    mCommon_class.ProgressdialogShow(2, "");
+                    Toast.makeText(DMSApplication.getApplication(), "No Order call will be saved in offline", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                else
+                    Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+            }else {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
+
+            Log.v("REQUEST_VALUE", call.request().toString());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    JsonObject JsonObject = response.body();
+                    shared_common_pref.save("RetailerID", retailerId);
+                    shared_common_pref.save("RetailName", txtRtNme.getText().toString());
+                    shared_common_pref.save("Remarks", editRemarks.getText().toString());
+                    shared_common_pref.save("orderType", txtOrder.getText().toString());
+                    shared_common_pref.save("OrderType", txtOrder.getText().toString());
+                    shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
+                    shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+
+                    mCommon_class.ProgressdialogShow(2, "");
+                    Toast.makeText(DMSApplication.getApplication(), "No Order call Submitted Successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+            }
+
+
+    }
+
 
     private class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {
-        private SecProductDao contactDao;
+        private PrimaryProductDao contactDao;
 
 
-        public PopulateDbAsyntasks(SecondaryProductDatabase contactDaos) {
+        public PopulateDbAsyntasks(PrimaryProductDatabase contactDaos) {
             contactDao = contactDaos.contactDao();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            SecondaryProductDatabase.getInstance(SecondRetailerActivity.this).clearAllTables();
+            PrimaryProductDatabase.getInstance(SecondRetailerActivity.this).clearAllTables();
 
             secStart();
             Log.v("Data_CHeckng", "Checking_data");
@@ -517,7 +598,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 
         String sPrimaryProd = dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA);
-        SecProductDao contact = SecondaryProductDatabase.getInstance(this).getAppDatabase()
+        PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
                 .contactDao();
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
@@ -526,7 +607,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 
 
-            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="";
+            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="", Free_Unit="";
             int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -549,7 +630,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 if(jsonObject.has("UOMList"))
                     uomArray = jsonObject.getJSONArray("UOMList");
 
-                List<SecondaryProduct.SchemeProducts> schemeList = new ArrayList<>();
+                List<PrimaryProduct.SchemeProducts> schemeList = new ArrayList<>();
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     try {
@@ -564,18 +645,21 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     if(jsonObject1.has("Discount_Type"))
                     Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
 
+                        if(jsonObject1.has("Free_Unit"))
+                            Free_Unit = String.valueOf(jsonObject1.get("Free_Unit"));
+
 
                     Log.v("JSON_Array_SCHEMA",Scheme);
                     Log.v("JSON_Array_DIS",Discount);
-                    schemeList.add(new SecondaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code, Package, Free, Discount_Type));
+                    schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                            Product_Code, Package, Free, Discount_Type,Free_Unit ));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
 
-                ArrayList<SecondaryProduct.UOMlist> uomList = new ArrayList<>();
+                ArrayList<PrimaryProduct.UOMlist> uomList = new ArrayList<>();
 
                 if(uomArray!=null)
                     for (int j = 0; j < uomArray.length(); j++) {
@@ -592,18 +676,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                             if(uomObject.has("ConQty"))
                                 uomConQty = uomObject.getString("ConQty");
 
-                            uomList.add(new SecondaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
+                            uomList.add(new PrimaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                     }
 
-                contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
                         PCon_fac,schemeList,unitQty, uomList));
 
-             /*   contact.insert(new SecondaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+             /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));
          */   }
         } catch (JSONException e) {
@@ -611,9 +695,12 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         }
 
         mCommon_class.ProgressdialogShow(2, "");
-        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
+//        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
 
-
+        Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
+        dashIntent.putExtra("Mode", "0");
+        dashIntent.putExtra("order_type", 2);
+        startActivity(dashIntent);
 
     }
 

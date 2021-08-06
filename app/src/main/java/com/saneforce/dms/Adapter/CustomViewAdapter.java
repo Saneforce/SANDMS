@@ -58,12 +58,13 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     TextView viewTotal;
 //    ArrayList<String> totalArray = new ArrayList<>();
     // viewProduct mProducrtDelete;
-
-    public CustomViewAdapter(Context context ,String grandTotal,TextView viewTotal,DMS.viewProduct viewProd) {
+    int orderType;
+    public CustomViewAdapter(Context context ,String grandTotal,TextView viewTotal,int orderType, DMS.viewProduct viewProd) {
         this.context = context;
         this.viewProd = viewProd;
         this.GrandTotal=grandTotal;
         this.viewTotal=viewTotal;
+        this.orderType=orderType;
 
     }
 
@@ -386,10 +387,10 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
             freeQty = (int) freeQty;
 
-            mProduct_arrays.get(position).setSelectedFree(String.valueOf(freeQty));
-            contact.setSelectedFree(String.valueOf(freeQty));
+            mProduct_arrays.get(position).setSelectedFree(String.valueOf((int) freeQty));
+            contact.setSelectedFree(String.valueOf((int) freeQty));
 
-            viewHolder.tv_free_qty.setText(String.valueOf(freeQty));
+            viewHolder.tv_free_qty.setText(String.valueOf((int) freeQty));
 
 
 

@@ -1,5 +1,6 @@
 package com.saneforce.dms.Activity;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static io.realm.Realm.getApplicationContext;
 
 import android.annotation.SuppressLint;
@@ -7,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,6 +57,7 @@ import com.saneforce.dms.Utils.PrimaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,7 +191,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         priProductRecycler.setHasFixedSize(true);
         priProductRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         priProductRecycler.setNestedScrollingEnabled(false);
-        priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData);
+        priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData, orderType);
         priProductRecycler.setAdapter(priProdAdapter);
         if (productBarCode.equalsIgnoreCase("a")) {
             mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
@@ -494,8 +498,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         Intent mIntent = new Intent(PrimaryOrderProducts.this, ViewCartActivity.class);
         mIntent.putExtra("list_as_string", jsonCars);
         mIntent.putExtra("GrandTotal", grandTotal.getText().toString());
+        mIntent.putExtra("order_type",orderType);
         startActivity(mIntent);
+//        startActivityForResult(mIntent,66);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -629,13 +636,15 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
     Common_Model mCommon_model_spinner;
     CustomListViewDialog customDialog;
 
+    int orderType = 1;
     public ProductAdapter(Context mCtx, String sPrimaryProd,
-                          JSONObject jsonProductuom,List<Common_Model>productCodeOffileData) {
+                          JSONObject jsonProductuom,List<Common_Model>productCodeOffileData, int orderType) {
         this.mCtx = mCtx;
         this.sPrimaryProd = sPrimaryProd;
         this.jsonProductuom=jsonProductuom;
         this.productCodeOffileData=productCodeOffileData;
         shared_common_pref = new Shared_Common_Pref(mCtx);
+        this.orderType = orderType;
     }
 
 
@@ -699,6 +708,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             Log.v("PRODUCT_LIST", new Gson().toJson(task));
             shared_common_pref.save("task", new Gson().toJson(task));
             Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
+            intent.putExtra("order_type",orderType);
             mCtx.startActivity(intent);
         }
 
@@ -1760,10 +1770,10 @@ String orderid=mContact.getUID();
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
             freeQty = (int) freeQty;
 
-            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
-            contact.setSelectedFree(String.valueOf(freeQty));
+            workinglist.get(position).setSelectedFree(String.valueOf((int) freeQty));
+            contact.setSelectedFree(String.valueOf((int) freeQty));
 
-            holder.tv_free_qty.setText(String.valueOf(freeQty));
+            holder.tv_free_qty.setText(String.valueOf((int) freeQty));
 
 
 
@@ -2034,5 +2044,6 @@ String orderid=mContact.getUID();
             notifyDataSetChanged();
         }
     }
+
 
 }

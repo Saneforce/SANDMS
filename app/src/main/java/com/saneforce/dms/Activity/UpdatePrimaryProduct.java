@@ -615,7 +615,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
             freeQty = (int) freeQty;
 //            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
-            task.setSelectedFree(String.valueOf(freeQty));
+            task.setSelectedFree(String.valueOf((int) freeQty));
 
 //            holder.tv_free_qty.setText(String.valueOf(freeQty));
 

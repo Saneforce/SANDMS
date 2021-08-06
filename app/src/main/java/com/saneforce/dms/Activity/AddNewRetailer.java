@@ -72,15 +72,15 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     JSONObject docMasterObject;
     EditText edtName, edtAdds, edtCity, edtPhone, edtEmail;
     JSONArray mainArray;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private SettingsClient mSettingsClient;
-    private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingsRequest;
-    private LocationCallback mLocationCallback;
-    private Location mCurrentLocation;
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-    private static final int REQUEST_CHECK_SETTINGS = 100;
+//    private FusedLocationProviderClient mFusedLocationClient;
+//    private SettingsClient mSettingsClient;
+//    private LocationRequest mLocationRequest;
+//    private LocationSettingsRequest mLocationSettingsRequest;
+//    private LocationCallback mLocationCallback;
+//    private Location mCurrentLocation;
+//    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+//    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+//    private static final int REQUEST_CHECK_SETTINGS = 100;
 
 
     private static final int REQUEST_LOCATION = 1;
@@ -145,9 +145,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
-                finish();
+                onBackPressed();
             }
         });
 
@@ -375,19 +373,19 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     public void addSave(View v) {
-        if (txtRoute.getText().equals("")) {
+        if (txtRoute.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Route", Toast.LENGTH_SHORT).show();
-        } else if (edtName.getText().equals("")) {
+        } else if (edtName.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Name", Toast.LENGTH_SHORT).show();
-        } else if (edtAdds.getText().equals("")) {
+        } else if (edtAdds.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Address", Toast.LENGTH_SHORT).show();
-        } else if (edtPhone.getText().equals("")) {
+        } else if (edtPhone.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Phone", Toast.LENGTH_SHORT).show();
-        } else if (edtCity.getText().equals("")) {
+        } else if (edtCity.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer City", Toast.LENGTH_SHORT).show();
-        } else if (txtClass.getText().equals("")) {
+        } else if (txtClass.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Class", Toast.LENGTH_SHORT).show();
-        } else if (txtChannel.getText().equals("")) {
+        } else if (txtChannel.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Channel", Toast.LENGTH_SHORT).show();
         } else {
             saveRetailer();
@@ -490,7 +488,8 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     public void OnBackClick(View v) {
-        AddNewRetailer.super.onBackPressed();
+onBackPressed();
+
     }
 
     @Override

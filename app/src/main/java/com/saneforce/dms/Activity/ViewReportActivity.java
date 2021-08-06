@@ -211,7 +211,7 @@ public class ViewReportActivity extends AppCompatActivity {
         payIntent.putExtra("Amount", OrderValueTotal);
 
         startActivity(payIntent);
-        finish();
+//        finish();
     }
 
 
