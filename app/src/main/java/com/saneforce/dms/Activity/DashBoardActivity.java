@@ -351,7 +351,9 @@ public class DashBoardActivity extends AppCompatActivity {
                 String PSaleUnit = String.valueOf(jsonObject.get("product_unit"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
-                String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
+                String PCon_fac = "";
+                if(jsonObject.has("Conv_Fac"))
+                    PCon_fac = jsonObject.getString("Conv_Fac");
                 if(jsonObject.has("Default_UOMQty"))
                     unitQty = jsonObject.getInt("Default_UOMQty");
                 Log.v("PCon_facPCon_fac", PBarCode);

@@ -94,14 +94,17 @@ public class PendingVerification extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onBackPressed();
 
-                startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
-                finish();
             }
         });
 
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
 
 
@@ -196,4 +199,5 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             txtPaymentMode=itemView.findViewById(R.id.txt_paymentpending_mode);
         }
     }
+
 }

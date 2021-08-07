@@ -1,13 +1,23 @@
 package com.saneforce.dms.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +55,8 @@ public class PendingVerificationDetails extends AppCompatActivity {
     private PointF mid = new PointF();
     float oldDist = 1f;
     private float xCoOrdinate, yCoOrdinate;
-
+//    private ScaleGestureDetector scaleGestureDetector;
+//    private float mScaleFactor = 1.0f;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,19 +82,33 @@ public class PendingVerificationDetails extends AppCompatActivity {
         txtAmount.setText(Amount);
         txtStockist_Name.setText(Stockist_Name);
         txtUTRNumber.setText(UTRNumber);
+//        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         context= imgView.getContext();
         RequestOptions myOptions = new RequestOptions()
                 .fitCenter() // or centerCrop
                 .override(100, 100);
 
-        Glide.with(context)
-                .asBitmap()
-                .apply(myOptions)
-                .load(Imgurl)
-                .into(imgView);
+        try {
+            if(Imgurl!=null && !Imgurl.equals(""))
+            Glide.with(context)
+                    .asBitmap()
+                    .apply(myOptions)
+                    .load(Imgurl)
+                    .into(imgView);
 
-        imgView.setOnTouchListener(new View.OnTouchListener() {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Imgurl!=null && !Imgurl.equals(""))
+                    showZoomableImage();
+            }
+        });
+      /*  imgView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ImageView view = (ImageView) v;
@@ -91,16 +116,86 @@ public class PendingVerificationDetails extends AppCompatActivity {
                 viewTransformation(view, event);
                 return true;
             }
-        });
+        });*/
+
+
 
       //  imgView.setImageURI(Uri.parse(Imgurl));
 
+    }
+
+
+    public void getToolbar() {
+
+        ImageView imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+    }
+    ImageView imageView;
+    public void showZoomableImage() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.custom_dialog, null);
+        imageView = dialogLayout.findViewById(R.id.iv_image);
+
+        try {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(Imgurl)
+                    .into(imageView);
+
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    ImageView view = (ImageView) v;
+                    view.bringToFront();
+                    viewTransformation(view, event);
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dialog.setView(dialogLayout);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
     }
 
     public void Cancel(View v) {
         startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
         finish();
     }
+  /*  @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        scaleGestureDetector.onTouchEvent(motionEvent);
+        return true;
+    }
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
+            if(imageView!=null){
+                imageView.setScaleX(mScaleFactor);
+                imageView.setScaleY(mScaleFactor);
+            }
+            return true;
+        }
+    }*/
 
     public void Verify(View v) {
         verify();

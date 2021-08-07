@@ -93,11 +93,11 @@
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/primary"></ImageView>
+                    android:src="@drawable/primary"/>
 
                 <TextView
                     style="@style/TextViewHeader"
-                    android:text="Confrimed DISPATCHes" />
+                    android:text="Confrimed DISPATCHES" />
 
 
             </LinearLayout>

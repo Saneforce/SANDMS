@@ -91,11 +91,17 @@ public class DispatchCreditedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
-                finish();
+                onBackPressed();
+//                startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+//                finish();
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
 

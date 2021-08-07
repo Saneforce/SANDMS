@@ -100,6 +100,7 @@ public class PaymentVerified extends AppCompatActivity {
             }
         });
     }
+
     public void getToolbar() {
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
@@ -109,17 +110,22 @@ public class PaymentVerified extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              if(  LoginType.equalsIgnoreCase("Logistics")){
-                    startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
-                    finish();
+              if(LoginType.equalsIgnoreCase("Logistics")){
+//                    startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                  onBackPressed();
                 }else{
-
-                    startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
-                    finish();
+                    onBackPressed();
+//                    startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
+//                    finish();
                 }
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
 
@@ -221,8 +227,6 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             txtPaymentMode=itemView.findViewById(R.id.txt_paymentmode);
         }
     }
-
-
 
 
 }
