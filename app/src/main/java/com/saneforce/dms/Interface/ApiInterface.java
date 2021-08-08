@@ -128,8 +128,13 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?axn=save/editpriorderlg")
     Call<JsonObject> Dispatch(@Query("sfCode") String OrderID, @Field("data") String data);
 //profile Activity
+
      @GET("dms_db_V1.php?axn=get/ProfileMas_Stockist")
      Call<JsonObject> getProfile(@Query("Stockist_Code") String Stockist_Code);
+
+     @FormUrlEncoded
+     @POST("dms_db_V1.php?axn=save/profile")
+     Call<JsonObject> updateProfile(@Query("Stockist_Code") String Stockist_Code, @Field("data") String data);
 
     @POST("dms_db_V1.php?axn=save/editpriorderlg")
     Call<JsonObject> GetOrderId(String data);

@@ -77,6 +77,37 @@
 
             </LinearLayout>
 
+<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Payemnt Type :" />
+
+                <TextView
+                    android:id="@+id/tv_payment_type"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
+<LinearLayout
+    android:id="@+id/ll_payment_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="Payment Option :" />
+
+                <TextView
+                    android:id="@+id/tv_payment_option"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

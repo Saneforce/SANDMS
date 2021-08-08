@@ -1,23 +1,18 @@
 package com.saneforce.dms.Activity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 public class PendingVerificationDetails extends AppCompatActivity {
-    String OrderID = "", PayDt = "", Amount = "", Stockist_Name = "", UTRNumber = "", Imgurl = "";
+    String OrderID = "", PayDt = "", Amount = "", Stockist_Name = "", UTRNumber = "", Imgurl = "", paymentType = "", paymentOption = "";
     TextView txtOrderID, txtPayDt, txtAmount, txtStockist_Name, txtUTRNumber, txtImgurl;
     ImageView imgView;
     Shared_Common_Pref mShared_common_pref;
@@ -57,6 +52,10 @@ public class PendingVerificationDetails extends AppCompatActivity {
     private float xCoOrdinate, yCoOrdinate;
 //    private ScaleGestureDetector scaleGestureDetector;
 //    private float mScaleFactor = 1.0f;
+
+    TextView tv_payment_type;
+    LinearLayout ll_payment_option;
+    TextView tv_payment_option;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +68,8 @@ public class PendingVerificationDetails extends AppCompatActivity {
         Stockist_Name = String.valueOf(getIntent().getSerializableExtra("Stockist_Name"));
         UTRNumber = String.valueOf(getIntent().getSerializableExtra("UTRNumber"));
         Imgurl = String.valueOf(getIntent().getSerializableExtra("Imgurl"));
+        paymentType = String.valueOf(getIntent().getSerializableExtra("paymentType"));
+        paymentOption = String.valueOf(getIntent().getSerializableExtra("paymentMode"));
         Log.v("img1",Imgurl);
         mShared_common_pref = new Shared_Common_Pref(this);
 
@@ -77,11 +78,26 @@ public class PendingVerificationDetails extends AppCompatActivity {
         txtStockist_Name = findViewById(R.id.product_distributor);
         txtUTRNumber = findViewById(R.id.product_number);
         imgView = findViewById(R.id.bank_receipt);
+        tv_payment_type= findViewById(R.id.tv_payment_type);
+                ll_payment_option= findViewById(R.id.ll_payment_option);
+        tv_payment_option= findViewById(R.id.tv_payment_option);
+
+
+        if(paymentType!=null && !paymentType.equals(""))
+            tv_payment_type.setText(paymentType);
+
+        if(paymentOption!=null && !paymentOption.equals("")){
+            ll_payment_option.setVisibility(View.VISIBLE);
+            tv_payment_option.setText(paymentOption);
+        }else {
+            ll_payment_option.setVisibility(View.GONE);
+        }
 
         txtOrderID.setText(OrderID);
         txtAmount.setText(Amount);
         txtStockist_Name.setText(Stockist_Name);
         txtUTRNumber.setText(UTRNumber);
+        getToolbar();
 //        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         context= imgView.getContext();
@@ -176,8 +192,9 @@ public class PendingVerificationDetails extends AppCompatActivity {
     }
 
     public void Cancel(View v) {
-        startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
-        finish();
+//        startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
+//        finish();
+        onBackPressed();
     }
   /*  @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -210,8 +227,9 @@ public class PendingVerificationDetails extends AppCompatActivity {
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-              startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
-                finish();
+//              startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
+//                finish();
+                onBackPressed();
             }
 
 
@@ -303,4 +321,10 @@ public class PendingVerificationDetails extends AppCompatActivity {
         point.set(x / 2, y / 2);
     }
     //image zoom end
+
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

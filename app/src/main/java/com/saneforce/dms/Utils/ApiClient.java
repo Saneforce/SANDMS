@@ -19,7 +19,7 @@ public class ApiClient {
 
     public static final String BASE_FMCG ="http://fmcg.sanfmcg.com/";
     public static final String BASE_GOVIND ="http://govind.sanfmcg.com/";
-    public static final String BASE =BASE_GOVIND;
+    public static String BASE =BASE_GOVIND;
 
     //  public static final String BASE_URL = "http://govind.sanfmcg.com/server/";//working code commented
     public static final String BASE_URL = BASE+"server/";//server
@@ -30,7 +30,13 @@ public class ApiClient {
 
 
     public static Retrofit getClient() {
+
         if (retrofit == null) {
+            if(Constants.APP_TYPE == 1)
+                BASE =BASE_GOVIND;
+            else
+                BASE =BASE_FMCG;
+
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.writeTimeout(61, TimeUnit.SECONDS)
                     .connectTimeout(61, TimeUnit.SECONDS)

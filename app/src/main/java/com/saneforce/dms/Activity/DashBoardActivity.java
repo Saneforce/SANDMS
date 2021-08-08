@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -93,6 +94,12 @@ public class DashBoardActivity extends AppCompatActivity {
                 shared_common_pref.logoutUser(DashBoardActivity.this);
             }
         });
+        LinearLayout llProfile = findViewById(R.id.ll_profile);
+        if(Constants.APP_TYPE == 1)
+            llProfile.setVisibility(View.GONE);
+        else
+            llProfile.setVisibility(View.VISIBLE);
+
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -464,6 +471,16 @@ public class DashBoardActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), OutboxActivity.class));
     }
 
+    public void Company(View v) {
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "CompanyProfile.html");
+        startActivity(intent);
+    }
+    public void PrivacyPolicy(View v) {
+        Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
+        intent.putExtra("fileName", "PrivacyPolicy.html");
+        startActivity(intent);
+    }
 
 
     @Override

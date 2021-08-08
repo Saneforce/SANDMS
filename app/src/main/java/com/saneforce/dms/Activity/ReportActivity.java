@@ -100,12 +100,15 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     Toolbar toolbar_top;
 
-    private Bitmap bitmap,bitmapTotal;
+//    private Bitmap bitmap,bitmapTotal;
 
     // constant code for runtime permissions
-    private static final int PERMISSION_REQUEST_CODE = 200;
+//    private static final int PERMISSION_REQUEST_CODE = 200;
     LinearLayout totalLayout;
     ImageView filter;
+
+    List<ReportModel> mDReportModels = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,7 +169,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             fromDateString = dateTime;
             toDateString = dateTime;
         }
-        ViewDateReport("All");
+
 
         fromBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,6 +260,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ViewDateReport("All");
     }
 
     /*Toolbar*/
@@ -436,7 +445,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
                    for (int l = 0; l < jsonArray.length(); l++) {
                         JsonObject = jsonArray.getJSONObject(l);
-                        String orderStatus = JsonObject.getString("Order_Status");
+                       String orderStatus = "";
+                       if(JsonObject.has("Order_Status"))
+                        orderStatus = JsonObject.getString("Order_Status");
                         Log.e("datareportmodels", String.valueOf(mReportActivities.getData()));
                         Float orderValue= Float.valueOf(JsonObject.getString("Order_Value"));
                         Log.v("JSON_OBEJCTSvalue" +

@@ -126,9 +126,9 @@ public class DispatchEditActivtity extends AppCompatActivity {
     public void dipatchItem(View v) {
 //        listdata = adap
 
-        if(!priProdAdapter.isAnythingChanged())
+       /* if(!priProdAdapter.isAnythingChanged())
             Toast.makeText(this, "Please do any changes", Toast.LENGTH_SHORT).show();
-        else {
+        else {*/
             Log.v("LIST_OF_DATAssssss", priProdAdapter.getUpdatedData().toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> ca = apiInterface.Dispatch(mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), priProdAdapter.getUpdatedData().toString());
@@ -159,7 +159,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                 }
             });
 
-        }
+//        }
 
             }
 

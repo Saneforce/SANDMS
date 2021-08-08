@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.Order;
@@ -32,12 +32,14 @@ import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import com.saneforce.dms.BuildConfig;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.CameraPermission;
 import com.saneforce.dms.Utils.Common_Model;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.CustomListViewDialog;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
@@ -68,7 +70,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     EditText edtUTR;
     String orderIDRazorpay;
     String razorpay_payment_id="";
-            String razorpay_response="";
+    String razorpay_response="";
     String keyID="";
     String key_Secret="";
     String razorpay_signature="";
@@ -79,7 +81,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
     int Amount;
-   Double AMOUNTFINAL ;
+    Double AMOUNTFINAL ;
     SoapPrimitive resultString;
     JSONObject jsonObjectRazorpay;
     String TAG = "Response";
@@ -105,6 +107,24 @@ public class PaymentDetailsActivity extends AppCompatActivity
         productDate.setText(DateValue);
         productAmt.setText(AmountValue);
 
+        RadioButton rbOnline = findViewById(R.id.online);
+        RadioButton rbCredit = findViewById(R.id.cred);
+        RadioButton rbOffline = findViewById(R.id.offline);
+
+        if(Constants.APP_TYPE == 2){
+            rbOnline.setVisibility(View.GONE);
+            rbCredit.setVisibility(View.GONE);
+            rbOffline.setChecked(true);
+            PaymntMode = "Offline";
+            offView.setVisibility(View.VISIBLE);
+        }else {
+            rbOnline.setVisibility(View.VISIBLE);
+            rbCredit.setVisibility(View.VISIBLE);
+            rbOffline.setVisibility(View.VISIBLE);
+            PaymntMode = "";
+            offView.setVisibility(View.GONE);
+        }
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -115,7 +135,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 } else if (checkedId == R.id.offline) {
                     offView.setVisibility(View.VISIBLE);
                     PaymntMode = "Offline";
-                } else {
+                } else if (checkedId == R.id.cred) {
                     PaymntMode = "Credit";
                     offView.setVisibility(View.GONE);
                 }
@@ -134,33 +154,27 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
     public void ProceedOrder(View v) {
-        if (PaymntMode.equalsIgnoreCase("Offline")) {
-            if (offlineMode.getText().toString().equalsIgnoreCase("")) {
-                Toast.makeText(this, "Please choose payment type", Toast.LENGTH_SHORT).show();
-            } else {
-
-
-             ProceedPayment("","","");
-            }
-
-        } else {
-
-            if (PaymntMode.equalsIgnoreCase("Online")) {
+        if(PaymntMode.equals(""))
+            Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
+        else if(PaymntMode.equalsIgnoreCase("Offline") && offlineMode.getText().toString().equals("")) {
+            Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();
+        }else if(PaymntMode.equalsIgnoreCase("Offline") && str.equals("")) {
+            Toast.makeText(this, "Please choose Valid Image", Toast.LENGTH_SHORT).show();
+        }else {
+            if (PaymntMode.equalsIgnoreCase("Offline")) {
+                ProceedPayment("","","");
+            } else if (PaymntMode.equalsIgnoreCase("Online")) {
                 AsyncCallWS task = new AsyncCallWS();
                 task.execute();
-
             } else if(PaymntMode.equalsIgnoreCase("Credit")) {
-                AsyncCallWS task = new AsyncCallWS();
-                task.execute();
-
-            }else{
-                onBackPressed();
-//                Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
-//                startActivity(a);
+                ProceedPayment("","","");
+//                AsyncCallWS task = new AsyncCallWS();
+//                task.execute();
+            }else {
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
 
         }
-
     }
 
 
@@ -208,7 +222,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("StockistCode", mShared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("divisionCode", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("PaymentMode", PaymntMode);
-            js.put("PaymentTypeName", offlineMode.getText().toString());
+
+            String option = "";
+            if(PaymntMode.equalsIgnoreCase("Offline"))
+                option = offlineMode.getText().toString();
+
+            js.put("PaymentTypeName", option);
             js.put("PaymentTypeCode", PaymentTypecode);
             js.put("UTRNumber", edtUTR.getText().toString());
             js.put("Amount", AmountValue);
@@ -233,11 +252,21 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     JsonObject jsonObject = response.body();
                     Log.v("Payment_Response", jsonObject.toString());
-                    if (jsonObject.get("success").toString().equalsIgnoreCase("true")) ;
-                //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
-               //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
-               //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
-                    onBackPressed();
+                    if (jsonObject.get("success").toString().equalsIgnoreCase("true")){
+                        //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
+                        //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
+                        //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
+                        String successMsg = "Payment done successfully";
+                        if(PaymntMode.equals("Credit"))
+                            successMsg = "Credit raised successfully";
+
+                        Toast.makeText(PaymentDetailsActivity.this, successMsg, Toast.LENGTH_SHORT).show();
+
+                        paymentCompleted(true);
+
+                    }
+
+
 //                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
 //                    startActivity(a);
 
@@ -257,6 +286,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
                 }
             });
         } catch (JSONException e) {
@@ -264,9 +294,16 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
     }
 
+    private void paymentCompleted(boolean closeActivity) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("closeActivity", closeActivity);
+        setResult(-1, resultIntent);
+        finish();
+    }
 
 
     private class AsyncCallWS extends AsyncTask<Void, Void, Void> {
+
 
         @Override
         protected void onPreExecute() {
@@ -276,15 +313,66 @@ public class PaymentDetailsActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... params) {
             Log.i(TAG, "doInBackground");
-            getOnlinePaymentOrderId();
+            if(getOnlinePaymentOrderId()){
+
+                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(AmountValue));
+
+
+                try {
+                    if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
+
+                        RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret);
+//            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
+//                    "O0wqElBi2A5HUrb2MkbyeNQ4");
+                        JSONObject orderRequest = new JSONObject();
+                        orderRequest.put("amount", AMOUNTFINAL); // amount in the smallest currency unit AmountValue*100
+                        orderRequest.put("currency", "INR");
+                        orderRequest.put("receipt", OrderIDValue);
+
+                        //orderRequest.put("payment_capture", false);
+                        Order OR=razorpayClient.Orders.create(orderRequest);
+                        // Log.v("rzp_live_z2t2tkpQ8YERR0", orderRequest.toString());
+
+                        //   Log.v("orderID", OR.toString());
+                        try {
+                            JSONObject   jsonObject1 = new JSONObject(OR.toString());
+                            Log.e("LoginResponse1",  jsonObject1.toString());
+                            orderIDRazorpay=jsonObject1.getString("id");
+
+                            Log.v("iddd",orderIDRazorpay);
+                            //  Log.v("res",jsonObject1.get("razorpay_signature").toString());
+
+
+                            getOnlinePayment(orderIDRazorpay);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        Toast.makeText(PaymentDetailsActivity.this, "Empty key ID or secret key", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } catch (RazorpayException xception ) {
+                    System.out.println(xception .getMessage());
+                } catch (Exception e) {//Razorpay
+                    e.printStackTrace();
+                }
+            }else {
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+            }
+
+
             return null;
         }
         @Override
         protected void onPostExecute(Void result) {
             Log.i(TAG, "onPostExecute");
 
-          //  Toast.makeText(PaymentDetailsActivity.this, "Response" + orderIDRazorpay.toString(), Toast.LENGTH_LONG).show();
-           // getOnlinePayment(orderIDRazorpay);//working code commented
+
+            //  Toast.makeText(PaymentDetailsActivity.this, "Response" + orderIDRazorpay.toString(), Toast.LENGTH_LONG).show();
+            // getOnlinePayment(orderIDRazorpay);//working code commented
         }
 
     }
@@ -314,7 +402,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 finalPath = "/storage/emulated/0";
                 filePath = outputFileUri.getPath();
                 filePath = filePath.substring(1);
-                str = filePath.replaceAll("external_files/Android/data/com.example.dms/cache/", " ");
+                str = filePath.replaceAll("external_files/Android/data/"+ BuildConfig.APPLICATION_ID+"/cache/", " ");
                 filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                 imgSource.setImageURI(Uri.parse(filePath));
                 getMulipart(filePath);
@@ -344,7 +432,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         try {
             if (!TextUtils.isEmpty(path)) {
 
-                File file = new File(path);
+                File file ;
                 if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg"))
                     file = new Compressor(getApplicationContext()).compressToFile(new File(path));
                 else
@@ -353,6 +441,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return yy;
     }
@@ -378,81 +467,42 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
 
 
-    public void getOnlinePaymentOrderId() {
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getPaymentKey( mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-        Log.v("jeevith", call.request().toString());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                try {
-                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
-                    if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) ;
+    public boolean getOnlinePaymentOrderId() {
+        keyID = "";
+        key_Secret = "";
 
-                    Log.v("NAME_STRING", response.toString());
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                    for (int a = 0; a < jsonArray.length(); a++) {
+        Call<JsonObject> call = null;
 
-                        JSONObject jso = jsonArray.getJSONObject(a);
-                       keyID = String.valueOf(jso.get("KeyID"));
-                       key_Secret = String.valueOf(jso.get("Key_Secret"));
-                        Log.v("NAME_STRING1",key_Secret);
-                        Log.v("NAME_STRING",keyID);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.e("Route_response", "ERROR");
-            }
-        });
-
-        AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(AmountValue));
-
-
+        Response<JsonObject> response = null;
         try {
-            RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret
-                  );
-//            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
-//                    "O0wqElBi2A5HUrb2MkbyeNQ4");
-            JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount", AMOUNTFINAL); // amount in the smallest currency unit AmountValue*100
-            orderRequest.put("currency", "INR");
-            orderRequest.put("receipt", OrderIDValue);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            call = apiInterface.getPaymentKey( mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
 
-            //orderRequest.put("payment_capture", false);
-            Order OR=razorpayClient.Orders.create(orderRequest);
-           // Log.v("rzp_live_z2t2tkpQ8YERR0", orderRequest.toString());
+            response = call.execute();
 
-         //   Log.v("orderID", OR.toString());
-            try {
-                JSONObject   jsonObject1 = new JSONObject(OR.toString());
-                Log.e("LoginResponse1",  jsonObject1.toString());
-                orderIDRazorpay=jsonObject1.getString("id");
+            JSONObject jsonRootObject = new JSONObject(response.body().toString());
+            if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) {
 
-                Log.v("iddd",orderIDRazorpay);
-              //  Log.v("res",jsonObject1.get("razorpay_signature").toString());
-
-
-                getOnlinePayment(orderIDRazorpay);
-
-            } catch (Exception e) {
-
+                Log.v("NAME_STRING", response.toString());
+                JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                if(jsonArray!=null && jsonArray.length()>0){
+                    JSONObject jso = jsonArray.getJSONObject(0);
+                    keyID = String.valueOf(jso.get("KeyID"));
+                    key_Secret = String.valueOf(jso.get("Key_Secret"));
+                    Log.v("NAME_STRING1",key_Secret);
+                    Log.v("NAME_STRING",keyID);
+                    if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
+                        return true;
+                    }
+                }
+                //order id createion jul 22
             }
+        } catch (Exception e) {
+            e.printStackTrace();
 
-        } catch (RazorpayException xception ) {
-            System.out.println(xception .getMessage());
-        } catch (Exception e) {//Razorpay
-
-
-             System.out.println(e.getMessage());
         }
-        //order id createion jul 22
 
+        return false;
     }
 
     public void getOnlinePayment(String orderId){
@@ -470,8 +520,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
         Checkout checkout = new Checkout();
         // set your id as below
         //  checkout.setKeyID("rzp_live_ILgsfZCZoFIKMb");
-      //  checkout.setKeyID("rzp_test_JOC0wRKpLH1cVW");//demo
-      //  checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
+        //  checkout.setKeyID("rzp_test_JOC0wRKpLH1cVW");//demo
+        //  checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
         checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
 
         // set image
@@ -484,7 +534,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             object.put("name", "Govind Milk");
             object.put("order_id", orderId);
             // put description
-           // object.put("description", "Test payment");
+            // object.put("description", "Test payment");
             object.put("description", "Live payment");
             // to set theme color
             object.put("theme.color", "");
@@ -496,7 +546,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             object.put("amount", amount);
 
             // put mobile number
-           // object.put("prefill.contact", "9790844143");
+            // object.put("prefill.contact", "9790844143");
             object.put("prefill.contact", "8939747663");
             // put email
             object.put("prefill.email", "apps@gmail.com");
@@ -504,16 +554,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
             // open razorpay to checkout activity
             checkout.open(PaymentDetailsActivity.this, object);
 
-
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-//    @Override
+    //    @Override
 //    public void onPaymentSuccess(String s) {
 //        Log.v("pay success",s.toString());
 //      //  {  "razorpay_payment_id": "pay_29QQoUBi66xm2f",  "razorpay_order_id": "order_9A33XWu170gUtm",  "razorpay_signature": "9ef4dffbfd84f1318f6739a3ce19f9d85851857ae648f114332d8401e0949a3d"}
@@ -532,7 +578,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //    }
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
-             try{
+        try{
 
 //                    jsonObjectRazorpay = new JSONObject(paymentData.);
 //                    Log.v("LoginResponse1",  jsonObjectRazorpay .toString());
@@ -543,31 +589,32 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //                        JSONObject razorpay_payment= jsonObject.getJSONObject("onActivityResult result");
 //
 //                        Log.v("LoginResponse7971", razorpay_payment .toString());
-                        razorpay_payment_id=paymentData.getPaymentId();
-                                //razorpay_payment.getString("razorpay_payment_id");
-                        Log.v("LoginResponse7971i", razorpay_payment_id );
-                        razorpay_response=paymentData.getOrderId();
-                                //razorpay_payment.getString("razorpay_order_id");
-                        Log.v("LoginResponse7971qi", razorpay_response );
-                        razorpay_signature=paymentData.getSignature();
-                                //razorpay_payment.getString("razorpay_signature");
-                        Log.v("LoginResponse7971wi", razorpay_signature);
+            razorpay_payment_id=paymentData.getPaymentId();
+            //razorpay_payment.getString("razorpay_payment_id");
+            Log.v("LoginResponse7971i", razorpay_payment_id );
+            razorpay_response=paymentData.getOrderId();
+            //razorpay_payment.getString("razorpay_order_id");
+            Log.v("LoginResponse7971qi", razorpay_response );
+            razorpay_signature=paymentData.getSignature();
+            //razorpay_payment.getString("razorpay_signature");
+            Log.v("LoginResponse7971wi", razorpay_signature);
 
-                 Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Payment is successful : "+s, Toast.LENGTH_LONG).show();
 
-
-
-                 ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
-                 //   }
-    }catch (Exception eee){
-        eee.printStackTrace();
-                }
+            ProceedPayment(razorpay_payment_id,razorpay_response,razorpay_signature);
+            //   }
+        }catch (Exception eee){
+            eee.printStackTrace();
+        }
 
     }
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
-        onBackPressed();
+        Toast.makeText(PaymentDetailsActivity.this, s, Toast.LENGTH_SHORT).show();
+        paymentCompleted(false);
+
+
 //        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
 //        startActivity(a);
     }
@@ -585,7 +632,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onBackPressed();
+                onBackPressed();
             }
         });
 

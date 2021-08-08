@@ -47,6 +47,29 @@ public class PendingVerification extends AppCompatActivity {
 
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
+
+    }
+
+
+    public void getToolbar() {
+
+        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    private void getData() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         Call<JsonObject> ca = apiInterface.getPrimaryVerification(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
@@ -60,14 +83,14 @@ public class PendingVerification extends AppCompatActivity {
                 Shared_Common_Pref shared_common_pref;
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
-                    JSONObject jsonObject = null;
+//                    JSONObject jsonObject = null;
                     JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                   /* for (int i = 0; i < jsonArray.length(); i++) {
 
                         jsonObject = jsonArray.getJSONObject(i);
 
 
-                    }
+                    }*/
                     Log.v("JsONDATE", jsonArray.toString());
                     pendingRecycle.setHasFixedSize(true);
                     pendingRecycle.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -85,20 +108,6 @@ public class PendingVerification extends AppCompatActivity {
                 mCommon_class.ProgressdialogShow(2, "");
             }
         });
-    }
-
-
-    public void getToolbar() {
-
-        imgBack = (ImageView) findViewById(R.id.toolbar_back);
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-
-            }
-        });
-
     }
 
     @Override
@@ -156,8 +165,12 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             holder.txtPaymentOption.setText("Payment Type :"+Payment_Option);
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
-                holder.txtPaymentMode.setText("Payment Mode:"+Payment_Mode);
+                holder.txtPaymentMode.setText("Payment Mode :"+Payment_Mode);
+            }else {
+                holder.txtPaymentMode.setVisibility(View.GONE);
+                holder.txtPaymentMode.setText("");
             }
+
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -168,6 +181,8 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
                     MIntent.putExtra("Stockist_Name", Stockist_Name);
                     MIntent.putExtra("UTRNumber", UTRNumber);
                     MIntent.putExtra("Imgurl", Imgurl);
+                    MIntent.putExtra("paymentType", Payment_Option);
+                    MIntent.putExtra("paymentMode", Payment_Mode);
                     context.startActivity(MIntent);
                 }
             });

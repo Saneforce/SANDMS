@@ -38,6 +38,7 @@ public class PaymentVerified extends AppCompatActivity {
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
     ImageView imgBack;
+    String LoginType = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +51,21 @@ public class PaymentVerified extends AppCompatActivity {
         Log.v("LoginType", LoginType);
 
         mCommon_class = new Common_Class(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    private void getData() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         if (LoginType.equalsIgnoreCase("Logistics")) {
             //below api is omitted because new
-       // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+            // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }else{
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),
@@ -76,12 +87,12 @@ public class PaymentVerified extends AppCompatActivity {
                     jsonObject1 = new JSONObject(response.body().toString());
                     JSONObject jsonObject = null;
                     JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+           /*         for (int i = 0; i < jsonArray.length(); i++) {
 
                         jsonObject = jsonArray.getJSONObject(i);
 
 
-                    }
+                    }*/
                     Log.v("JsONDATE", jsonArray.toString());
                     pendingRecycle.setHasFixedSize(true);
                     pendingRecycle.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -183,6 +194,9 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
                 holder.txtPaymentMode.setText("Payment Mode :"+ Payment_Mode);
+            }else {
+                holder.txtPaymentMode.setVisibility(View.GONE);
+                holder.txtPaymentMode.setText("");
             }
 
             String LoginType = shared_common_pref.getvalue("Login_details");

@@ -158,6 +158,9 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
                 holder.txtPaymentMode.setText("Payment Mode :" +Payment_Mode);
+            }else {
+                holder.txtPaymentMode.setVisibility(View.GONE);
+                holder.txtPaymentMode.setText("");
             }
 
         } catch (JSONException e) {

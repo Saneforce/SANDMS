@@ -366,7 +366,6 @@
                     android:id="@+id/green_btn"
                     android:text="Pay Now"
                     android:visibility="gone"
-                    android:onClick="PayNow"
                     android:background="@drawable/button_green"
                     style="@style/ButtonStyle"
                     android:layout_weight="1" />

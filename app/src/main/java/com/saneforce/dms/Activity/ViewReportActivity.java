@@ -2,6 +2,7 @@
 package com.saneforce.dms.Activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -31,6 +33,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -41,6 +44,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.saneforce.dms.Adapter.DateReportAdapter;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
@@ -48,6 +52,7 @@ import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
 import com.saneforce.dms.Utils.ApiClient;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
@@ -80,7 +85,7 @@ import static android.os.Build.VERSION.SDK_INT;
 public class ViewReportActivity extends AppCompatActivity {
     TextView toolHeader, txtProductId, txtProductDate;
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
+    public static final int ACTIVITY_REQUEST_CODE = 2;
     ImageView imgBack,imgShare;
 
     RecyclerView DateRecyclerView;
@@ -147,9 +152,101 @@ public class ViewReportActivity extends AppCompatActivity {
 
         PayNow = findViewById(R.id.green_btn);
         Delete = findViewById(R.id.red_btn);
+
+        if(Constants.APP_TYPE == 2){
+            PayNow.setText("Dispatch");
+            PayNow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    payOffline();
+                }
+            });
+        }else {
+            PayNow.setText("Pay Now");
+            PayNow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PayNow();
+                }
+            });
+        }
         ViewDateReport();
     }
 
+
+    public void payOffline() {
+        JSONObject js = new JSONObject();
+        try {
+
+            js.put("OrderID", productId);
+            js.put("StockistCode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("divisionCode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("PaymentMode", "Offline");
+
+            String option = "";
+//            if(PaymntMode.equalsIgnoreCase("Offline"))
+//                option = offlineMode.getText().toString();
+
+            js.put("PaymentTypeName", option);
+            js.put("PaymentTypeCode", "");
+            js.put("UTRNumber", "");
+            js.put("Amount", OrderValueTotal);
+            js.put("Attachement", "");
+
+                js.put("PaymentID","");
+                js.put("RazorOrderID", "");
+                js.put("SignatureID", "");
+
+            Log.v("JS_VALUEdata", js.toString());
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> responseBodyCall;
+            responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
+            Log.v("Payment_Request", responseBodyCall.request().toString());
+            responseBodyCall.enqueue(new Callback<JsonObject>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    JsonObject jsonObject = response.body();
+                    Log.v("Payment_Response", jsonObject.toString());
+                    if (jsonObject.get("success").toString().equalsIgnoreCase("true")){
+                        //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
+                        //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
+                        //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
+                        String successMsg = "Payment done successfully";
+
+                        Toast.makeText(ViewReportActivity.this, successMsg, Toast.LENGTH_SHORT).show();
+
+                        onBackPressed();
+
+                    }
+
+
+//                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//                    startActivity(a);
+
+                    //  startActivity(new Intent(PaymentDetailsActivity.this,RazorPayment.class));
+//                    if (PaymntMode.equalsIgnoreCase("Online")) {
+//
+//
+//                        AsyncCallWS task = new AsyncCallWS();
+//                        task.execute();
+//
+//                    } else {
+//                        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
+//                        startActivity(a);
+//                       // finish();//jul 19 working code commented
+//                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     /*Toolbar*/
     public void getToolbar() {
@@ -203,14 +300,14 @@ public class ViewReportActivity extends AppCompatActivity {
         });
     }
 
-    public void PayNow(View v) {
+    public void PayNow() {
         Intent payIntent = new Intent(getApplicationContext(), PaymentDetailsActivity.class);
         payIntent.putExtra("OrderId", productId);
         payIntent.putExtra("Date", orderDate);
       //  payIntent.putExtra("Amount", OrderAmt);
         payIntent.putExtra("Amount", OrderValueTotal);
+        startActivityForResult(payIntent, ACTIVITY_REQUEST_CODE);
 
-        startActivity(payIntent);
 //        finish();
     }
 
@@ -456,5 +553,24 @@ public class ViewReportActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+
+            if(requestCode == ACTIVITY_REQUEST_CODE) {
+
+                boolean closeActivity = false;
+                if(data!=null && data.hasExtra("closeActivity"))
+                    closeActivity = data.getBooleanExtra("closeActivity", false);
+
+                if(closeActivity)
+                    ViewReportActivity.this.finish();
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     //permision stop
 }
