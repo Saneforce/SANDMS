@@ -34,7 +34,7 @@ public class PrimaryProduct implements Serializable {
     private String Subtotal;
     private String Dis_amt;
     private String Tax_amt;
-    private String Con_fac;
+//    private String Con_fac;
     private int Product_Sale_Unit_Cn_Qty;
 
     private String selectedScheme = "";
@@ -113,8 +113,8 @@ public class PrimaryProduct implements Serializable {
     public PrimaryProduct(String UID, String PID, String name, String Pname, String Product_Bar_Code,
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
-                          String Tax_amt, String Con_fac, List<SchemeProducts> schemeProducts, int Product_Sale_Unit_Cn_Qty,
-                          ArrayList<UOMlist> UOMList ) {
+                          String Tax_amt, List<SchemeProducts> schemeProducts,
+                          int Product_Sale_Unit_Cn_Qty, ArrayList<UOMlist> UOMList ) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -130,7 +130,7 @@ public class PrimaryProduct implements Serializable {
         this.Subtotal = Subtotal;
         this.Dis_amt = Dis_amt;
         this.Tax_amt = Tax_amt;
-        this.Con_fac = Con_fac;
+//        this.Con_fac = Con_fac;
         this.schemeProducts = schemeProducts;
         this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
         this.UOMList=UOMList;
@@ -183,13 +183,13 @@ public class PrimaryProduct implements Serializable {
         Tax_amt = tax_amt;
     }
 
-    public String getCon_fac() {
+/*    public String getCon_fac() {
         return Con_fac;
     }
 
     public void setCon_fac(String con_fac) {
         Con_fac = con_fac;
-    }
+    }*/
 
     public String getPID() {
         return PID;

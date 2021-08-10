@@ -41,14 +41,12 @@ public class Constants {
 
 	// This method  converts String to RequestBody
 	public static RequestBody toRequestBody (JSONArray value) {
-		RequestBody body = RequestBody.create(MediaType.parse("text/plain"), value.toString());
-		return body ;
+		return RequestBody.create(MediaType.parse("text/plain"), value.toString());
 	}
 
 	// This method  converts String to RequestBody
 	public static RequestBody toRequestBody (JSONObject value) {
-		RequestBody body = RequestBody.create(MediaType.parse("text/plain"), value.toString());
-		return body ;
+		return RequestBody.create(MediaType.parse("text/plain"), value.toString());
 	}
 
 	public static boolean isNetworkAvailable(Context context) {

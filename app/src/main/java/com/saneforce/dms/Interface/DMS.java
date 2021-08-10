@@ -26,6 +26,10 @@ public interface DMS {
         void ProdcutDetails(String id,String name,String Image);
     }
 
+    interface CheckingInterface1{
+        void ProdcutDetails(int position, String id,String name,String Image);
+    }
+
     interface ChildListInterface {
         void onClickInterface(String value, float totalValue, String itemID, Integer positionValue, String productName, Float productCode, Float productQuantiy, Integer Value, String UkeyPID, String productunit, String Pname, String Uom, String conFac, String Discont, String tax, float DiscontAmt, float taxAmt);
     }

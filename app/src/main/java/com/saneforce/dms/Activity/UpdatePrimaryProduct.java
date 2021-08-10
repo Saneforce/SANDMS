@@ -595,7 +595,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
 //            workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             task.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
-            discountType= selectedScheme.getDiscount_Type();
+            if(!selectedScheme.getDiscount_Type().equals(""))
+                discountType= selectedScheme.getDiscount_Type();
+            else
+                discountType= "%";
 
 
 //            if(discountType.equals("Rs"))
@@ -626,6 +629,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
                 schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
+
 
             switch (discountType){
                 case "%":

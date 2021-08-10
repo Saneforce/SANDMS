@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,8 +40,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,6 +68,14 @@ public class DashBoardActivity extends AppCompatActivity {
 
     DBController dbController;
     boolean syncData = false;
+
+
+/*
+    TextClock tc_current_time;
+    LinearLayout ll_cut_off;
+    TextView tv_cut_off_time;
+    String cutOffTime;
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +98,14 @@ public class DashBoardActivity extends AppCompatActivity {
         txtAddress.setText(shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Address));
         imagView = findViewById(R.id.toolbar_back);
         ib_logout = findViewById(R.id.ib_logout);
+
+/*        tc_current_time = findViewById(R.id.tc_current_time);
+        ll_cut_off = findViewById(R.id.ll_cut_off);
+        tv_cut_off_time = findViewById(R.id.tv_cut_off_time);
+        cutOffTime ="10:00 pm";
+        tc_current_time.setFormat24Hour("yyyy-MM-dd HH:mm");
+        tv_cut_off_time.setText(cutOffTime);*/
+
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -355,14 +381,14 @@ public class DashBoardActivity extends AppCompatActivity {
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("product_unit"));
+                String PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
-                String PCon_fac = "";
+//                String PCon_fac = "1";
+//                if(jsonObject.has("Conv_Fac"))
+//                    PCon_fac = jsonObject.getString("Conv_Fac");
                 if(jsonObject.has("Conv_Fac"))
-                    PCon_fac = jsonObject.getString("Conv_Fac");
-                if(jsonObject.has("Default_UOMQty"))
-                    unitQty = jsonObject.getInt("Default_UOMQty");
+                    unitQty = jsonObject.getInt("Conv_Fac");
                 Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
                 JSONArray uomArray = null;
@@ -424,7 +450,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        PCon_fac,schemeList,unitQty, uomList));
+                        schemeList,unitQty, uomList));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -439,16 +465,44 @@ public class DashBoardActivity extends AppCompatActivity {
         mCommon_class.ProgressdialogShow(2, "");
     }
     public void PrimaryOrder(View v) {
-        mCommon_class.ProgressdialogShow(1, "");
 
-        if(!dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("") &&
-        !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
-            processPrimaryData();
-        }else
-            brandPrimaryApi(false);
+//        if(!checkCutOffTime(cutOffTime)){
+            mCommon_class.ProgressdialogShow(1, "");
+
+            if(!dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("") &&
+                    !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
+                processPrimaryData();
+            }else
+                brandPrimaryApi(false);
+//        }else
+//            Toast.makeText(DashBoardActivity.this, "Cut off time is over, please try again later", Toast.LENGTH_SHORT).show();
     }
+
+    private boolean checkCutOffTime(String cutOffTime) {
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        Date date1=new Date();
+
+        //            date1 = simpleDateFormat.parse(cutOffTime);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date1);
+        cal.set(Calendar.HOUR_OF_DAY, 20);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        date1 = cal.getTime();
+        Date date2 = Calendar.getInstance().getTime();
+        int isCutOffGreater = 1;
+        isCutOffGreater = date1.compareTo(date2);
+        Log.d(TAG, "checkCutOffTime: isCutOffGreater "+ isCutOffGreater);
+        return isCutOffGreater<=0;
+    }
+
     public void SecondaryOrder(View v) {
-        startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
+//        if(!checkCutOffTime(cutOffTime)) {
+            startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
+//        }else
+//            Toast.makeText(DashBoardActivity.this, "Cut off time is over, please try again later", Toast.LENGTH_SHORT).show();
     }
 
     public void CounterOrder(View v) {

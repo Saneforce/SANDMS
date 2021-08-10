@@ -32,10 +32,7 @@ public class ApiClient {
     public static Retrofit getClient() {
 
         if (retrofit == null) {
-            if(Constants.APP_TYPE == 1)
-                BASE =BASE_GOVIND;
-            else
-                BASE =BASE_FMCG;
+
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.writeTimeout(61, TimeUnit.SECONDS)

@@ -24,8 +24,8 @@
         android:theme="@style/AppBaseTheme"
         android:usesCleartextTraffic="true"
         android:name=".DMSApplication"
-        tools:targetApi="p"
-        >
+        tools:targetApi="p">
+
         <activity
             android:name=".Activity.OutboxActivity"
             android:screenOrientation="portrait"

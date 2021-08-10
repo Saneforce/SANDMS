@@ -208,10 +208,10 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         Log.v("productBarCodeproduct", productBarCode);
 
         priCateAdapter = new CategoryAdapter(getApplicationContext(),
-                jsonBrandCateg, jsonBrandProduct,jsonProductuom, new DMS.CheckingInterface() {
+                jsonBrandCateg, jsonBrandProduct,jsonProductuom, new DMS.CheckingInterface1() {
 
             @Override
-            public void ProdcutDetails(String id, String name, String img) {
+            public void ProdcutDetails(int position, String id, String name, String img) {
                 searchEdit.setQuery("", false);
 
                // getProductId();
@@ -221,6 +221,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                 text_checki.setVisibility(View.VISIBLE);
                 text_checki.setText(name);
+
+                highlightPosition(position);
             }
         });
 
@@ -294,12 +296,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             }
         });
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadFirstItem();
-            }
-        }, 1000);
+          loadFirstItem();
 
     }
 
@@ -339,6 +336,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
     private void loadFirstItem() {
         if(jsonBrandCateg.length()>0){
+
+
             try {
                 JSONObject jsonObject = jsonBrandCateg.getJSONObject(0);
                 String productId = jsonObject.getString("id");
@@ -350,12 +349,36 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                 text_checki.setVisibility(View.VISIBLE);
                 text_checki.setText(productName);
+                highlightPosition(0);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }else
             Toast.makeText(this, "Empty Data", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void highlightPosition(int position) {
+        for(int i = 0; i< jsonBrandCateg.length(); i++){
+            try {
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(i);
+                jsonObject.put("isSelected", false);
+                jsonBrandCateg.put(i, jsonObject);
+                priCateAdapter.notifyItemChanged(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        try {
+            JSONObject jsonObject = jsonBrandCateg.getJSONObject(position);
+            jsonObject.put("isSelected", true);
+            jsonBrandCateg.put(position, jsonObject);
+            priCateAdapter.notifyItemChanged(position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -543,13 +566,13 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     JSONArray jsonArray;
     JSONArray jsonArray1;
     ArrayList<HashMap<String, String>> contactList;
-    DMS.CheckingInterface itemClick;
+    DMS.CheckingInterface1 itemClick;
     String id = "", name = "", Image = "";
     String productImage = "";
     JSONObject jsonProductuom;
 
 
-    public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1,JSONObject jsonProductuom, DMS.CheckingInterface itemClick) {
+    public CategoryAdapter(Context context, JSONArray jsonArray, JSONArray jsonArray1,JSONObject jsonProductuom, DMS.CheckingInterface1 itemClick) {
         this.context = context;
         this.jsonArray = jsonArray;
         this.jsonArray1 = jsonArray1;
@@ -563,13 +586,13 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     public CategoryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_checking_apater, parent, false);
 
-        view.setOnClickListener(new View.OnClickListener() {
+/*        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 itemClick.ProdcutDetails(id, name, Image);
             }
         });
-        view.setClickable(false);
+        view.setClickable(false);*/
         return new CategoryAdapter.MyViewHolder(view);
     }
 
@@ -585,13 +608,23 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
             if(jsFuel.has("Cat_Image"))
             productImage = jsFuel.getString("Cat_Image");
 
+            if(jsFuel.has("isSelected") && jsFuel.getBoolean("isSelected")){
+                holder.mText.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.textColor));
+                holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            }else {
+                holder.mText.setTextColor(context.getResources().getColor(R.color.textColor));
+                holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            }
 
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClick.ProdcutDetails(productId, productName, productImage);
+                    itemClick.ProdcutDetails(position, productId, productName, productImage);
                 }
             });
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1741,8 +1774,10 @@ String orderid=mContact.getUID();
 
             workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
-            discountType= selectedScheme.getDiscount_Type();
-
+            if(!selectedScheme.getDiscount_Type().equals(""))
+                discountType= selectedScheme.getDiscount_Type();
+            else
+                discountType= "%";
 
             if(discountType.equals("Rs"))
                 holder.ll_disc.setVisibility(View.GONE);

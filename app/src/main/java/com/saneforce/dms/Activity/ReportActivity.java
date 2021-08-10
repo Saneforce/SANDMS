@@ -93,7 +93,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     CustomListViewDialog customDialog;
     LinearLayout linearOrderMode;
     TextView txtOrderStatus;
-    String orderTakenByFilter;
+    String orderTakenByFilter ="All";
     ArrayList<String> OrderStatusList;
     ArrayList<String> OrderStatusListID;
     LinearLayout linearLayout;
@@ -187,8 +187,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                                 mArrayList.clear();
 //                                OrderStatusList.clear();
                                 modeOrderData.clear();
-                                txtOrderStatus.setText("All");
-                                ViewDateReport("All");
+                                orderTakenByFilter = "All";
+                                txtOrderStatus.setText(orderTakenByFilter);
+                                ViewDateReport(orderTakenByFilter);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -212,8 +213,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         mArrayList.clear();
   //                      OrderStatusList.clear();
                         modeOrderData.clear();
-                        txtOrderStatus.setText("All");
-                        ViewDateReport("All");
+                        orderTakenByFilter = "All";
+                        txtOrderStatus.setText(orderTakenByFilter);
+                        ViewDateReport(orderTakenByFilter);
 
                     }
                 }, mYear, mMonth, mDay);
@@ -265,7 +267,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     @Override
     protected void onResume() {
         super.onResume();
-        ViewDateReport("All");
+        ViewDateReport(orderTakenByFilter);
     }
 
     /*Toolbar*/

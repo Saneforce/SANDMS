@@ -25,12 +25,14 @@ public class CompanyProfile extends AppCompatActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_company_profile);
 
+
         fileName = "CompanyProfile.html";
         if(getIntent().hasExtra("fileName"))
             fileName = getIntent().getStringExtra("fileName");
 
         WebView mywebview = (WebView) findViewById(R.id.webview);
         mywebview.loadUrl(BASE_WEBVIEW +fileName);
+
         getToolbar();
         }
 
@@ -61,11 +63,13 @@ public class CompanyProfile extends AppCompatActivity {
         AlertDialogBox.showDialog(CompanyProfile.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
             @Override
             public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
                 finish();
             }
 
             @Override
             public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
             }
         });
     }

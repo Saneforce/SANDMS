@@ -16,7 +16,7 @@ public class OutboxActivity extends AppCompatActivity {
     TextView tv_secondary_count;
     TextView tv_new_retailer;
     TextView tv_retailer_visit;
-    TextView tv_non_productive_calls;
+//    TextView tv_non_productive_calls;
     DBController dbController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class OutboxActivity extends AppCompatActivity {
         tv_secondary_count = findViewById(R.id.tv_secondary_count);
         tv_new_retailer = findViewById(R.id.tv_new_retailer);
         tv_retailer_visit = findViewById(R.id.tv_retailer_visit);
-        tv_non_productive_calls = findViewById(R.id.tv_non_productive_calls);
+//        tv_non_productive_calls = findViewById(R.id.tv_non_productive_calls);
         getToolbar();
         dbController = new DBController(this);
 
@@ -58,7 +58,7 @@ public class OutboxActivity extends AppCompatActivity {
         update(tv_secondary_count, "dcr/secordersave", 1);
         update(tv_new_retailer, "dcr/save", 0);
         update(tv_retailer_visit, "dcr/retailervisit", 0);
-        update(tv_non_productive_calls, "dcr/retailervisit", 1);
+//        update(tv_non_productive_calls, "dcr/retailervisit", 1);
     }
 
     @Override
@@ -77,6 +77,5 @@ public class OutboxActivity extends AppCompatActivity {
         }
 
         tvCount.setText(count);
-
     }
 }

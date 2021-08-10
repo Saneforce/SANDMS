@@ -631,10 +631,15 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("product_unit"));
+                String PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
-                String PCon_fac = String.valueOf(jsonObject.get("Conv_Fac"));
+                if(jsonObject.has("Conv_Fac"))
+                    unitQty = jsonObject.getInt("Conv_Fac");
+
+//                String PCon_fac = "1";
+//                if(jsonObject.has("Conv_Fac"))
+//                    PCon_fac = jsonObject.getString("Conv_Fac");
 
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
                 JSONArray uomArray = null;
@@ -696,7 +701,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        PCon_fac,schemeList,unitQty, uomList));
+                        schemeList,unitQty, uomList));
 
              /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));

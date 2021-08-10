@@ -91,6 +91,69 @@
         </RelativeLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Current Time : "
+                android:gravity="start"
+                android:textSize="15sp"/>
+
+            <TextClock
+                android:id="@+id/tc_current_time"
+                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:timeZone="Asia/Calcutta"
+                android:format24Hour="yyyy-MM-dd HH:mm:ss"
+                android:format12Hour="@null"
+                android:gravity="end" />
+
+        </LinearLayout>
+     <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+         android:visibility="gone"
+            android:gravity="center"
+            android:id="@+id/ll_cut_off"
+            android:paddingHorizontal="10dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Cut Off Time : "
+                android:gravity="start"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/tv_cut_off_time"
+                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:timeZone="Asia/Calcutta"
+                android:format24Hour="yyyy-MM-dd HH:mm:ss"
+                android:format12Hour="@null"
+                android:gravity="end" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

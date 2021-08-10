@@ -373,7 +373,11 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
             mProduct_arrays.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
-            discountType= selectedScheme.getDiscount_Type();
+            if(!selectedScheme.getDiscount_Type().equals(""))
+                discountType= selectedScheme.getDiscount_Type();
+            else
+                discountType= "%";
+
 
 
             if(discountType.equals("Rs"))

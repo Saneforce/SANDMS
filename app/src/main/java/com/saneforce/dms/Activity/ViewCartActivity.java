@@ -208,7 +208,12 @@ public class ViewCartActivity extends AppCompatActivity {
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        toolHeader.setText("PRIMARY VIEWCART");
+
+        if(orderType == 1)
+            toolHeader.setText("PRIMARY VIEWCART");
+        else
+            toolHeader.setText("SECONDARY VIEWCART");
+
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
 //        toolSearch.setVisibility(View.GONE);
 
@@ -880,7 +885,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Off_Pro_name",carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_free_unit());
                 person1.put("Off_Scheme_Unit", carsList.get(z).getOff_Pro_Unit());
-                person1.put("Con_Fac", carsList.get(z).getCon_fac());
+                person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
                 person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());

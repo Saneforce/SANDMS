@@ -37,8 +37,9 @@ public class ProfileActivity extends AppCompatActivity {
     JSONObject jsonObject1;
 //    JsonArray jsonArray;
     ImageView imagView;
-    TextInputEditText edtName, edtAddress, edtMobile, edtDesignation, edtStoclistName, edtGst, edtEmail;
-TextView toolbarTitle;
+    TextInputEditText edtName, edtAddress, edtMobile, edtStoclistName, edtGst, edtEmail;
+//    edtDesignation,
+    TextView toolbarTitle;
     TextInputEditText tie_erp_code, tie_sales_team_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ TextView toolbarTitle;
         edtName = findViewById(R.id.name_edt);
         edtAddress = findViewById(R.id.add_edt);
         edtMobile = findViewById(R.id.mob_edt);
-        edtDesignation = findViewById(R.id.desg_edt);
+//        edtDesignation = findViewById(R.id.desg_edt);
         edtStoclistName = findViewById(R.id.stocknam_edt);
         edtGst = findViewById(R.id.gst_edt);
         edtEmail = findViewById(R.id.ema_edt);
@@ -73,7 +74,7 @@ TextView toolbarTitle;
         }
         else {
             llProfile.setVisibility(View.GONE);
-            btnUpdate.setVisibility(View.VISIBLE);
+          /*  btnUpdate.setVisibility(View.VISIBLE);
             btnUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -81,20 +82,8 @@ TextView toolbarTitle;
                         Toast.makeText(ProfileActivity.this, "Please enter valid Name", Toast.LENGTH_SHORT).show();
                     else if(edtAddress.getText().toString().equals(""))
                         Toast.makeText(ProfileActivity.this, "Please enter valid Address", Toast.LENGTH_SHORT).show();
-                    else if(edtEmail.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid Email", Toast.LENGTH_SHORT).show();
                     else if(edtMobile.getText().toString().equals(""))
                         Toast.makeText(ProfileActivity.this, "Please enter valid Mobile Number", Toast.LENGTH_SHORT).show();
-                    else if(edtStoclistName.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid Stockist Name", Toast.LENGTH_SHORT).show();
-                    else if(tie_erp_code.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid ERP CODE", Toast.LENGTH_SHORT).show();
-                    else if(tie_sales_team_name.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid Sales team name", Toast.LENGTH_SHORT).show();
-                    else if(edtDesignation.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid Designation", Toast.LENGTH_SHORT).show();
-                    else if(edtGst.getText().toString().equals(""))
-                        Toast.makeText(ProfileActivity.this, "Please enter valid GST", Toast.LENGTH_SHORT).show();
                     else {
                         try {
                             updateProfile();
@@ -104,7 +93,7 @@ TextView toolbarTitle;
                     }
 
                 }
-            });
+            });*/
         }
 
 
@@ -125,12 +114,9 @@ TextView toolbarTitle;
             js.put("Stockist_Name", edtName.getText().toString());
             js.put("Stockist_Address", edtAddress.getText().toString());
             js.put("Stockist_ContactPerson", edtStoclistName.getText().toString());
-            js.put("Stockist_Designation", edtDesignation.getText().toString());
-            js.put("Stockist_Email", edtEmail.getText().toString());
+            js.put("Email", edtEmail.getText().toString());
             js.put("Stockist_Mobile", edtMobile.getText().toString());
             js.put("gstn", edtGst.getText().toString());
-            js.put("ERP_Code", tie_erp_code.getText().toString());
-            js.put("sales_team_name", tie_sales_team_name.getText().toString());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -154,14 +140,14 @@ TextView toolbarTitle;
                         Log.e("LoginResponse", name.toString());
                         edtName.setText(name);
                         String email = "";
-                        if(jsonObject.has("Stockist_Email"))
-                        email=jsonObject.getString("Stockist_Email");
+                        if(jsonObject.has("Email"))
+                        email=jsonObject.getString("Email");
                         edtEmail.setText(email);
 
                         String stocklistname=jsonObject.getString("Stockist_ContactPerson");
                         edtStoclistName.setText(stocklistname);
-                        String designation=jsonObject.getString("Stockist_Designation");
-                        edtDesignation.setText(designation);
+//                        String designation=jsonObject.getString("Stockist_Designation");
+//                        edtDesignation.setText(designation);
                         String address=jsonObject.getString("Stockist_Address");
                         edtAddress.setText(address);
                         String mobile=jsonObject.getString("Stockist_Mobile");
@@ -175,8 +161,8 @@ TextView toolbarTitle;
                         tie_erp_code.setText(erpCode);
 
                         String salesTeamName = "";
-                        if(jsonObject.has("sales_team_name"))
-                            salesTeamName=jsonObject.getString("sales_team_name");
+                        if(jsonObject.has("FieldPerson"))
+                            salesTeamName=jsonObject.getString("FieldPerson");
                         tie_sales_team_name.setText(salesTeamName);
 
                     }
@@ -215,13 +201,13 @@ TextView toolbarTitle;
                        String name=jsonObject.getString("Stockist_Name");
                        Log.e("LoginResponse", name.toString());
                        edtName.setText(name);
-                       String email=jsonObject.getString("Stockist_Address1");
+                       String email=jsonObject.getString("Email");
                        if(email!=null && !email.equals("") && !email.equals("null"))
                        edtEmail.setText(email);
                        String stocklistname=jsonObject.getString("Stockist_ContactPerson");
                        edtStoclistName.setText(stocklistname);
-                       String designation=jsonObject.getString("Stockist_Designation");
-                       edtDesignation.setText(designation);
+//                       String designation=jsonObject.getString("Stockist_Designation");
+//                       edtDesignation.setText(designation);
                        String address=jsonObject.getString("Stockist_Address");
                        edtAddress.setText(address);
                        String mobile=jsonObject.getString("Stockist_Mobile");
@@ -235,8 +221,8 @@ TextView toolbarTitle;
                        tie_erp_code.setText(erpCode);
 
                        String salesTeamName = "";
-                        if(jsonObject.has("sales_team_name"))
-                            salesTeamName=jsonObject.getString("sales_team_name");
+                        if(jsonObject.has("FieldPerson"))
+                            salesTeamName=jsonObject.getString("FieldPerson");
                        tie_sales_team_name.setText(salesTeamName);
 
                    }

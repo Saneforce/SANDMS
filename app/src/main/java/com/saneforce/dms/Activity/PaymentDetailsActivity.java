@@ -232,6 +232,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("UTRNumber", edtUTR.getText().toString());
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
+            js.put("dispatch", "0");
             if (PaymntMode.equalsIgnoreCase("Online")) {
                 js.put("PaymentID",razorid);
                 js.put("RazorOrderID", responseid);

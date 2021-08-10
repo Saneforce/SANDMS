@@ -153,7 +153,10 @@ public class ViewReportActivity extends AppCompatActivity {
         PayNow = findViewById(R.id.green_btn);
         Delete = findViewById(R.id.red_btn);
 
-        if(Constants.APP_TYPE == 2){
+        if(Constants.APP_TYPE == 2)
+            Delete.setText("Delete");
+
+        if(Constants.APP_TYPE == 2 && OrderType.equals("2")){
             PayNow.setText("Dispatch");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,6 +165,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 }
             });
         }else {
+            Delete.setText("Cancel");
             PayNow.setText("Pay Now");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -196,6 +200,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 js.put("PaymentID","");
                 js.put("RazorOrderID", "");
                 js.put("SignatureID", "");
+                js.put("dispatch", "1");
 
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -395,14 +400,15 @@ public class ViewReportActivity extends AppCompatActivity {
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     JsonObject jsonObject = response.body();
                     Log.v("DELETE_RESPONSE", jsonObject.toString());
-                    if (jsonObject.get("success").toString().equalsIgnoreCase("true")) ;
-                    finish();
-
+                    if (jsonObject.get("success").toString().equalsIgnoreCase("true")){
+                        Toast.makeText(ViewReportActivity.this, "Order Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                    t.printStackTrace();
                 }
             });
         } catch (JSONException e) {
