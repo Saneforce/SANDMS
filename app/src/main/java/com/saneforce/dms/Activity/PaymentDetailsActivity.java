@@ -1,5 +1,6 @@
 package com.saneforce.dms.Activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +44,7 @@ import com.saneforce.dms.Utils.Common_Model;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.CustomListViewDialog;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
+import com.saneforce.dms.Utils.TimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +53,7 @@ import org.ksoap2.serialization.SoapPrimitive;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
@@ -85,6 +89,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
     SoapPrimitive resultString;
     JSONObject jsonObjectRazorpay;
     String TAG = "Response";
+
+    LinearLayout ll_date;
+    TextView tv_date;
+    String currentDate ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +106,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
         imgSource = findViewById(R.id.imgSource);
         edtUTR = findViewById(R.id.edt_utr);
         offlineMode = findViewById(R.id.txt_offline_mode);
+        ll_date = findViewById(R.id.ll_date);
+        tv_date = findViewById(R.id.tv_date);
         getOfflineMode();
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
@@ -139,6 +149,42 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     PaymntMode = "Credit";
                     offView.setVisibility(View.GONE);
                 }
+            }
+        });
+        currentDate = TimeUtils.getCurrentTime(TimeUtils.FORMAT2);
+        tv_date.setText(currentDate);
+        tv_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int day, month, year;
+                if(!tv_date.getText().toString().equals("")){
+                    String[] dateArray =  tv_date.getText().toString().split("/");
+                    day = Integer.parseInt(dateArray[0]);
+                    month = Integer.parseInt(dateArray[1])-1;
+                    year = Integer.parseInt(dateArray[2]);
+                }else {
+                    Calendar c = Calendar.getInstance();
+
+                    day = c.get(Calendar.MONTH);
+                    month = c.get(Calendar.MONTH);
+                    year = c.get(Calendar.YEAR);
+                }
+                DatePickerDialog dialog = new DatePickerDialog(PaymentDetailsActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        String _year = String.valueOf(year);
+                        String _month = (month+1) < 10 ? "0" + (month+1) : String.valueOf(month+1);
+                        String _date = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+                        String _pickedDate = year + "-" + _month + "-" + _date;
+                        Log.e("PickedDate: ", "Date: " + _pickedDate); //2019-02-12
+                        currentDate = _date +"/"+_month+"/"+_year;
+                        tv_date.setText(currentDate);
+
+
+                    }
+                }, year, month, day);
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                dialog.show();
             }
         });
 
@@ -424,6 +470,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
         if (type == 10) {
             offlineMode.setText(myDataset.get(position).getName());
             PaymentTypecode = myDataset.get(position).getId();
+            if(myDataset.get(position).getName().equalsIgnoreCase("Cheque"))
+                ll_date.setVisibility(View.VISIBLE);
+            else
+                ll_date.setVisibility(View.GONE);
         }
     }
 
@@ -635,6 +685,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     public void getToolbar() {
         ImageView imgBack;
+        TextView toolbar_title;
+
+        toolbar_title = findViewById(R.id.toolbar_title);
+        toolbar_title.setText("Payment Details");
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgBack.setOnClickListener(new View.OnClickListener() {

@@ -376,19 +376,25 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     public void addSave(View v) {
         if (txtRoute.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Route", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer Route", Toast.LENGTH_SHORT).show();
         } else if (edtName.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer Name", Toast.LENGTH_SHORT).show();
         } else if (edtAdds.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Address", Toast.LENGTH_SHORT).show();
-        } else if (edtPhone.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Phone", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer Address", Toast.LENGTH_SHORT).show();
         } else if (edtCity.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer City", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer City", Toast.LENGTH_SHORT).show();
+        } else if (edtPhone.getText().toString().equals("")) {
+            Toast.makeText(this, "Please Enter Retailer Phone", Toast.LENGTH_SHORT).show();
+        } else if (edtEmail.getText().toString().equals("")) {
+            Toast.makeText(this, "Please Enter Retailer Email", Toast.LENGTH_SHORT).show();
+        } else if (txtLat.getText().toString().equals("")) {
+            Toast.makeText(this, "Please Refresh Retailer Latitude", Toast.LENGTH_SHORT).show();
+        } else if (txtLon.getText().toString().equals("")) {
+            Toast.makeText(this, "Please Refresh Retailer Longitude", Toast.LENGTH_SHORT).show();
         } else if (txtClass.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Class", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer Class", Toast.LENGTH_SHORT).show();
         } else if (txtChannel.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Channel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Retailer Channel", Toast.LENGTH_SHORT).show();
         } else {
             saveRetailer();
         }
@@ -410,13 +416,14 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             reportObject.put("unlisted_doctor_address", "'" + edtAdds.getText().toString() + "'");
             reportObject.put("unlisted_doctor_phone", "'" + edtPhone.getText().toString() + "'");
             reportObject.put("unlisted_doctor_cityname", "'" + edtCity.getText().toString() + "'");
+            reportObject.put("unlisted_doctor_email", "'" + edtEmail.getText().toString() + "'");
             reportObject.put("unlisted_doctor_landmark", "''");
             reportObject.put("Compititor_Id", "");
             reportObject.put("Compititor_Name", "");
             reportObject.put("CatUniverSelectId", "");
             reportObject.put("AvailUniverSelectId", "");
-            reportObject.put("lat", "");
-            reportObject.put("long", "");
+            reportObject.put("lat", "'" +txtLat.getText().toString()+ "'" );
+            reportObject.put("long", "'" +txtLon.getText().toString()+ "'" );
             reportObject.put("unlisted_doctor_areaname", "''");
             reportObject.put("unlisted_doctor_contactperson", "''");
             reportObject.put("unlisted_doctor_designation", "''");

@@ -325,6 +325,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
             }
         });
+
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
         if(OrderType.equals("1"))
             toolHeader.setText("PRIMARY REPORT");

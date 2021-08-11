@@ -114,7 +114,7 @@ public class ViewReportActivity extends AppCompatActivity {
     Double OrderTaxCal,  OrderAmtNew,OrderValueTotal,OderDiscount;
     Toolbar toolbar_top;
     LinearLayout  linearLayout;
-//    private Bitmap bitmap;
+    //    private Bitmap bitmap;
     DBController dbController;
     Common_Class mCommon_class;
     @Override
@@ -138,8 +138,8 @@ public class ViewReportActivity extends AppCompatActivity {
         getToolbar();
         //OrderAmt = Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
         //new code start
-       // OrderTax="5%";
-       // OrderAmtNew=Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
+        // OrderTax="5%";
+        // OrderAmtNew=Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
 
 
         //OrderTaxCal=(OrderAmtNew*(5/100.0f))+OrderAmtNew;
@@ -165,15 +165,23 @@ public class ViewReportActivity extends AppCompatActivity {
 
         PayNow = findViewById(R.id.green_btn);
         Delete = findViewById(R.id.red_btn);
+        ImageView ib_logout = findViewById(R.id.ib_logout);
 
         if(Constants.APP_TYPE == 2)
             Delete.setText("Delete");
         else
             Delete.setText("Cancel");
 
-        if(Constants.APP_TYPE == 2 && OrderType.equals("2")){
-            Delete.setText("Edit");
-            Delete.setOnClickListener(new View.OnClickListener() {
+        Delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDeleteDialog();
+            }
+        });
+        if(OrderType.equals("2")){
+            ib_logout.setVisibility(View.VISIBLE);
+            ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.edit));
+            ib_logout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mCommon_class.ProgressdialogShow(1, "");
@@ -193,13 +201,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 }
             });
         }else {
-            Delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showDeleteDialog();
-                }
-            });
-
+            ib_logout.setVisibility(View.GONE);
             PayNow.setText("Pay Now");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -245,10 +247,10 @@ public class ViewReportActivity extends AppCompatActivity {
             js.put("Amount", OrderValueTotal);
             js.put("Attachement", "");
 
-                js.put("PaymentID","");
-                js.put("RazorOrderID", "");
-                js.put("SignatureID", "");
-                js.put("dispatch", "1");
+            js.put("PaymentID","");
+            js.put("RazorOrderID", "");
+            js.put("SignatureID", "");
+            js.put("dispatch", "1");
 
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -265,7 +267,7 @@ public class ViewReportActivity extends AppCompatActivity {
                         //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
                         //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
                         //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
-                        String successMsg = "Payment done successfully";
+                        String successMsg = "Dispatched successfully";
 
                         Toast.makeText(ViewReportActivity.this, successMsg, Toast.LENGTH_SHORT).show();
 
@@ -333,7 +335,7 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        toolHeader.setText(R.string.View_Rep);
+//        toolHeader.setText(R.string.View_Rep);
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
 //        toolSearch.setVisibility(View.GONE);
 
@@ -343,7 +345,7 @@ public class ViewReportActivity extends AppCompatActivity {
         Intent payIntent = new Intent(getApplicationContext(), PaymentDetailsActivity.class);
         payIntent.putExtra("OrderId", productId);
         payIntent.putExtra("Date", orderDate);
-      //  payIntent.putExtra("Amount", OrderAmt);
+        //  payIntent.putExtra("Amount", OrderAmt);
         payIntent.putExtra("Amount", OrderValueTotal);
         startActivityForResult(payIntent, ACTIVITY_REQUEST_CODE);
 
@@ -377,12 +379,12 @@ public class ViewReportActivity extends AppCompatActivity {
                     JSONObject jsonObject = null;
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
-                    //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
+                        //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
                         if(jsonObject.has("OrderVal"))
-                        OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
+                            OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
                         if(jsonObject.has("taxval"))
-                        OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
-                      //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
+                            OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
+                        //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
                         TotalValue.setText("Rs."+jsonObject.getString("OrderVal"));
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
                         Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
