@@ -125,11 +125,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         shared_common_pref = new Shared_Common_Pref(this);
         OrderType = shared_common_pref.getvalue("OrderType");
         Log.v("OrderType", OrderType);
-        TextView toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        if(OrderType.equals("1"))
-            toolHeader.setText("PRIMARY REPORT");
-        else
-            toolHeader.setText("SECONDARY REPORT");
 
         mArrayList = new ArrayList<>();
         txtTotalValue = (TextView) findViewById(R.id.total_value);
@@ -331,7 +326,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        toolHeader.setText("REPORT");
+        if(OrderType.equals("1"))
+            toolHeader.setText("PRIMARY REPORT");
+        else
+            toolHeader.setText("SECONDARY REPORT");
+
+
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
 //        toolSearch.setVisibility(View.GONE);
     }
@@ -356,8 +356,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 List<ReportModel> mDReportModels = new ArrayList<>();
                 if (mReportActivities != null) {
 
-
-
                 if (mReportActivities.getData() != null)
                     mDReportModels = mReportActivities.getData();
                     String ordervalue = "0";
@@ -370,7 +368,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + (int) totalroundoff);
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     Log.e("pay1", ordervalue);
                 } else if (orderTakenByFilter.equalsIgnoreCase("Payment Verified")) {
 
@@ -380,7 +378,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //   txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay11", String.valueOf(mReportActivities.getPaymentVerified()));
                 } else if (orderTakenByFilter.equalsIgnoreCase("Credit Verified")) {
@@ -389,7 +387,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //txtTotalValue.setText("Rs . "+ordervalue);
                     Log.e("pay111", String.valueOf(mReportActivities.getCreditVerified()));
                 } else if (orderTakenByFilter.equalsIgnoreCase("Order Dispatched")) {
@@ -397,7 +395,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     ordervalue = String.valueOf(mReportActivities.getOrderDispatched());
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //  txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay122", String.valueOf(mReportActivities.getOrderDispatched()));
                 } else if (orderTakenByFilter.equalsIgnoreCase("Credit Dispatched")) {
@@ -406,27 +404,27 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay133", mReportActivities.getCreditDispatched());
+                    Log.e("pay133", ""+ordervalue);
                 } else if (orderTakenByFilter.equalsIgnoreCase("Payment Done")) {
                     if(mReportActivities.getPaymentDone()!=null && !mReportActivities.getPaymentDone().equals("0"))
                         ordervalue = String.valueOf(mReportActivities.getPaymentDone());
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay155", String.valueOf(mReportActivities.getPaymentDone()));
+                    Log.e("pay155", ""+ordervalue);
                 } else if (orderTakenByFilter.equalsIgnoreCase("Credit Raised")) {
                     if(mReportActivities.getCreditRaised()!=null && !mReportActivities.getCreditRaised().equals("0"))
                         ordervalue = String.valueOf(mReportActivities.getCreditRaised());
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + String.valueOf(totalroundoff));
+                    txtTotalValue.setText("Rs . " + totalroundoff);
                     //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay15", String.valueOf(mReportActivities.getCreditRaised()));
+                    Log.e("pay15", ""+ ordervalue);
                 } else {
 
                     txtTotalValue.setText("Rs.0");

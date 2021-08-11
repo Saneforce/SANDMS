@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,14 +46,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.saneforce.dms.Adapter.DateReportAdapter;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 
+import com.saneforce.dms.Interface.PrimaryProductDao;
+import com.saneforce.dms.Model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
 import com.saneforce.dms.Utils.ApiClient;
+import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
+import com.saneforce.dms.Utils.PrimaryProductDatabase;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
@@ -64,6 +71,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,7 +114,9 @@ public class ViewReportActivity extends AppCompatActivity {
     Double OrderTaxCal,  OrderAmtNew,OrderValueTotal,OderDiscount;
     Toolbar toolbar_top;
     LinearLayout  linearLayout;
-    private Bitmap bitmap;
+//    private Bitmap bitmap;
+    DBController dbController;
+    Common_Class mCommon_class;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +132,9 @@ public class ViewReportActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
 
         OrderType = shared_common_pref.getvalue("OrderType");
+        dbController = new DBController(this);
+        mCommon_class = new Common_Class(this);
+
         getToolbar();
         //OrderAmt = Double.parseDouble(String.valueOf(getIntent().getSerializableExtra("OderValue")));
         //new code start
@@ -155,8 +168,23 @@ public class ViewReportActivity extends AppCompatActivity {
 
         if(Constants.APP_TYPE == 2)
             Delete.setText("Delete");
+        else
+            Delete.setText("Cancel");
 
         if(Constants.APP_TYPE == 2 && OrderType.equals("2")){
+            Delete.setText("Edit");
+            Delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCommon_class.ProgressdialogShow(1, "");
+                    if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                            !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                        new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                    }else
+                        brandSecondaryApi();
+
+                }
+            });
             PayNow.setText("Dispatch");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,7 +193,13 @@ public class ViewReportActivity extends AppCompatActivity {
                 }
             });
         }else {
-            Delete.setText("Cancel");
+            Delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDeleteDialog();
+                }
+            });
+
             PayNow.setText("Pay Now");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,6 +211,20 @@ public class ViewReportActivity extends AppCompatActivity {
         ViewDateReport();
     }
 
+    private void showDeleteDialog(){
+        AlertDialogBox.showDialog(ViewReportActivity.this, "", "Do you Surely want to delete this order?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                DeleteOrder();
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+    }
 
     public void payOffline() {
         JSONObject js = new JSONObject();
@@ -289,20 +337,6 @@ public class ViewReportActivity extends AppCompatActivity {
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
 //        toolSearch.setVisibility(View.GONE);
 
-    }
-
-    public void Delete(View v) {
-
-        AlertDialogBox.showDialog(ViewReportActivity.this, "", "Do you Surely want to delete this order?", "Yes", "NO", false, new DMS.AlertBox() {
-            @Override
-            public void PositiveMethod(DialogInterface dialog, int id) {
-                DeleteOrder();
-            }
-
-            @Override
-            public void NegativeMethod(DialogInterface dialog, int id) {
-            }
-        });
     }
 
     public void PayNow() {
@@ -579,4 +613,175 @@ public class ViewReportActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     //permision stop
+
+
+    private class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {
+        private PrimaryProductDao contactDao;
+
+
+        public PopulateDbAsyntasks(PrimaryProductDatabase contactDaos) {
+            contactDao = contactDaos.contactDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            PrimaryProductDatabase.getInstance(ViewReportActivity.this).clearAllTables();
+
+            secStart();
+            Log.v("Data_CHeckng", "Checking_data");
+            return null;
+        }
+
+    }
+
+
+    private void secStart() {
+
+        Log.v("Data_CHeckng", "Checking_data");
+
+
+        String sPrimaryProd = dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA);
+        PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
+                .contactDao();
+        try {
+            JSONArray jsonArray = new JSONArray(sPrimaryProd);
+            JSONObject jsonObject = null;
+            JSONObject jsonObject1 = null;
+
+
+
+            String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="", Free_Unit="";
+            int unitQty = 1;
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+
+                String id = String.valueOf(jsonObject.get("id"));
+                String Name = String.valueOf(jsonObject.get("name"));
+                String PName = String.valueOf(jsonObject.get("Pname"));
+                String PRate = String.valueOf(jsonObject.get("Product_Cat_Code"));
+                String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
+                String PId = String.valueOf(jsonObject.get("PID"));
+                String PUOM = String.valueOf(jsonObject.get("UOM"));
+                String PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
+                String PDiscount = String.valueOf(jsonObject.get("Discount"));
+                String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
+                if(jsonObject.has("Conv_Fac"))
+                    unitQty = jsonObject.getInt("Conv_Fac");
+
+//                String PCon_fac = "1";
+//                if(jsonObject.has("Conv_Fac"))
+//                    PCon_fac = jsonObject.getString("Conv_Fac");
+
+                JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
+                JSONArray uomArray = null;
+                if(jsonObject.has("UOMList"))
+                    uomArray = jsonObject.getJSONArray("UOMList");
+
+                List<PrimaryProduct.SchemeProducts> schemeList = new ArrayList<>();
+
+                for (int j = 0; j < jsonArray1.length(); j++) {
+                    try {
+                        jsonObject1 = jsonArray1.getJSONObject(j);
+                        Scheme = String.valueOf(jsonObject1.get("Scheme"));
+                        Discount = String.valueOf(jsonObject1.get("Discount"));
+                        Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
+                        Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
+                        Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
+                        Package = String.valueOf(jsonObject1.get("Package"));
+                        Free = String.valueOf(jsonObject1.get("Free"));
+                        if(jsonObject1.has("Discount_Type"))
+                            Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+
+                        if(jsonObject1.has("Free_Unit"))
+                            Free_Unit = String.valueOf(jsonObject1.get("Free_Unit"));
+
+
+                        Log.v("JSON_Array_SCHEMA",Scheme);
+                        Log.v("JSON_Array_DIS",Discount);
+                        schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                                Product_Code, Package, Free, Discount_Type,Free_Unit ));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                ArrayList<PrimaryProduct.UOMlist> uomList = new ArrayList<>();
+
+                if(uomArray!=null)
+                    for (int j = 0; j < uomArray.length(); j++) {
+                        try {
+                            JSONObject uomObject = uomArray.getJSONObject(j);
+                            String uomId = "", uomProduct_Code = "", uomName = "", uomConQty = "";
+
+                            if(uomObject.has("id"))
+                                uomId = uomObject.getString("id");
+
+                            if(uomObject.has("name"))
+                                uomName = uomObject.getString("name");
+
+                            if(uomObject.has("ConQty"))
+                                uomConQty = uomObject.getString("ConQty");
+
+                            uomList.add(new PrimaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
+                        schemeList,unitQty, uomList));
+
+             /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
+                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));
+         */   }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mCommon_class.ProgressdialogShow(2, "");
+//        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
+
+        Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
+        dashIntent.putExtra("Mode", "0");
+        dashIntent.putExtra("order_type", 2);
+        dashIntent.putExtra("PhoneOrderTypes", 0);
+        startActivity(dashIntent);
+
+    }
+
+
+    public void brandSecondaryApi() {
+
+        String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+
+        Log.v("Product_Request", ca.request().toString());
+        ca.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject jsonObject = response.body();
+                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
+                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
+                JsonArray jProd = jsonArray.getAsJsonArray("Products");
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
+                Log.v("Product_Response", jsonArray.toString());
+
+                new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                mCommon_class.ProgressdialogShow(2, "");
+            }
+        });
+    }
+
+
 }

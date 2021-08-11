@@ -356,7 +356,6 @@
                 <Button
                     style="@style/ButtonStyle"
                     android:id="@+id/red_btn"
-                    android:onClick="Delete"
                     android:text="CANCEL"
                     android:visibility="gone"
                     android:background="@drawable/button_amber"

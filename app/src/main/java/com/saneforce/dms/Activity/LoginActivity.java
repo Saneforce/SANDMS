@@ -31,10 +31,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Interface.ApiInterface;
+import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -216,7 +219,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.v("DMS_REQUEST", gMail.request().toString());
 
         gMail.enqueue(new Callback<JsonObject>() {
-
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.v("DMS_RESPONSE", response.body().toString());
@@ -254,6 +256,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
                 Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_LONG).show();
             }
         });
@@ -346,19 +349,21 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                         shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-
+//                        Constants.addLoginDate(DMSApplication.getApplication());
                         startActivity(intent);
                         finish();
-                        Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
+                        if(jsonObject1.has("Msm"))
+                            Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
                 Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_LONG).show();
             }
         });

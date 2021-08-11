@@ -122,6 +122,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     DBController dbController;
 
     int orderType = 1;
+    int PhoneOrderTypes = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,9 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         TextView toolHeader = (TextView) findViewById(R.id.toolbar_title);
         if(getIntent().hasExtra("order_type"))
             orderType = getIntent().getIntExtra("order_type", 1);
+
+        if(getIntent().hasExtra("PhoneOrderTypes"))
+            PhoneOrderTypes = getIntent().getIntExtra("PhoneOrderTypes", 4);
 
         if(orderType ==2)
             toolHeader.setText("SECONDARY ORDER");
@@ -522,6 +526,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         mIntent.putExtra("list_as_string", jsonCars);
         mIntent.putExtra("GrandTotal", grandTotal.getText().toString());
         mIntent.putExtra("order_type",orderType);
+        mIntent.putExtra("PhoneOrderTypes",PhoneOrderTypes);
         startActivity(mIntent);
 //        startActivityForResult(mIntent,66);
     }

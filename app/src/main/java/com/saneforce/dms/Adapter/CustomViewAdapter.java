@@ -151,6 +151,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
                             @Override
                             public void NegativeMethod(DialogInterface dialog, int id) {
+                                dialog.dismiss();
                             }
                         });
 

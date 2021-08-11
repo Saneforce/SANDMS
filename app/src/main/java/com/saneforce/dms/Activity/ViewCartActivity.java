@@ -13,7 +13,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,13 +42,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.saneforce.dms.Adapter.CustomViewAdapter;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Model.PrimaryProduct;
-import com.saneforce.dms.Model.SecondaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
 import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.PrimaryProductViewModel;
-import com.saneforce.dms.Utils.SecondaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
@@ -58,7 +55,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,11 +98,12 @@ public class ViewCartActivity extends AppCompatActivity {
 //    List<PrimaryProduct> contacts;
 
     int orderType = 1;
+    int PhoneOrderTypes = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_cart);
-        getToolbar();
+
         shared_common_pref = new Shared_Common_Pref(this);
         SF_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         DIVISION_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
@@ -119,6 +116,10 @@ public class ViewCartActivity extends AppCompatActivity {
         if(getIntent().hasExtra("order_type"))
             orderType = getIntent().getIntExtra("order_type", 1);
 
+        if(getIntent().hasExtra("PhoneOrderTypes"))
+            PhoneOrderTypes = getIntent().getIntExtra("PhoneOrderTypes", 4);
+
+        getToolbar();
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
         Log.v("grandtttt", GrandTotal);
         SubTotal=shared_common_pref.getvalue("SubTotal");
@@ -168,10 +169,16 @@ public class ViewCartActivity extends AppCompatActivity {
         btnSubmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(orderType == 1)
-                    SaveProduct(adapter.getData());
-                else
-                    SaveSecondaryProduct(adapter.getData());
+                if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
+                    if(orderType == 1)
+                        SaveProduct(adapter.getData());
+                    else
+                        SaveSecondaryProduct(adapter.getData());
+
+                }else {
+                    Toast.makeText(ViewCartActivity.this, "Please choose Products", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
 
             }
         });
@@ -223,6 +230,7 @@ public class ViewCartActivity extends AppCompatActivity {
         AlertDialogBox.showDialog(ViewCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
             @Override
             public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
                 finish();
 //                        Intent aa=new Intent(ViewCartActivity.this,PrimaryOrderProducts.class);
 //                        aa.putExtra("GrandTotal",GrandTotal);
@@ -335,7 +343,7 @@ public class ViewCartActivity extends AppCompatActivity {
         try {
             dialog.show();
         } catch (WindowManager.BadTokenException e) {
-
+            e.printStackTrace();
         }
         dialog.setCancelable(false);
         dialog.setIndeterminate(false);
@@ -381,7 +389,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
         try {
             stockReportObject.put("Stockist_POB", 0);
-            stockReportObject.put("Super_Stck_code", "'SS96'");
+            stockReportObject.put("Super_Stck_code", null);
             stockReportObject.put("Worked_With", "''");
             stockReportObject.put("location", locationValue);
             stockReportObject.put("geoaddress", "");
@@ -389,13 +397,13 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("superstockistid", "''");
             stockReportObject.put("Stk_Meet_Time", dateTime);
             stockReportObject.put("modified_time", dateTime);
-            stockReportObject.put("orderValue", 5370);
-            stockReportObject.put("Aob", 69);
+            stockReportObject.put("orderValue", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            stockReportObject.put("Aob", null);
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
             stockReportObject.put("f_key", fkeyStock);
             fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
-            stockReportObject.put("PhoneOrderTypes", 1);
+            stockReportObject.put("PhoneOrderTypes", PhoneOrderTypes);
             stockReportObjectArray.put("Activity_Stockist_Report", stockReportObject);
 
 
@@ -404,7 +412,7 @@ public class ViewCartActivity extends AppCompatActivity {
         }
 
         String stockReport = stockReportObjectArray.toString();
-        System.out.println(" Activity_Stockist_Report" + stockReport);
+        System.out.println("Activity_Stockist_Report" + stockReport);
 
         /*Activity_Stk_Sample_Report*/
         JSONArray sampleReportArray = new JSONArray();
@@ -764,7 +772,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
         try {
             stockReportObject.put("Stockist_POB", 0);
-            stockReportObject.put("Super_Stck_code", "'SS96'");
+            stockReportObject.put("Super_Stck_code", null);
             stockReportObject.put("Worked_With", "''");
             stockReportObject.put("location", locationValue);
             stockReportObject.put("geoaddress", "");
@@ -772,13 +780,13 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("superstockistid", "''");
             stockReportObject.put("Stk_Meet_Time", dateTime);
             stockReportObject.put("modified_time", dateTime);
-            stockReportObject.put("orderValue", 5370);
-            stockReportObject.put("Aob", 69);
+            stockReportObject.put("orderValue", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            stockReportObject.put("Aob", null);
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
             stockReportObject.put("f_key", fkeyStock);
             fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
-            stockReportObject.put("PhoneOrderTypes", 1);
+            stockReportObject.put("PhoneOrderTypes", PhoneOrderTypes);
             stockReportObjectArray.put("Activity_Stockist_Report", stockReportObject);
 
 
@@ -813,9 +821,9 @@ public class ViewCartActivity extends AppCompatActivity {
         JSONObject fkeyEcap = new JSONObject();
 
         try {
-            eventCapturesObject.put("imgurl", "'1585714374958.jpg'");
-            eventCapturesObject.put("title", "'Primary capture'");
-            eventCapturesObject.put("remarks", "'Testing for native'");
+            eventCapturesObject.put("imgurl", "''");
+            eventCapturesObject.put("title", "''");
+            eventCapturesObject.put("remarks", "''");
             eventCapturesObject.put("f_key", fkeyEcap);
             fkeyEcap.put("Activity_Report_Code", "Activity_Report_APP");
             eventCapturesArray.put(eventCapturesObject);
@@ -965,7 +973,7 @@ public class ViewCartActivity extends AppCompatActivity {
             JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-            JsonObjtHead.put("order_value", new DecimalFormat("##0.00").format(OrderValue));
+            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             JsonObjtHead.put("sub_tot", 0);
             JsonObjtHead.put("dis_tot", 0);
             JsonObjtHead.put("tax_tot", 0);
@@ -1044,5 +1052,8 @@ public class ViewCartActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 
 }

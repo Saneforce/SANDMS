@@ -121,7 +121,7 @@ try {
 
     BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
     double totalroundoff= bd.doubleValue();
-    holder.txtValue.setText(""+ (int) totalroundoff);
+    holder.txtValue.setText(""+ totalroundoff);
 //    float total = Float.parseFloat(mDate.get(position).getOrderValue());
 //    holder.txtValue.setText(new DecimalFormat("##.##").format(total));
     String reportType=mDate.get(position).getReportType();

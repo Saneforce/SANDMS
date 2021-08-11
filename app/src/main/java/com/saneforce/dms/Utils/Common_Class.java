@@ -362,7 +362,7 @@ public class Common_Class {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody, "24", "MGR");
+        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), "MGR");
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

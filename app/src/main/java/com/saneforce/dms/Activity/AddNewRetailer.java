@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
@@ -226,7 +228,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     public void getRouteDetails() {
         String routeMap = "{\"tableName\":\"vwTown_Master_APP\",\"coloumns\":\"[\\\"town_code as id\\\", \\\"town_name as name\\\",\\\"target\\\",\\\"min_prod\\\",\\\"field_code\\\",\\\"stockist_code\\\"]\",\"where\":\"[\\\"isnull(Town_Activation_Flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
 
         Log.v("KArthic_Retailer", call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
@@ -272,7 +274,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     public void getRouteClass() {
         String routeMap = "{\"tableName\":\"Mas_Doc_Class\",\"coloumns\":\"[\\\"Doc_ClsCode as id\\\", \\\"Doc_ClsSName as name\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -316,7 +318,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     public void getRouteChannel() {
         String routeMap = "{\"tableName\":\"Doctor_Specialty\",\"coloumns\":\"[\\\"Specialty_Code as id\\\", \\\"Specialty_Name as name\\\"]\",\"where\":\"[\\\"isnull(Deactivate_flag,0)=0\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", routeMap);
+        Call<JsonObject> call = apiInterface.retailerClass(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -441,49 +443,52 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         Log.e("TOTAL_VALUE_STRING", totalValueString);
 
 
-        DBController dbController = new DBController(AddNewRetailer.this);
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 0)){
-            mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
-            if(Constants.isInternetAvailable(this)){
-                new Common_Class(this).checkData(dbController,getApplicationContext());
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RetailerType();
-                    }
-                }, 2000);
-            }else{
-                Toast.makeText(AddNewRetailer.this, "New Retailer will be saved in offline", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-        else
-            Toast.makeText(AddNewRetailer.this, "Please try again", Toast.LENGTH_SHORT).show();
-
-
-/*
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        // addNewRetailer
-        Call<JsonObject> call = apiInterface.addNewRetailer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", "MGR", totalValueString);
-
-        Log.v("ADD_NEW_RETAILER", call.request().toString());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                JsonObject jsonObject = response.body();
-                Log.e("Add_Retailer_details", String.valueOf(jsonObject));
-                String success = String.valueOf(jsonObject.get("success"));
-                if (success.equalsIgnoreCase("true")) {
-                    startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
+        if(!Constants.isInternetAvailable(AddNewRetailer.this)){
+            DBController dbController = new DBController(AddNewRetailer.this);
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 0)){
+                mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
+                if(Constants.isInternetAvailable(this)){
+                    new Common_Class(this).checkData(dbController,getApplicationContext());
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RetailerType();
+                        }
+                    }, 2000);
+                }else{
+                    Toast.makeText(DMSApplication.getApplication(), "New Retailer will be saved in offline", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
+            else
+                Toast.makeText(AddNewRetailer.this, "Please try again", Toast.LENGTH_SHORT).show();
+        }else {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            // addNewRetailer
+            Call<JsonObject> call = apiInterface.addNewRetailer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.State_Code) , "MGR", totalValueString);
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-*/
+            Log.v("ADD_NEW_RETAILER", call.request().toString());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    JsonObject jsonObject = response.body();
+                    Log.e("Add_Retailer_details", String.valueOf(jsonObject));
+                    String success = String.valueOf(jsonObject.get("success"));
+                    if (success.equalsIgnoreCase("true")) {
+                        Toast.makeText(DMSApplication.getApplication(), "New Retailer Added Successfully", Toast.LENGTH_SHORT).show();
+                        RetailerType();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+        }
+
+
 
     }
 
@@ -501,7 +506,7 @@ onBackPressed();
     public void RetailerType() {
         String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getRetName(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", RetailerDetails);
+        Call<JsonObject> call = apiInterface.getRetName(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -522,5 +527,6 @@ onBackPressed();
             }
         });
     }
+
 
 }

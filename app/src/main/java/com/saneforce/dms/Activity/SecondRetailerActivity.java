@@ -80,6 +80,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtReamrks, txtMobile, txtMobileTwo, txtDistributor;
 //    SecondaryProductViewModel SecViewModel;
     DBController dbController;
+    int PhoneOrderTypes = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -222,7 +223,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     public void RetailerType() {
         String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "24", RetailerDetails);
+        Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -274,6 +275,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         customDialog.dismiss();
         if (type == 9) {
             txtOrder.setText(myDataset.get(position).getName());
+            if(position ==0)
+                PhoneOrderTypes =1;
+            else
+                PhoneOrderTypes =0;
+
         } else if (type == 10) {
             txtRtNme.setText(myDataset.get(position).getName());
             linRtDetails.setVisibility(View.VISIBLE);
@@ -455,7 +461,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), "15", tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
 
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
@@ -583,7 +589,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
 
-    private class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {
+    public class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {
         private PrimaryProductDao contactDao;
 
 
@@ -716,6 +722,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
         dashIntent.putExtra("Mode", "0");
         dashIntent.putExtra("order_type", 2);
+        dashIntent.putExtra("PhoneOrderTypes", PhoneOrderTypes);
         startActivity(dashIntent);
 
     }

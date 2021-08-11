@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.saneforce.dms.R;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 
@@ -30,20 +31,27 @@ public class SplashScreen extends AppCompatActivity {
 
 
                 LoginType= shared_common_pref.getvalue("Login_details");
+/*
+                if (LoginType.equalsIgnoreCase("Stockist") && Constants.compareCurrentAndLoginDate(SplashScreen.this)) {
+                    shared_common_pref.logoutUser(SplashScreen.this);
 
-                if (LoginType.equalsIgnoreCase("Finance")) {
-                    startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
-                    finish();
-                } else if (LoginType.equalsIgnoreCase("Logistics")) {
-                  startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
-                    finish();
-                } else if (LoginType.equalsIgnoreCase("Stockist")) {
-                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
-                    finish();
-                }else{
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                    finish();
-                }
+                }else{*/
+                    if (LoginType.equalsIgnoreCase("Finance")) {
+                        startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
+                        finish();
+                    } else if (LoginType.equalsIgnoreCase("Logistics")) {
+                        startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+                        finish();
+                    } else if (LoginType.equalsIgnoreCase("Stockist")) {
+                        startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                        finish();
+                    }else{
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    }
+
+//                }
+
 
             }
         }, 2000);

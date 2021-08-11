@@ -265,7 +265,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                         paymentCompleted(true);
 
-                    }
+                    }else
+                        Toast.makeText(PaymentDetailsActivity.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
 
 //                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
@@ -288,10 +289,14 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     t.printStackTrace();
+                    Toast.makeText(PaymentDetailsActivity.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
                 }
             });
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(PaymentDetailsActivity.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -400,13 +405,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST) {
             if (resultCode == RESULT_OK) {
-                finalPath = "/storage/emulated/0";
-                filePath = outputFileUri.getPath();
-                filePath = filePath.substring(1);
-                str = filePath.replaceAll("external_files/Android/data/"+ BuildConfig.APPLICATION_ID+"/cache/", " ");
-                filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-                imgSource.setImageURI(Uri.parse(filePath));
-                getMulipart(filePath);
+                if(outputFileUri!=null){
+                    finalPath = "/storage/emulated/0";
+                    filePath = outputFileUri.getPath();
+                    filePath = filePath.substring(1);
+                    str = filePath.replaceAll("external_files/Android/data/"+ BuildConfig.APPLICATION_ID+"/cache/", " ");
+                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                    imgSource.setImageURI(Uri.parse(filePath));
+                    getMulipart(filePath);
+                }
             }
         }
     }

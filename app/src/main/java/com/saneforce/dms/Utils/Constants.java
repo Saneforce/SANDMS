@@ -2,6 +2,7 @@ package com.saneforce.dms.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -10,13 +11,20 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Model.PrimaryProduct;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -260,6 +268,49 @@ public class Constants {
 
 	}
 
+	public static void addLoginDate(Context context){
+		Date date = new Date();
+		Calendar calendar= Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+		String strDate = dateFormat.format(calendar.getTime());
+		Shared_Common_Pref shared_common_pref = new Shared_Common_Pref(context);
+		shared_common_pref.save(Shared_Common_Pref.LOGIN_DATE, strDate);
 
+	}
+
+
+	public static boolean compareCurrentAndLoginDate(Activity activity){
+		Date date = new Date();
+		Calendar calendar= Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//		String strDate = dateFormat.format(date);
+		Shared_Common_Pref shared_common_pref = new Shared_Common_Pref(activity);
+
+		String loginDate = shared_common_pref.getvalue(Shared_Common_Pref.LOGIN_DATE);
+//		String loginDate = "2021-08-09 12:00:00";
+
+		try {
+			if(loginDate!=null && !loginDate.equals("")){
+				Date date1 = dateFormat.parse(loginDate);
+				Calendar calendar1 =Calendar.getInstance();
+				calendar1.setTime(date1);
+				if(calendar.getTime().compareTo(calendar1.getTime()) > 0){
+					return true;
+				}
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 
 }
