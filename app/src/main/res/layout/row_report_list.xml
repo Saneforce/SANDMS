@@ -1,61 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 <LinearLayout
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:ignore="MissingConstraints"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <LinearLayout
         android:id="@+id/row_report"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:layout_margin="5dp">
 
         <TextView
             android:id="@+id/txt_serial"
-            style="@style/TextStyle"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
             android:text="Sno"
-            android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/C30dp" />
+            android:textSize="12sp"
+            android:textColor="@android:color/black"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:singleLine="true"
+            tools:targetApi="o" />
+
+        <!--  <TextView
+              style="@style/TextStyle"
+              android:text="Sno"
+              android:textSize="@dimen/C12dp"
+              android:layout_width="@dimen/C30dp" />-->
+
 
         <TextView
             android:id="@+id/txt_order"
-            style="@style/TextStyle"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
             android:text="OrderID"
-            android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/C80dp" />
+            android:textSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            tools:targetApi="o" />
+
+        <!--       <TextView
+                   android:id="@+id/txt_order"
+                   style="@style/TextStyle"
+                   android:text="OrderID"
+                   android:textSize="@dimen/C12dp"
+                   android:layout_width="@dimen/C80dp" />-->
 
         <TextView
             android:id="@+id/txt_date"
-            style="@style/TextStyle"
-            android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/C80dp"
-            android:text="OrderDate" />
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
+            android:text="OrderDate"
+            android:textSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            tools:targetApi="o" />
+        <!--  <TextView
+              android:id="@+id/txt_date"
+              style="@style/TextStyle"
+              android:textSize="@dimen/C12dp"
+              android:layout_width="@dimen/C80dp"
+              android:text="OrderDate" />-->
+
+
         <TextView
             android:id="@+id/txt_status"
-            style="@style/TextStyle"
-            android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/C80dp"
-            android:text="Status" />
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            tools:targetApi="o" />
+        <!--   <TextView
+               android:id="@+id/txt_status"
+               style="@style/TextStyle"
+               android:textSize="@dimen/C12dp"
+               android:layout_width="@dimen/C80dp"
+               android:text="Status" />-->
+
         <TextView
             android:id="@+id/txt_total"
-            style="@style/TextStyle"
-            android:layout_width="@dimen/header_width2"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
             android:text="Value"
-            android:textSize="@dimen/C12dp"
-            android:paddingLeft="@dimen/C15dp" />
-
-
+            android:textSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            tools:targetApi="o" />
+        <TextView
+            android:id="@+id/tv_order_type"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:textSize="12sp"
+            android:singleLine="true"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:textColor="@android:color/black"
+            tools:targetApi="o" />
+        <!--  <TextView
+              android:id="@+id/txt_total"
+              style="@style/TextStyle"
+              android:layout_width="@dimen/header_width2"
+              android:text="Value"
+              android:textSize="@dimen/C12dp"
+              android:paddingLeft="@dimen/C15dp" />-->
 
     </LinearLayout>
     <LinearLayout
         android:id="@+id/row_retailer"
-        android:layout_below="@+id/row_report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
@@ -85,5 +167,3 @@
     </LinearLayout>
 
 </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>

@@ -258,7 +258,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String name = jsonObject.get("name").getAsString();
                 String townName = jsonObject.get("ListedDr_Address1").getAsString();
                 String phone = jsonObject.get("Mobile_Number").getAsString();
-                mCommon_model_spinner = new Common_Model(name, id, "flag", townName, phone);
+                String scheme = "0";
+                if(jsonObject.has("scheme"))
+                    scheme = jsonObject.get("scheme").getAsString();
+                mCommon_model_spinner = new Common_Model(name, id, scheme, townName, phone);
                 RetailerType.add(mCommon_model_spinner);
             }
 

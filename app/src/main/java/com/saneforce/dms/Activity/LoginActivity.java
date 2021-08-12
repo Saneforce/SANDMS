@@ -277,6 +277,8 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
                     String san = jsonObject1.getString("success");
+                    if(san.equals("true")){
+
                     shared_common_pref.save("Login_Successfully", san);
                     logintype = jsonObject1.optString("logintype");
                     shared_common_pref.save("Login_details", logintype);
@@ -355,6 +357,10 @@ public class LoginActivity extends AppCompatActivity {
                         if(jsonObject1.has("Msm"))
                             Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
                     }
+                    }else if(jsonObject1.has("Msm"))
+                        Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(LoginActivity.this, "Something went wrong, please try again", Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
                     e.printStackTrace();

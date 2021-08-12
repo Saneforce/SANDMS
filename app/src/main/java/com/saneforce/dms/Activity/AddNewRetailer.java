@@ -86,7 +86,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
 
     private static final int REQUEST_LOCATION = 1;
-    Button btnGetLocation;
+//    Button btnGetLocation;
     LocationManager locationManager;
     String latitude, longitude;
 

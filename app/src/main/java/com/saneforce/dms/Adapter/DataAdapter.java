@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     public void onBindViewHolder(@NonNull FruitViewHolder fruitViewHolder, int i) {
         Common_Model contact = contactListFiltered.get(i);
         fruitViewHolder.mTextName.setText(contact.getName());
+
+        if(contact.getFlag()!=null && contact.getFlag().equals("1"))
+            fruitViewHolder.ll_scheme.setVisibility(View.VISIBLE);
+        else
+            fruitViewHolder.ll_scheme.setVisibility(View.GONE);
     }
 
     @Override
@@ -89,12 +95,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
     public class FruitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTextName, mTextPhone,mTextAddress;
-
+        private LinearLayout ll_scheme;
         public FruitViewHolder(View v) {
             super(v);
             mTextName = v.findViewById(R.id.txt_name);
             mTextPhone = v.findViewById(R.id.txt_phone);
             mTextAddress = v.findViewById(R.id.txt_address);
+            ll_scheme = v.findViewById(R.id.ll_scheme);
             v.setOnClickListener(this);
         }
 

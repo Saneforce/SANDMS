@@ -20,6 +20,30 @@ public class ReportModel {
     @Expose
     private String orderDate;
 
+    @SerializedName("order_type")
+    @Expose
+    private String order_type;
+
+    @SerializedName("conv_qty")
+    @Expose
+    private String conv_qty;
+
+    public String getUnit_qty() {
+        return conv_qty;
+    }
+
+    public void setUnit_qty(String unit_qty) {
+        this.conv_qty = unit_qty;
+    }
+
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
+    }
+
     public String getRetailerName() {
         return retailerName;
     }
