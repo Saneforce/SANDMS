@@ -53,7 +53,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/route" />
+                            android:text="@string/route_star" />
 
                         <LinearLayout
                             android:id="@+id/lin_route"
@@ -74,7 +74,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Name" />
+                            android:text="@string/name_star" />
 
                         <EditText
                             android:id="@+id/edt_new_name"
@@ -91,7 +91,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Address" />
+                            android:text="@string/address_star" />
 
                         <EditText
                             android:id="@+id/edt_new_address"
@@ -107,7 +107,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="City" />
+                            android:text="@string/city_star" />
 
                         <EditText
                             android:id="@+id/edt_new_city"
@@ -124,7 +124,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Phone" />
+                            android:text="@string/phone_star" />
 
                         <EditText
                             android:id="@+id/edt_new_phone"
@@ -142,7 +142,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Email" />
+                            android:text="@string/email_star" />
 
                         <EditText
                             android:id="@+id/edt_new_email"
@@ -159,7 +159,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Latitude" />
+                            android:text="@string/latitude_star" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -178,7 +178,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Longitude" />
+                            android:text="@string/longitude_star" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -198,7 +198,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/retailer_class" />
+                            android:text="@string/retailer_class_star" />
 
                         <LinearLayout
                             android:id="@+id/linear_retailer_class"
@@ -219,7 +219,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/retailer_channel" />
+                            android:text="@string/retailer_channel_star" />
 
                         <LinearLayout
                             android:id="@+id/linear_retailer_channel"

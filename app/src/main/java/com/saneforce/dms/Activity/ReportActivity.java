@@ -107,7 +107,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     LinearLayout totalLayout;
     ImageView filter;
 
-    List<ReportModel> mDReportModels = new ArrayList<>();
+//    List<ReportModel> mDReportModels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,16 +227,25 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         linearOrderMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               OrderStatusList=new ArrayList<>();
                 modeOrderData.clear();
+
+                OrderStatusList=new ArrayList<>();
                 OrderStatusList.add("All");
-               OrderStatusList.add("Payment Pending");
-               OrderStatusList.add("Order Dispatched");
-               OrderStatusList.add("Payment Verified");
-               OrderStatusList.add("Payment Done");
-                OrderStatusList.add("Credit Raised");
-                OrderStatusList.add("Credit Verified");
-                OrderStatusList.add("Credit Dispatched");
+                OrderStatusList.add("Order Dispatched");
+
+                if(OrderType.equals("2")){
+                    OrderStatusList.add("Order Pending");
+
+                }else {
+                    OrderStatusList.add("Payment Pending");
+                    OrderStatusList.add("Payment Verified");
+                    OrderStatusList.add("Payment Done");
+                    OrderStatusList.add("Credit Raised");
+                    OrderStatusList.add("Credit Verified");
+                    OrderStatusList.add("Credit Dispatched");
+
+                }
+
                 for (int i = 0; i < OrderStatusList.size(); i++) {
                     String id = String.valueOf(OrderStatusList.get(i));
                     String name = OrderStatusList.get(i);
@@ -254,9 +263,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         });
 
 
-
-
-
     }
 
     @Override
@@ -267,7 +273,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     /*Toolbar*/
     public void getToolbar() {
-        filter= (ImageView) findViewById(R.id.toolbar_filter);
+        /*filter= (ImageView) findViewById(R.id.toolbar_filter);
         filter.setVisibility(View.VISIBLE);
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,7 +302,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
                 customDialog.show();
             }
-        });
+        });*/
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgShare=findViewById(R.id.toolbar_share);
@@ -346,7 +352,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         } else {
             responseBodyCall = apiInterface.reportValues("get/secviewreport", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
         }
-        Log.v("Request_cal", responseBodyCall.request().toString());
+//        Log.v("Request_cal", responseBodyCall.request().toString());
         responseBodyCall.enqueue(new Callback<ReportDataList>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -536,13 +542,14 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
               //  Log.e("Total_Value", String.valueOf(intSum));
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, mDReportModels, new DMS.ViewReport() {
                     @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue) {//,String TaxValue,String Tax
+                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType) {//,String TaxValue,String Tax
                         Intent intnet = new Intent(ReportActivity.this, ViewReportActivity.class);
                         intnet.putExtra("ProductID", productId);
                         intnet.putExtra("OrderDate", orderDate);
                         intnet.putExtra("FromDate", fromBtn.getText().toString());
                         intnet.putExtra("ToDate", toBtn.getText().toString());
                         intnet.putExtra("OderValue", OrderValue);
+                        intnet.putExtra("orderType", orderType);
 
                         startActivity(intnet);
                         //  finish();

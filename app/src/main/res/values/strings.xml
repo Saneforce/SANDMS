@@ -19,6 +19,16 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="head_quater">Headquaters</string>
     <string name="route">Route  </string>
+    <string name="route_star">Route <font color='#F44336'>*</font></string>
+    <string name="name_star">Name <font color='#F44336'>*</font></string>
+    <string name="address_star">Address <font color='#F44336'>*</font></string>
+    <string name="city_star">City <font color='#F44336'>*</font></string>
+    <string name="phone_star">Phone <font color='#F44336'>*</font></string>
+    <string name="email_star">Email <font color='#F44336'>*</font></string>
+    <string name="latitude_star">Latitude <font color='#F44336'>*</font></string>
+    <string name="longitude_star">Longitude <font color='#F44336'>*</font></string>
+    <string name="retailer_class_star">Retailer Class <font color='#F44336'>*</font></string>
+    <string name="retailer_channel_star">Retailer Channel <font color='#F44336'>*</font></string>
     <string name="retailer">Name </string>
     <string name="retailer_add"> Address </string>
     <string name="payment">Payment Type </string>

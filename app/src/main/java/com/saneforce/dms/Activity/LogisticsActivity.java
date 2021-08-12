@@ -28,6 +28,14 @@ public class LogisticsActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
         ib_logout.setVisibility(View.VISIBLE);
+        ImageView toolbar_back = findViewById(R.id.toolbar_back);
+        toolbar_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         ib_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,5 +52,10 @@ public class LogisticsActivity extends AppCompatActivity {
 
     public void Confrimed(View v) {
         startActivity(new Intent(LogisticsActivity.this, DispatchCreditedActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

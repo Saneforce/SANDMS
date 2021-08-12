@@ -117,6 +117,10 @@ public class ViewReportActivity extends AppCompatActivity {
     //    private Bitmap bitmap;
     DBController dbController;
     Common_Class mCommon_class;
+    JSONArray jsonArray;
+    TextView tv_order_type;
+    LinearLayout ll_order_type;
+    String orderType = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +128,8 @@ public class ViewReportActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
 
         toolbar_top=findViewById(R.id.toolbar_top);
+        tv_order_type=findViewById(R.id.tv_order_type);
+        ll_order_type=findViewById(R.id.ll_order_type);
         toolbar_top.setVisibility(View.VISIBLE);
 
 
@@ -153,6 +159,13 @@ public class ViewReportActivity extends AppCompatActivity {
         orderDate = intent.getStringExtra("OrderDate");
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
+        if(intent.hasExtra("orderType") && intent.getStringExtra("orderType")!=null){
+            ll_order_type.setVisibility(View.VISIBLE);
+            orderType = intent.getStringExtra("orderType");
+            tv_order_type.setText(orderType);
+        }else {
+            ll_order_type.setVisibility(View.GONE);
+        }
 
 
         DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
@@ -375,7 +388,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 try {
                     jsonRootObject = new JSONObject(response.body().toString());
                     Log.v("ViewDateResponse", jsonRootObject.toString());
-                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                    jsonArray = jsonRootObject.optJSONArray("Data");
                     JSONObject jsonObject = null;
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -409,6 +422,7 @@ public class ViewReportActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 t.printStackTrace();
+                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again",Toast.LENGTH_SHORT ).show();
             }
         });
     }
@@ -656,6 +670,8 @@ public class ViewReportActivity extends AppCompatActivity {
             int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
+                String qty = "0";
+
                 jsonObject = jsonArray.getJSONObject(i);
 
                 String id = String.valueOf(jsonObject.get("id"));
@@ -732,9 +748,9 @@ public class ViewReportActivity extends AppCompatActivity {
                         }
 
                     }
-
+                    qty = getQty(PId);
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
+                        PSaleUnit, PDiscount, PTaxValue, qty, qty, "0", "0", "0",
                         schemeList,unitQty, uomList));
 
              /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
@@ -753,6 +769,26 @@ public class ViewReportActivity extends AppCompatActivity {
         dashIntent.putExtra("PhoneOrderTypes", 0);
         startActivity(dashIntent);
 
+    }
+
+    private String getQty(String pId) {
+        String qty = "0";
+        if(jsonArray!=null && jsonArray.length()>0){
+            for(int i = 0; i< jsonArray.length(); i++){
+                try {
+                    if(jsonArray.getJSONObject(i).getString("PID").equals(pId)){
+                        qty = jsonArray.getJSONObject(i).getString("PID");
+                        break;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        return qty;
     }
 
 

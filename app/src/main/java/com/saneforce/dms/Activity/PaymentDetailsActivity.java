@@ -92,6 +92,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     LinearLayout ll_date;
     TextView tv_date;
+
+    LinearLayout ll_amount;
+    EditText et_amount;
     String currentDate ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
         offlineMode = findViewById(R.id.txt_offline_mode);
         ll_date = findViewById(R.id.ll_date);
         tv_date = findViewById(R.id.tv_date);
+        ll_amount = findViewById(R.id.ll_amount);
+        et_amount = findViewById(R.id.et_amount);
+
         getOfflineMode();
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
@@ -116,6 +122,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         productId.setText(OrderIDValue);
         productDate.setText(DateValue);
         productAmt.setText(AmountValue);
+        et_amount.setText(AmountValue);
 
         RadioButton rbOnline = findViewById(R.id.online);
         RadioButton rbCredit = findViewById(R.id.cred);
@@ -279,6 +286,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
             js.put("dispatch", "0");
+            js.put("cheque_date", tv_date.getText().toString());
+            js.put("cheque_amount", et_amount.getText().toString());
             if (PaymntMode.equalsIgnoreCase("Online")) {
                 js.put("PaymentID",razorid);
                 js.put("RazorOrderID", responseid);
@@ -470,10 +479,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
         if (type == 10) {
             offlineMode.setText(myDataset.get(position).getName());
             PaymentTypecode = myDataset.get(position).getId();
-            if(myDataset.get(position).getName().equalsIgnoreCase("Cheque"))
+            if(myDataset.get(position).getName().equalsIgnoreCase("Cheque")){
+                ll_amount.setVisibility(View.VISIBLE);
                 ll_date.setVisibility(View.VISIBLE);
-            else
+            }
+            else{
+                ll_amount.setVisibility(View.GONE);
                 ll_date.setVisibility(View.GONE);
+
+            }
         }
     }
 

@@ -152,43 +152,141 @@
                     <LinearLayout
                         android:id="@+id/headingLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
 
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:text="Sno"
+                            android:textSize="12sp"
+                            android:textColor="@android:color/black"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textStyle="bold"
+                            tools:targetApi="o" />
+                       <!--
                         <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/C30dp"
                             android:text="Sno"
                             android:textSize="@dimen/C12dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold" />-->
+
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="wrap_content"
+                            android:text="OrderID"
+                            android:textSize="12sp"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold"
+                            tools:targetApi="o" />
+
+
+<!--                        <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/C80dp"
                             android:text="OrderID"
                             android:textSize="@dimen/C12dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold" />-->
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="wrap_content"
+                            android:text="OrderDate"
+                            android:textSize="12sp"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textColor="@android:color/black"
+                            tools:targetApi="o"
+                            android:textStyle="bold"/>
+
+<!--                        <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/C80dp"
                             android:text="OrderDate"
                             android:textSize="@dimen/C12dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold" />-->
+
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="wrap_content"
+                            android:text="Status"
+                            android:textSize="12sp"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textColor="@android:color/black"
+                            tools:targetApi="o"
+                            android:textStyle="bold"/>
+
+<!--                        <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/C80dp"
                             android:text="Status"
                             android:textSize="@dimen/C12dp"
+                            android:textStyle="bold" />-->
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.3"
+                            android:layout_height="wrap_content"
+                            android:text="Value"
+                            android:textSize="12sp"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textColor="@android:color/black"
+                            tools:targetApi="o"
                             android:textStyle="bold" />
 
+<!--
                         <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/header_width2"
                             android:paddingLeft="@dimen/C15dp"
                             android:text="Value"
                             android:textSize="@dimen/C12dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold" />-->
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:layout_height="wrap_content"
+                            android:text="Type"
+                            android:textSize="12sp"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:textColor="@android:color/black"
+                            tools:targetApi="o"
+                            android:textStyle="bold"/>
+
+                       <!-- <TextView
+                            style="@style/TextStyle"
+                            android:layout_width="@dimen/header_width2"
+                            android:paddingLeft="@dimen/C15dp"
+                            android:text="Type"
+                            android:textSize="@dimen/C12dp"
+                            android:textStyle="bold" />-->
 
                     </LinearLayout>
 

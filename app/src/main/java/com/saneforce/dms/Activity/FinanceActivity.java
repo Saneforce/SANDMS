@@ -28,6 +28,13 @@ public class FinanceActivity extends AppCompatActivity {
     private void initViews() {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
+        ImageView toolbar_back = findViewById(R.id.toolbar_back);
+        toolbar_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         ib_logout.setVisibility(View.VISIBLE);
         ib_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,5 +52,10 @@ public class FinanceActivity extends AppCompatActivity {
 
     public void VerifiedPayment(View v) {
         startActivity(new Intent(FinanceActivity.this, PaymentVerified.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

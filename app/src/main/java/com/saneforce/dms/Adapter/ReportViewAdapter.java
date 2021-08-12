@@ -41,12 +41,12 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem = layoutInflater.inflate(R.layout.row_report_list, null, false);
-        listItem.setOnClickListener(new View.OnClickListener() {
+       /* listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewReport.reportCliick(produtId, productDate,OrderValue);
             }
-        });
+        });*/
         return new MyViewHolder(listItem);
     }
 
@@ -55,6 +55,13 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
 try {
    double totalvalue=0.0;
     String reportType=mDate.get(position).getReportType();
+
+    String orderType = "F";
+    if(mDate.get(position).getOrder_type().equals("1"))
+        orderType = "P";
+
+    holder.tv_order_type.setText(orderType);
+
     if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
             OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
         holder.txtsNo.setText(mDate.get(position).getSlno());
@@ -139,7 +146,7 @@ try {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName;
+        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
         LinearLayout linearLayout,linearLayoutTakenby;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -153,14 +160,13 @@ try {
            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
             txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
             txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
+            tv_order_type=itemView.findViewById(R.id.tv_order_type);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue());
-
-
+            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type());
         }
     }
 }

@@ -2,17 +2,11 @@ package com.saneforce.dms.Utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.saneforce.dms.DMSApplication;
-import com.saneforce.dms.Model.PrimaryProduct;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
