@@ -2,6 +2,7 @@ package com.saneforce.dms.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -11,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.saneforce.dms.Interface.ApiInterface;
@@ -68,7 +72,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
 
-      getToolbar();
+       getToolbar();
 
         ResponseDetails();
     }
@@ -84,7 +88,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
                 JSONObject jsonObject1;
-                Shared_Common_Pref shared_common_pref;
+//                Shared_Common_Pref shared_common_pref;
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
 
@@ -113,12 +117,6 @@ public class DispatchEditActivtity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
-
-
-
-
-
-
 
 
     }
@@ -246,41 +244,96 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
             holder.orderID.setText("" + jsonObject.get("Product_Name"));
             holder.orderDistributor.setText("" + jsonObject.get("Unit"));
 
-            Log.v("JSONDETIAILS", String.valueOf(jsonObject.get("Product_Name")));
            // holder.orderValue.setFilters(new InputFilter[]{new InputFilterMinMax("1", CQty)});
 //            holder.orderValue.setText(s.toString());
             isAllowedToChange = true;
 
             holder.orderValue.setFilters(new InputFilter[]{ new InputFilterMinMax("0", String.valueOf(oldValue))});
-
+            String oldAmt = "";
             if(!jsonObject.has("tempOldCQty") || jsonObject.getString("tempOldCQty")==null || jsonObject.getString("tempOldCQty").equals("")){
-                holder.orderValue.setText(String.valueOf(oldValue));
+                oldAmt =String.valueOf(oldValue);
             }else {
-                holder.orderValue.setText(jsonObject.getString("tempOldCQty"));
+                oldAmt = jsonObject.getString("tempOldCQty");
             }
 
+            if(!jsonObject.isNull("SchemeAvail") && !jsonObject.getString("SchemeAvail").equalsIgnoreCase("No")){
 
-            holder.orderValue.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                holder.orderValue.setVisibility(View.GONE);
+                holder.linear_add.setVisibility(View.VISIBLE);
+                holder.tv_qty_value.setText(oldAmt);
+
+                String free = "0";
+                if(jsonObject.has("Free"))
+                    free = jsonObject.getString("Free");
+
+                holder.tv_free_value.setText(free);
+
+                String dis = "0";
+                if(jsonObject.has("discount_price"))
+                    dis = jsonObject.getString("discount_price");
+
+                holder.tv_disc_amt_value.setText(dis);
 
 
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String OrderVal=s.toString();
-                    long  newValue = 0;
-                    if(!s.toString().equals("")){
-                        newValue = Long.parseLong(OrderVal);
-                        isAllowedToChange = newValue < oldValue;
-                       /* if(!isAllowedToChange){
-                            Toast.makeText(context,"Please select quantity equal or below original value",Toast.LENGTH_SHORT).show();
-                        }*/
+                holder.martl_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(holder.text_checking.getText().toString().equalsIgnoreCase("Postpone"))
+                        {
+                            holder.text_checking.setText("Postponed");
+                        try {
+                                jsonObject.put("postponed", true);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                    }else
-                        isAllowedToChange = false;
+                            holder.text_checking.setTextColor(context.getResources().getColor(R.color.textColor));
+                            holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.postponed));
+                            holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.postponed));
 
-                    if(isAllowedToChange) {
+                        }else {
+                            holder.text_checking.setText("Postpone");
+                            try {
+                                jsonObject.put("postponed", false);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            holder.text_checking.setTextColor(context.getResources().getColor(R.color.black));
+                            holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.textColor));
+                            holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.black));
+
+                        }
+
+                    }
+                });
+
+            }else {
+                holder.orderValue.setVisibility(View.VISIBLE);
+                holder.linear_add.setVisibility(View.GONE);
+                holder.orderValue.setText(oldAmt);
+
+
+                holder.orderValue.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        String OrderVal=s.toString();
+                        long  newValue = 0;
+                        if(!s.toString().equals("")){
+                            newValue = Long.parseLong(OrderVal);
+                            isAllowedToChange = newValue < oldValue;
+                           /* if(!isAllowedToChange){
+                                Toast.makeText(context,"Please select quantity equal or below original value",Toast.LENGTH_SHORT).show();
+                            }*/
+
+                        }else
+                            isAllowedToChange = false;
+
+                        if(isAllowedToChange) {
                             try {
 
                                 JSONObject jsonObject = jsonArray.getJSONObject(position);
@@ -307,23 +360,24 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
 
                                 jsonArray.put(position, jsonObject);
                                 holder.orderValue.setSelection(holder.orderValue.getText().length());
-//                            notifyItemChanged(position);
+    //                            notifyItemChanged(position);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
+                        }
+
                     }
 
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    Log.d("afterTextChanged", "afterTextChanged: "+ s);
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        Log.d("afterTextChanged", "afterTextChanged: "+ s);
 
 
-                }
-            });
+                    }
+                });
 
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -338,13 +392,27 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView orderID, orderDate, orderDistributor, orderStatus;
         EditText orderValue;
-        CardView martl_view;
+//        CardView martl_view;
+
+
+        LinearLayout linear_add;
+        TextView tv_qty_value, tv_free_value, tv_disc_amt_value;
+
+        MaterialCardView martl_view;
+        TextView text_checking;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             orderID = itemView.findViewById(R.id.child_product_name);
             orderDistributor = itemView.findViewById(R.id.child_pro_unit);
             orderValue = itemView.findViewById(R.id.text_view_count);
+            linear_add = itemView.findViewById(R.id.linear_add);
+            tv_qty_value = itemView.findViewById(R.id.tv_qty_value);
+            tv_free_value = itemView.findViewById(R.id.tv_free_value);
+            tv_disc_amt_value = itemView.findViewById(R.id.tv_disc_amt_value);
+            martl_view = itemView.findViewById(R.id.martl_view);
+            text_checking = itemView.findViewById(R.id.text_checking);
         }
     }
     public boolean isAnythingChanged(){
@@ -366,18 +434,32 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
         for(int i = 0; i< jsonArray.length(); i++){
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if(jsonObject.isNull("postponed") || !jsonObject.getBoolean("postponed")){
+                    if(!jsonObject.isNull("tempOldCQty"))
+                        jsonObject.put("OldCQty", jsonObject.getLong("tempOldCQty"));
 
-                if(!jsonObject.isNull("tempOldCQty"))
-                    jsonObject.put("OldCQty", jsonObject.getLong("tempOldCQty"));
+                    if(!jsonObject.isNull("tempNewvalue"))
+                        jsonObject.put("Newvalue", jsonObject.getLong("tempNewvalue"));
 
-                if(!jsonObject.isNull("tempNewvalue"))
-                    jsonObject.put("Newvalue", jsonObject.getLong("tempNewvalue"));
+                    if(!jsonObject.isNull("tempOldvalue"))
+                        jsonObject.put("Oldvalue", jsonObject.getLong("tempOldvalue"));
 
-                if(!jsonObject.isNull("tempOldvalue"))
-                    jsonObject.put("Oldvalue", jsonObject.getLong("tempOldvalue"));
+                    if(!jsonObject.isNull("tempnewCQty"))
+                        jsonObject.put("newCQty", jsonObject.getLong("tempnewCQty"));
+                }else {
 
-                if(!jsonObject.isNull("tempnewCQty"))
-                    jsonObject.put("newCQty", jsonObject.getLong("tempnewCQty"));
+
+                    if(!jsonObject.isNull("Oldvalue"))
+                        jsonObject.put("Newvalue", jsonObject.getLong("Oldvalue"));
+
+                    if(!jsonObject.isNull("OldCQty"))
+                        jsonObject.put("newCQty", jsonObject.getLong("OldCQty"));
+
+                        jsonObject.put("OldCQty", 0);
+
+                        jsonObject.put("Oldvalue", 0);
+
+                }
 
                     jsonArray.put(i,jsonObject);
 

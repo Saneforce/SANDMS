@@ -139,6 +139,7 @@
                             android:text="SCH Enrollment" />
 
                         <TextView
+                            android:id="@+id/tv_sch_enrollment"
                             style="@style/TextStyle"
                             android:layout_alignParentEnd="true"
                             android:text="-" />
@@ -193,7 +194,7 @@
                             android:text="-" />
                     </RelativeLayout>
 
-                    <RelativeLayout
+            <!--        <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C4dp">
@@ -207,7 +208,7 @@
                             android:id="@+id/txt_distributor"
                             style="@style/TextStyle"
                             android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -252,7 +253,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp"
-                        android:visibility="gone"></ListView>
+                        android:visibility="gone"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -261,7 +262,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Last Visisted" />
+                            android:text="Last Visited" />
 
                         <TextView
                             android:id="@+id/txt_last_visited"
@@ -271,7 +272,7 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout
+                 <!--   <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp">
@@ -286,7 +287,7 @@
                             android:layout_alignParentEnd="true"
                             android:text="-" />
 
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -305,7 +306,7 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout
+                 <!--   <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp">
@@ -320,7 +321,7 @@
                             android:layout_alignParentEnd="true"
                             android:text="-" />
 
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                 </LinearLayout>
 

@@ -31,9 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Interface.ApiInterface;
-import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
@@ -99,8 +97,10 @@ public class LoginActivity extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                NamePassword(edtEmail.getText().toString(), edtPass.getText().toString());
+                if(!Constants.isInternetAvailable(LoginActivity.this))
+                    Toast.makeText(LoginActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+                else
+                    login(edtEmail.getText().toString(), edtPass.getText().toString());
             }
         });
     }
@@ -264,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /*User Name and Password*/
-    public void NamePassword(String email, String Pass) {
+    public void login(String email, String Pass) {
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> gMail = apiInterface.userLogin(email, Pass);

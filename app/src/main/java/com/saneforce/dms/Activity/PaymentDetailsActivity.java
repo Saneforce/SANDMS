@@ -134,6 +134,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
             rbOffline.setChecked(true);
             PaymntMode = "Offline";
             offView.setVisibility(View.VISIBLE);
+
+            ll_amount.setVisibility(View.VISIBLE);
+            ll_date.setVisibility(View.VISIBLE);
+
+
+
         }else {
             rbOnline.setVisibility(View.VISIBLE);
             rbCredit.setVisibility(View.VISIBLE);
@@ -149,12 +155,23 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     offView.setVisibility(View.GONE);
                     PaymntMode = "Online";
 
+                    ll_amount.setVisibility(View.GONE);
+                    ll_date.setVisibility(View.GONE);
+
                 } else if (checkedId == R.id.offline) {
                     offView.setVisibility(View.VISIBLE);
                     PaymntMode = "Offline";
+
+                    ll_amount.setVisibility(View.VISIBLE);
+                    ll_date.setVisibility(View.VISIBLE);
+
                 } else if (checkedId == R.id.cred) {
                     PaymntMode = "Credit";
                     offView.setVisibility(View.GONE);
+
+                    ll_amount.setVisibility(View.GONE);
+                    ll_date.setVisibility(View.GONE);
+
                 }
             }
         });
@@ -286,8 +303,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
             js.put("dispatch", "0");
-            js.put("cheque_date", tv_date.getText().toString());
-            js.put("cheque_amount", et_amount.getText().toString());
+            if(PaymntMode.equalsIgnoreCase("Offline")){
+                js.put("cheque_date", tv_date.getText().toString());
+                js.put("cheque_amount", et_amount.getText().toString());
+            }else {
+                js.put("cheque_date", "");
+                js.put("cheque_amount", "");
+            }
             if (PaymntMode.equalsIgnoreCase("Online")) {
                 js.put("PaymentID",razorid);
                 js.put("RazorOrderID", responseid);
@@ -303,7 +325,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
             responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
             Log.v("Payment_Request", responseBodyCall.request().toString());
             responseBodyCall.enqueue(new Callback<JsonObject>() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     JsonObject jsonObject = response.body();
@@ -479,15 +500,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         if (type == 10) {
             offlineMode.setText(myDataset.get(position).getName());
             PaymentTypecode = myDataset.get(position).getId();
-            if(myDataset.get(position).getName().equalsIgnoreCase("Cheque")){
-                ll_amount.setVisibility(View.VISIBLE);
-                ll_date.setVisibility(View.VISIBLE);
-            }
-            else{
-                ll_amount.setVisibility(View.GONE);
-                ll_date.setVisibility(View.GONE);
 
-            }
         }
     }
 

@@ -77,10 +77,12 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     LocationManager locationManager;
     String latitude, longitude;
     Common_Class mCommon_class;
-    TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtReamrks, txtMobile, txtMobileTwo, txtDistributor;
+    TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtMobile;
+//    , txtReamrks, txtDistributor, txtMobileTwo
 //    SecondaryProductViewModel SecViewModel;
     DBController dbController;
     int PhoneOrderTypes = -1;
+    TextView tv_sch_enrollment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +97,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         txtModelOrderValue = findViewById(R.id.model_order_vlaue);
         txtLastVisited = findViewById(R.id.txt_last_visited);
         txtLastOrderAmount = findViewById(R.id.txt_last_order_amount);
-        txtReamrks = findViewById(R.id.txt_remarks);
+//        txtReamrks = findViewById(R.id.txt_remarks);
         txtMobile = findViewById(R.id.txt_mobile);
-        txtMobileTwo = findViewById(R.id.txt_mobile2);
-        txtDistributor = findViewById(R.id.txt_distributor);
+        tv_sch_enrollment = findViewById(R.id.tv_sch_enrollment);
+//        txtMobileTwo = findViewById(R.id.txt_mobile2);
+//        txtDistributor = findViewById(R.id.txt_distributor);
         shared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
         dbController = new DBController(this);
@@ -113,7 +116,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
         }*/
 
-        TextView toolHeader = (TextView) findViewById(R.id.toolbar_title);
+        TextView toolHeader = findViewById(R.id.toolbar_title);
             toolHeader.setText("Select Retailer");
         ImageView imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
@@ -317,14 +320,70 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                JsonObject jsonObject = response.body();
-                if(jsonObject!=null){
-                    Log.v("Retailer_Details", jsonObject.toString());
-                    if(jsonObject.has("DrSpl"))
-                    txtRetailerChannel.setText(jsonObject.get("DrSpl").getAsString());
-                    if(jsonObject.has("DrCat"))
-                    txtClass.setText(jsonObject.get("DrCat").getAsString());
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response.body().toString());
 
+                        Log.v("Retailer_Details", jsonObject.toString());
+                        String channel = "";
+                        if(jsonObject.has("DrSpl"))
+                            channel = jsonObject.getString("DrSpl");
+                        txtRetailerChannel.setText(channel);
+
+                        String retailerClass = "";
+                        if(jsonObject.has("DrCat"))
+                            retailerClass = jsonObject.getString("DrCat");
+                        txtClass.setText(retailerClass);
+
+
+                        double total = 0;
+                        if(!jsonObject.isNull("MOV")){
+                            JSONArray jsonArray = jsonObject.getJSONArray("MOV");
+                            for(int i = 0; i< jsonArray.length(); i++){
+                                try {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    if(!jsonObject1.isNull("MorderSum"))
+                                    total += jsonObject1.getDouble("MorderSum");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        txtModelOrderValue.setText(String.valueOf(total));
+
+                        String scheme = "-";
+                        if(jsonObject.has("scheme"))
+                            scheme = jsonObject.getString("scheme");
+                        tv_sch_enrollment.setText(scheme);
+
+                        String lastOrderAmt = "-";
+                        if(jsonObject.has("LastorderAmount"))
+                            lastOrderAmt = jsonObject.getString("LastorderAmount");
+                        txtLastOrderAmount.setText(lastOrderAmt);
+
+                        String lastVisit = "-";
+                        if(jsonObject.has("lastVisit"))
+                            lastVisit = jsonObject.getString("lastVisit");
+                        txtLastVisited.setText(lastVisit);
+
+                        String mob1 = "-";
+//                        String mob2 = "";
+                        if( !jsonObject.isNull("POTENTIAL") && jsonObject.getJSONArray("POTENTIAL").length() > 0){
+
+                            if(jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone")!=null){
+                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone");
+                            }
+
+                            if((mob1.equals("-") || mob1.equals("null")) && jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile")!=null){
+                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile");
+                            }
+                        }
+                    txtMobile.setText(mob1);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -552,7 +611,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             Log.v("JS_VALUE", js.toString());
 
             if(!Constants.isInternetAvailable(this)){
-                if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 1)){
+                if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
                     mCommon_class.ProgressdialogShow(2, "");
                     Toast.makeText(DMSApplication.getApplication(), "No Order call will be saved in offline", Toast.LENGTH_SHORT).show();
                     finish();

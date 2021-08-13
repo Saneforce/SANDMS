@@ -27,13 +27,15 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     String OrderValue;
     String OrderTakenbyFilter;
     TextView textTotalValue;
+    String orderType;
 
-    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue ) {
+    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue, String orderType) {
         this.context = context;
         this.mDate = mDate;
         this.mViewReport = mViewReport;
         this.OrderTakenbyFilter=ordertakenbyFilter;
         this.textTotalValue=textTotalValue;
+        this.orderType=orderType;
     }
 
     @NonNull
@@ -52,37 +54,44 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-try {
-   double totalvalue=0.0;
-    String reportType=mDate.get(position).getReportType();
+        try {
+            double totalvalue=0.0;
+            String reportType=mDate.get(position).getReportType();
 
-    String orderType = "F";
-    if(mDate.get(position).getOrder_type().equals("1"))
-        orderType = "P";
+            String orderType = "F";
+            if(mDate.get(position).getOrder_type().equals("1"))
+                orderType = "P";
 
-    holder.tv_order_type.setText(orderType);
+            if(this.orderType.equals("1")){
+                holder.tv_order_type.setVisibility(View.GONE);
+            }
+            else{
+                holder.tv_order_type.setText(orderType);
+                holder.tv_order_type.setVisibility(View.VISIBLE);
+            }
 
-    if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
-            OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
-        holder.txtsNo.setText(mDate.get(position).getSlno());
-        holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
-        holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-        holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-        holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+
+            if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
+                    OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
+                holder.txtsNo.setText(mDate.get(position).getSlno());
+                holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
+                holder.txtOrderID.setText(mDate.get(position).getOrderNo());
+                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
+                holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
 //        if(mDate.get(position).getOrderStatus().equalsIgnoreCase())
 
-        double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
 //textTotalValue.setText(String.valueOf(totalfin));
-        if(reportType.equals("Secondary")) {
-            holder.txtRetailerName.setVisibility(View.VISIBLE);
-            holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
-        }
+                if(reportType.equals("Secondary")) {
+                    holder.txtRetailerName.setVisibility(View.VISIBLE);
+                    holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+                }
 
-        float total = Float.parseFloat(mDate.get(position).getOrderValue());
+                float total = Float.parseFloat(mDate.get(position).getOrderValue());
 
-        BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
-        double totalroundoff= bd.doubleValue();
-        holder.txtValue.setText(String.valueOf( totalroundoff));
+                BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+                double totalroundoff= bd.doubleValue();
+                holder.txtValue.setText(String.valueOf( totalroundoff));
      /*   holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
 
@@ -91,53 +100,53 @@ try {
         });
 */
 
-    } else if (OrderTakenbyFilter.equals("All")) {
-        holder.txtsNo.setText(mDate.get(position).getSlno());
-        holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
-        holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-        holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-        holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
-        double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
-       // textTotalValue.setText(String.valueOf(totalfin));
+            } else if (OrderTakenbyFilter.equals("All")) {
+                holder.txtsNo.setText(mDate.get(position).getSlno());
+                holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
+                holder.txtOrderID.setText(mDate.get(position).getOrderNo());
+                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
+                holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+                // textTotalValue.setText(String.valueOf(totalfin));
 
 
 
-        if(reportType.equals("Secondary")) {
-            holder.txtRetailerName.setVisibility(View.VISIBLE);
-            holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
-        }
+                if(reportType.equals("Secondary")) {
+                    holder.txtRetailerName.setVisibility(View.VISIBLE);
+                    holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+                }
 
-        float total = Float.parseFloat(mDate.get(position).getOrderValue());
+                float total = Float.parseFloat(mDate.get(position).getOrderValue());
 
-        BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
-        float totalroundoff= (float) bd.doubleValue();
-        holder.txtValue.setText(String.valueOf(totalroundoff));
+                BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+                float totalroundoff= (float) bd.doubleValue();
+                holder.txtValue.setText(String.valueOf(totalroundoff));
 
 
-    } else {
-        holder.linearLayout.setVisibility(View.GONE);
-        holder.linearLayoutTakenby.setVisibility(View.GONE);
-    }
-}catch (NullPointerException e){
-    holder.txtsNo.setText(mDate.get(position).getSlno());
-    holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
-    holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-    holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-    holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
-    float total = Float.parseFloat(mDate.get(position).getOrderValue());
+            } else {
+                holder.linearLayout.setVisibility(View.GONE);
+                holder.linearLayoutTakenby.setVisibility(View.GONE);
+            }
+        }catch (NullPointerException e){
+            holder.txtsNo.setText(mDate.get(position).getSlno());
+            holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
+            holder.txtOrderID.setText(mDate.get(position).getOrderNo());
+            holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
+            holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+            float total = Float.parseFloat(mDate.get(position).getOrderValue());
 
-    BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
-    double totalroundoff= bd.doubleValue();
-    holder.txtValue.setText(""+ totalroundoff);
+            BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+            double totalroundoff= bd.doubleValue();
+            holder.txtValue.setText(""+ totalroundoff);
 //    float total = Float.parseFloat(mDate.get(position).getOrderValue());
 //    holder.txtValue.setText(new DecimalFormat("##.##").format(total));
-    String reportType=mDate.get(position).getReportType();
-    if(reportType.equals("Secondary")) {
-        holder.txtRetailerName.setVisibility(View.VISIBLE);
-        holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
-    }
-    //holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
-}
+            String reportType=mDate.get(position).getReportType();
+            if(reportType.equals("Secondary")) {
+                holder.txtRetailerName.setVisibility(View.VISIBLE);
+                holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+            }
+            //holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
+        }
     }
 
     @Override
@@ -157,7 +166,7 @@ try {
             txtValue = (TextView) itemView.findViewById(R.id.txt_total);
             txtOrderStatus=itemView.findViewById(R.id.txt_status);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
-           linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
+            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
             txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
             txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
             tv_order_type=itemView.findViewById(R.id.tv_order_type);

@@ -196,7 +196,7 @@
 
             <TextView
                 style="@style/TextStyle"
-                android:text="UTR"
+                android:text="Cheque No. / UTR"
                 android:textStyle="bold" />
 
             <EditText

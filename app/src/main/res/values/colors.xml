@@ -12,4 +12,6 @@
     <color name="Approvals">#014143</color>
     <color name="textColor">#FFFFFF</color>
     <color name="golden_scheme">#d1b035</color>
+    <color name="postponed">#EC6A41</color>
+    <color name="black">#000000</color>
 </resources>

@@ -25,7 +25,7 @@ import okhttp3.RequestBody;
 public class Constants {
 	//1 GOVIND
 	//2 AQUA
-	public static final int APP_TYPE = 2;
+	public static final int APP_TYPE = 1;
 	public static final String PARAMETER_SEP = "&";
 	public static final String PARAMETER_EQUALS = "=";
 	public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";

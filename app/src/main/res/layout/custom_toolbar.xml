@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/appColor"
-    android:orientation="vertical"
-    tools:ignore="MissingConstraints">
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -24,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:padding="5dp"
+            android:padding="3dp"
             android:src="@drawable/back"
             android:contentDescription="@string/app_name" />
 
@@ -38,7 +37,7 @@
             android:text="SAN DMS"
             android:maxLines="1"
             android:textColor="#fff"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
 
@@ -69,7 +68,9 @@
             android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_logout"
+            android:padding="3dp"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:contentDescription="@string/app_name"
             app:tint="@color/textColor" />
 
