@@ -99,6 +99,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
     int orderType = 1;
     int PhoneOrderTypes = 4;
+    String orderNo = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +119,9 @@ public class ViewCartActivity extends AppCompatActivity {
 
         if(getIntent().hasExtra("PhoneOrderTypes"))
             PhoneOrderTypes = getIntent().getIntExtra("PhoneOrderTypes", 4);
+
+        if(getIntent().hasExtra("orderNo"))
+            orderNo = getIntent().getStringExtra("orderNo");
 
         getToolbar();
         GrandTotal = shared_common_pref.getvalue("GrandTotal");
@@ -171,7 +175,7 @@ public class ViewCartActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
                     if(orderType == 1)
-                        SaveProduct(adapter.getData());
+                        SavePrimaryProduct(adapter.getData());
                     else
                         SaveSecondaryProduct(adapter.getData());
 
@@ -354,7 +358,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
     /*Save to server*/
 
-    public void SaveProduct(List<PrimaryProduct> carsList) {
+    public void SavePrimaryProduct(List<PrimaryProduct> carsList) {
 
         Log.v("SAVE_PRODUCT", "INCIKC");
         progressDialog = createProgressDialog(this);
@@ -995,7 +999,10 @@ public class ViewCartActivity extends AppCompatActivity {
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-            js.put("Remark", shared_common_pref.getvalue("Remarks"));
+            js.put("Remark", shared_common_pref.getvalue1("Remarks"));
+            js.put("orderNo", orderNo);
+            if(!orderNo.equals(""))
+                js.put("isExistingOrder", "true");
             JsonArryProceed.put(js);
             JSONPROCEED.put("Json_proceed", js);
             Log.v("VIEW_CART_ACTIVITY", JSONPROCEED.toString());

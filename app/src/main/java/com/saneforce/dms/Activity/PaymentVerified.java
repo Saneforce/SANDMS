@@ -43,7 +43,7 @@ public class PaymentVerified extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_verified);
-        pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
+        pendingRecycle = findViewById(R.id.recycler_view);
         getToolbar();
 
         mShared_common_pref = new Shared_Common_Pref(this);
@@ -190,7 +190,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             jsonObject = (JSONObject) jsonArray.get(position);
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
-            String Amount = String.valueOf(jsonObject.get("Amount"));
+            String Amount = String.valueOf(jsonObject.get("Order_Value"));
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
@@ -209,6 +209,19 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
                 holder.txtPaymentMode.setVisibility(View.GONE);
                 holder.txtPaymentMode.setText("");
             }
+
+        /*    String invoiceAmt = "0";
+            if(!jsonObject.isNull("Invoice_Amount")){
+                invoiceAmt = jsonObject.getString("Invoice_Amount");
+            }
+            holder.tv_invoice_amount.setText(invoiceAmt);*/
+
+            String paidAmt = "0";
+            if(!jsonObject.isNull("Amount")){
+                paidAmt = jsonObject.getString("Amount");
+            }
+            holder.tv_paid_amount.setText(paidAmt);
+
 
             String LoginType = shared_common_pref.getvalue("Login_details");
             Log.v("LoginType", LoginType);
@@ -240,7 +253,8 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;
         CardView martl_view;
-
+        TextView tv_paid_amount;
+//        tv_invoice_amount,
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             orderStatus = itemView.findViewById(R.id.txt_pending);
@@ -251,6 +265,8 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             martl_view = itemView.findViewById(R.id.card_item);
             txtPaymentOption=itemView.findViewById(R.id.txt_paymenttaken);
             txtPaymentMode=itemView.findViewById(R.id.txt_paymentmode);
+            tv_paid_amount=itemView.findViewById(R.id.tv_paid_amount);
+//            tv_invoice_amount=itemView.findViewById(R.id.tv_invoice_amount);
         }
     }
 

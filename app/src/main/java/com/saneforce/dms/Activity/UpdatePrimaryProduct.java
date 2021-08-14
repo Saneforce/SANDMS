@@ -495,7 +495,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
     public void UpdateProduct(View v) {
         updateSchemeData(task.getSchemeProducts(), ProductCount, task);
-        finish();
+        onBackPressed();
     }
 
     private void updateTask(final PrimaryProduct task, float subTotal, Float valueTotal, float finalPrice) {
@@ -736,4 +736,8 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

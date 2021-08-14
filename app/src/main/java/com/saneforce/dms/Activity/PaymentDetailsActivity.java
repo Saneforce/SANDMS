@@ -128,7 +128,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         RadioButton rbCredit = findViewById(R.id.cred);
         RadioButton rbOffline = findViewById(R.id.offline);
 
-        if(Constants.APP_TYPE == 2){
+        if(ApiClient.APP_TYPE == 2){
             rbOnline.setVisibility(View.GONE);
             rbCredit.setVisibility(View.GONE);
             rbOffline.setChecked(true);

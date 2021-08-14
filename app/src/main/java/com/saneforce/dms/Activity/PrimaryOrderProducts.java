@@ -1,6 +1,5 @@
 package com.saneforce.dms.Activity;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static io.realm.Realm.getApplicationContext;
 
 import android.annotation.SuppressLint;
@@ -8,10 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,7 +53,6 @@ import com.saneforce.dms.Utils.PrimaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,8 +119,9 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     int orderType = 1;
     int PhoneOrderTypes = 4;
 
-    int editMode = 0, categoryIndex = 0;
+    int editMode = 0, categoryCode = -1;
     String orderVal = "0";
+    String orderNo = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,8 +149,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         if(intent.hasExtra("editMode"))
             editMode = intent.getIntExtra("editMode", 0);
 
-        if(intent.hasExtra("categoryIndex"))
-            categoryIndex = intent.getIntExtra("categoryIndex", 0);
+        if(intent.hasExtra("categoryCode"))
+            categoryCode = intent.getIntExtra("categoryCode", -1);
+
+        if(intent.hasExtra("orderNo"))
+            orderNo = intent.getStringExtra("orderNo");
 
         if(intent.hasExtra("orderVal")){
             orderVal = intent.getStringExtra("orderVal");
@@ -357,10 +356,19 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
 
             try {
-                if(categoryIndex >= jsonBrandCateg.length())
-                    categoryIndex = 0;
+                int position = 0;
+                if(categoryCode != -1){
+                    position = getCategoryPosition(categoryCode);
 
-                JSONObject jsonObject = jsonBrandCateg.getJSONObject(categoryIndex);
+                    try {
+                        LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
+                        llm.scrollToPositionWithOffset(position, priCateAdapter.jsonArray.length());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(position);
                 String productId = jsonObject.getString("id");
                 String productName = jsonObject.getString("name");
 //                String productImage = jsonObject.getString("Cat_Image");
@@ -370,7 +378,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                 text_checki.setVisibility(View.VISIBLE);
                 text_checki.setText(productName);
-                highlightPosition(categoryIndex);
+                highlightPosition(position);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -400,6 +408,23 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private int getCategoryPosition(int categoryCode) {
+        for(int i = 0; i< jsonBrandCateg.length(); i++){
+            try {
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(i);
+                if(jsonObject.getInt("id") == categoryCode){
+                    return i;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return 0;
 
     }
 
@@ -548,6 +573,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         mIntent.putExtra("GrandTotal", grandTotal.getText().toString());
         mIntent.putExtra("order_type",orderType);
         mIntent.putExtra("PhoneOrderTypes",PhoneOrderTypes);
+        mIntent.putExtra("orderNo",orderNo);
         startActivity(mIntent);
 //        startActivityForResult(mIntent,66);
     }

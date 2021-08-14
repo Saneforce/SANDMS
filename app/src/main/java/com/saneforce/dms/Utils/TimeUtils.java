@@ -1,10 +1,13 @@
 package com.saneforce.dms.Utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -75,6 +78,38 @@ public class TimeUtils {
         }
         return  datetime;
 
+
+    }
+
+
+    public static void addLoginDate(Context context){
+        Date date = new Date();
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        String strDate = dateFormat.format(calendar.getTime());
+        Shared_Common_Pref shared_common_pref = new Shared_Common_Pref(context);
+        shared_common_pref.save(Shared_Common_Pref.LOGIN_DATE, strDate);
+
+    }
+
+
+    public static int compareCurrentAndLoginDate(String dateTime){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        try {
+            if(dateTime!=null && !dateTime.equals("")){
+                Date date1 = dateFormat.parse(dateTime);
+                Date date =  dateFormat.parse(TimeUtils.getCurrentTime(FORMAT1));
+                return date1.compareTo(date);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
 
     }
 

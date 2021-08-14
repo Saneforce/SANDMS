@@ -83,12 +83,59 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Order Value:" />
+                        android:text="Order Amount:" />
                     <TextView
                         android:id="@+id/product_amnt"
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="Invoice Amount:" />
+                    <TextView
+                        android:id="@+id/tv_invoice_amount"
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:text="0"
+                        android:textColor="#C40F0F0F"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="Paid Amount:" />
+                    <TextView
+                        android:id="@+id/tv_paid_amount"
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="0"/>
 
                 </LinearLayout>
 

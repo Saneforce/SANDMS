@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
+import com.saneforce.dms.Utils.TimeUtils;
+import com.saneforce.dms.sqlite.DBController;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -31,11 +33,12 @@ public class SplashScreen extends AppCompatActivity {
 
 
                 LoginType= shared_common_pref.getvalue("Login_details");
-/*
-                if (LoginType.equalsIgnoreCase("Stockist") && Constants.compareCurrentAndLoginDate(SplashScreen.this)) {
+
+                if (LoginType.equalsIgnoreCase("Stockist") && TimeUtils.compareCurrentAndLoginDate(shared_common_pref.getvalue(Shared_Common_Pref.LOGIN_DATE)) <0 ) {
+                    new DBController(SplashScreen.this).clearDatabase(DBController.TABLE_NAME);
                     shared_common_pref.logoutUser(SplashScreen.this);
 
-                }else{*/
+                }else{
                     if (LoginType.equalsIgnoreCase("Finance")) {
                         startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
                         finish();
@@ -50,8 +53,7 @@ public class SplashScreen extends AppCompatActivity {
                         finish();
                     }
 
-//                }
-
+                }
 
             }
         }, 2000);

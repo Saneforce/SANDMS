@@ -20,7 +20,7 @@ public class ReportModel {
     @Expose
     private String orderDate;
 
-    @SerializedName("order_type")
+    @SerializedName("OrderType")
     @Expose
     private String order_type;
 

@@ -31,12 +31,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
+import com.saneforce.dms.Utils.TimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -351,7 +353,7 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                         shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-//                        Constants.addLoginDate(DMSApplication.getApplication());
+                        TimeUtils.addLoginDate(DMSApplication.getApplication());
                         startActivity(intent);
                         finish();
                         if(jsonObject1.has("Msm"))
@@ -364,13 +366,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(LoginActivity.this, "Something went wrong, please try again", Toast.LENGTH_LONG).show();
+
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Something went wrong, please try again", Toast.LENGTH_LONG).show();
+
             }
         });
     }

@@ -128,7 +128,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
        /* if(!priProdAdapter.isAnythingChanged())
             Toast.makeText(this, "Please do any changes", Toast.LENGTH_SHORT).show();
         else {*/
-            Log.v("LIST_OF_DATAssssss", priProdAdapter.getUpdatedData().toString());
+//            Log.v("LIST_OF_DATAssssss", priProdAdapter.getUpdatedData().toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> ca = apiInterface.Dispatch(mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), priProdAdapter.getUpdatedData().toString());
 

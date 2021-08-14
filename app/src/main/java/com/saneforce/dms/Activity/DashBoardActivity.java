@@ -122,7 +122,7 @@ public class DashBoardActivity extends AppCompatActivity {
             }
         });
         LinearLayout llProfile = findViewById(R.id.ll_profile);
-        if(Constants.APP_TYPE == 1)
+        if(ApiClient.APP_TYPE == 1)
             llProfile.setVisibility(View.GONE);
         else
             llProfile.setVisibility(View.VISIBLE);

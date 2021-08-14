@@ -68,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         Button btnUpdate = findViewById(R.id.btn_update);
         LinearLayout llProfile = findViewById(R.id.ll_profile);
-        if(Constants.APP_TYPE == 1){
+        if(ApiClient.APP_TYPE == 1){
             btnUpdate.setVisibility(View.GONE);
             llProfile.setVisibility(View.VISIBLE);
         }

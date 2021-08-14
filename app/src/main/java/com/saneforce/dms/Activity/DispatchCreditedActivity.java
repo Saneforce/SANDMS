@@ -149,7 +149,7 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
             jsonObject = (JSONObject) jsonArray.get(position);
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
-            String Amount = String.valueOf(jsonObject.get("Amount"));
+            String Amount = String.valueOf(jsonObject.get("Order_Value"));
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
@@ -168,6 +168,17 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
                 holder.txtPaymentMode.setText("");
             }
 
+             String invoiceAmt = "0";
+            if(!jsonObject.isNull("Invoice_Amount")){
+                invoiceAmt = jsonObject.getString("Invoice_Amount");
+            }
+            holder.tv_invoice_amount.setText(invoiceAmt);
+
+            String paidAmt = "0";
+            if(!jsonObject.isNull("Amount")){
+                paidAmt = jsonObject.getString("Amount");
+            }
+            holder.tv_paid_amount.setText(paidAmt);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,6 +194,8 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
         TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;;
         CardView martl_view;
 
+        TextView tv_invoice_amount, tv_paid_amount;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             orderStatus = itemView.findViewById(R.id.txt_pending);
@@ -194,6 +207,9 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
 
             txtPaymentOption=itemView.findViewById(R.id.txt_paymenttake);
             txtPaymentMode=itemView.findViewById(R.id.txt_payment_mode);
+
+            tv_invoice_amount=itemView.findViewById(R.id.tv_invoice_amount);
+            tv_paid_amount=itemView.findViewById(R.id.tv_paid_amount);
         }
     }
 }

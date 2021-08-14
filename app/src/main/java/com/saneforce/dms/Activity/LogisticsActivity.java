@@ -57,7 +57,7 @@ public class LogisticsActivity extends AppCompatActivity {
 
     public void Confrimed(View v) {
         Intent intent =new Intent(LogisticsActivity.this, DispatchCreditedActivity.class);
-        intent.putExtra("title", "CONFORMED DISPATCHES");
+        intent.putExtra("title", "CONFIRMED DISPATCHES");
         startActivity(intent);
 
     }

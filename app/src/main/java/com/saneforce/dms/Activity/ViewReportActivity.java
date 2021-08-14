@@ -102,8 +102,11 @@ public class ViewReportActivity extends AppCompatActivity {
     TextView tv_order_type;
     LinearLayout ll_order_type;
     String orderType = "";
-    int categoryIndex = -1;
+    int categoryCode = -1;
     ImageView ib_logout;
+    String orderCreatedDateTime= "";
+    String orderNo = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +166,7 @@ public class ViewReportActivity extends AppCompatActivity {
         Delete = findViewById(R.id.red_btn);
         ib_logout = findViewById(R.id.ib_logout);
 
-        if(Constants.APP_TYPE == 2)
+        if(ApiClient.APP_TYPE == 2)
             Delete.setText("Delete");
         else
             Delete.setText("Cancel");
@@ -175,7 +178,7 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         if(OrderType.equals("2")){
-            if(Constants.APP_TYPE ==2){
+//            if(ApiClient.APP_TYPE ==2){
                 ib_logout.setVisibility(View.VISIBLE);
                 ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.edit));
                 ib_logout.setOnClickListener(new View.OnClickListener() {
@@ -191,9 +194,9 @@ public class ViewReportActivity extends AppCompatActivity {
                     }
                 });
 
-            }else {
-                ib_logout.setVisibility(View.GONE);
-            }
+//            }else {
+//                ib_logout.setVisibility(View.GONE);
+//            }
             PayNow.setText("Dispatch");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -390,6 +393,18 @@ public class ViewReportActivity extends AppCompatActivity {
                         String total = "0";
                         if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
                             total = Constants.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
+
+                        if(jsonObject.has("OrderDate")) {
+                            orderCreatedDateTime = jsonObject.getString("OrderDate");
+                           /* if(TimeUtils.compareCurrentAndLoginDate(orderCreatedDateTime) <0)
+                                ib_logout.setVisibility(View.GONE);
+                            else
+                                ib_logout.setVisibility(View.VISIBLE);*/
+                        }
+
+                        if(jsonObject.has("OrderNo")) {
+                            orderNo = jsonObject.getString("OrderNo");
+                        }
 
                         TotalValue.setText("Rs. "+total);
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
@@ -744,8 +759,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
                 if(!qty.equals("0")){
                     unitQty = getConQty(id);
-                    if(categoryIndex ==-1)
-                        categoryIndex = i;
+
                 }
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, qty, qty, "0", "0", "0",
@@ -762,12 +776,13 @@ public class ViewReportActivity extends AppCompatActivity {
         Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
         dashIntent.putExtra("Mode", "0");
         dashIntent.putExtra("editMode", 1);
-        if(categoryIndex ==-1)
-            categoryIndex =0;
-        dashIntent.putExtra("categoryIndex", categoryIndex);
+        if(categoryCode ==-1)
+            categoryCode =0;
+        dashIntent.putExtra("categoryCode", categoryCode);
         dashIntent.putExtra("orderVal", String.valueOf(OrderValueTotal));
         dashIntent.putExtra("order_type", 2);
         dashIntent.putExtra("PhoneOrderTypes", 0);
+        dashIntent.putExtra("orderNo", orderNo);
         startActivity(dashIntent);
 
     }
@@ -800,6 +815,8 @@ public class ViewReportActivity extends AppCompatActivity {
                 try {
                     if(jsonArray.getJSONObject(i).getString("Product_Code").equals(id)){
                         conQty = jsonArray.getJSONObject(i).getInt("Cl_bal");
+                        if(categoryCode ==-1)
+                            categoryCode = jsonArray.getJSONObject(i).getInt("Product_Brd_Code");
                         break;
                     }
 
