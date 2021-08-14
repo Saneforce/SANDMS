@@ -67,6 +67,12 @@ public class Shared_Common_Pref {
         return text;
     }
 
+    public String getvalue1(String key) {
+        String text = null;
+        text = Common_pref.getString(key, "");
+        return text;
+    }
+
     public boolean getBooleanvalue(String key) {
         boolean value ;
         value = Common_pref.getBoolean(key, false);

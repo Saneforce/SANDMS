@@ -87,6 +87,7 @@
             android:text="Product"
             android:visibility="gone" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_checking1"
             android:layout_width="match_parent"
@@ -212,7 +213,7 @@
 
         </LinearLayout>
 
-        <include layout="@layout/back_arrow"></include>
+        <include layout="@layout/back_arrow"/>
     </LinearLayout>
 
 
