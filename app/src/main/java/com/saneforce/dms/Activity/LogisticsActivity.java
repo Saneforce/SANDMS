@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,7 @@ public class LogisticsActivity extends AppCompatActivity {
 
     Shared_Common_Pref shared_common_pref;
     ImageView ib_logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ public class LogisticsActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
         ib_logout.setVisibility(View.VISIBLE);
+        TextView toolbar_title = findViewById(R.id.toolbar_title);;
+        toolbar_title.setText("Logistics");
         ImageView toolbar_back = findViewById(R.id.toolbar_back);
         toolbar_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,12 +50,16 @@ public class LogisticsActivity extends AppCompatActivity {
     }
 
     public void Pendig(View v) {
-
-        startActivity(new Intent(LogisticsActivity.this, PaymentVerified.class));
+        Intent intent =new Intent(LogisticsActivity.this, PaymentVerified.class);
+        intent.putExtra("title", "PENDING DISPATCHES");
+        startActivity(intent);
     }
 
     public void Confrimed(View v) {
-        startActivity(new Intent(LogisticsActivity.this, DispatchCreditedActivity.class));
+        Intent intent =new Intent(LogisticsActivity.this, DispatchCreditedActivity.class);
+        intent.putExtra("title", "CONFORMED DISPATCHES");
+        startActivity(intent);
+
     }
 
     @Override

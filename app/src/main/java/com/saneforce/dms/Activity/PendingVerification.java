@@ -52,6 +52,11 @@ public class PendingVerification extends AppCompatActivity {
 
 
     public void getToolbar() {
+        Intent intent = getIntent();
+        if(intent.hasExtra("title") && intent.getStringExtra("title")!=null){
+            TextView toolbar_title = findViewById(R.id.toolbar_title);
+            toolbar_title.setText(intent.getStringExtra("title"));
+        }
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +180,7 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Intent MIntent = new Intent(context, PendingVerificationDetails.class);
+                    MIntent.putExtra("title", "PENDING VERIFICATION DETAILS");
                     MIntent.putExtra("OrderID", OrderID);
                     MIntent.putExtra("PayDt", PayDt);
                     MIntent.putExtra("Amount", Amount);

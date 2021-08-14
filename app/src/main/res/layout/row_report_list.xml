@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
     <LinearLayout
         android:id="@+id/row_report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="5dp">
 
         <TextView
             android:id="@+id/txt_serial"
             android:layout_width="0dp"
-            android:layout_weight="0.2"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Sno"
             android:paddingStart="@dimen/C5dp"
@@ -36,7 +40,7 @@
         <TextView
             android:id="@+id/txt_order"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="OrderID"
             android:paddingStart="@dimen/C5dp"
@@ -58,7 +62,7 @@
         <TextView
             android:id="@+id/txt_date"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="OrderDate"
             android:textSize="12sp"
@@ -80,7 +84,7 @@
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Status"
             android:paddingStart="@dimen/C5dp"
@@ -101,7 +105,7 @@
         <TextView
             android:id="@+id/txt_total"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/C5dp"
             android:text="Value"
@@ -112,21 +116,7 @@
             android:autoSizeStepGranularity="2sp"
             android:textColor="@android:color/black"
             tools:targetApi="o" />
-        <TextView
-            android:id="@+id/tv_order_type"
-            android:layout_width="0dp"
-            android:visibility="gone"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/C5dp"
-            android:text="Type"
-            android:textSize="12sp"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="20sp"
-            android:autoSizeStepGranularity="2sp"
-            android:textColor="@android:color/black"
-            tools:targetApi="o" />
+
         <!--  <TextView
               android:id="@+id/txt_total"
               style="@style/TextStyle"
@@ -153,17 +143,34 @@
 
     <LinearLayout
         android:id="@+id/row_reporttakenby"
-        android:layout_below="@+id/row_report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:layout_marginEnd="10dp">
         <TextView
             android:id="@+id/txt_ordertaken"
             style="@style/TextStyle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="Taken By:"
-            android:textSize="@dimen/C12dp"
+            android:textSize="13sp"
             android:paddingLeft="@dimen/C5dp" />
+
+        <TextView
+            android:id="@+id/tv_order_type"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/C5dp"
+            android:text="Type"
+            android:layout_gravity="center_vertical"
+            android:textSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            android:textColor="@android:color/black"
+            tools:targetApi="o" />
     </LinearLayout>
 
 </LinearLayout>
+</RelativeLayout>

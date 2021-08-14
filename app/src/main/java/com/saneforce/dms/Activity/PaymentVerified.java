@@ -114,10 +114,21 @@ public class PaymentVerified extends AppCompatActivity {
 
     public void getToolbar() {
 
+        Intent intent = getIntent();
+        if(intent.hasExtra("title") && intent.getStringExtra("title")!=null){
+            TextView toolbar_title = findViewById(R.id.toolbar_title);
+            toolbar_title.setText(intent.getStringExtra("title"));
+        }
+
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
 
         mShared_common_pref = new Shared_Common_Pref(this);
         String LoginType = mShared_common_pref.getvalue("Login_details");
+        if(intent.hasExtra("title") && intent.getStringExtra("title")!=null){
+            TextView toolbar_title = findViewById(R.id.toolbar_title);
+            toolbar_title.setText(intent.getStringExtra("title"));
+        }
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,6 +219,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
                     public void onClick(View v) {
 
                         Intent Details = new Intent(context, DispatchEditActivtity.class);
+                        Details.putExtra("title", "DISPATCH EDIT");
                         Details.putExtra("OrderId", OrderID);
                         context.startActivity(Details);
                     }

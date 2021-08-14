@@ -124,6 +124,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     int orderType = 1;
     int PhoneOrderTypes = 4;
 
+    int editMode = 0, categoryIndex = 0;
+    String orderVal = "0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,12 +142,24 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         mCommon_class = new Common_Class(this);
 
         ImageView imagView = findViewById(R.id.toolbar_back);
-        TextView toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        if(getIntent().hasExtra("order_type"))
-            orderType = getIntent().getIntExtra("order_type", 1);
+        TextView toolHeader = findViewById(R.id.toolbar_title);
+        Intent intent = getIntent();
+        if(intent.hasExtra("order_type"))
+            orderType = intent.getIntExtra("order_type", 1);
 
-        if(getIntent().hasExtra("PhoneOrderTypes"))
-            PhoneOrderTypes = getIntent().getIntExtra("PhoneOrderTypes", 4);
+        if(intent.hasExtra("PhoneOrderTypes"))
+            PhoneOrderTypes = intent.getIntExtra("PhoneOrderTypes", 4);
+
+        if(intent.hasExtra("editMode"))
+            editMode = intent.getIntExtra("editMode", 0);
+
+        if(intent.hasExtra("categoryIndex"))
+            categoryIndex = intent.getIntExtra("categoryIndex", 0);
+
+        if(intent.hasExtra("orderVal")){
+            orderVal = intent.getStringExtra("orderVal");
+            grandTotal.setText(orderVal);
+        }
 
         if(orderType ==2)
             toolHeader.setText("SECONDARY ORDER");
@@ -343,7 +357,10 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
 
             try {
-                JSONObject jsonObject = jsonBrandCateg.getJSONObject(0);
+                if(categoryIndex >= jsonBrandCateg.length())
+                    categoryIndex = 0;
+
+                JSONObject jsonObject = jsonBrandCateg.getJSONObject(categoryIndex);
                 String productId = jsonObject.getString("id");
                 String productName = jsonObject.getString("name");
 //                String productImage = jsonObject.getString("Cat_Image");
@@ -353,7 +370,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                 text_checki.setVisibility(View.VISIBLE);
                 text_checki.setText(productName);
-                highlightPosition(0);
+                highlightPosition(categoryIndex);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -469,15 +486,19 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void onChanged(List<PrimaryProduct> contacts) {
                 Log.v("TotalSize", new Gson().toJson(contacts.size()));
                 item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
                 float sum = 0;
                         float tax=0;
                 for (PrimaryProduct cars : contacts) {
-                    sum = sum + Float.parseFloat(cars.getSubtotal());
-                   // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
-                    ;
-             //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
-                   Log.v("Total_valuebefore", String.valueOf(sum));
+                    try {
+                        if(cars.getSubtotal()!=null && !cars.getSubtotal().equals(""))
+                        sum = sum + Float.parseFloat(cars.getSubtotal());
+                        // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                        ;
+                        //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+                        Log.v("Total_valuebefore", String.valueOf(sum));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
                 }
                 grandTotal.setText("" + Constants.roundTwoDecimals(sum));
                 mShared_common_pref.save("GrandTotal", String.valueOf(sum));
@@ -1825,22 +1846,24 @@ String orderid=mContact.getUID();
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * tempQty) * (schemeDisc/100);
                     holder.ll_disc.setVisibility(View.VISIBLE);
                     holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
-                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                    if(!packageType.equals("Y"))
+                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    else
+                        discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                     holder.ll_disc.setVisibility(View.GONE);
                     break;
                 default:
                     holder.ProductDis.setText("0");
-                    holder.ProductDisAmt.setText("0");
                     discountValue = 0;
             }
+
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
+            holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
 
 
             if(!discountType.equals("") && discountValue>0){

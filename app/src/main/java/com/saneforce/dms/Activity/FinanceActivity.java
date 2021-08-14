@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +29,9 @@ public class FinanceActivity extends AppCompatActivity {
     private void initViews() {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
+        TextView toolbar_title = findViewById(R.id.toolbar_title);;
+        toolbar_title.setText("Finance");
+
         ImageView toolbar_back = findViewById(R.id.toolbar_back);
         toolbar_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,11 +51,17 @@ public class FinanceActivity extends AppCompatActivity {
 
     public void PendingVerification(View v) {
 
-        startActivity(new Intent(FinanceActivity.this, PendingVerification.class));
+
+        Intent intent =new Intent(FinanceActivity.this, PendingVerification.class);
+        intent.putExtra("title", "PENDING VERIFICATIONS");
+        startActivity(intent);
     }
 
     public void VerifiedPayment(View v) {
-        startActivity(new Intent(FinanceActivity.this, PaymentVerified.class));
+        Intent intent =new Intent(FinanceActivity.this, PaymentVerified.class);
+        intent.putExtra("title", "VERIFIED PAYMENT");
+        startActivity(intent);
+
     }
 
     @Override

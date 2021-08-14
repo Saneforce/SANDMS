@@ -1,36 +1,25 @@
 
 package com.saneforce.dms.Activity;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.StrictMode;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,29 +27,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.saneforce.dms.Adapter.DateReportAdapter;
-import com.saneforce.dms.Interface.ApiInterface;
-import com.saneforce.dms.Interface.DMS;
-
-import com.saneforce.dms.Interface.PrimaryProductDao;
-import com.saneforce.dms.Model.PrimaryProduct;
-import com.saneforce.dms.R;
-import com.saneforce.dms.Utils.AlertDialogBox;
-import com.saneforce.dms.Utils.ApiClient;
-import com.saneforce.dms.Utils.Common_Class;
-import com.saneforce.dms.Utils.Constants;
-import com.saneforce.dms.Utils.PrimaryProductDatabase;
-import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
@@ -71,6 +43,18 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.Adapter.DateReportAdapter;
+import com.saneforce.dms.Interface.ApiInterface;
+import com.saneforce.dms.Interface.DMS;
+import com.saneforce.dms.Interface.PrimaryProductDao;
+import com.saneforce.dms.Model.PrimaryProduct;
+import com.saneforce.dms.R;
+import com.saneforce.dms.Utils.AlertDialogBox;
+import com.saneforce.dms.Utils.ApiClient;
+import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
+import com.saneforce.dms.Utils.PrimaryProductDatabase;
+import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
@@ -80,15 +64,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.os.Build.VERSION.SDK_INT;
 
 public class ViewReportActivity extends AppCompatActivity {
     TextView toolHeader, txtProductId, txtProductDate;
@@ -102,16 +83,16 @@ public class ViewReportActivity extends AppCompatActivity {
     String formDate;
     String toDate;
     String OrderType;
-    String OrderAmt;
-    String OrderTax;
+//    String OrderAmt;
+//    String OrderTax;
     DateReportAdapter mDateReportAdapter;
 
 
     Shared_Common_Pref shared_common_pref;
     ArrayList<Integer> mArrayList;
-    TextView TotalValue,total_value;
+    TextView TotalValue;
     Button PayNow,Delete;
-    Double OrderTaxCal,  OrderAmtNew,OrderValueTotal,OderDiscount;
+    Double OrderTaxCal,  OrderAmtNew,OrderValueTotal;
     Toolbar toolbar_top;
     LinearLayout  linearLayout;
     //    private Bitmap bitmap;
@@ -121,6 +102,8 @@ public class ViewReportActivity extends AppCompatActivity {
     TextView tv_order_type;
     LinearLayout ll_order_type;
     String orderType = "";
+    int categoryIndex = -1;
+    ImageView ib_logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +116,7 @@ public class ViewReportActivity extends AppCompatActivity {
         toolbar_top.setVisibility(View.VISIBLE);
 
 
-        mArrayList = new ArrayList<Integer>();
+        mArrayList = new ArrayList<>();
         TotalValue = findViewById(R.id.total_value);
         shared_common_pref = new Shared_Common_Pref(this);
 
@@ -178,7 +161,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
         PayNow = findViewById(R.id.green_btn);
         Delete = findViewById(R.id.red_btn);
-        ImageView ib_logout = findViewById(R.id.ib_logout);
+        ib_logout = findViewById(R.id.ib_logout);
 
         if(Constants.APP_TYPE == 2)
             Delete.setText("Delete");
@@ -192,20 +175,25 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         if(OrderType.equals("2")){
-            ib_logout.setVisibility(View.VISIBLE);
-            ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.edit));
-            ib_logout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mCommon_class.ProgressdialogShow(1, "");
-                    if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
-                            !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                        new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
-                    }else
-                        brandSecondaryApi();
+            if(Constants.APP_TYPE ==2){
+                ib_logout.setVisibility(View.VISIBLE);
+                ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.edit));
+                ib_logout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCommon_class.ProgressdialogShow(1, "");
+                        if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                                !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                            new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                        }else
+                            brandSecondaryApi();
 
-                }
-            });
+                    }
+                });
+
+            }else {
+                ib_logout.setVisibility(View.GONE);
+            }
             PayNow.setText("Dispatch");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -348,6 +336,7 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
+        toolHeader.setText("REPORT DETAILS");
 //        toolHeader.setText(R.string.View_Rep);
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
 //        toolSearch.setVisibility(View.GONE);
@@ -398,7 +387,11 @@ public class ViewReportActivity extends AppCompatActivity {
                         if(jsonObject.has("taxval"))
                             OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
                         //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
-                        TotalValue.setText("Rs."+jsonObject.getString("OrderVal"));
+                        String total = "0";
+                        if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
+                            total = Constants.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
+
+                        TotalValue.setText("Rs. "+total);
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
                         Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
                         Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
@@ -409,6 +402,7 @@ public class ViewReportActivity extends AppCompatActivity {
                         } else {
                             PayNow.setVisibility(View.GONE);
                             Delete.setVisibility(View.GONE);
+                            ib_logout.setVisibility(View.GONE);
                         }
                     }
                     mDateReportAdapter = new DateReportAdapter(ViewReportActivity.this, jsonArray);
@@ -664,8 +658,6 @@ public class ViewReportActivity extends AppCompatActivity {
             JSONObject jsonObject = null;
             JSONObject jsonObject1 = null;
 
-
-
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="", Free_Unit="";
             int unitQty = 1;
 
@@ -748,14 +740,18 @@ public class ViewReportActivity extends AppCompatActivity {
                         }
 
                     }
-                    qty = getQty(PId);
+                qty = getQty(id);
+
+                if(!qty.equals("0")){
+                    unitQty = getConQty(id);
+                    if(categoryIndex ==-1)
+                        categoryIndex = i;
+                }
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, qty, qty, "0", "0", "0",
                         schemeList,unitQty, uomList));
 
-             /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                        PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));
-         */   }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -765,19 +761,25 @@ public class ViewReportActivity extends AppCompatActivity {
 
         Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
         dashIntent.putExtra("Mode", "0");
+        dashIntent.putExtra("editMode", 1);
+        if(categoryIndex ==-1)
+            categoryIndex =0;
+        dashIntent.putExtra("categoryIndex", categoryIndex);
+        dashIntent.putExtra("orderVal", String.valueOf(OrderValueTotal));
         dashIntent.putExtra("order_type", 2);
         dashIntent.putExtra("PhoneOrderTypes", 0);
         startActivity(dashIntent);
 
     }
 
-    private String getQty(String pId) {
+    private String getQty(String id) {
         String qty = "0";
         if(jsonArray!=null && jsonArray.length()>0){
             for(int i = 0; i< jsonArray.length(); i++){
                 try {
-                    if(jsonArray.getJSONObject(i).getString("PID").equals(pId)){
-                        qty = jsonArray.getJSONObject(i).getString("PID");
+                    if(jsonArray.getJSONObject(i).getString("Product_Code").equals(id)){
+                        qty = jsonArray.getJSONObject(i).getString("CQty");
+
                         break;
                     }
 
@@ -789,6 +791,26 @@ public class ViewReportActivity extends AppCompatActivity {
 
 
         return qty;
+    }
+
+    private int getConQty(String id) {
+        int conQty = 0;
+        if(jsonArray!=null && jsonArray.length()>0){
+            for(int i = 0; i< jsonArray.length(); i++){
+                try {
+                    if(jsonArray.getJSONObject(i).getString("Product_Code").equals(id)){
+                        conQty = jsonArray.getJSONObject(i).getInt("Cl_bal");
+                        break;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        return conQty;
     }
 
 

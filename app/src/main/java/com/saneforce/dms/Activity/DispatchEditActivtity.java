@@ -34,6 +34,7 @@ import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -162,6 +163,11 @@ public class DispatchEditActivtity extends AppCompatActivity {
             }
 
     public void getToolbar() {
+        Intent intent = getIntent();
+        if(intent.hasExtra("title") && intent.getStringExtra("title")!=null){
+            TextView toolbar_title = findViewById(R.id.toolbar_title);
+            toolbar_title.setText(intent.getStringExtra("title"));
+        }
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -220,7 +226,8 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
 
 //        Log.v("JSON________ARRAY", jsonArray.toString());
         try {
-            jsonObject = (JSONObject) jsonArray.get(position);
+
+            jsonObject = (JSONObject) jsonArray.get(holder.getAdapterPosition());
 
 //            String Slno = String.valueOf(jsonObject.get("Slno"));
 //            String orderID = String.valueOf(jsonObject.get("OrderID"));
@@ -256,7 +263,7 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                 oldAmt = jsonObject.getString("tempOldCQty");
             }
 
-            if(!jsonObject.isNull("SchemeAvail") && !jsonObject.getString("SchemeAvail").equalsIgnoreCase("No")){
+            if(!jsonObject.isNull("SchemeAvail") && jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes")){
 
                 holder.orderValue.setVisibility(View.GONE);
                 holder.linear_add.setVisibility(View.VISIBLE);
@@ -274,19 +281,23 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
 
                 holder.tv_disc_amt_value.setText(dis);
 
-
                 holder.martl_view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+
+
                         if(holder.text_checking.getText().toString().equalsIgnoreCase("Postpone"))
                         {
                             holder.text_checking.setText("Postponed");
                         try {
-                                jsonObject.put("postponed", true);
-                            } catch (JSONException e) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
+                                jsonObject.put("postponed", "true");
+                                jsonArray.put(holder.getAdapterPosition(), jsonObject);
+
+                        } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                             holder.text_checking.setTextColor(context.getResources().getColor(R.color.textColor));
                             holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.postponed));
                             holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.postponed));
@@ -294,7 +305,10 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                         }else {
                             holder.text_checking.setText("Postpone");
                             try {
-                                jsonObject.put("postponed", false);
+                                JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
+                                jsonObject.put("postponed", "false");
+                                jsonArray.put(holder.getAdapterPosition(), jsonObject);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -332,23 +346,22 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
 
                         }else
                             isAllowedToChange = false;
-
                         if(isAllowedToChange) {
                             try {
 
-                                JSONObject jsonObject = jsonArray.getJSONObject(position);
+                                JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
                                 try {
                                     jsonObject.put("tempOldCQty", newValue); //new value 4
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 try {
-                                    jsonObject.put("tempNewvalue", (oldValue - newValue) * jsonObject.getLong("Rate")); //6 * Rates
+                                    jsonObject.put("tempNewvalue", Constants.roundTwoDecimals((oldValue - newValue) * jsonObject.getDouble("Rate"))); //6 * Rates
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 try {
-                                    jsonObject.put("tempOldvalue", newValue * jsonObject.getLong("Rate"));//4 * Rates
+                                    jsonObject.put("tempOldvalue", Constants.roundTwoDecimals(newValue * jsonObject.getDouble("Rate")));//4 * Rates
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -358,7 +371,7 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                                     e.printStackTrace();
                                 }
 
-                                jsonArray.put(position, jsonObject);
+                                jsonArray.put(holder.getAdapterPosition(), jsonObject);
                                 holder.orderValue.setSelection(holder.orderValue.getText().length());
     //                            notifyItemChanged(position);
                             } catch (JSONException e) {
@@ -434,31 +447,30 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
         for(int i = 0; i< jsonArray.length(); i++){
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if(jsonObject.isNull("postponed") || !jsonObject.getBoolean("postponed")){
-                    if(!jsonObject.isNull("tempOldCQty"))
-                        jsonObject.put("OldCQty", jsonObject.getLong("tempOldCQty"));
-
-                    if(!jsonObject.isNull("tempNewvalue"))
-                        jsonObject.put("Newvalue", jsonObject.getLong("tempNewvalue"));
-
-                    if(!jsonObject.isNull("tempOldvalue"))
-                        jsonObject.put("Oldvalue", jsonObject.getLong("tempOldvalue"));
-
-                    if(!jsonObject.isNull("tempnewCQty"))
-                        jsonObject.put("newCQty", jsonObject.getLong("tempnewCQty"));
-                }else {
-
+                if(!jsonObject.isNull("postponed") && jsonObject.getString("postponed").equals("true")){
 
                     if(!jsonObject.isNull("Oldvalue"))
-                        jsonObject.put("Newvalue", jsonObject.getLong("Oldvalue"));
+                        jsonObject.put("Newvalue", jsonObject.getDouble("Oldvalue"));
 
                     if(!jsonObject.isNull("OldCQty"))
                         jsonObject.put("newCQty", jsonObject.getLong("OldCQty"));
 
-                        jsonObject.put("OldCQty", 0);
+                    jsonObject.put("OldCQty", 0);
 
-                        jsonObject.put("Oldvalue", 0);
+                    jsonObject.put("Oldvalue", 0);
 
+                }else {
+                    if(!jsonObject.isNull("tempOldCQty"))
+                        jsonObject.put("OldCQty", jsonObject.getLong("tempOldCQty"));
+
+                    if(!jsonObject.isNull("tempNewvalue"))
+                        jsonObject.put("Newvalue", jsonObject.getDouble("tempNewvalue"));
+
+                    if(!jsonObject.isNull("tempOldvalue"))
+                        jsonObject.put("Oldvalue", jsonObject.getDouble("tempOldvalue"));
+
+                    if(!jsonObject.isNull("tempnewCQty"))
+                        jsonObject.put("newCQty", jsonObject.getLong("tempnewCQty"));
                 }
 
                     jsonArray.put(i,jsonObject);

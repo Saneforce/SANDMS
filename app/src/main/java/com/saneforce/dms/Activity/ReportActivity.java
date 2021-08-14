@@ -105,7 +105,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     // constant code for runtime permissions
 //    private static final int PERMISSION_REQUEST_CODE = 200;
     LinearLayout totalLayout;
-    TextView tv_type;
+//    TextView tv_type;
 //    ImageView filter;
 
 //    List<ReportModel> mDReportModels = new ArrayList<>();
@@ -140,18 +140,18 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         fromBtn = (Button) findViewById(R.id.from_picker);
         toBtn = (Button) findViewById(R.id.to_picker);
         linearOrderMode=findViewById(R.id.lin_order);
-        tv_type=findViewById(R.id.tv_type);
+//        tv_type=findViewById(R.id.tv_type);
         txtTotalValue.setText("0");
         DateFormat df = new SimpleDateFormat("yyyy-MM-d");
         Calendar calobj = Calendar.getInstance();
         dateTime = df.format(calobj.getTime());
 //        System.out.println("Date_and_Time" + dateTime);
 
-        if(OrderType.equals("1"))
+     /*   if(OrderType.equals("1"))
             tv_type.setVisibility(View.GONE);
         else
             tv_type.setVisibility(View.VISIBLE);
-
+*/
         if (Count == 1) {
 
            // DateFormat dff= new SimpleDateFormat("dd-MM-yyyy");

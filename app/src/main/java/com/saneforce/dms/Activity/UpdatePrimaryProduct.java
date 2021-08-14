@@ -633,13 +633,16 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * tempQty) * (schemeDisc/100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //                    holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
 //                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    if(!packageType.equals("Y"))
+                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    else
+                        discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
 //                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
 //                    holder.ll_disc.setVisibility(View.GONE);
                     break;

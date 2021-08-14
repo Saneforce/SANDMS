@@ -18,34 +18,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:id="@+id/txt_name"
             style="@style/TextStyle"
-            android:text="Two fdsf a sdfsdfsdfsdf asdfsdfsdf sdfsdfsdfsdafsdaf sdf sdfsdfsdfas dfsdfdsd fsdfsdfasdf"
-            android:textSize="15sp" />
+            android:text="Name"
+            android:textSize="16sp" />
 
             <LinearLayout
-                android:id="@+id/ll_scheme"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="bottom"
-                android:visibility="gone"
-                >
+                android:gravity="end|center_vertical">
+
                 <TextView
-                    android:id="@+id/tv_scheme"
+                    android:id="@+id/tv_address"
                     style="@style/TextStyle"
-                    android:padding="3dp"
-                    android:textColor="@color/textColor"
-                    android:background="@color/golden_scheme"
-                    android:text="Golden"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:text="No. 1, sdf ksfdsf"
                     android:textSize="14sp"
                     />
 
+
+                    <TextView
+                        android:id="@+id/tv_scheme"
+                        android:padding="3dp"
+                        android:gravity="end"
+                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/textColor"
+                        android:background="@color/golden_scheme"
+                        android:text="Golden"
+                        android:visibility="gone"
+                        android:textSize="14sp"/>
+
             </LinearLayout>
+
 
         </LinearLayout>
         <TextView

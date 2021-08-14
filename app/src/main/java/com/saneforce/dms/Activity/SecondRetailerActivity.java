@@ -224,7 +224,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
     public void RetailerType() {
-        String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
+        String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\",\\\"Slan_Name\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
         call.enqueue(new Callback<JsonObject>() {
@@ -261,9 +261,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String name = jsonObject.get("name").getAsString();
                 String townName = jsonObject.get("ListedDr_Address1").getAsString();
                 String phone = jsonObject.get("Mobile_Number").getAsString();
-                String scheme = "0";
-                if(jsonObject.has("scheme"))
-                    scheme = jsonObject.get("scheme").getAsString();
+                String scheme = "";
+                if(jsonObject.has("Slan_Name"))
+                    scheme = jsonObject.get("Slan_Name").getAsString();
                 mCommon_model_spinner = new Common_Model(name, id, scheme, townName, phone);
                 RetailerType.add(mCommon_model_spinner);
             }
@@ -350,16 +350,17 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                             }
                         }
 
-                        txtModelOrderValue.setText(String.valueOf(total));
+                        txtModelOrderValue.setText(Constants.roundTwoDecimals(total));
 
                         String scheme = "-";
-                        if(jsonObject.has("scheme"))
-                            scheme = jsonObject.getString("scheme");
+                        if(jsonObject.has("Slan_Name"))
+                            scheme = jsonObject.getString("Slan_Name");
                         tv_sch_enrollment.setText(scheme);
 
                         String lastOrderAmt = "-";
-                        if(jsonObject.has("LastorderAmount"))
+                        if(jsonObject.has("LastorderAmount") && !jsonObject.getString("LastorderAmount").equals(""))
                             lastOrderAmt = jsonObject.getString("LastorderAmount");
+                        lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constants.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
                         txtLastOrderAmount.setText(lastOrderAmt);
 
                         String lastVisit = "-";

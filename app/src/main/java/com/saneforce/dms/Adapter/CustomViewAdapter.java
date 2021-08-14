@@ -413,13 +413,16 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
             switch (discountType){
                 case "%":
-                    discountValue = (productAmt * (tempQty * product_Sale_Unit_Cn_Qty)) * (schemeDisc/100);
+                    discountValue = (productAmt * tempQty) * (schemeDisc/100);
                     viewHolder.ll_disc.setVisibility(View.VISIBLE);
                     viewHolder.tv_dis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    if(!packageType.equals("Y"))
+                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    else
+                        discountValue = (tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     viewHolder.ll_disc.setVisibility(View.GONE);
                     break;
