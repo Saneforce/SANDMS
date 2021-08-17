@@ -23,6 +23,7 @@ import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -149,7 +150,12 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
             jsonObject = (JSONObject) jsonArray.get(position);
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
-            String Amount = String.valueOf(jsonObject.get("Order_Value"));
+
+            String Amount = "0";
+            if(jsonObject.has("Order_Value") && !jsonObject.getString("Order_Value").equals("") )
+                Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
+            holder.orderValue.setText(Amount);
+
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
@@ -157,7 +163,6 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
             String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
-            holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
             holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
             if(Payment_Option.equals("Offline")){
@@ -168,17 +173,20 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
                 holder.txtPaymentMode.setText("");
             }
 
-             String invoiceAmt = "0";
-            if(!jsonObject.isNull("Invoice_Amount")){
-                invoiceAmt = jsonObject.getString("Invoice_Amount");
-            }
+            String paidAmt = "0";
+            if(jsonObject.has("Amount") && !jsonObject.getString("Amount").equals(""))
+                paidAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Amount"));
+
+            holder.tv_paid_amount.setText(paidAmt);
+
+
+            String invoiceAmt = "0";
+            if(jsonObject.has("Invoice_Amount") && !jsonObject.getString("Invoice_Amount").equals(""))
+                invoiceAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Invoice_Amount"));
+
             holder.tv_invoice_amount.setText(invoiceAmt);
 
-            String paidAmt = "0";
-            if(!jsonObject.isNull("Amount")){
-                paidAmt = jsonObject.getString("Amount");
-            }
-            holder.tv_paid_amount.setText(paidAmt);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -54,6 +54,10 @@ public class PrimaryProduct implements Serializable {
     @TypeConverters({UOMConverter.class})
     ArrayList<UOMlist> UOMList;
 
+    public PrimaryProduct() {
+
+    }
+
     public String getOff_free_unit() {
         return Off_free_unit;
     }

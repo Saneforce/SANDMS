@@ -33,6 +33,9 @@ public class Shared_Common_Pref {
     public static final String Product_Brand = "Product_Brand";
     public static final String Product_Data = "Product_Data";
     public static final String LOGIN_DATE = "LOGIN_DATE";
+    public static final String USER_NAME = "USER_NAME";
+    public static final String USER_EMAIL = "USER_EMAIL";
+    public static final String USER_PHONE = "USER_PHONE";
 
     public static final String YET_TO_SYN = "yet_to_syn";
 

@@ -225,6 +225,14 @@ public class ProfileActivity extends AppCompatActivity {
                             salesTeamName=jsonObject.getString("FieldPerson");
                        tie_sales_team_name.setText(salesTeamName);
 
+                       try {
+                           shared_common_pref.save(Shared_Common_Pref.USER_NAME, name);
+                           shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
+                           shared_common_pref.save(Shared_Common_Pref.USER_PHONE, mobile);
+                       } catch (Exception e) {
+                           e.printStackTrace();
+                       }
+
                    }
 
                 } catch (Exception e) {

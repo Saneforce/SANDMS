@@ -159,11 +159,18 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             orderVal = intent.getStringExtra("orderVal");
             grandTotal.setText(orderVal);
         }
+        String title = "";
+
+        if(editMode ==1)
+            title = "Edit ";
 
         if(orderType ==2)
-            toolHeader.setText("SECONDARY ORDER");
+            title = title+"SECONDARY ORDER";
         else
-            toolHeader.setText("PRIMARY ORDER");
+            title = title+"PRIMARY ORDER";
+
+        toolHeader.setText(title);
+
 //        hsv=findViewById(R.id
 //                .horizontal_scrollview);
         forward=findViewById(R.id.forward);

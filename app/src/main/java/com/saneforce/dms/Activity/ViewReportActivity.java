@@ -55,6 +55,7 @@ import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.PrimaryProductDatabase;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
+import com.saneforce.dms.Utils.TimeUtils;
 import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
@@ -82,6 +83,7 @@ public class ViewReportActivity extends AppCompatActivity {
     String orderDate;
     String formDate;
     String toDate;
+    //secondary or primary
     String OrderType;
 //    String OrderAmt;
 //    String OrderTax;
@@ -101,7 +103,6 @@ public class ViewReportActivity extends AppCompatActivity {
     JSONArray jsonArray;
     TextView tv_order_type;
     LinearLayout ll_order_type;
-    String orderType = "";
     int categoryCode = -1;
     ImageView ib_logout;
     String orderCreatedDateTime= "";
@@ -145,13 +146,7 @@ public class ViewReportActivity extends AppCompatActivity {
         orderDate = intent.getStringExtra("OrderDate");
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
-        if(intent.hasExtra("orderType") && intent.getStringExtra("orderType")!=null){
-            ll_order_type.setVisibility(View.VISIBLE);
-            orderType = intent.getStringExtra("orderType");
-            tv_order_type.setText(orderType);
-        }else {
-            ll_order_type.setVisibility(View.GONE);
-        }
+
 
 
         DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
@@ -236,30 +231,16 @@ public class ViewReportActivity extends AppCompatActivity {
         JSONObject js = new JSONObject();
         try {
 
+
             js.put("OrderID", productId);
-            js.put("StockistCode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
-            js.put("divisionCode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-            js.put("PaymentMode", "Offline");
+            js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("Retcode", custCode);
 
-            String option = "";
-//            if(PaymntMode.equalsIgnoreCase("Offline"))
-//                option = offlineMode.getText().toString();
-
-            js.put("PaymentTypeName", option);
-            js.put("PaymentTypeCode", "");
-            js.put("UTRNumber", "");
-            js.put("Amount", OrderValueTotal);
-            js.put("Attachement", "");
-
-            js.put("PaymentID","");
-            js.put("RazorOrderID", "");
-            js.put("SignatureID", "");
-            js.put("dispatch", "1");
 
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
-            responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
+            responseBodyCall = apiInterface.getDetails("dcr/dispatchsecondaryorder", js.toString());
             Log.v("Payment_Request", responseBodyCall.request().toString());
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -394,13 +375,18 @@ public class ViewReportActivity extends AppCompatActivity {
                         if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
                             total = Constants.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
 
-                        if(jsonObject.has("OrderDate")) {
+                        /*if(jsonObject.has("OrderDate")) {
                             orderCreatedDateTime = jsonObject.getString("OrderDate");
-                           /* if(TimeUtils.compareCurrentAndLoginDate(orderCreatedDateTime) <0)
-                                ib_logout.setVisibility(View.GONE);
-                            else
-                                ib_logout.setVisibility(View.VISIBLE);*/
-                        }
+
+                            try {
+                                if(TimeUtils.hoursDifference(TimeUtils.getDate(TimeUtils.FORMAT3, orderCreatedDateTime), TimeUtils.getDate(TimeUtils.FORMAT3, TimeUtils.getCurrentTime(TimeUtils.FORMAT3)))<24)
+                                    ib_logout.setVisibility(View.VISIBLE);
+                                else
+                                    ib_logout.setVisibility(View.GONE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }*/
 
                         if(jsonObject.has("OrderNo")) {
                             orderNo = jsonObject.getString("OrderNo");
@@ -419,6 +405,26 @@ public class ViewReportActivity extends AppCompatActivity {
                             Delete.setVisibility(View.GONE);
                             ib_logout.setVisibility(View.GONE);
                         }
+
+                        if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
+                                ll_order_type.setVisibility(View.VISIBLE);
+                                String orderType = jsonObject.getString("OrderType");
+
+                                if(orderType.equals("0"))
+                                    orderType = "Field Order";
+                                else
+                                    orderType = "Phone Order";
+
+                                tv_order_type.setText(orderType);
+
+                            }else {
+                                ll_order_type.setVisibility(View.GONE);
+                            }
+                        if(!jsonObject.isNull("Cust_Code")){
+                            custCode =jsonObject.getString("Cust_Code");
+                        }
+
+
                     }
                     mDateReportAdapter = new DateReportAdapter(ViewReportActivity.this, jsonArray);
                     DateRecyclerView.setAdapter(mDateReportAdapter);
@@ -436,22 +442,25 @@ public class ViewReportActivity extends AppCompatActivity {
         });
     }
 
+    String custCode = "";
     public void DeleteOrder() {
         JSONObject js = new JSONObject();
         try {
             js.put("OrderID", productId);
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("Retcode", custCode);
 
             Log.v("JS_VALUE", js.toString());
 
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
 
+            if (OrderType.equalsIgnoreCase("1")) {
+                responseBodyCall = apiInterface.getDetails("dcr/cancelprimaryorder", js.toString());
+            } else {
+                responseBodyCall = apiInterface.getDetails("dcr/cancelsecondaryorder", js.toString());
+            }
 
-            responseBodyCall = apiInterface.getDetails("dcr/cancelprimaryorder", js.toString());
-
-
-            Log.v("ViewDateREquest", responseBodyCall.request().toString());
 
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -677,7 +686,7 @@ public class ViewReportActivity extends AppCompatActivity {
             int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                String qty = "0";
+                String qty = "0", finalPrice = "0", PSaleUnit ="";
 
                 jsonObject = jsonArray.getJSONObject(i);
 
@@ -688,9 +697,12 @@ public class ViewReportActivity extends AppCompatActivity {
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
+                PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
                 String PDiscount = String.valueOf(jsonObject.get("Discount"));
-                String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
+                String PTaxValue = "0";
+                if(jsonObject.has("Tax_value") && !jsonObject.getString("Tax_value").equals(""))
+                    PTaxValue = jsonObject.getString("Tax_value");
+
                 if(jsonObject.has("Conv_Fac"))
                     unitQty = jsonObject.getInt("Conv_Fac");
 
@@ -759,11 +771,173 @@ public class ViewReportActivity extends AppCompatActivity {
 
                 if(!qty.equals("0")){
                     unitQty = getConQty(id);
+                    PSaleUnit = getConQtyName(id);
+
+                    int product_Sale_Unit_Cn_Qty = 1;
+                    if(unitQty!=0)
+                        product_Sale_Unit_Cn_Qty= unitQty;
+                    int tempQty = Integer.parseInt(qty) * product_Sale_Unit_Cn_Qty;
+
+                    PrimaryProduct.SchemeProducts selectedScheme = null;
+                    int previousSchemeCount = 0;
+                    for(PrimaryProduct.SchemeProducts scheme : schemeList){
+                        if(!scheme.getScheme().equals("")) {
+                            int currentSchemeCount = Integer.parseInt(scheme.getScheme());
+                            if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= tempQty){
+                                previousSchemeCount =currentSchemeCount;
+                                selectedScheme = scheme;
+                            }
+                        }
+                    }
+
+                    String discountType = "";
+
+                    double discountValue = 0;
+                    double productAmt = 0;
+                    double schemeDisc = 0;
+//                    String OffFreeUnit = "";
+                    if(selectedScheme != null){
+
+//                        if(selectedScheme.getFree_Unit()!=null)
+//                            OffFreeUnit = selectedScheme.getFree_Unit();
+
+//                        contact.setSelectedScheme(selectedScheme.getScheme());
+//                        contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+//                        contact.setOff_Pro_code(selectedScheme.getProduct_Code());
+//                        contact.setOff_Pro_name(selectedScheme.getProduct_Name());
+//                        contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+
+                        if(!selectedScheme.getDiscount_Type().equals(""))
+                            discountType= selectedScheme.getDiscount_Type();
+                        else
+                            discountType= "%";
+
+
+
+                        String packageType = selectedScheme.getPackage();
+
+                        double freeQty = 0;
+                        double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
+
+                        if(packageType.equals("Y"))
+                            packageCalc = (int)packageCalc;
+
+                        if(!selectedScheme.getFree().equals(""))
+                            freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+
+
+//                        contact.setSelectedFree(String.valueOf((int) freeQty));
+
+
+                        if(PRate!=null && !PRate.equals(""))
+                            productAmt = Double.parseDouble(PRate);
+
+                        if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
+                            schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
+
+                        switch (discountType){
+                            case "%":
+                                discountValue = (productAmt * tempQty) * (schemeDisc/100);
+                                break;
+                            case "Rs":
+                                if(!packageType.equals("Y"))
+                                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                else
+                                    discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                break;
+                            default:
+                                discountValue = 0;
+                        }
+
+//            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
+
+
+//                        if(!discountType.equals("") && discountValue>0){
+//                            contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+//                            contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+//                            contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+
+
+//                        }else {
+//                            contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+//                            contact.setDis_amt("0");
+//                            contact.setSelectedDisValue("0");
+
+//                        }
+
+                    }
+//                    else {
+
+//                        contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+//                        contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+//                        contact.setSelectedScheme("");
+//                        contact.setOff_Pro_code("");
+//                        contact.setOff_Pro_name("");
+//                        contact.setOff_Pro_Unit("");
+//                        contact.setSelectedFree("0");
+
+//                    }
+
+//                    contact.setOff_free_unit(OffFreeUnit);
+
+                    double totalAmt = 0;
+                    double taxPercent = 0;
+                    double taxAmt = 0;
+
+                    try {
+                        totalAmt = Double.parseDouble(PRate) * (Integer.parseInt(qty) *product_Sale_Unit_Cn_Qty);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        taxPercent = Double.parseDouble(PTaxValue);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+
+/*
+                    double itemPrice = 0;
+    */
+/*    if(totalAmt==0)
+            itemPrice = totalAmt;
+        else*//*
+
+                    itemPrice = Double.parseDouble(PRate)*product_Sale_Unit_Cn_Qty;
+*/
+
+                    try {
+                        taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+//                    subTotal = (float) totalAmt;
+//                    valueTotal = (float) taxAmt;
+                    finalPrice = String.valueOf((totalAmt - discountValue) + taxAmt);
 
                 }
-                contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
-                        PSaleUnit, PDiscount, PTaxValue, qty, qty, "0", "0", "0",
-                        schemeList,unitQty, uomList));
+                PrimaryProduct primaryProduct = new PrimaryProduct();
+                primaryProduct.setUID(id);
+                primaryProduct.setPID(PId);
+                primaryProduct.setName(Name);
+                primaryProduct.setPname(PName);
+                primaryProduct.setProduct_Bar_Code(PBarCode);
+                primaryProduct.setUOM(PUOM);
+                primaryProduct.setProduct_Cat_Code(PRate);
+                primaryProduct.setProduct_Sale_Unit(PSaleUnit);
+                primaryProduct.setDiscount(PDiscount);
+                primaryProduct.setTax_Value(PTaxValue);
+                primaryProduct.setQty(qty);
+                primaryProduct.setTxtqty(qty);
+                primaryProduct.setSubtotal(finalPrice);
+                primaryProduct.setDis_amt("0");
+                primaryProduct.setTax_amt("0");
+                primaryProduct.setSchemeProducts(schemeList);
+                primaryProduct.setProduct_Sale_Unit_Cn_Qty(unitQty);
+                primaryProduct.setUOMList(uomList);
+
+                contact.insert(primaryProduct);
 
             }
         } catch (JSONException e) {
@@ -828,6 +1002,27 @@ public class ViewReportActivity extends AppCompatActivity {
 
 
         return conQty;
+    }
+
+    private String getConQtyName(String id) {
+        String conQtyName = "";
+        if(jsonArray!=null && jsonArray.length()>0){
+            for(int i = 0; i< jsonArray.length(); i++){
+                try {
+                    if(jsonArray.getJSONObject(i).getString("Product_Code").equals(id)){
+                        conQtyName = jsonArray.getJSONObject(i).getString("unit");
+
+                        break;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        return conQtyName;
     }
 
 

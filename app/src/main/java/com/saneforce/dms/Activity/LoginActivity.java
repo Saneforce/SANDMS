@@ -353,6 +353,11 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                         shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
+
+                        shared_common_pref.save(Shared_Common_Pref.USER_NAME, Sf_Name);
+//                        shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
+                        shared_common_pref.save(Shared_Common_Pref.USER_PHONE, StckLstMb);
+
                         TimeUtils.addLoginDate(DMSApplication.getApplication());
                         startActivity(intent);
                         finish();

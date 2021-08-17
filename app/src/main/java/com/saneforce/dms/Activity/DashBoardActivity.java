@@ -63,7 +63,7 @@ public class DashBoardActivity extends AppCompatActivity {
     Gson gson;
     Common_Class mCommon_class;
     ImageView imagView,profilePic, ib_logout;
-    PrimaryProductViewModel mPrimaryProductViewModel;
+//    PrimaryProductViewModel mPrimaryProductViewModel;
     RelativeLayout profileLayout;
 
     DBController dbController;

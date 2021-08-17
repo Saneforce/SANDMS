@@ -19,6 +19,7 @@ public class TimeUtils {
 
     private static final String TAG = TimeUtils.class.getSimpleName();
     public static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMAT3 = "dd/MM/yyyy HH:mm:ss";
     public static final String FORMAT1 = "yyyy-MM-dd";
     public static final String FORMAT2 = "dd/MM/yyyy";
 
@@ -111,6 +112,37 @@ public class TimeUtils {
 
         return 1;
 
+    }
+
+    public static int hoursDifference(Date date1, Date date2) {
+
+        final int MILLI_TO_HOUR = 1000 * 60 * 60;
+        return (int) (date2.getTime() - date1.getTime()) / MILLI_TO_HOUR;
+    }
+
+    public static Date getDate(String format, String dateString) {
+
+        SimpleDateFormat formatter1=new SimpleDateFormat(format, Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = formatter1.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static String changeFormat(String fromFormat, String toFormat, String dateString) {
+
+        SimpleDateFormat sdffromFormat=new SimpleDateFormat(fromFormat, Locale.ENGLISH);
+        SimpleDateFormat sdftoFormat=new SimpleDateFormat(toFormat, Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = sdffromFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return sdftoFormat.format(date);
     }
 
 

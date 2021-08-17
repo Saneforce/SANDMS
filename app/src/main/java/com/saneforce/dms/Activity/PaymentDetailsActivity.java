@@ -86,8 +86,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
     Common_Model mCommon_model_spinner;
     int Amount;
     Double AMOUNTFINAL ;
-    SoapPrimitive resultString;
-    JSONObject jsonObjectRazorpay;
+//    SoapPrimitive resultString;
+//    JSONObject jsonObjectRazorpay;
     String TAG = "Response";
 
     LinearLayout ll_date;
@@ -304,7 +304,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("Attachement", str);
             js.put("dispatch", "0");
             if(PaymntMode.equalsIgnoreCase("Offline")){
-                js.put("cheque_date", tv_date.getText().toString());
+                js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
                 js.put("cheque_amount", et_amount.getText().toString());
             }else {
                 js.put("cheque_date", "");
@@ -323,7 +323,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
             responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
-            Log.v("Payment_Request", responseBodyCall.request().toString());
+//            Log.v("Payment_Request", responseBodyCall.request().toString());
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -397,7 +397,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Log.i(TAG, "doInBackground");
             if(getOnlinePaymentOrderId()){
 
-                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(AmountValue));
+                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(AmountValue))));
 
 
                 try {
@@ -407,7 +407,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
 //                    "O0wqElBi2A5HUrb2MkbyeNQ4");
                         JSONObject orderRequest = new JSONObject();
-                        orderRequest.put("amount", AMOUNTFINAL); // amount in the smallest currency unit AmountValue*100
+                        orderRequest.put("amount", Math.ceil(AMOUNTFINAL)); // amount in the smallest currency unit AmountValue*100
                         orderRequest.put("currency", "INR");
                         orderRequest.put("receipt", OrderIDValue);
 
@@ -599,7 +599,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         Log.v("samout",samount);
 
         // rounding off the amount.
-        int amount = Math.round(Float.parseFloat(samount) * 100);
+        double amount = Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(samount))) * 100;
 
         // initialize Razorpay account.
         Checkout checkout = new Checkout();
@@ -607,7 +607,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         //  checkout.setKeyID("rzp_live_ILgsfZCZoFIKMb");
         //  checkout.setKeyID("rzp_test_JOC0wRKpLH1cVW");//demo
         //  checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
-        checkout.setKeyID("rzp_live_z2t2tkpQ8YERR0");
+        checkout.setKeyID(keyID);
 
         // set image
         checkout.setImage(R.drawable.ic_search_icon);
@@ -615,8 +615,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
         // initialize json object
         JSONObject object = new JSONObject();
         try {
+            Shared_Common_Pref shared_common_pref = new Shared_Common_Pref(this);
+
             // to put name
-            object.put("name", "Govind Milk");
+            object.put("name", shared_common_pref.getvalue1(Shared_Common_Pref.USER_NAME));
             object.put("order_id", orderId);
             // put description
             // object.put("description", "Test payment");
@@ -632,9 +634,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
             // put mobile number
             // object.put("prefill.contact", "9790844143");
-            object.put("prefill.contact", "8939747663");
+            object.put("prefill.contact", shared_common_pref.getvalue1(Shared_Common_Pref.USER_PHONE));
             // put email
-            object.put("prefill.email", "apps@gmail.com");
+            object.put("prefill.email", shared_common_pref.getvalue1(Shared_Common_Pref.USER_EMAIL));
 
             // open razorpay to checkout activity
             checkout.open(PaymentDetailsActivity.this, object);
@@ -696,6 +698,16 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
+//        {"error":{"code":"BAD_REQUEST_ERROR","description":"Payment processing cancelled by user",
+//                "source":"customer","step":"payment_authentication","reason":"payment_cancelled"}}
+        Log.d(TAG, "onPaymentError: s "+ s);
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject errorObject = jsonObject.getJSONObject("error");
+            s  = errorObject.getString("description");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Toast.makeText(PaymentDetailsActivity.this, s, Toast.LENGTH_SHORT).show();
         paymentCompleted(false);
 

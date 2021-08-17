@@ -406,8 +406,9 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
             stockReportObject.put("f_key", fkeyStock);
-            fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
             stockReportObject.put("PhoneOrderTypes", PhoneOrderTypes);
+
+            fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
             stockReportObjectArray.put("Activity_Stockist_Report", stockReportObject);
 
 
@@ -789,8 +790,8 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
             stockReportObject.put("f_key", fkeyStock);
+
             fkeyStock.put("Activity_Report_Code", "'Activity_Report_APP'");
-            stockReportObject.put("PhoneOrderTypes", PhoneOrderTypes);
             stockReportObjectArray.put("Activity_Stockist_Report", stockReportObject);
 
 
@@ -1001,6 +1002,8 @@ public class ViewCartActivity extends AppCompatActivity {
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("Remark", shared_common_pref.getvalue1("Remarks"));
             js.put("orderNo", orderNo);
+            js.put("PhoneOrderTypes", PhoneOrderTypes);
+
             if(!orderNo.equals(""))
                 js.put("isExistingOrder", "true");
             JsonArryProceed.put(js);
@@ -1014,7 +1017,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
 
         sendArray = new JSONArray();
-        /*sendArray.put(reportObjectArray);
+      /*  sendArray.put(reportObjectArray);
         sendArray.put(stockReportObjectArray);*/
         sendArray.put(PersonObjectArray);
         /* sendArray.put(sampleReportObjectArray);
@@ -1052,7 +1055,6 @@ public class ViewCartActivity extends AppCompatActivity {
                 }
             });
 
-            Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
         } else {
             finish();

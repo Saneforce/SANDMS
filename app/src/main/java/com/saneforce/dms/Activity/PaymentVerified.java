@@ -23,6 +23,7 @@ import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -190,7 +191,11 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             jsonObject = (JSONObject) jsonArray.get(position);
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
-            String Amount = String.valueOf(jsonObject.get("Order_Value"));
+            String Amount = "0";
+            if(jsonObject.has("Order_Value") && !jsonObject.getString("Order_Value").equals("") )
+            Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
+            holder.orderValue.setText(Amount);
+
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
@@ -199,7 +204,6 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
 
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
-            holder.orderValue.setText(Amount);
             holder.orderDistributor.setText(Stockist_Name);
             holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
             if(Payment_Option.equals("Offline")){
@@ -217,9 +221,9 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             holder.tv_invoice_amount.setText(invoiceAmt);*/
 
             String paidAmt = "0";
-            if(!jsonObject.isNull("Amount")){
-                paidAmt = jsonObject.getString("Amount");
-            }
+            if(jsonObject.has("Amount") && !jsonObject.getString("Amount").equals(""))
+                paidAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Amount"));
+
             holder.tv_paid_amount.setText(paidAmt);
 
 

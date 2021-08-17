@@ -54,8 +54,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         else
             fruitViewHolder.tv_address.setVisibility(View.GONE);
 
-        if(contact.getFlag()!=null && contact.getFlag().equals("1"))
+        if(contact.getFlag()!=null && !contact.getFlag().equals("") && !contact.getFlag().equalsIgnoreCase("flag")){
+            fruitViewHolder.tv_scheme.setText(contact.getFlag());
             fruitViewHolder.tv_scheme.setVisibility(View.VISIBLE);
+        }
         else
             fruitViewHolder.tv_scheme.setVisibility(View.GONE);
     }

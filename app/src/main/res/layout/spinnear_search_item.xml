@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end|center_vertical">
+                android:gravity="end|center_vertical"
+                android:paddingBottom="4dp">
 
                 <TextView
                     android:id="@+id/tv_address"
@@ -39,7 +40,7 @@
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="No. 1, sdf ksfdsf"
+                    android:text="No. 1, "
                     android:textSize="14sp"
                     />
 
@@ -48,13 +49,13 @@
                         android:id="@+id/tv_scheme"
                         android:padding="3dp"
                         android:gravity="end"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|bottom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/textColor"
                         android:background="@color/golden_scheme"
-                        android:text="Golden"
-                        android:visibility="gone"
+                        android:text="GOLDEN SCHEME"
+                        android:visibility="visible"
                         android:textSize="14sp"/>
 
             </LinearLayout>
