@@ -250,7 +250,7 @@ public class ViewReportActivity extends AppCompatActivity {
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
-            responseBodyCall = apiInterface.getDetails("dcr/dispatchsecondaryorder", js.toString());
+            responseBodyCall = apiInterface.getDetails("dcr/dispatchsecondaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
             Log.v("Payment_Request", responseBodyCall.request().toString());
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -359,7 +359,7 @@ public class ViewReportActivity extends AppCompatActivity {
         }
 
 
-        Log.v("ViewDateREquest", responseBodyCall.request().toString());
+//        Log.v("ViewDateREquest", responseBodyCall.request().toString());
 
         responseBodyCall.enqueue(new Callback<JsonObject>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -465,9 +465,9 @@ public class ViewReportActivity extends AppCompatActivity {
             Call<JsonObject> responseBodyCall;
 
             if (OrderType.equalsIgnoreCase("1")) {
-                responseBodyCall = apiInterface.getDetails("dcr/cancelprimaryorder", js.toString());
+                responseBodyCall = apiInterface.getDetails("dcr/cancelprimaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
             } else {
-                responseBodyCall = apiInterface.getDetails("dcr/cancelsecondaryorder", js.toString());
+                responseBodyCall = apiInterface.getDetails("dcr/cancelsecondaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
             }
 
 
@@ -476,7 +476,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     JsonObject jsonObject = response.body();
-                    Log.v("DELETE_RESPONSE", jsonObject.toString());
+//                    Log.v("DELETE_RESPONSE", jsonObject.toString());
                     if (jsonObject.get("success").toString().equalsIgnoreCase("true")){
                         Toast.makeText(ViewReportActivity.this, "Order Deleted Successfully", Toast.LENGTH_SHORT).show();
                         finish();

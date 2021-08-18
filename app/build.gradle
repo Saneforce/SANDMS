@@ -131,9 +131,9 @@ dependencies {
     //okhttplibrry
     implementation "com.squareup.okhttp3:okhttp:3.4.1"
 
-    implementation 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
+//    implementation 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
 
-    implementation 'com.madgag:scpkix-jdk15on:1.47.0.1'
+//    implementation 'com.madgag:scpkix-jdk15on:1.47.0.1'
     implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.0.6'
 
 

@@ -24,8 +24,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 
 import com.google.gson.Gson;
@@ -36,7 +34,6 @@ import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Interface.PrimaryProductDao;
 import com.saneforce.dms.Model.PrimaryProduct;
-import com.saneforce.dms.Model.SecondaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
@@ -44,8 +41,6 @@ import com.saneforce.dms.Utils.Common_Model;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.CustomListViewDialog;
 import com.saneforce.dms.Utils.PrimaryProductDatabase;
-import com.saneforce.dms.Utils.PrimaryProductDatabase;
-import com.saneforce.dms.Utils.SecondaryProductViewModel;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
@@ -490,7 +485,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             }else {
                 ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-                Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
+                Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
 
                 Log.v("REQUEST_VALUE", call.request().toString());
                 call.enqueue(new Callback<JsonObject>() {
@@ -634,7 +629,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
             }else {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", js.toString());
+            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit",shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
 
             Log.v("REQUEST_VALUE", call.request().toString());
             call.enqueue(new Callback<JsonObject>() {
