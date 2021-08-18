@@ -67,7 +67,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     List<Common_Model> modelTemplates = new ArrayList<>();
     ArrayList<String> oderTypeList;
     Common_Model mCommon_model_spinner;
-    CustomListViewDialog customDialog;
+    CustomListViewDialog customDialog9, customDialog123, customDialog10;
     TextView txtOrder, txtRtNme, txtRtAdd;
     LinearLayout linRtDetails;
     Shared_Common_Pref shared_common_pref;
@@ -81,7 +81,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //    , txtReamrks, txtDistributor, txtMobileTwo
 //    SecondaryProductViewModel SecViewModel;
     DBController dbController;
-    int PhoneOrderTypes = -1;
+    int PhoneOrderTypes = 0;
     TextView tv_sch_enrollment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +116,23 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //                Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
         }*/
 
+        oderTypeList = new ArrayList<>();
+        oderTypeList.add("Phone Order");
+        oderTypeList.add("Field Order");
+        for (int i = 0; i < oderTypeList.size(); i++) {
+            String id = String.valueOf(oderTypeList.get(i));
+            String name = oderTypeList.get(i);
+            mCommon_model_spinner = new Common_Model(id, name, "flag");
+            listOrderType.add(mCommon_model_spinner);
+        }
+        customDialog9 = new CustomListViewDialog(SecondRetailerActivity.this, listOrderType, 9);
+
+        txtOrder.setText(oderTypeList.get(1));
+
+        /*Window window = customDialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);*/
+
         TextView toolHeader = findViewById(R.id.toolbar_title);
             toolHeader.setText("Select Retailer");
         ImageView imagView = findViewById(R.id.toolbar_back);
@@ -127,7 +144,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             }
         });
 
-        Log.v("SHARED_PREFERNCE", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+//        Log.v("SHARED_PREFERNCE", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -139,7 +156,6 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
     public void OrderType(View v) {
-        listOrderType.clear();
         OrderType();
     }
 
@@ -187,28 +203,16 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
     public void TemplatesValue(View v) {
-        customDialog = new CustomListViewDialog(SecondRetailerActivity.this, modelTemplates, 123);
-        Window window = customDialog.getWindow();
+        customDialog123 = new CustomListViewDialog(SecondRetailerActivity.this, modelTemplates, 123);
+        Window window = customDialog123.getWindow();
         window.setGravity(Gravity.CENTER);
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        customDialog.show();
+        customDialog123.show();
     }
 
     public void OrderType() {
-        oderTypeList = new ArrayList<>();
-        oderTypeList.add("Phone Order");
-        oderTypeList.add("Field Order");
-        for (int i = 0; i < oderTypeList.size(); i++) {
-            String id = String.valueOf(oderTypeList.get(i));
-            String name = oderTypeList.get(i);
-            mCommon_model_spinner = new Common_Model(id, name, "flag");
-            listOrderType.add(mCommon_model_spinner);
-        }
-        customDialog = new CustomListViewDialog(SecondRetailerActivity.this, listOrderType, 9);
-        Window window = customDialog.getWindow();
-        window.setGravity(Gravity.CENTER);
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        customDialog.show();
+        if(customDialog9!=null)
+        customDialog9.show();
     }
 
     public void AddRetailer(View v) {
@@ -216,11 +220,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
     public void RetailerDetails() {
-        customDialog = new CustomListViewDialog(SecondRetailerActivity.this, RetailerType, 10);
-        Window window = customDialog.getWindow();
+        customDialog10 = new CustomListViewDialog(SecondRetailerActivity.this, RetailerType, 10);
+        Window window = customDialog10.getWindow();
         window.setGravity(Gravity.CENTER);
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        customDialog.show();
+        customDialog10.show();
     }
 
     public void RetailerType() {
@@ -278,8 +282,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     @Override
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
-        customDialog.dismiss();
+
         if (type == 9) {
+            if(customDialog9!=null && customDialog9.isShowing())
+                customDialog9.dismiss();
+
             txtOrder.setText(myDataset.get(position).getName());
             if(position ==0)
                 PhoneOrderTypes =1;
@@ -287,11 +294,17 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 PhoneOrderTypes =0;
 
         } else if (type == 10) {
+            if(customDialog10!=null && customDialog10.isShowing())
+                customDialog10.dismiss();
+
             txtRtNme.setText(myDataset.get(position).getName());
             linRtDetails.setVisibility(View.VISIBLE);
             retailerId = myDataset.get(position).getId();
             RetailerViewDetailsMethod(retailerId);
         } else if (type == 123) {
+            if(customDialog123!=null && customDialog123.isShowing())
+                customDialog123.dismiss();
+
             editRemarks.setText(myDataset.get(position).getName());
             editRemarks.setSelection(editRemarks.getText().toString().length());
         }
@@ -299,9 +312,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     public void SaveSecndry(View v) {
         if (txtOrder.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Order", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Select Order Type", Toast.LENGTH_SHORT).show();
         } else if (txtRtNme.getText().toString().equals("")) {
-            Toast.makeText(this, "Enter Retailer Name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Select Retailer Name", Toast.LENGTH_SHORT).show();
         } /*else if (editRemarks.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Remarks", Toast.LENGTH_SHORT).show();
         }*/ else {

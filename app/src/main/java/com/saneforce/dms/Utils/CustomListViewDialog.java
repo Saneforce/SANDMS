@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.saneforce.dms.Adapter.DataAdapter;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.R;
@@ -32,13 +31,13 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
     public CustomListViewDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
     }
-public Context context;
+    public Context context;
     public Activity activity;
     EditText searchView;
     RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     //RecyclerView.Adapter adapter;
-    DataAdapter da;
+    public DataAdapter da;
     int type;
     List<Common_Model> mDataset;
     public Button no;
@@ -59,7 +58,7 @@ public Context context;
         super(applicationContext);
 
         this. context= applicationContext;
-       this.type = i;
+        this.type = i;
         //this.adapter = adapter;
         this.mDataset =productCodeOffileData;
 

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Model.ReportModel;
 import com.saneforce.dms.R;
+import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,6 +29,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
     String OrderTakenbyFilter;
     TextView textTotalValue;
     String orderType;
+    Shared_Common_Pref shared_common_pref;
 
     public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue, String orderType) {
         this.context = context;
@@ -36,6 +38,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
         this.OrderTakenbyFilter=ordertakenbyFilter;
         this.textTotalValue=textTotalValue;
         this.orderType=orderType;
+        shared_common_pref = new Shared_Common_Pref(context);
     }
 
     @NonNull
@@ -175,7 +178,14 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
 
         @Override
         public void onClick(View v) {
-            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type());
+            String editOrder = "0";
+
+                if(mDate.get(getAdapterPosition()).getSfCode()!=null && shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code).equals(mDate.get(getAdapterPosition()).getSfCode())){
+                    editOrder = "1";
+                }else{
+                    editOrder = "0";
+                }
+            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type(), editOrder);
         }
     }
 }

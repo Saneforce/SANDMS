@@ -368,7 +368,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                     position = getCategoryPosition(categoryCode);
 
                     try {
-                        LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
+                        LinearLayoutManager llm = (LinearLayoutManager) priCategoryRecycler.getLayoutManager();
                         llm.scrollToPositionWithOffset(position, priCateAdapter.jsonArray.length());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -389,6 +389,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(this, ""+ e.toString(), Toast.LENGTH_SHORT).show();
+
             }
         }else
             Toast.makeText(this, "Empty Data", Toast.LENGTH_SHORT).show();

@@ -22,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +33,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.google.gson.Gson;
 import com.itextpdf.text.Document;
@@ -54,6 +52,7 @@ import com.saneforce.dms.Model.ReportModel;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Model;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.CustomListViewDialog;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
@@ -66,7 +65,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +83,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     private int mYear, mMonth, mDay, mHour, mMinute;
     ReportViewAdapter mReportViewAdapter;
     RecyclerView mReportList;
-    ArrayList<Float> mArrayList;
+//    ArrayList<Float> mArrayList;
     Shared_Common_Pref shared_common_pref;
     Integer Count = 0;
     List<Common_Model> modeOrderData = new ArrayList<>();
@@ -109,7 +107,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 //    ImageView filter;
 
 //    List<ReportModel> mDReportModels = new ArrayList<>();
-
+List<ReportModel> filteredList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +117,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         toolbar_top.setVisibility(View.VISIBLE);
 
         totalLayout=findViewById(R.id.totalLayout);
-       // filter=findViewById(R.id.toolbar_filter);
+        // filter=findViewById(R.id.toolbar_filter);
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
         Count = getIntent().getIntExtra("count", 100);
@@ -127,7 +125,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         OrderType = shared_common_pref.getvalue("OrderType");
         Log.v("OrderType", OrderType);
 
-        mArrayList = new ArrayList<>();
+//        mArrayList = new ArrayList<>();
         txtTotalValue = (TextView) findViewById(R.id.total_value);
         getToolbar();
         txtOrderStatus=findViewById(R.id.txt_orderstatus);
@@ -154,9 +152,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 */
         if (Count == 1) {
 
-           // DateFormat dff= new SimpleDateFormat("dd-MM-yyyy");
+            // DateFormat dff= new SimpleDateFormat("dd-MM-yyyy");
 
-           // FReport= dff.format(FReport);
+            // FReport= dff.format(FReport);
             //TReport=dff.format(TReport);
             fromBtn.setText("" + FReport);
             toBtn.setText("" + TReport);
@@ -166,7 +164,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             //DateFormat dff= new SimpleDateFormat("dd-MM-yyyy");
 
             //FReport= dff.format(FReport);
-          //  TReport=dff.format(TReport);
+            //  TReport=dff.format(TReport);
             fromBtn.setText("" + dateTime);
             toBtn.setText("" + dateTime);
             fromDateString = dateTime;
@@ -187,7 +185,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                                mArrayList.clear();
+//                                mArrayList.clear();
 //                                OrderStatusList.clear();
                                 modeOrderData.clear();
                                 orderTakenByFilter = "All";
@@ -213,8 +211,8 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                         toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        mArrayList.clear();
-  //                      OrderStatusList.clear();
+//                        mArrayList.clear();
+//                      OrderStatusList.clear();
                         modeOrderData.clear();
                         orderTakenByFilter = "All";
                         txtOrderStatus.setText(orderTakenByFilter);
@@ -232,45 +230,61 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         mReportList.setLayoutManager(layoutManager);
 
 
+
+
+
+        OrderStatusList=new ArrayList<>();
+        OrderStatusList.add("All");
+        /*OrderStatusList.add("Order Dispatched");
+
+        if(OrderType.equals("2")){
+            OrderStatusList.add("Dispatch Pending");
+
+        }else {
+            OrderStatusList.add("Payment Pending");
+            OrderStatusList.add("Payment Verified");
+            OrderStatusList.add("Payment Done");
+            OrderStatusList.add("Credit Raised");
+            OrderStatusList.add("Credit Verified");
+            OrderStatusList.add("Credit Dispatched");
+
+        }*/
+        updateFilterList();
+
+
+        customDialog = new CustomListViewDialog(ReportActivity.this,modeOrderData, 11);
+//        Window window = customDialog.getWindow();
+//        window.setGravity(Gravity.CENTER);
+//        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+//        customDialog.show();
+
+
         linearOrderMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                modeOrderData.clear();
-
-                OrderStatusList=new ArrayList<>();
-                OrderStatusList.add("All");
-                OrderStatusList.add("Order Dispatched");
-
-                if(OrderType.equals("2")){
-                    OrderStatusList.add("Order Pending");
-
-                }else {
-                    OrderStatusList.add("Payment Pending");
-                    OrderStatusList.add("Payment Verified");
-                    OrderStatusList.add("Payment Done");
-                    OrderStatusList.add("Credit Raised");
-                    OrderStatusList.add("Credit Verified");
-                    OrderStatusList.add("Credit Dispatched");
-
-                }
-
-                for (int i = 0; i < OrderStatusList.size(); i++) {
-                    String id = String.valueOf(OrderStatusList.get(i));
-                    String name = OrderStatusList.get(i);
-                    mCommon_model_spinner = new Common_Model(id, name, "flag");
-                    modeOrderData.add(mCommon_model_spinner);
-                }
-
-
-                customDialog = new CustomListViewDialog(ReportActivity.this,modeOrderData, 11);
-                Window window = customDialog.getWindow();
-                window.setGravity(Gravity.CENTER);
-                window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                customDialog.show();
+                if(customDialog!=null)
+                    customDialog.show();
             }
         });
 
 
+    }
+
+    private void updateFilterList() {
+        modeOrderData.clear();
+        for (int i = 0; i < OrderStatusList.size(); i++) {
+            String id = String.valueOf(OrderStatusList.get(i));
+            String name = OrderStatusList.get(i);
+            mCommon_model_spinner = new Common_Model(id, name, "flag");
+            modeOrderData.add(mCommon_model_spinner);
+        }
+
+        try {
+            if(customDialog!=null)
+                customDialog.da.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -334,7 +348,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            onBackPressed();
+                onBackPressed();
 //                startActivity(new Intent(getApplicationContext(), ReportDashBoard.class));
 
             }
@@ -366,14 +380,64 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onResponse(Call<ReportDataList> call, Response<ReportDataList> response) {
                 ReportDataList mReportActivities = response.body();
-                Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
                 //  List<ReportModel> mDReportModels;
                 List<ReportModel> mDReportModels = new ArrayList<>();
                 if (mReportActivities != null) {
 
-                if (mReportActivities.getData() != null)
-                    mDReportModels = mReportActivities.getData();
+                    if (mReportActivities.getData() != null)
+                        mDReportModels = mReportActivities.getData();
                     String ordervalue = "0";
+
+                    switch (orderTakenByFilter){
+                        case "Payment Pending" :
+                            if (mReportActivities.getPaymentPending() != null && !mReportActivities.getPaymentPending().equals(""))
+                                ordervalue = String.valueOf(mReportActivities.getPaymentPending());
+                            break;
+                        case "Payment Verified" :
+
+                            if(mReportActivities.getPaymentVerified()!=null && !mReportActivities.getPaymentVerified().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getPaymentVerified());
+
+                            break;
+                        case "Credit Verified" :
+                            if(mReportActivities.getCreditVerified()!=null && !mReportActivities.getCreditVerified().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getCreditVerified());
+
+                            break;
+                        case "Order Dispatched" :
+                            if(mReportActivities.getOrderDispatched()!=null && !mReportActivities.getOrderDispatched().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getOrderDispatched());
+
+                            break;
+                        case "Credit Dispatched" :
+                            if(mReportActivities.getCreditDispatched()!=null && !mReportActivities.getCreditDispatched().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getCreditDispatched());
+                            break;
+                        case "Payment Done" :
+                            if(mReportActivities.getPaymentDone()!=null && !mReportActivities.getPaymentDone().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getPaymentDone());
+                            break;
+                        case "Credit Raised" :
+                            if(mReportActivities.getCreditRaised()!=null && !mReportActivities.getCreditRaised().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getCreditRaised());
+                            break;
+                        case "Dispatch Pending" :
+                            if(mReportActivities.getDispatchPending()!=null && !mReportActivities.getDispatchPending().equals("0"))
+                                ordervalue = String.valueOf(mReportActivities.getDispatchPending());
+                            break;
+                        default:
+                            ordervalue = "0";
+                    }
+
+
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff = bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . " + totalroundoff);
+
+
+/*
+
                 if (orderTakenByFilter.equalsIgnoreCase("Payment Pending")) {
 
                     if (mReportActivities.getPaymentPending() != null && !mReportActivities.getPaymentPending().equals(""))
@@ -440,65 +504,106 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                     txtTotalValue.setText("Rs . " + totalroundoff);
                     //  txtTotalValue.setText("Rs . "+ ordervalue);
                     Log.e("pay15", ""+ ordervalue);
+                } else if (orderTakenByFilter.equalsIgnoreCase("Dispatch Pending")) {
+                    if(mReportActivities.getDispatchPending()!=null && !mReportActivities.getDispatchPending().equals("0"))
+                        ordervalue = String.valueOf(mReportActivities.getDispatchPending());
+                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
+                    double totalroundoff = bd.doubleValue();
+
+                    txtTotalValue.setText("Rs . " + totalroundoff);
+                    //  txtTotalValue.setText("Rs . "+ ordervalue);
+                    Log.e("pay15", ""+ ordervalue);
                 } else {
 
                     txtTotalValue.setText("Rs.0");
+                }*/
                 }
-            }
-               try
-               {
 
-                   Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
-                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
-                    JSONObject JsonObject;
+                try
+                {
+
+//                    Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
+//                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
+//                    JSONObject JsonObject;
                     modeOrderData.clear();
-                   Float intSum = Float.valueOf(0);
-                //  String order=mReportActivities.getPayment_Pending();
+                    filteredList.clear();
+                    Float intSum = 0f;
+                    //  String order=mReportActivities.getPayment_Pending();
+                    OrderStatusList.clear();
+                    OrderStatusList.add("All");
+
+                    if(mDReportModels!=null){
+                        for(ReportModel r : mDReportModels){
+                            if(orderTakenByFilter.equalsIgnoreCase("All") || r.getOrderStatus().equalsIgnoreCase(orderTakenByFilter))
+                                filteredList.add(r);
+
+                            if(orderTakenByFilter.equalsIgnoreCase("All") || orderTakenByFilter.equalsIgnoreCase(r.getOrderStatus())){
+
+                                Float orderValue= null;
+                                if (r.getOrderValue()!=null && !r.getOrderValue().equals("")  && !r.getOrderValue().equals("null") ) {
+                                    orderValue = Float.valueOf(r.getOrderValue());
+                                    intSum = intSum +orderValue;
+                                }
+
+                            }
+
+
+                            String orderStatus = "";
+                            if(r.getOrderStatus()!=null && !r.getOrderStatus().equals("")  && !r.getOrderStatus().equals("null") ){
+                                orderStatus = r.getOrderStatus();
+                                if(!OrderStatusList.contains(orderStatus))
+                                    OrderStatusList.add(orderStatus);
+                            }
 
 
 
+                        }
 
-                   for (int l = 0; l < jsonArray.length(); l++) {
+                        txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
+
+                    }
+/*                    for (int l = 0; l < jsonArray.length(); l++) {
                         JsonObject = jsonArray.getJSONObject(l);
-                       String orderStatus = "";
-                       if(JsonObject.has("Order_Status"))
-                        orderStatus = JsonObject.getString("Order_Status");
-                        Log.e("datareportmodels", String.valueOf(mReportActivities.getData()));
+                        String orderStatus = "";
+                        if(!JsonObject.isNull("Order_Status") && !JsonObject.getString("Order_Status").equals("")){
+                            orderStatus = JsonObject.getString("Order_Status");
+                            if(!OrderStatusList.contains(orderStatus))
+                                OrderStatusList.add(orderStatus);
+                        }
+
                         Float orderValue= Float.valueOf(JsonObject.getString("Order_Value"));
-                        Log.v("JSON_OBEJCTSvalue" +
-                                "",orderValue.toString());
 
-
-                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
+                        if (orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
                             mDReportModels=mReportActivities.getData();
 
-                        } else if(orderTakenByFilter.equals("All")||orderTakenByFilter.equalsIgnoreCase("All")) {
+                        } else if(orderTakenByFilter.equalsIgnoreCase("All")) {
                             mDReportModels=mReportActivities.getData();
 
-                          intSum = intSum +orderValue;
+                            intSum = intSum +orderValue;
 
-                           txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
+                            txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
 
                         }else{
                             mDReportModels=mReportActivities.getData();
                         }
-                    }
-
+                    }*/
+                    updateFilterList();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-               try {
+/*                try {
 
-                   for (int i = 0; i < mDReportModels.size(); i++) {
-                       Log.e("data", String.valueOf(mDReportModels.get(i).getOrderValue()));
-                       mArrayList.add(Float.valueOf((mDReportModels.get(i).getOrderValue())));
+                    for (int i = 0; i < mDReportModels.size(); i++) {
+                        Log.e("data", String.valueOf(mDReportModels.get(i).getOrderValue()));
+                        mArrayList.add(Float.valueOf((mDReportModels.get(i).getOrderValue())));
 
-                   }
-               }catch (Exception ee){
+                    }
+                }catch (Exception ee){
                     ee.printStackTrace();
-               }
-                Log.v("DATA_COMING", new Gson().toJson(mDReportModels));
-              //  Float intSum = Float.valueOf(0);
+                }
+                Log.v("DATA_COMING", new Gson().toJson(mDReportModels));*/
+
+                //  Float intSum = Float.valueOf(0);
 //                try {
 //                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
 //                    JSONObject JsonObjects;
@@ -546,11 +651,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 //                }
 
                 //Float intSum = Float.valueOf(mArrayList.stream().mapToLong(Float::longValue).sum());
-               // txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));//working code commented jul 15
-              //  Log.e("Total_Value", String.valueOf(intSum));
-                mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, mDReportModels, new DMS.ViewReport() {
+                // txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));//working code commented jul 15
+                //  Log.e("Total_Value", String.valueOf(intSum));
+                mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
                     @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType) {//,String TaxValue,String Tax
+                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder) {//,String TaxValue,String Tax
                         Intent intnet = new Intent(ReportActivity.this, ViewReportActivity.class);
                         intnet.putExtra("ProductID", productId);
                         intnet.putExtra("OrderDate", orderDate);
@@ -558,6 +663,9 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         intnet.putExtra("ToDate", toBtn.getText().toString());
                         intnet.putExtra("OderValue", OrderValue);
                         intnet.putExtra("orderType", orderType);
+                        intnet.putExtra("editOrder", editOrder);
+
+
 
                         startActivity(intnet);
                         //  finish();
@@ -569,6 +677,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             @Override
             public void onFailure(Call<ReportDataList> call, Throwable t) {
                 t.printStackTrace();
+                Toast.makeText(ReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -584,12 +693,12 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
         customDialog.dismiss();
         if (type == 11) {
-           txtOrderStatus.setText(myDataset.get(position).getName());
-           orderTakenByFilter=myDataset.get(position).getName();
-           Log.e("order filter",orderTakenByFilter);
+            txtOrderStatus.setText(myDataset.get(position).getName());
+            orderTakenByFilter=myDataset.get(position).getName();
+            Log.e("order filter",orderTakenByFilter);
 
             ViewDateReport(orderTakenByFilter);
-            mArrayList.clear();
+//            mArrayList.clear();
 
         }
     }
@@ -615,7 +724,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     String fileName = "";
     private void saveBitmap(Bitmap bitmap) {
 
-            fileName  = String.valueOf(System.currentTimeMillis());
+        fileName  = String.valueOf(System.currentTimeMillis());
 
         dirpath = android.os.Environment.getExternalStorageDirectory().toString();
         File file = null;
@@ -694,13 +803,14 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                 if(report.areAllPermissionsGranted()){
 
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
-                }
+                }else
+                    Toast.makeText(ReportActivity.this, "Please enable storage permission to share pdf", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-
+                permissionToken.continuePermissionRequest();
             }
 
         }).check();

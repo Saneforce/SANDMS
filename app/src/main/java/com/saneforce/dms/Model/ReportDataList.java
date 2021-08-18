@@ -64,6 +64,19 @@ public class ReportDataList {
     @SerializedName("Credit Dispatched")
     @Expose
     private String creditDispatched;
+
+    @SerializedName("Dispatch Pending")
+    @Expose
+    private String dispatchPending;
+
+    public String getDispatchPending() {
+        return dispatchPending;
+    }
+
+    public void setDispatchPending(String dispatchPending) {
+        this.dispatchPending = dispatchPending;
+    }
+
     public String getPaymentVerified() {
         return paymentVerified;
     }
@@ -95,11 +108,6 @@ public class ReportDataList {
     public void setPaymentPending(String paymentPending) {
         this.paymentPending = paymentPending;
     }
-
-
-
-
-
 
 
 }

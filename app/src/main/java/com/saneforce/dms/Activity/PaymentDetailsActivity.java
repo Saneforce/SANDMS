@@ -75,8 +75,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String orderIDRazorpay;
     String razorpay_payment_id="";
     String razorpay_response="";
-    String keyID="";
-    String key_Secret="";
+    //test key id rzp_test_JOC0wRKpLH1cVW
+    String keyID="rzp_test_JOC0wRKpLH1cVW";
+    //test key secret 9EzSlxvJbTyQ2Hg0Us5ZX4VD
+    String key_Secret="9EzSlxvJbTyQ2Hg0Us5ZX4VD";
+
     String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
     private static final int CAMERA_REQUEST = 1888;
@@ -84,11 +87,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
             AmountValue = "", PaymntMode = "", PaymentTypecode = "";
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
-    int Amount;
-    Double AMOUNTFINAL ;
+//    int Amount;
+    double AMOUNTFINAL ;
 //    SoapPrimitive resultString;
 //    JSONObject jsonObjectRazorpay;
-    String TAG = "Response";
+    private static final String TAG = PaymentDetailsActivity.class.getSimpleName();
 
     LinearLayout ll_date;
     TextView tv_date;
@@ -395,10 +398,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... params) {
             Log.i(TAG, "doInBackground");
-            if(getOnlinePaymentOrderId()){
+//            if(getOnlinePaymentOrderId()){
 
                 AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(AmountValue))));
-
+            if(AMOUNTFINAL>0)
+                AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
 
                 try {
                     if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
@@ -407,7 +411,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
 //                    "O0wqElBi2A5HUrb2MkbyeNQ4");
                         JSONObject orderRequest = new JSONObject();
-                        orderRequest.put("amount", Math.ceil(AMOUNTFINAL)); // amount in the smallest currency unit AmountValue*100
+                        orderRequest.put("amount", (long)AMOUNTFINAL); // amount in the smallest currency unit AmountValue*100
                         orderRequest.put("currency", "INR");
                         orderRequest.put("receipt", OrderIDValue);
 
@@ -440,10 +444,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 } catch (Exception e) {//Razorpay
                     e.printStackTrace();
                 }
-            }else {
+           /* }else {
                 Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
-            }
+            }*/
 
 
             return null;
@@ -553,8 +557,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
 
     public boolean getOnlinePaymentOrderId() {
-        keyID = "";
-        key_Secret = "";
+//        keyID = "";
+//        key_Secret = "";
 
         Call<JsonObject> call = null;
 
@@ -595,11 +599,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
         // on below line we are getting
         // amount that is entered by user.
-        String samount = AmountValue;
-        Log.v("samout",samount);
+//        String samount = AmountValue;
+//        Log.v("samout",samount);
 
         // rounding off the amount.
-        double amount = Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(samount))) * 100;
 
         // initialize Razorpay account.
         Checkout checkout = new Checkout();
@@ -618,31 +621,38 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Shared_Common_Pref shared_common_pref = new Shared_Common_Pref(this);
 
             // to put name
-            object.put("name", shared_common_pref.getvalue1(Shared_Common_Pref.USER_NAME));
+            object.put("name", "GOVIND MILK");
+            object.put("key", keyID);
             object.put("order_id", orderId);
             // put description
             // object.put("description", "Test payment");
             object.put("description", "Live payment");
             // to set theme color
-            object.put("theme.color", "");
+//            object.put("theme.color", "");
 
             // put the currency
             object.put("currency", "INR");
-
             // put amount
-            object.put("amount", amount);
+            object.put("amount", (long) AMOUNTFINAL);
 
             // put mobile number
             // object.put("prefill.contact", "9790844143");
-            object.put("prefill.contact", shared_common_pref.getvalue1(Shared_Common_Pref.USER_PHONE));
+//            object.put("prefill.contact", shared_common_pref.getvalue1(Shared_Common_Pref.USER_PHONE));
+            object.put("prefill.contact", "8608256570");
             // put email
             object.put("prefill.email", shared_common_pref.getvalue1(Shared_Common_Pref.USER_EMAIL));
 
+            JSONObject retryObj = new JSONObject();
+            retryObj.put("enabled", true);
+            retryObj.put("max_count", 2);
+            object.put("retry", retryObj);
             // open razorpay to checkout activity
+            Log.d(TAG, "getOnlinePayment: object "+ object);
             checkout.open(PaymentDetailsActivity.this, object);
 
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(PaymentDetailsActivity.this, "Error in starting Razorpay Checkout", Toast.LENGTH_SHORT).show();
         }
     }
 

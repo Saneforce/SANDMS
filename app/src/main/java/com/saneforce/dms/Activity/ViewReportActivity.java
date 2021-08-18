@@ -28,6 +28,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -85,7 +86,7 @@ public class ViewReportActivity extends AppCompatActivity {
     String toDate;
     //secondary or primary
     String OrderType;
-//    String OrderAmt;
+    //    String OrderAmt;
 //    String OrderTax;
     DateReportAdapter mDateReportAdapter;
 
@@ -105,8 +106,10 @@ public class ViewReportActivity extends AppCompatActivity {
     LinearLayout ll_order_type;
     int categoryCode = -1;
     ImageView ib_logout;
-    String orderCreatedDateTime= "";
+//    String orderCreatedDateTime= "";
     String orderNo = "";
+
+    String editOrder ="0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +149,7 @@ public class ViewReportActivity extends AppCompatActivity {
         orderDate = intent.getStringExtra("OrderDate");
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
+        editOrder = intent.getStringExtra("editOrder");
 
 
 
@@ -173,25 +177,27 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         if(OrderType.equals("2")){
-//            if(ApiClient.APP_TYPE ==2){
-                ib_logout.setVisibility(View.VISIBLE);
-                ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.edit));
-                ib_logout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            if(editOrder.equals("1")){
+            ib_logout.setVisibility(View.VISIBLE);
+            ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_24, null));
+            ib_logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Constants.isInternetAvailable(ViewReportActivity.this)){
                         mCommon_class.ProgressdialogShow(1, "");
                         if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
                                 !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
                             new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
                         }else
                             brandSecondaryApi();
+                    }else
+                        Toast.makeText(ViewReportActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-
-//            }else {
-//                ib_logout.setVisibility(View.GONE);
-//            }
+                }
+            });
+            }else {
+                ib_logout.setVisibility(View.GONE);
+            }
             PayNow.setText("Dispatch");
             PayNow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -366,9 +372,9 @@ public class ViewReportActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
-                        if(jsonObject.has("OrderVal"))
+                        if(!jsonObject.isNull("OrderVal"))
                             OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
-                        if(jsonObject.has("taxval"))
+                        if(!jsonObject.isNull("taxval"))
                             OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
                         //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
                         String total = "0";
@@ -407,23 +413,22 @@ public class ViewReportActivity extends AppCompatActivity {
                         }
 
                         if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
-                                ll_order_type.setVisibility(View.VISIBLE);
-                                String orderType = jsonObject.getString("OrderType");
+                            ll_order_type.setVisibility(View.VISIBLE);
+                            String orderType = jsonObject.getString("OrderType");
 
-                                if(orderType.equals("0"))
-                                    orderType = "Field Order";
-                                else
-                                    orderType = "Phone Order";
+                            if(orderType.equals("0"))
+                                orderType = "Field Order";
+                            else
+                                orderType = "Phone Order";
 
-                                tv_order_type.setText(orderType);
+                            tv_order_type.setText(orderType);
 
-                            }else {
-                                ll_order_type.setVisibility(View.GONE);
-                            }
+                        }else {
+                            ll_order_type.setVisibility(View.GONE);
+                        }
                         if(!jsonObject.isNull("Cust_Code")){
                             custCode =jsonObject.getString("Cust_Code");
                         }
-
 
                     }
                     mDateReportAdapter = new DateReportAdapter(ViewReportActivity.this, jsonArray);
@@ -598,13 +603,14 @@ public class ViewReportActivity extends AppCompatActivity {
                 if(report.areAllPermissionsGranted()){
 
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
-                }
+                }else
+                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-
+                permissionToken.continuePermissionRequest();
             }
 
         }).check();
@@ -686,8 +692,16 @@ public class ViewReportActivity extends AppCompatActivity {
             int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                String qty = "0", finalPrice = "0", PSaleUnit ="";
+                String qty = "0", finalPrice = "0", PSaleUnit ="", taxAmtValue ="0", selectedDiscPercent ="0",
+                        discAmtValue ="0", freeQtValue ="0", selectedSchemeValue = "", selectedProductCode = ""
+                        , selectedProductName = "", selectedProductUnit = "", discountType = "";
+                ;
 
+//                        contact.setSelectedScheme(selectedScheme.getScheme());
+//                        contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
+//                        contact.setOff_Pro_code(selectedScheme.getProduct_Code());
+//                        contact.setOff_Pro_name(selectedScheme.getProduct_Name());
+//                        contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
                 jsonObject = jsonArray.getJSONObject(i);
 
                 String id = String.valueOf(jsonObject.get("id"));
@@ -790,7 +804,6 @@ public class ViewReportActivity extends AppCompatActivity {
                         }
                     }
 
-                    String discountType = "";
 
                     double discountValue = 0;
                     double productAmt = 0;
@@ -806,6 +819,7 @@ public class ViewReportActivity extends AppCompatActivity {
 //                        contact.setOff_Pro_code(selectedScheme.getProduct_Code());
 //                        contact.setOff_Pro_name(selectedScheme.getProduct_Name());
 //                        contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
+
 
                         if(!selectedScheme.getDiscount_Type().equals(""))
                             discountType= selectedScheme.getDiscount_Type();
@@ -824,7 +838,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
                         if(!selectedScheme.getFree().equals(""))
                             freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
-
+                        freeQtValue = String.valueOf((int)freeQty);
 
 //                        contact.setSelectedFree(String.valueOf((int) freeQty));
 
@@ -848,6 +862,14 @@ public class ViewReportActivity extends AppCompatActivity {
                             default:
                                 discountValue = 0;
                         }
+
+                        discAmtValue = String.valueOf(discountValue);
+
+                        selectedDiscPercent = String.valueOf(schemeDisc);
+                        selectedSchemeValue = selectedScheme.getScheme();
+                        selectedProductCode = selectedScheme.getProduct_Code();
+                        selectedProductName = selectedScheme.getProduct_Name();
+                        selectedProductUnit = selectedScheme.getScheme_Unit();
 
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
@@ -907,7 +929,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
                     try {
                         taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
-
+                        taxAmtValue = String.valueOf(taxAmt);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -926,16 +948,29 @@ public class ViewReportActivity extends AppCompatActivity {
                 primaryProduct.setUOM(PUOM);
                 primaryProduct.setProduct_Cat_Code(PRate);
                 primaryProduct.setProduct_Sale_Unit(PSaleUnit);
-                primaryProduct.setDiscount(PDiscount);
+                primaryProduct.setDiscount(selectedDiscPercent);
                 primaryProduct.setTax_Value(PTaxValue);
                 primaryProduct.setQty(qty);
                 primaryProduct.setTxtqty(qty);
                 primaryProduct.setSubtotal(finalPrice);
-                primaryProduct.setDis_amt("0");
-                primaryProduct.setTax_amt("0");
+                primaryProduct.setDis_amt(discAmtValue);
+                primaryProduct.setTax_amt(taxAmtValue);
                 primaryProduct.setSchemeProducts(schemeList);
                 primaryProduct.setProduct_Sale_Unit_Cn_Qty(unitQty);
                 primaryProduct.setUOMList(uomList);
+                primaryProduct.setSelectedFree(freeQtValue);
+
+//                            contact.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+//                            contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
+//                            contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+
+                primaryProduct.setDis_amt(Constants.roundTwoDecimals(Double.parseDouble(discAmtValue)));
+                primaryProduct.setSelectedDisValue(Constants.roundTwoDecimals(Double.parseDouble(discAmtValue)));
+                primaryProduct.setSelectedScheme(selectedSchemeValue);
+                primaryProduct.setOff_Pro_code(selectedProductCode);
+                primaryProduct.setOff_Pro_name(selectedProductName);
+                primaryProduct.setOff_Pro_Unit(selectedProductUnit);
+                primaryProduct.setOff_disc_type(discountType);
 
                 contact.insert(primaryProduct);
 
