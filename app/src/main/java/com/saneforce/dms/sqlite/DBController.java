@@ -23,18 +23,18 @@ public class DBController extends SQLiteOpenHelper {
     private static final String IS_UPDATED_TO_SERVER = "isUpdatedToServer"; // column name
     public static final String AXN_KEY = "axnKey"; // column name
     public static final String IS_ORDER_KEY = "isOrder"; // column name
-    private static final String DATABASE_NAME = "dbSynMaster"; // Dtabasename
+    private static final String DATABASE_NAME = "dbSynMaster";
     private static final int VERSION_CODE = 9; //versioncode of the database
 
-    public static final String RETAILER_LIST = "retailer_list"; // Dtabasename
-    public static final String TEMPLATE_LIST = "template_list"; // Dtabasename
-    public static final String ROUTE_LIST = "route_list"; // Dtabasename
-    public static final String CLASS_LIST = "class_list"; // Dtabasename
-    public static final String CHANNEL_LIST = "channel_list"; // Dtabasename
-    public static final String PRIMARY_PRODUCT_BRAND = "primary_product_brand"; // Dtabasename
-    public static final String PRIMARY_PRODUCT_DATA = "primary_product_data"; // Dtabasename
-    public static final String SECONDARY_PRODUCT_BRAND = "secondary_product_brand"; // Dtabasename
-    public static final String SECONDARY_PRODUCT_DATA = "secondary_product_data"; // Dtabasename
+    public static final String RETAILER_LIST = "retailer_list";
+    public static final String TEMPLATE_LIST = "template_list";
+    public static final String ROUTE_LIST = "route_list";
+    public static final String CLASS_LIST = "class_list";
+    public static final String CHANNEL_LIST = "channel_list";
+    public static final String PRIMARY_PRODUCT_BRAND = "primary_product_brand";
+    public static final String PRIMARY_PRODUCT_DATA = "primary_product_data";
+    public static final String SECONDARY_PRODUCT_BRAND = "secondary_product_brand";
+    public static final String SECONDARY_PRODUCT_DATA = "secondary_product_data";
 
 
     Context context;
