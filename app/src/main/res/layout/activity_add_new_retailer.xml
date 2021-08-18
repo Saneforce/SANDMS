@@ -260,7 +260,7 @@
             android:background="@drawable/sign_bg"
             android:text="Save" />
 
-        <include layout="@layout/back_arrow"></include>
+        <include layout="@layout/back_arrow"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -176,8 +176,13 @@ public class ViewCartActivity extends AppCompatActivity {
                 if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
                     if(orderType == 1)
                         SavePrimaryProduct(adapter.getData());
-                    else
-                        SaveSecondaryProduct(adapter.getData());
+                    else{
+                        if(!Constants.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
+                            Toast.makeText(ViewCartActivity.this, "Edit order cannot be offline", Toast.LENGTH_SHORT).show();
+                        }else
+                            SaveSecondaryProduct(adapter.getData());
+
+                    }
 
                 }else {
                     Toast.makeText(ViewCartActivity.this, "Please choose Products", Toast.LENGTH_SHORT).show();

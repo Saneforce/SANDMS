@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
@@ -230,9 +231,6 @@ List<ReportModel> filteredList = new ArrayList<>();
         mReportList.setLayoutManager(layoutManager);
 
 
-
-
-
         OrderStatusList=new ArrayList<>();
         OrderStatusList.add("All");
         /*OrderStatusList.add("Order Dispatched");
@@ -290,7 +288,11 @@ List<ReportModel> filteredList = new ArrayList<>();
     @Override
     protected void onResume() {
         super.onResume();
-        ViewDateReport(orderTakenByFilter);
+        if(Constants.isInternetAvailable(this)){
+            ViewDateReport(orderTakenByFilter);
+        }else
+            Toast.makeText(ReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+
     }
 
     /*Toolbar*/
@@ -803,8 +805,23 @@ List<ReportModel> filteredList = new ArrayList<>();
                 if(report.areAllPermissionsGranted()){
 
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
-                }else
-                    Toast.makeText(ReportActivity.this, "Please enable storage permission to share pdf", Toast.LENGTH_SHORT).show();
+                }else {
+//                    Toast.makeText(ReportActivity.this, "Please enable storage permission to share pdf", Toast.LENGTH_SHORT).show();
+
+                    Snackbar.make(findViewById(R.id.scrolllayout), "Please enable permission from settings",
+                            Snackbar.LENGTH_INDEFINITE)
+                            .setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivity(intent);
+                                }
+                            })
+                            .show();
+                }
 
             }
 

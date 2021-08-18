@@ -227,7 +227,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
     public void ProceedOrder(View v) {
-        if(PaymntMode.equals(""))
+        if(!Constants.isInternetAvailable(PaymentDetailsActivity.this))
+            Toast.makeText(PaymentDetailsActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+        else if(PaymntMode.equals(""))
             Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
         else if(PaymntMode.equalsIgnoreCase("Offline") && offlineMode.getText().toString().equals("")) {
             Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();

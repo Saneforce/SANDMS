@@ -215,7 +215,11 @@ public class ViewReportActivity extends AppCompatActivity {
                 }
             });
         }
-        ViewDateReport();
+        if(Constants.isInternetAvailable(this)){
+            ViewDateReport();
+        }else
+            Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+
     }
 
     private void showDeleteDialog(){

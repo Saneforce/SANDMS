@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,14 +9,19 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_cart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
         <include layout="@layout/custom_toolbar" />
 
+<!--
 
         <EditText
             android:id="@+id/edt_serach"
@@ -28,6 +34,7 @@
             android:background="@drawable/card_border"
             android:hint="Search..."
             android:padding="@dimen/C10dp"/>
+-->
 
 
         <SearchView
@@ -82,7 +89,7 @@
             android:layout_marginLeft="@dimen/C5dp"
             android:padding="@dimen/C2dp"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/C15dp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:text="Product"
             android:visibility="gone" />
@@ -92,17 +99,19 @@
             android:id="@+id/rec_checking1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/C50dp"
             tools:listitem="@layout/product_details" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
         <LinearLayout
             android:id="@+id/Linear_proceed_cart"
@@ -120,7 +129,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -139,7 +148,7 @@
                         <View
                             android:layout_width="1.5dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginBottom="3dp"
                             android:background="#FFF" />
@@ -147,7 +156,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
+                            android:layout_marginStart="15dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -191,21 +200,19 @@
                     android:id="@+id/add_cart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true">
+                    android:layout_alignParentEnd="true">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/C40dp"
                         android:layout_gravity="center"
-                        android:layout_marginRight="10dp"
-                        android:drawableRight="@drawable/forward"
+                        android:layout_marginEnd="10dp"
                         android:drawablePadding="@dimen/C10dp"
                         android:gravity="center_vertical"
                         android:padding="5dp"
                         android:text="Proceed to cart"
-                        android:textColor="#FFF" />
+                        android:textColor="#FFF"
+                        app:drawableRightCompat="@drawable/forward" />
 
                 </LinearLayout>
 
@@ -213,7 +220,7 @@
 
         </LinearLayout>
 
-        <include layout="@layout/back_arrow"/>
+<!--        <include layout="@layout/back_arrow"/>-->
     </LinearLayout>
 
 
