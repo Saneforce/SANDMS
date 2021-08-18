@@ -49,7 +49,6 @@ import com.saneforce.dms.Utils.TimeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ksoap2.serialization.SoapPrimitive;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,6 +64,8 @@ import retrofit2.Response;
 
 public class PaymentDetailsActivity extends AppCompatActivity
         implements DMS.Master_Interface,  PaymentResultWithDataListener {//PaymentResultListener,
+    private static final String TAG = PaymentDetailsActivity.class.getSimpleName();
+
     TextView productId, productDate, productAmt, offlineMode;
     private RadioGroup radioGroup;
     LinearLayout offView;
@@ -76,10 +77,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String razorpay_payment_id="";
     String razorpay_response="";
     //test key id rzp_test_JOC0wRKpLH1cVW
-    String keyID="rzp_test_JOC0wRKpLH1cVW";
+    String keyID="";
     //test key secret 9EzSlxvJbTyQ2Hg0Us5ZX4VD
-    String key_Secret="9EzSlxvJbTyQ2Hg0Us5ZX4VD";
-
+    String key_Secret="";
     String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
     private static final int CAMERA_REQUEST = 1888;
@@ -91,7 +91,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
     double AMOUNTFINAL ;
 //    SoapPrimitive resultString;
 //    JSONObject jsonObjectRazorpay;
-    private static final String TAG = PaymentDetailsActivity.class.getSimpleName();
 
     LinearLayout ll_date;
     TextView tv_date;
@@ -307,7 +306,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("UTRNumber", edtUTR.getText().toString());
             js.put("Amount", AmountValue);
             js.put("Attachement", str);
-            js.put("dispatch", "0");
+
             if(PaymntMode.equalsIgnoreCase("Offline")){
                 js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
                 js.put("cheque_amount", et_amount.getText().toString());
@@ -327,7 +326,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
-            responseBodyCall = apiInterface.getDetails("save/primarypayment", js.toString());
+            responseBodyCall = apiInterface.getDetails("save/primarypayment",mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
 //            Log.v("Payment_Request", responseBodyCall.request().toString());
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @Override
@@ -400,7 +399,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... params) {
             Log.i(TAG, "doInBackground");
-//            if(getOnlinePaymentOrderId()){
+            if(getOnlinePaymentOrderId()){
 
                 AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(AmountValue))));
             if(AMOUNTFINAL>0)
@@ -446,10 +445,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 } catch (Exception e) {//Razorpay
                     e.printStackTrace();
                 }
-           /* }else {
+            }else {
                 Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
-            }*/
+            }
 
 
             return null;
@@ -562,6 +561,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //        keyID = "";
 //        key_Secret = "";
 
+        if(ApiClient.IS_TEST_MODE){
+            keyID="rzp_test_JOC0wRKpLH1cVW";
+            //test key secret 9EzSlxvJbTyQ2Hg0Us5ZX4VD
+            key_Secret="9EzSlxvJbTyQ2Hg0Us5ZX4VD";
+
+            return true;
+        }
         Call<JsonObject> call = null;
 
         Response<JsonObject> response = null;
@@ -626,6 +632,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             object.put("name", "GOVIND MILK");
             object.put("key", keyID);
             object.put("order_id", orderId);
+            object.put("theme.color", "#1ac0d6");
             // put description
             // object.put("description", "Test payment");
             object.put("description", "Live payment");
@@ -639,8 +646,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
             // put mobile number
             // object.put("prefill.contact", "9790844143");
-//            object.put("prefill.contact", shared_common_pref.getvalue1(Shared_Common_Pref.USER_PHONE));
-            object.put("prefill.contact", "8608256570");
+            object.put("prefill.contact", shared_common_pref.getvalue1(Shared_Common_Pref.USER_PHONE));
+//            object.put("prefill.contact", "8608256570");
             // put email
             object.put("prefill.email", shared_common_pref.getvalue1(Shared_Common_Pref.USER_EMAIL));
 

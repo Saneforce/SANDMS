@@ -85,7 +85,7 @@ public interface ApiInterface {
     /*Save Retailer*/
     @FormUrlEncoded
     @POST("dms_db_V1.php?")
-    Call<JsonObject> getDetails(@Query("axn") String Axn, @Field("data") String data);
+    Call<JsonObject> getDetails(@Query("axn") String Axn,  @Query("sfCode") String sFCode, @Field("data") String data);
 
     @POST("dms_db_V1.php?")
     Call<JsonObject> getOfflineMode(@Query("axn") String Axn, @Query("divisionCode") String divisionCode);

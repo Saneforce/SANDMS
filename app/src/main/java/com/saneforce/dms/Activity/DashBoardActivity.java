@@ -345,20 +345,21 @@ public class DashBoardActivity extends AppCompatActivity {
     }
 
     private class PopulateDbAsyntask extends AsyncTask<Void, Void, Void> {
-        private PrimaryProductDao contactDao;
-        public PopulateDbAsyntask(PrimaryProductDatabase contactDaos) { contactDao = contactDaos.contactDao();
+//        private PrimaryProductDao contactDao;
+        public PopulateDbAsyntask()
+        {
         }
         @Override
         protected Void doInBackground(Void... voids) {
             PrimaryProductDatabase.getInstance(DashBoardActivity.this).clearAllTables();
             fillingWithStart();
-            Log.v("Data_CHeckng", "Checking_data");
+//            Log.v("Data_CHeckng", "Checking_data");
             return null;
         }
     }
 
     private void fillingWithStart() {
-        Log.v("Data_CHeckng", "Checking_data");
+//        Log.v("Data_CHeckng", "Checking_data");
 
         String sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
 //        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
@@ -367,30 +368,29 @@ public class DashBoardActivity extends AppCompatActivity {
 
         try {
             JSONArray jsonArray = new JSONArray(sPrimaryProd);
-            JSONObject jsonObject = null;
-            JSONObject jsonObject1 = null;
+
 
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="", Free_Unit="";
             int unitQty = 1;
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                String id = String.valueOf(jsonObject.get("id"));
-                String Name = String.valueOf(jsonObject.get("name"));
-                String PName = String.valueOf(jsonObject.get("Pname"));
-                String PRate = String.valueOf(jsonObject.get("Product_Cat_Code"));
-                String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
-                String PId = String.valueOf(jsonObject.get("PID"));
-                String PUOM = String.valueOf(jsonObject.get("UOM"));
-                String PSaleUnit = String.valueOf(jsonObject.get("Default_UOM"));
-                String PDiscount = String.valueOf(jsonObject.get("Discount"));
-                String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String id = jsonObject.getString("id");
+                String Name = jsonObject.getString("name");
+                String PName = jsonObject.getString("Pname");
+                String PRate = jsonObject.getString("Product_Cat_Code");
+                String PBarCode = jsonObject.getString("Product_Brd_Code");
+                String PId = jsonObject.getString("PID");
+                String PUOM = jsonObject.getString("UOM");
+                String PSaleUnit = jsonObject.getString("Default_UOM");
+                String PDiscount = jsonObject.getString("Discount");
+                String PTaxValue = jsonObject.getString("Tax_value");
 //                String PCon_fac = "1";
 //                if(jsonObject.has("Conv_Fac"))
 //                    PCon_fac = jsonObject.getString("Conv_Fac");
                 if(jsonObject.has("Conv_Fac"))
                     unitQty = jsonObject.getInt("Conv_Fac");
-                Log.v("PCon_facPCon_fac", PBarCode);
+//                Log.v("PCon_facPCon_fac", PBarCode);
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
                 JSONArray uomArray = null;
                 if(jsonObject.has("UOMList"))
@@ -400,19 +400,19 @@ public class DashBoardActivity extends AppCompatActivity {
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     try {
-                        jsonObject1 = jsonArray1.getJSONObject(j);
-                        Scheme = String.valueOf(jsonObject1.get("Scheme"));
-                        Discount = String.valueOf(jsonObject1.get("Discount"));
-                        Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
-                        Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
-                        Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
-                        Package = String.valueOf(jsonObject1.get("Package"));
-                        Free = String.valueOf(jsonObject1.get("Free"));
+                        JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                        Scheme = jsonObject1.getString("Scheme");
+                        Discount = jsonObject1.getString("Discount");
+                        Scheme_Unit = jsonObject1.getString("Scheme_Unit");
+                        Product_Name = jsonObject1.getString("Offer_Product_Name");
+                        Product_Code = jsonObject1.getString("Offer_Product");
+                        Package = jsonObject1.getString("Package");
+                        Free = jsonObject1.getString("Free");
                         if(jsonObject1.has("Discount_Type"))
-                            Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+                            Discount_Type = jsonObject1.getString("Discount_Type");
 
                        if(jsonObject1.has("Free_Unit"))
-                           Free_Unit = String.valueOf(jsonObject1.get("Free_Unit"));
+                           Free_Unit = jsonObject1.getString("Free_Unit");
 
 
                         Log.v("JSON_Array_SCHEMA",Scheme);
@@ -584,7 +584,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 shared_common_pref.save(Shared_Common_Pref.Product_Brand, gson.toJson(jBrand));
                 shared_common_pref.save(Shared_Common_Pref.Product_Data, gson.toJson(jProd));
                 mCommon_class.ProgressdialogShow(2, "");
-                Log.v("Product_Response_size", String.valueOf(jProd.size()));
+//                Log.v("Product_Response_size", jProd.size()));
 
             }
 
@@ -626,7 +626,7 @@ public class DashBoardActivity extends AppCompatActivity {
     }
 
     private void processPrimaryData() {
-        new PopulateDbAsyntask(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+        new PopulateDbAsyntask().execute();
 
 /*
         mPrimaryProductViewModel = ViewModelProviders.of(DashBoardActivity.this).get(PrimaryProductViewModel.class);
