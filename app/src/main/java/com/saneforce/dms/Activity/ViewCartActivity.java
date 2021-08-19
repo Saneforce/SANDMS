@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,10 +39,12 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.saneforce.dms.Adapter.CustomViewAdapter;
+import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
+import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.PrimaryProductViewModel;
@@ -54,15 +55,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ViewCartActivity extends AppCompatActivity {
+    private static final String TAG = "ViewCartActivity";
     TextView toolHeader;
     ImageView imgBack;
     String SF_CODE, DIVISION_CODE, totalValueString, locationValue, dateTime, dateTime1, checkInTime, keyEk = "EK",
@@ -585,34 +595,42 @@ public class ViewCartActivity extends AppCompatActivity {
         totalValueString = sendArray.toString();
 
         progressDialog.dismiss();
-        DBController dbController = new DBController(ViewCartActivity.this);
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 1)){
 
-            if(Constants.isInternetAvailable(this))
-                new Common_Class(this).checkData(dbController,getApplicationContext());
-            else
-                Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
 
-            if (product_count != 0) {
+        if(Constants.isInternetAvailable(ViewCartActivity.this)){
+            HashMap<String, String> data = new HashMap<>();
+            data.put(DBController.AXN_KEY,"dcr/save");
+            data.put(DBController.DATA_RESPONSE,totalValueString);
+            sendDataToServer(data);
 
-                deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
-                    @Override
-                    public void onChanged(List<PrimaryProduct> contacts) {
-                        deleteViewModel.delete(contacts);
-                        progressDialog.dismiss();
-                    }
-                });
+        }else {
+            DBController dbController = new DBController(ViewCartActivity.this);
+            if (dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 1)) {
+
+                if (Constants.isInternetAvailable(this))
+                    new Common_Class(this).checkData(dbController, getApplicationContext());
+                else
+                    Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
+
+                if (product_count != 0) {
+
+                    deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                        @Override
+                        public void onChanged(List<PrimaryProduct> contacts) {
+                            deleteViewModel.delete(contacts);
+                            progressDialog.dismiss();
+                        }
+                    });
 
 //                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
-            } else {
-                finish();
-            }
+                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                } else {
+                    finish();
+                }
 
+            } else
+                Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-
        /* ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> responseBodyCall = apiInterface.submitValue("dcr/save", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), totalValueString);
         Log.v("View_Cart_Primary", responseBodyCall.request().toString());
@@ -1034,37 +1052,107 @@ public class ViewCartActivity extends AppCompatActivity {
         totalValueString = sendArray.toString();
         progressDialog.dismiss();
 
-        DBController dbController = new DBController(ViewCartActivity.this);
+        if(Constants.isInternetAvailable(ViewCartActivity.this)){
+            HashMap<String, String> data = new HashMap<>();
+            data.put(DBController.AXN_KEY,"dcr/secordersave");
+            data.put(DBController.DATA_RESPONSE,totalValueString);
+            sendDataToServer(data);
 
-        if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave", 1)){
-            if(Constants.isInternetAvailable(this))
-                new Common_Class(this).checkData(dbController,getApplicationContext());
+        }else {
+            DBController dbController = new DBController(ViewCartActivity.this);
+
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave", 1)){
+                if(Constants.isInternetAvailable(this))
+                    new Common_Class(this).checkData(dbController,getApplicationContext());
+                else
+                    Toast.makeText(ViewCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+
+
+            }
             else
-                Toast.makeText(ViewCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
 
-            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+            if (product_count != 0) {
 
+                deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+                deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                    @Override
+                    public void onChanged(List<PrimaryProduct> contacts) {
+                        deleteViewModel.delete(contacts);
+                        progressDialog.dismiss();
+                    }
+                });
 
+                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+            } else {
+                finish();
+            }
         }
-        else
-            Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
 
-        if (product_count != 0) {
+    }
 
-            deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
-            deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
-                @Override
-                public void onChanged(List<PrimaryProduct> contacts) {
-                    deleteViewModel.delete(contacts);
-                    progressDialog.dismiss();
+
+
+    private void sendDataToServer(HashMap<String, String> data) {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        RequestBody requestBody = null;
+        try {
+            requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Call<ResponseBody> responseBodyCall = apiInterface.submitValue(data.get(DBController.AXN_KEY), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), requestBody, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), "MGR");
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String res = response.body().string();
+                    Log.d(TAG, "onResponse: res "+ res);
+
+                    if(res!=null && !res.equals("")){
+                        JSONObject jsonRootObject = new JSONObject(res);
+                        Log.d(TAG, "onResponse: "+ jsonRootObject);
+
+                        if(jsonRootObject.has("success") && jsonRootObject.getBoolean("success")){
+                            if(jsonRootObject.has("Msg"))
+                                Toast.makeText(ViewCartActivity.this,jsonRootObject.getString("Msg") , Toast.LENGTH_SHORT).show();
+
+                            if (product_count != 0) {
+
+                                deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+                                deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                                    @Override
+                                    public void onChanged(List<PrimaryProduct> contacts) {
+                                        deleteViewModel.delete(contacts);
+                                        progressDialog.dismiss();
+                                    }
+                                });
+
+                                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                            } else {
+                                finish();
+                            }
+                        }else {
+
+                            if(jsonRootObject.has("Msg"))
+                                Toast.makeText(ViewCartActivity.this,jsonRootObject.getString("Msg") , Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else
+                        Toast.makeText(ViewCartActivity.this,"Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
 
-            startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
-        } else {
-            finish();
-        }
-
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+            }
+        });
     }
 
 

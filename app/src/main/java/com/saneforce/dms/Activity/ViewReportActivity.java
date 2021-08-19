@@ -608,7 +608,8 @@ public class ViewReportActivity extends AppCompatActivity {
 
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                 }else
-                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
+                    Constants.showSnackbar(ViewReportActivity.this, findViewById(R.id.scrolllayout));
+//                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 
             }
 

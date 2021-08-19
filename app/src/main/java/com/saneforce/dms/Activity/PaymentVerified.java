@@ -238,6 +238,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
                         Intent Details = new Intent(context, DispatchEditActivtity.class);
                         Details.putExtra("title", "DISPATCH EDIT");
                         Details.putExtra("OrderId", OrderID);
+                        Details.putExtra("editMode", 1);
                         context.startActivity(Details);
                     }
                 });

@@ -152,7 +152,7 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
 
             String Amount = "0";
-            if(jsonObject.has("Order_Value") && !jsonObject.getString("Order_Value").equals("") )
+            if(jsonObject.has("Order_Value") && !jsonObject.isNull("Order_Value")  && !jsonObject.getString("Order_Value").equals("")  && !jsonObject.getString("Order_Value").equals("null") )
                 Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
@@ -185,6 +185,21 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
                 invoiceAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Invoice_Amount"));
 
             holder.tv_invoice_amount.setText(invoiceAmt);
+
+//            if (LoginType.equalsIgnoreCase("Logistics")) {
+
+               /* holder.martl_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent Details = new Intent(context, DispatchEditActivtity.class);
+                        Details.putExtra("title", "Confirmed DISPATCH");
+                        Details.putExtra("OrderId", OrderID);
+                        Details.putExtra("editMode", 0);
+                        context.startActivity(Details);
+                    }
+                });*/
+//            }
 
 
         } catch (JSONException e) {

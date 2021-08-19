@@ -2,11 +2,17 @@ package com.saneforce.dms.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.saneforce.dms.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -96,6 +102,23 @@ public class Constants {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void showSnackbar(Context context, View view){
+
+		Snackbar.make(view, "Please enable permission from settings",
+				Snackbar.LENGTH_INDEFINITE)
+				.setAction("OK", new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent();
+						intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+						Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+						intent.setData(uri);
+						context.startActivity(intent);
+					}
+				})
+				.show();
 	}
 
 }

@@ -807,20 +807,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                 }else {
 //                    Toast.makeText(ReportActivity.this, "Please enable storage permission to share pdf", Toast.LENGTH_SHORT).show();
-
-                    Snackbar.make(findViewById(R.id.scrolllayout), "Please enable permission from settings",
-                            Snackbar.LENGTH_INDEFINITE)
-                            .setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent();
-                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                    intent.setData(uri);
-                                    startActivity(intent);
-                                }
-                            })
-                            .show();
+                    Constants.showSnackbar(ReportActivity.this, findViewById(R.id.scrolllayout));
                 }
 
             }

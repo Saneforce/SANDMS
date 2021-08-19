@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrolllayout"
     tools:context="com.saneforce.dms.Activity.ViewReportActivity">
     <include
         layout="@layout/custom_toolbar" />
