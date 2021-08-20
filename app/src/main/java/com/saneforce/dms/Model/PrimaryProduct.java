@@ -46,6 +46,7 @@ public class PrimaryProduct implements Serializable {
     private String Off_Pro_Unit = "";
     private String Off_disc_type = "";
     private String Off_free_unit = "";
+    private String golden_scheme = "";
 
 
     @TypeConverters({SchemeConverter.class})
@@ -118,7 +119,7 @@ public class PrimaryProduct implements Serializable {
                           String UOM, String Product_Cat_Code, String Product_Sale_Unit, String Discount,
                           String Tax_Value, String qty, String Txtqty, String Subtotal, String Dis_amt,
                           String Tax_amt, List<SchemeProducts> schemeProducts,
-                          int Product_Sale_Unit_Cn_Qty, ArrayList<UOMlist> UOMList ) {
+                          int Product_Sale_Unit_Cn_Qty, ArrayList<UOMlist> UOMList, String goldenScheme) {
         this.UID = UID;
         this.PID = PID;
         this.name = name;
@@ -138,6 +139,7 @@ public class PrimaryProduct implements Serializable {
         this.schemeProducts = schemeProducts;
         this.Product_Sale_Unit_Cn_Qty=Product_Sale_Unit_Cn_Qty;
         this.UOMList=UOMList;
+        this.golden_scheme= goldenScheme;
     }
 
     public String getSelectedScheme() {
@@ -308,6 +310,13 @@ public class PrimaryProduct implements Serializable {
         this.schemeProducts = schemeProducts;
     }
 
+    public String getGolden_scheme() {
+        return golden_scheme;
+    }
+
+    public void setGolden_scheme(String golden_scheme) {
+        this.golden_scheme = golden_scheme;
+    }
 
     public static class SchemeProducts{
 

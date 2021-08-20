@@ -76,7 +76,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReportActivity extends AppCompatActivity implements DMS.Master_Interface{
-    TextView toolHeader, txtTotalValue, txtProductDate,  txtName,orderStatus ;
+    TextView toolHeader, txtTotalValue, txtProductDate,  txtName;
     ImageView imgBack,imgShare;
     Button fromBtn, toBtn;
 
@@ -657,7 +657,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                 //  Log.e("Total_Value", String.valueOf(intSum));
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
                     @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder) {//,String TaxValue,String Tax
+                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag) {//,String TaxValue,String Tax
                         Intent intnet = new Intent(ReportActivity.this, ViewReportActivity.class);
                         intnet.putExtra("ProductID", productId);
                         intnet.putExtra("OrderDate", orderDate);
@@ -666,6 +666,8 @@ List<ReportModel> filteredList = new ArrayList<>();
                         intnet.putExtra("OderValue", OrderValue);
                         intnet.putExtra("orderType", orderType);
                         intnet.putExtra("editOrder", editOrder);
+                        intnet.putExtra("Paymentflag", Paymentflag);
+                        intnet.putExtra("Dispatch_Flag", Dispatch_Flag);
 
 
 

@@ -57,11 +57,11 @@ public class DispatchEditActivtity extends AppCompatActivity {
     JSONArray jsonArray = null;
     JSONObject jsonObject = null;
     ImageView imgBack;
-    String OrderVal;
-    Integer newQty;
-    Integer OldCQtys;
-    Integer Rates;
-    String OldQty;
+//    String OrderVal;
+//    Integer newQty;
+//    Integer OldCQtys;
+//    Integer Rates;
+//    String OldQty;
     ViewProductEdit priProdAdapter;
 
     int editMode = 0;

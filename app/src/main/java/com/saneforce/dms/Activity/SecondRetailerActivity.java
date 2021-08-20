@@ -697,6 +697,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             String Scheme = "", Discount="", Scheme_Unit="", Product_Name="", Product_Code="", Package="", Free="", Discount_Type="", Free_Unit="";
             int unitQty = 1;
+            String goldenScheme = "0";
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
@@ -713,6 +714,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 String PTaxValue = String.valueOf(jsonObject.get("Tax_value"));
                 if(jsonObject.has("Conv_Fac"))
                     unitQty = jsonObject.getInt("Conv_Fac");
+
+                if(jsonObject.has("Slan_Name"))
+                    goldenScheme = jsonObject.getString("Slan_Name");
 
 //                String PCon_fac = "1";
 //                if(jsonObject.has("Conv_Fac"))
@@ -778,7 +782,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
-                        schemeList,unitQty, uomList));
+                        schemeList,unitQty, uomList, goldenScheme));
 
              /*   contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0", PCon_fac));

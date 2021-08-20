@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,17 +15,29 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Delete;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import com.google.gson.JsonObject;
+import com.saneforce.dms.Adapter.DateReportAdapter;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.ApiClient;
+import com.saneforce.dms.Utils.Common_Class;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,12 +69,18 @@ public class PendingVerificationDetails extends AppCompatActivity {
     TextView tv_payment_type;
     LinearLayout ll_payment_option;
     TextView tv_payment_option;
+
+    int editMode = 0;
+    LinearLayout ll_update_details;
+    RecyclerView DateRecyclerView;
+
+    String OrderType = "1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_verification_details);
 
-
+        mCommon_class = new Common_Class(PendingVerificationDetails.this);
         OrderID = String.valueOf(getIntent().getSerializableExtra("OrderID"));
         PayDt = String.valueOf(getIntent().getSerializableExtra("PayDt"));
         Amount = String.valueOf(getIntent().getSerializableExtra("Amount"));
@@ -70,7 +89,11 @@ public class PendingVerificationDetails extends AppCompatActivity {
         Imgurl = String.valueOf(getIntent().getSerializableExtra("Imgurl"));
         paymentType = String.valueOf(getIntent().getSerializableExtra("paymentType"));
         paymentOption = String.valueOf(getIntent().getSerializableExtra("paymentMode"));
-        Log.v("img1",Imgurl);
+//        Log.v("img1",Imgurl);
+
+        if(getIntent().hasExtra("editMode"))
+            editMode = getIntent().getIntExtra("editMode", 0);
+
         mShared_common_pref = new Shared_Common_Pref(this);
 
         txtOrderID = findViewById(R.id.product_order_id);
@@ -79,8 +102,10 @@ public class PendingVerificationDetails extends AppCompatActivity {
         txtUTRNumber = findViewById(R.id.product_number);
         imgView = findViewById(R.id.bank_receipt);
         tv_payment_type= findViewById(R.id.tv_payment_type);
-                ll_payment_option= findViewById(R.id.ll_payment_option);
+        ll_payment_option= findViewById(R.id.ll_payment_option);
         tv_payment_option= findViewById(R.id.tv_payment_option);
+        ll_update_details= findViewById(R.id.ll_update_details);
+        DateRecyclerView = findViewById(R.id.date_recycler);
 
 
         if(paymentType!=null && !paymentType.equals(""))
@@ -107,7 +132,7 @@ public class PendingVerificationDetails extends AppCompatActivity {
 
         try {
             if(Imgurl!=null && !Imgurl.equals(""))
-            Glide.with(context)
+                Glide.with(context)
                     .asBitmap()
                     .apply(myOptions)
                     .load(Imgurl)
@@ -138,8 +163,74 @@ public class PendingVerificationDetails extends AppCompatActivity {
 
       //  imgView.setImageURI(Uri.parse(Imgurl));
 
-    }
+        if(editMode == 1){
+            ll_update_details.setVisibility(View.VISIBLE);
+            DateRecyclerView.setVisibility(View.GONE);
+        }else {
+            ll_update_details.setVisibility(View.GONE);
+            DateRecyclerView.setVisibility(View.VISIBLE);
 
+            DateRecyclerView.setHasFixedSize(true);
+            DateRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            ViewDateReport();
+        }
+
+
+    }
+    Common_Class mCommon_class;
+
+    public void ViewDateReport() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> responseBodyCall;
+        if (OrderType.equalsIgnoreCase("1")) {
+            responseBodyCall = apiInterface.dateReport("get/ViewReport_Details", OrderID, mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        } else {
+            responseBodyCall = apiInterface.dateReport("get/secviewreport_details", OrderID, mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        }
+
+
+//        Log.v("ViewDateREquest", responseBodyCall.request().toString());
+
+        responseBodyCall.enqueue(new Callback<JsonObject>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JSONObject jsonRootObject = null;
+
+                try {
+                    jsonRootObject = new JSONObject(response.body().toString());
+                    JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+/*                    JSONObject jsonObject = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = jsonArray.getJSONObject(i);
+                        //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
+                        if(!jsonObject.isNull("OrderVal"))
+                            OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
+                        if(!jsonObject.isNull("taxval"))
+                            OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
+                        //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
+                        String total = "0";
+                        if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
+                            total = Constants.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
+
+
+
+                    }*/
+                    DateReportAdapter mDateReportAdapter = new DateReportAdapter(PendingVerificationDetails.this, jsonArray);
+                    DateRecyclerView.setAdapter(mDateReportAdapter);
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(PendingVerificationDetails.this, "Something went wrong, please try again",Toast.LENGTH_SHORT ).show();
+            }
+        });
+    }
 
     public void getToolbar() {
 
@@ -229,7 +320,7 @@ public class PendingVerificationDetails extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca = apiInterface.getPayVerification(OrderID, mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
 
-        Log.v("Product_Request", ca.request().toString());
+//        Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -241,6 +332,8 @@ public class PendingVerificationDetails extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(PendingVerificationDetails.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -639,13 +639,15 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    if(!packageType.equals("Y"))
-                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    else
-                        discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                    if(productAmt!=0){
+                        if(!packageType.equals("Y"))
+                            discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                        else
+                            discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
 //                    holder.ProductDisAmt.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
 //                    holder.ll_disc.setVisibility(View.GONE);
-                    break;
+                        break;
+                    }
                 default:
                     discountValue = 0;
             }

@@ -111,6 +111,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
     String editOrder ="0";
 
+    int Paymentflag = 1, Dispatch_Flag = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +151,8 @@ public class ViewReportActivity extends AppCompatActivity {
         formDate = intent.getStringExtra("FromDate");
         toDate = intent.getStringExtra("ToDate");
         editOrder = intent.getStringExtra("editOrder");
+        Paymentflag = intent.getIntExtra("Paymentflag", 1);
+        Dispatch_Flag = intent.getIntExtra("Dispatch_Flag", 1);
 
 
 
@@ -177,7 +180,7 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
         if(OrderType.equals("2")){
-            if(editOrder.equals("1")){
+            if(editOrder.equals("1") && Paymentflag == 0){
             ib_logout.setVisibility(View.VISIBLE);
             ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_24, null));
             ib_logout.setOnClickListener(new View.OnClickListener() {
@@ -198,13 +201,19 @@ public class ViewReportActivity extends AppCompatActivity {
             }else {
                 ib_logout.setVisibility(View.GONE);
             }
-            PayNow.setText("Dispatch");
-            PayNow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    payOffline();
-                }
-            });
+            if(OrderType.equals("1") || Dispatch_Flag ==0){
+                PayNow.setText("Dispatch");
+                PayNow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        payOffline();
+                    }
+                });
+
+            }else{
+                PayNow.setVisibility(View.GONE);
+            }
+
         }else {
             ib_logout.setVisibility(View.GONE);
             PayNow.setText("Pay Now");
@@ -407,13 +416,32 @@ public class ViewReportActivity extends AppCompatActivity {
                         Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
                         Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
                         Log.v("PAYMENT_VALUE1", String.valueOf(OrderAmtNew));
-                        if (PaymentValue == 0) {
-                            PayNow.setVisibility(View.VISIBLE);
-                            Delete.setVisibility(View.VISIBLE);
-                        } else {
-                            PayNow.setVisibility(View.GONE);
-                            Delete.setVisibility(View.GONE);
-                            ib_logout.setVisibility(View.GONE);
+
+                        if(OrderType.equals("2")){
+
+                            if (editOrder.equals("1") && Paymentflag == 0) {
+                                Delete.setVisibility(View.VISIBLE);
+                            } else {
+                                Delete.setVisibility(View.GONE);
+                                ib_logout.setVisibility(View.GONE);
+                            }
+
+                            if (Dispatch_Flag == 0) {
+                                PayNow.setVisibility(View.VISIBLE);
+                            } else {
+                                PayNow.setVisibility(View.GONE);
+                                ib_logout.setVisibility(View.GONE);
+                            }
+
+                        }else {
+                            if (PaymentValue == 0) {
+                                PayNow.setVisibility(View.VISIBLE);
+                                Delete.setVisibility(View.VISIBLE);
+                            } else {
+                                PayNow.setVisibility(View.GONE);
+                                Delete.setVisibility(View.GONE);
+                                ib_logout.setVisibility(View.GONE);
+                            }
                         }
 
                         if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
@@ -859,11 +887,13 @@ public class ViewReportActivity extends AppCompatActivity {
                                 discountValue = (productAmt * tempQty) * (schemeDisc/100);
                                 break;
                             case "Rs":
-                                if(!packageType.equals("Y"))
-                                    discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                                else
-                                    discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                                break;
+                                if(productAmt!=0) {
+                                    if (!packageType.equals("Y"))
+                                        discountValue = ((double) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                    else
+                                        discountValue = ((int) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                    break;
+                                }
                             default:
                                 discountValue = 0;
                         }

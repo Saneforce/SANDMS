@@ -28,6 +28,38 @@ public class ReportModel {
     @Expose
     private String conv_qty;
 
+    @SerializedName("Paymentflag")
+    @Expose
+    private int Paymentflag;
+
+    @SerializedName("Dispatch_Flag")
+    @Expose
+    private int Dispatch_Flag;
+
+    public String getConv_qty() {
+        return conv_qty;
+    }
+
+    public void setConv_qty(String conv_qty) {
+        this.conv_qty = conv_qty;
+    }
+
+    public int getPaymentflag() {
+        return Paymentflag;
+    }
+
+    public void setPaymentflag(int paymentflag) {
+        Paymentflag = paymentflag;
+    }
+
+    public int getDispatch_Flag() {
+        return Dispatch_Flag;
+    }
+
+    public void setDispatch_Flag(int dispatch_Flag) {
+        Dispatch_Flag = dispatch_Flag;
+    }
+
     public String getUnit_qty() {
         return conv_qty;
     }

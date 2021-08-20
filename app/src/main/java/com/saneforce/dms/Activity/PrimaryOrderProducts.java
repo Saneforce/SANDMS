@@ -9,12 +9,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -35,15 +32,12 @@ import androidx.room.Room;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Interface.PrimaryProducts;
 import com.saneforce.dms.Model.PrimaryProduct;
 import com.saneforce.dms.Model.Product_Array;
 import com.saneforce.dms.R;
 import com.saneforce.dms.Utils.AlertDialogBox;
-import com.saneforce.dms.Utils.ApiClient;
 import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Common_Model;
 import com.saneforce.dms.Utils.Constants;
@@ -61,10 +55,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryProducts {//implements DMS.Master_Interface
@@ -217,18 +207,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         priProductRecycler.setNestedScrollingEnabled(false);
         priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData, orderType);
         priProductRecycler.setAdapter(priProdAdapter);
-        if (productBarCode.equalsIgnoreCase("a")) {
-            mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
-            mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
-                @Override
-                public void onChanged(List<PrimaryProduct> contacts) {
-                    priProdAdapter.setContact(contacts, "Nil");
-                    Log.v("mPrimaryPr", String.valueOf(contacts.size()));
-                    Log.v("mPrimaryProductOrder11",new Gson().toJson(contacts));
 
-                }
-            });
-        }
         Log.v("productBarCodeproduct", productBarCode);
 
         priCateAdapter = new CategoryAdapter(getApplicationContext(),
@@ -320,8 +299,21 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             }
         });
 
-          loadFirstItem();
 
+        loadFirstItem();
+
+       /* if (productBarCode.equalsIgnoreCase("a")) {
+            mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
+            mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
+                @Override
+                public void onChanged(List<PrimaryProduct> contacts) {
+                    priProdAdapter.setContact(contacts, "Nil");
+//                    Log.v("mPrimaryPr", String.valueOf(contacts.size()));
+//                    Log.v("mPrimaryProductOrder11",new Gson().toJson(contacts));
+
+                }
+            });
+        }*/
     }
 
     private void showExitDialog() {
@@ -497,7 +489,35 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v("Primary_order", "onResume");
+
+
+        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
+        contactViewModels.getFilterDatas().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
+            @Override
+            public void onChanged(List<PrimaryProduct> contacts) {
+//                Log.v("TotalSize", new Gson().toJson(contacts.size()));
+                item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+                float sum = 0;
+//                        float tax=0;
+                for (PrimaryProduct cars : contacts) {
+                    try {
+                        if(cars.getSubtotal()!=null && !cars.getSubtotal().equals(""))
+                            sum = sum + Float.parseFloat(cars.getSubtotal());
+                        // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                        ;
+                        //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+//                        Log.v("Total_valuebefore", String.valueOf(sum));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
+                mShared_common_pref.save("GrandTotal", String.valueOf(sum));
+                mShared_common_pref.save("SubTotal", "0.0");
+            }
+        });
+
+  /*      Log.v("Primary_order", "onResume");
         if (productBarCode.equalsIgnoreCase("")) {
             mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
             mPrimaryProductViewModel.getAllData().observe(this, new Observer<List<PrimaryProduct>>() {
@@ -513,32 +533,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         } else {
 
             loadFilteredTodos(productBarCode);
-        }
-        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
-        contactViewModels.getFilterDatas().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
-            @Override
-            public void onChanged(List<PrimaryProduct> contacts) {
-//                Log.v("TotalSize", new Gson().toJson(contacts.size()));
-                item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-                float sum = 0;
-//                        float tax=0;
-                for (PrimaryProduct cars : contacts) {
-                    try {
-                        if(cars.getSubtotal()!=null && !cars.getSubtotal().equals(""))
-                        sum = sum + Float.parseFloat(cars.getSubtotal());
-                        // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
-                        ;
-                        //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
-//                        Log.v("Total_valuebefore", String.valueOf(sum));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                }
-                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
-                mShared_common_pref.save("GrandTotal", String.valueOf(sum));
-                mShared_common_pref.save("SubTotal", String.valueOf("0.0"));
-            }
-        });
+        }*/
 
 //        sum= Float.parseFloat(getIntent().getStringExtra("GrandTotal"));
 //        if(!"".equals(sum)|| !("0".equals(sum))||sum!=0){
@@ -568,6 +563,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     protected void onStop() {
         super.onStop();
         Log.v("Primary_order", "onStop");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     public void SaveDataValue(String GrandTotal) {
@@ -607,6 +607,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             protected void onPostExecute(List<PrimaryProduct> todoList) {
                 priProdAdapter.setContact(todoList, category);
                 mPrimaryProduct = todoList;
+
 //                Log.v("calculate_value", new Gson().toJson(todoList.size()));
 //                Log.v("mPrimaryProduct_123456", String.valueOf(todoList.size()));
             }
@@ -767,6 +768,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 //        TextView tv_disc_amt_total;
         TextView tv_final_total_amt;
         TextView tv_free_unit;
+        TextView tv_golden_scheme;
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
@@ -792,6 +794,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 //            tv_disc_amt_total = itemView.findViewById(R.id.tv_disc_amt_total);
             tv_final_total_amt = itemView.findViewById(R.id.tv_final_total_amt);
             tv_free_unit = itemView.findViewById(R.id.tv_free_unit);
+            tv_golden_scheme = itemView.findViewById(R.id.tv_golden_scheme);
             itemView.setOnClickListener(this);
 
 
@@ -844,8 +847,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 //        Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
         holder.subProdcutChildName.setText(mContact.getPname());
 
+        if(mContact.getGolden_scheme()!=null && mContact.getGolden_scheme().equals("1"))
+            holder.tv_golden_scheme.setVisibility(View.VISIBLE);
+        else
+            holder.tv_golden_scheme.setVisibility(View.GONE);
 
-      //  CONTEXT= holder.CONTEXT;
 
 //productdata= shared_common_pref.getvalue("PRODUCTCODE");
 
@@ -1885,12 +1891,15 @@ String orderid=mContact.getUID();
                     holder.ProductDis.setText(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
                     break;
                 case "Rs":
-                    if(!packageType.equals("Y"))
-                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    else
-                        discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    holder.ll_disc.setVisibility(View.GONE);
+                    if(productAmt!=0){
+                        if(!packageType.equals("Y"))
+                            discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                        else
+                            discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                        holder.ll_disc.setVisibility(View.GONE);
+
                     break;
+                    }
                 default:
                     holder.ProductDis.setText("0");
                     discountValue = 0;

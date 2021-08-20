@@ -24,7 +24,7 @@ public class DBController extends SQLiteOpenHelper {
     public static final String AXN_KEY = "axnKey"; // column name
     public static final String IS_ORDER_KEY = "isOrder"; // column name
     private static final String DATABASE_NAME = "dbSynMaster";
-    private static final int VERSION_CODE = 9; //versioncode of the database
+    private static final int VERSION_CODE = 10; //versioncode of the database
 
     public static final String RETAILER_LIST = "retailer_list";
     public static final String TEMPLATE_LIST = "template_list";

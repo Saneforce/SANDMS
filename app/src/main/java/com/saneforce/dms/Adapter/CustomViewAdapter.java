@@ -419,13 +419,15 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                     viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
                     break;
                 case "Rs":
-                    if(!packageType.equals("Y"))
-                        discountValue = ((double) tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    else
-                        discountValue = (tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                    viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
-                    viewHolder.ll_disc.setVisibility(View.GONE);
-                    break;
+                    if(productAmt!=0) {
+                        if (!packageType.equals("Y"))
+                            discountValue = ((double) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                        else
+                            discountValue = (tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                        viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                        viewHolder.ll_disc.setVisibility(View.GONE);
+                        break;
+                    }
                 default:
                     viewHolder.dis_amount.setText("0");
                     viewHolder.tv_dis.setText("0");

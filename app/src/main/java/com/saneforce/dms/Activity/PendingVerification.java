@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,6 +76,8 @@ public class PendingVerification extends AppCompatActivity {
     }
 
     private void getData() {
+        mCommon_class.ProgressdialogShow(1, "");
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         Call<JsonObject> ca = apiInterface.getPrimaryVerification(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
@@ -83,34 +86,35 @@ public class PendingVerification extends AppCompatActivity {
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                mCommon_class.ProgressdialogShow(1, "");
+                mCommon_class.ProgressdialogShow(2, "");
+
                 JSONObject jsonObject1;
-                Shared_Common_Pref shared_common_pref;
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
+                    JSONArray jsonArray = new JSONArray();
 //                    JSONObject jsonObject = null;
-                    JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                   /* for (int i = 0; i < jsonArray.length(); i++) {
+                    if(!jsonObject1.isNull("success") && jsonObject1.getBoolean("success") && !jsonObject1.isNull("Data")){
+                        jsonArray = jsonObject1.optJSONArray("Data");
+                    }else
+                        Toast.makeText(PendingVerification.this, "No Data, please try again", Toast.LENGTH_SHORT).show();
 
-                        jsonObject = jsonArray.getJSONObject(i);
 
-
-                    }*/
-                    Log.v("JsONDATE", jsonArray.toString());
                     pendingRecycle.setHasFixedSize(true);
                     pendingRecycle.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     pendingRecycle.setNestedScrollingEnabled(false);
                     PendingAdapter priProdAdapter = new PendingAdapter(PendingVerification.this, jsonArray);
                     pendingRecycle.setAdapter(priProdAdapter);
-                    mCommon_class.ProgressdialogShow(2, "");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(PendingVerification.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 mCommon_class.ProgressdialogShow(2, "");
+                Toast.makeText(PendingVerification.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -189,6 +193,7 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
                     MIntent.putExtra("Imgurl", Imgurl);
                     MIntent.putExtra("paymentType", Payment_Option);
                     MIntent.putExtra("paymentMode", Payment_Mode);
+                    MIntent.putExtra("editMode", 1);
                     context.startActivity(MIntent);
                 }
             });

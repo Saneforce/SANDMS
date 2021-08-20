@@ -19,7 +19,7 @@ public class ApiClient {
     //1 GOVIND
     //2 AQUA
     public static final int APP_TYPE = 1;
-    public static final boolean IS_TEST_MODE = true;
+    public static final boolean IS_TEST_MODE = false;
 
     public static final String BASE_FMCG ="http://fmcg.sanfmcg.com/";
     public static final String BASE_GOVIND ="http://govind.sanfmcg.com/";

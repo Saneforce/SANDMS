@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,6 +63,8 @@ public class PaymentVerified extends AppCompatActivity {
     }
 
     private void getData() {
+        mCommon_class.ProgressdialogShow(1, "");
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         if (LoginType.equalsIgnoreCase("Logistics")) {
@@ -78,37 +81,35 @@ public class PaymentVerified extends AppCompatActivity {
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("Product_Requestresponse", response.toString());
+                mCommon_class.ProgressdialogShow(2, "");
 
-
-                mCommon_class.ProgressdialogShow(1, "");
                 JSONObject jsonObject1;
-                Shared_Common_Pref shared_common_pref;
+                JSONArray jsonArray = new JSONArray();
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
-                    JSONObject jsonObject = null;
-                    JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-           /*         for (int i = 0; i < jsonArray.length(); i++) {
+                    if(!jsonObject1.isNull("success") && jsonObject1.getBoolean("success") && !jsonObject1.isNull("Data") ){
+                        jsonArray = jsonObject1.optJSONArray("Data");
 
-                        jsonObject = jsonArray.getJSONObject(i);
+                    }else
+                        Toast.makeText(PaymentVerified.this, "No Data, please try again", Toast.LENGTH_SHORT).show();
 
-
-                    }*/
-                    Log.v("JsONDATE", jsonArray.toString());
                     pendingRecycle.setHasFixedSize(true);
                     pendingRecycle.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     pendingRecycle.setNestedScrollingEnabled(false);
                     VerifiedAdapter priProdAdapter = new VerifiedAdapter(PaymentVerified.this, jsonArray);
                     pendingRecycle.setAdapter(priProdAdapter);
-                    mCommon_class.ProgressdialogShow(2, "");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(PaymentVerified.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 mCommon_class.ProgressdialogShow(2, "");
+                Toast.makeText(PaymentVerified.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -133,9 +134,9 @@ public class PaymentVerified extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              if(LoginType.equalsIgnoreCase("Logistics")){
+                if(LoginType.equalsIgnoreCase("Logistics")){
 //                    startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
-                  onBackPressed();
+                    onBackPressed();
                 }else{
                     onBackPressed();
 //                    startActivity(new Intent(getApplicationContext(), FinanceActivity.class));
@@ -156,10 +157,10 @@ public class PaymentVerified extends AppCompatActivity {
 class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder> {
     Context context;
     JSONArray jsonArray;
-    DMS.CheckingInterface itemClick;
+//    DMS.CheckingInterface itemClick;
     Shared_Common_Pref shared_common_pref;
 
-
+    String Amount = "0";
     public VerifiedAdapter(Context context, JSONArray jsonArray) {
         this.context = context;
         this.jsonArray = jsonArray;
@@ -191,9 +192,9 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             jsonObject = (JSONObject) jsonArray.get(position);
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
-            String Amount = "0";
+            Amount = "0";
             if(jsonObject.has("Order_Value") && !jsonObject.getString("Order_Value").equals("") )
-            Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
+                Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
             String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
@@ -243,6 +244,27 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
                     }
                 });
             }
+            /*else {
+
+                holder.martl_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent MIntent = new Intent(context, PendingVerificationDetails.class);
+                        MIntent.putExtra("title", "PENDING VERIFICATION DETAILS");
+                        MIntent.putExtra("OrderID", OrderID);
+                        MIntent.putExtra("PayDt", PayDt);
+                        MIntent.putExtra("Amount", Amount);
+                        MIntent.putExtra("Stockist_Name", Stockist_Name);
+                        MIntent.putExtra("UTRNumber", UTRNumber);
+                        MIntent.putExtra("Imgurl", Imgurl);
+                        MIntent.putExtra("paymentType", Payment_Option);
+                        MIntent.putExtra("paymentMode", Payment_Mode);
+                        MIntent.putExtra("editMode", 0);
+                        context.startActivity(MIntent);
+                    }
+                });
+
+            }*/
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -259,7 +281,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
         TextView orderID, orderDate, orderValue, orderDistributor, orderStatus,txtPaymentOption,txtPaymentMode;
         CardView martl_view;
         TextView tv_paid_amount;
-//        tv_invoice_amount,
+        //        tv_invoice_amount,
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             orderStatus = itemView.findViewById(R.id.txt_pending);
