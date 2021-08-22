@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -20,43 +21,57 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.MyViewHolder> {
+public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<ReportModel> mDate;
     DMS.ViewReport mViewReport;
-    String produtId, productDate,taxValue,tax;
-    String OrderValue;
+//    String produtId, productDate,taxValue,tax;
+//    String OrderValue;
     String OrderTakenbyFilter;
     TextView textTotalValue;
     String orderType;
     Shared_Common_Pref shared_common_pref;
 
-    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue, String orderType) {
+    int viewType  = 1;
+
+    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue, String orderType, int viewType) {
         this.context = context;
         this.mDate = mDate;
         this.mViewReport = mViewReport;
         this.OrderTakenbyFilter=ordertakenbyFilter;
         this.textTotalValue=textTotalValue;
         this.orderType=orderType;
+        this.viewType=viewType;
         shared_common_pref = new Shared_Common_Pref(context);
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem = layoutInflater.inflate(R.layout.row_report_list, null, false);
+        View listItem;
+        if (this.viewType ==1) {
+            listItem = layoutInflater.inflate(R.layout.row_report_list, null, false);
+            return new MyViewHolder(listItem);
+        } else {
+            listItem = layoutInflater.inflate(R.layout.item_finance_report, null, false);
+            return new MyViewHolderFinance(listItem);
+        }
        /* listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewReport.reportCliick(produtId, productDate,OrderValue);
             }
         });*/
-        return new MyViewHolder(listItem);
+
     }
 
+
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder1, int position) {
+
+        if(holder1 instanceof MyViewHolder){
+            MyViewHolder holder = (MyViewHolder) holder1;
         try {
             double totalvalue=0.0;
             String reportType=mDate.get(position).getReportType();
@@ -150,6 +165,24 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
             }
             //holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
         }
+        }else if(holder1 instanceof MyViewHolderFinance){
+            MyViewHolderFinance holderFinance = (MyViewHolderFinance) holder1;
+//            holderFinance.cv_root.setText();
+
+            holderFinance.tv_sl_no.setText(mDate.get(position).getSlno());
+            holderFinance.tv_customer_name.setText(mDate.get(position).getCustomer_Name());
+            holderFinance.tv_payment_status.setText(mDate.get(position).getOrderStatus());
+            holderFinance.tv_order_id.setText(mDate.get(position).getOrderNo());
+            holderFinance.tv_sales_value.setText(mDate.get(position).getOrderValue());
+            holderFinance.tv_received_amt.setText(mDate.get(position).getReceived_Amt());
+            holderFinance.tv_ordered_date.setText(mDate.get(position).getOrderDate());
+            holderFinance.tv_date_paid.setText(mDate.get(position).getPaid_Date());
+            holderFinance.tv_payment_mode.setText(mDate.get(position).getPayment_Mode());
+            holderFinance.tv_cutomer_id.setText(mDate.get(position).getCustomer_Id());
+
+
+        }
+
     }
 
     @Override
@@ -187,5 +220,56 @@ public class ReportViewAdapter extends RecyclerView.Adapter<ReportViewAdapter.My
                 }
             mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag());
         }
+    }
+
+    public class MyViewHolderFinance extends RecyclerView.ViewHolder {
+
+        CardView cv_root;
+        TextView tv_sl_no, tv_customer_name, tv_payment_status, tv_order_id, tv_sales_value, tv_received_amt, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
+
+
+//        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
+//        LinearLayout linearLayout,linearLayoutTakenby;
+
+        public MyViewHolderFinance(@NonNull View itemView) {
+            super(itemView);
+//            txtsNo = (TextView) itemView.findViewById(R.id.txt_serial);
+//            txtOrderID = (TextView) itemView.findViewById(R.id.txt_order);
+//            txtOrderDate = (TextView) itemView.findViewById(R.id.txt_date);
+//            txtValue = (TextView) itemView.findViewById(R.id.txt_total);
+//            txtOrderStatus=itemView.findViewById(R.id.txt_status);
+//            linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
+//            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
+//            txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
+//            txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
+//            tv_order_type=itemView.findViewById(R.id.tv_order_type);
+//            itemView.setOnClickListener(this);
+
+            cv_root=itemView.findViewById(R.id.cv_root);
+            tv_sl_no=itemView.findViewById(R.id.tv_sl_no);
+            tv_customer_name=itemView.findViewById(R.id.tv_customer_name);
+            tv_payment_status=itemView.findViewById(R.id.tv_payment_status);
+            tv_order_id=itemView.findViewById(R.id.tv_order_id);
+            tv_sales_value=itemView.findViewById(R.id.tv_sales_value);
+            tv_received_amt=itemView.findViewById(R.id.tv_received_amt);
+            tv_ordered_date=itemView.findViewById(R.id.tv_ordered_date);
+            tv_date_paid=itemView.findViewById(R.id.tv_date_paid);
+            tv_payment_mode=itemView.findViewById(R.id.tv_payment_mode);
+            tv_cutomer_id=itemView.findViewById(R.id.tv_cutomer_id);
+
+
+        }
+
+   /*     @Override
+        public void onClick(View v) {
+            String editOrder = "0";
+
+                if(mDate.get(getAdapterPosition()).getSfCode()!=null && shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code).equals(mDate.get(getAdapterPosition()).getSfCode())){
+                    editOrder = "1";
+                }else{
+                    editOrder = "0";
+                }
+            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag());
+        }*/
     }
 }

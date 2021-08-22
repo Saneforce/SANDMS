@@ -173,7 +173,8 @@
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/prim"></ImageView>
+                    android:src="@drawable/prim"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"
@@ -194,7 +195,8 @@
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/primary"></ImageView>
+                    android:src="@drawable/primary"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"

@@ -224,10 +224,6 @@ public class ViewReportActivity extends AppCompatActivity {
                 }
             });
         }
-        if(Constants.isInternetAvailable(this)){
-            ViewDateReport();
-        }else
-            Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -246,10 +242,19 @@ public class ViewReportActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Constants.isInternetAvailable(this)){
+            ViewDateReport();
+        }else
+            Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+
+    }
+
     public void payOffline() {
         JSONObject js = new JSONObject();
         try {
-
 
             js.put("OrderID", productId);
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
@@ -444,7 +449,7 @@ public class ViewReportActivity extends AppCompatActivity {
                             }
                         }
 
-                        if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
+                       /* if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
                             ll_order_type.setVisibility(View.VISIBLE);
                             String orderType = jsonObject.getString("OrderType");
 
@@ -455,9 +460,9 @@ public class ViewReportActivity extends AppCompatActivity {
 
                             tv_order_type.setText(orderType);
 
-                        }else {
+                        }else {*/
                             ll_order_type.setVisibility(View.GONE);
-                        }
+//                        }
                         if(!jsonObject.isNull("Cust_Code")){
                             custCode =jsonObject.getString("Cust_Code");
                         }
@@ -526,14 +531,14 @@ public class ViewReportActivity extends AppCompatActivity {
         finish();
     }
 
-    public void intentMethod() {
+ /*   public void intentMethod() {
         Intent intnet = new Intent(getApplicationContext(), ReportActivity.class);
         intnet.putExtra("FromReport", formDate);
         intnet.putExtra("ToReport", toDate);
         intnet.putExtra("count", 1);
         startActivity(intnet);
         finish();
-    }
+    }*/
 
 
     public Bitmap createBitmap3(View v, int width, int height) {
@@ -1027,7 +1032,8 @@ public class ViewReportActivity extends AppCompatActivity {
         dashIntent.putExtra("order_type", 2);
         dashIntent.putExtra("PhoneOrderTypes", 0);
         dashIntent.putExtra("orderNo", orderNo);
-        startActivity(dashIntent);
+        startActivityForResult(dashIntent, ACTIVITY_REQUEST_CODE);
+//        startActivity(dashIntent);
 
     }
 

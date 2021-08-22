@@ -4,19 +4,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ReportModel {
-    @SerializedName("slno")
+    @SerializedName(value = "slno", alternate = {"rw"})
     @Expose
     private String slno;
-    @SerializedName("Order_No")
+    @SerializedName(value = "Order_No", alternate = {"orderId"})
     @Expose
     private String orderNo;
-    @SerializedName("stockist_Code")
+    @SerializedName(value = "stockist_Code", alternate = {"Stockist_Code"})
     @Expose
     private String stockistCode;
     @SerializedName("sf_code")
     @Expose
     private String sfCode;
-    @SerializedName("Order_Date")
+    @SerializedName(value = "Order_Date", alternate = {"OrderDate"} )
     @Expose
     private String orderDate;
 
@@ -35,6 +35,102 @@ public class ReportModel {
     @SerializedName("Dispatch_Flag")
     @Expose
     private int Dispatch_Flag;
+
+
+    @SerializedName("ReportType")
+    @Expose
+    private String reportType;
+
+    @SerializedName("RetName")
+    @Expose
+    private String retailerName;
+
+    @SerializedName("Order_Value")
+    @Expose
+    private String orderValue;
+
+    @SerializedName("taxVal")
+    @Expose
+    private String taxValue;
+
+    @SerializedName(value = "Order_Status", alternate = {"Status"})
+    @Expose
+    private String orderStatus;
+    @SerializedName("Order_Taken_By")
+    @Expose
+    private String orderTakenBy;
+
+    @SerializedName("OrderVal")
+    @Expose
+    private String orderValueTotal;
+
+    @SerializedName("tax")
+    @Expose
+    private String tax;
+
+
+
+    @SerializedName("Stockist_Name")
+    @Expose
+    private String Customer_Name;
+
+    @SerializedName("ERP_Code")
+    @Expose
+    private String Customer_Id;
+
+    @SerializedName("Invoice_Amount")
+    @Expose
+    private String Received_Amt;
+
+
+    @SerializedName("PaymentDate")
+    @Expose
+    private String Paid_Date;
+
+    @SerializedName("PaymentMode")
+    @Expose
+    private String Payment_Mode;
+
+
+    public String getPayment_Mode() {
+        return Payment_Mode;
+    }
+
+    public void setPayment_Mode(String payment_Mode) {
+        Payment_Mode = payment_Mode;
+    }
+
+    public String getCustomer_Id() {
+        return Customer_Id;
+    }
+
+    public void setCustomer_Id(String customer_Id) {
+        Customer_Id = customer_Id;
+    }
+
+    public String getCustomer_Name() {
+        return Customer_Name;
+    }
+
+    public void setCustomer_Name(String customer_Name) {
+        Customer_Name = customer_Name;
+    }
+
+    public String getReceived_Amt() {
+        return Received_Amt;
+    }
+
+    public void setReceived_Amt(String received_Amt) {
+        Received_Amt = received_Amt;
+    }
+
+    public String getPaid_Date() {
+        return Paid_Date;
+    }
+
+    public void setPaid_Date(String paid_Date) {
+        Paid_Date = paid_Date;
+    }
 
     public String getConv_qty() {
         return conv_qty;
@@ -88,25 +184,9 @@ public class ReportModel {
         this.reportType = reportType;
     }
 
-    @SerializedName("ReportType")
-    @Expose
-    private String reportType;
-
-
-
-
-
-
-
-
-
     public void setRetailerName(String retailerName) {
         this.retailerName = retailerName;
     }
-
-    @SerializedName("RetName")
-    @Expose
-    private String retailerName;
 
 
 //    public String getPaymentOption() {
@@ -117,9 +197,6 @@ public class ReportModel {
 //        this.paymentOption = paymentOption;
 //    }
 
-    @SerializedName("Order_Value")
-    @Expose
-    private String orderValue;
 //    private String paymentOption;
     public String getOrderStatus() {
         return orderStatus;
@@ -129,10 +206,6 @@ public class ReportModel {
         this.orderStatus = orderStatus;
     }
 
-    @SerializedName("taxVal")
-    @Expose
-    private String taxValue;
-
     public String getOrderTakenBy() {
         return orderTakenBy;
     }
@@ -140,13 +213,6 @@ public class ReportModel {
     public void setOrderTakenBy(String orderTakenBy) {
         this.orderTakenBy = orderTakenBy;
     }
-
-    @SerializedName("Order_Status")
-    @Expose
-    private String orderStatus;
-    @SerializedName("Order_Taken_By")
-    @Expose
-    private String orderTakenBy;
 
     public String getOrderValueTotal() {
         return orderValueTotal;
@@ -156,9 +222,7 @@ public class ReportModel {
         this.orderValueTotal = orderValueTotal;
     }
 
-    @SerializedName("OrderVal")
-    @Expose
-    private String orderValueTotal;
+
     public String getTax() {
         return tax;
     }
@@ -166,10 +230,6 @@ public class ReportModel {
     public void setTax(String tax) {
         this.tax = tax;
     }
-
-    @SerializedName("tax")
-    @Expose
-    private String tax;
 
     public String getSlno() {
         return slno;

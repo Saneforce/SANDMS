@@ -94,7 +94,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     TextView txtOrderStatus;
     String orderTakenByFilter ="All";
     ArrayList<String> OrderStatusList;
-    ArrayList<String> OrderStatusListID;
+//    ArrayList<String> OrderStatusListID;
     LinearLayout linearLayout;
 
     Toolbar toolbar_top;
@@ -109,11 +109,15 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
 //    List<ReportModel> mDReportModels = new ArrayList<>();
 List<ReportModel> filteredList = new ArrayList<>();
+    int viewType = 1;
+
+    LinearLayout headingLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
+        headingLayout = (LinearLayout) findViewById(R.id.headingLayout);
         toolbar_top=findViewById(R.id.toolbar_top);
         toolbar_top.setVisibility(View.VISIBLE);
 
@@ -121,6 +125,7 @@ List<ReportModel> filteredList = new ArrayList<>();
         // filter=findViewById(R.id.toolbar_filter);
         FReport = getIntent().getStringExtra("FromReport");
         TReport = getIntent().getStringExtra("ToReport");
+        viewType = getIntent().getIntExtra("viewType", 1);
         Count = getIntent().getIntExtra("count", 100);
         shared_common_pref = new Shared_Common_Pref(this);
         OrderType = shared_common_pref.getvalue("OrderType");
@@ -151,6 +156,11 @@ List<ReportModel> filteredList = new ArrayList<>();
         else
             tv_type.setVisibility(View.VISIBLE);
 */
+        if(viewType ==2)
+            headingLayout.setVisibility(View.GONE);
+        else
+            headingLayout.setVisibility(View.VISIBLE);
+
         if (Count == 1) {
 
             // DateFormat dff= new SimpleDateFormat("dd-MM-yyyy");
@@ -357,10 +367,17 @@ List<ReportModel> filteredList = new ArrayList<>();
         });
 
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
-        if(OrderType.equals("1"))
-            toolHeader.setText("PRIMARY REPORT");
-        else
-            toolHeader.setText("SECONDARY REPORT");
+
+        String title  = "";
+        if(viewType ==1){
+            if(OrderType.equals("1"))
+                title= "PRIMARY REPORT";
+            else
+                title= "SECONDARY REPORT";
+        }else
+            title = "FINANCIAL REPORT";
+
+        toolHeader.setText(title);
 
 
 //        toolSearch = (EditText) findViewById(R.id.toolbar_search);
@@ -371,11 +388,18 @@ List<ReportModel> filteredList = new ArrayList<>();
     public void ViewDateReport(String orderTakenByFilter) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ReportDataList> responseBodyCall;
-        if (OrderType.equalsIgnoreCase("1")) {
-            responseBodyCall = apiInterface.reportValues("get/ViewReport", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
-        } else {
-            responseBodyCall = apiInterface.reportValues("get/secviewreport", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
-        }
+        String axn = "";
+        if(viewType ==1){
+            if (OrderType.equalsIgnoreCase("1")) {
+                axn = "get/ViewReport";
+            } else {
+                axn = "get/secviewreport";
+            }
+
+        }else
+            axn = "get/finreport";
+        responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
+
 //        Log.v("Request_cal", responseBodyCall.request().toString());
         responseBodyCall.enqueue(new Callback<ReportDataList>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -437,88 +461,6 @@ List<ReportModel> filteredList = new ArrayList<>();
 
                     txtTotalValue.setText("Rs . " + totalroundoff);
 
-
-/*
-
-                if (orderTakenByFilter.equalsIgnoreCase("Payment Pending")) {
-
-                    if (mReportActivities.getPaymentPending() != null && !mReportActivities.getPaymentPending().equals(""))
-                        ordervalue = String.valueOf(mReportActivities.getPaymentPending());
-
-
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    Log.e("pay1", ordervalue);
-                } else if (orderTakenByFilter.equalsIgnoreCase("Payment Verified")) {
-
-                    if(mReportActivities.getPaymentVerified()!=null && !mReportActivities.getPaymentVerified().equals("0"))
-                    ordervalue = String.valueOf(mReportActivities.getPaymentVerified());
-
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //   txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay11", String.valueOf(mReportActivities.getPaymentVerified()));
-                } else if (orderTakenByFilter.equalsIgnoreCase("Credit Verified")) {
-                    if(mReportActivities.getCreditVerified()!=null && !mReportActivities.getCreditVerified().equals("0"))
-                    ordervalue = String.valueOf(mReportActivities.getCreditVerified());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //txtTotalValue.setText("Rs . "+ordervalue);
-                    Log.e("pay111", String.valueOf(mReportActivities.getCreditVerified()));
-                } else if (orderTakenByFilter.equalsIgnoreCase("Order Dispatched")) {
-                    if(mReportActivities.getOrderDispatched()!=null && !mReportActivities.getOrderDispatched().equals("0"))
-                    ordervalue = String.valueOf(mReportActivities.getOrderDispatched());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay122", String.valueOf(mReportActivities.getOrderDispatched()));
-                } else if (orderTakenByFilter.equalsIgnoreCase("Credit Dispatched")) {
-                    if(mReportActivities.getCreditDispatched()!=null && !mReportActivities.getCreditDispatched().equals("0"))
-                        ordervalue = String.valueOf(mReportActivities.getCreditDispatched());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay133", ""+ordervalue);
-                } else if (orderTakenByFilter.equalsIgnoreCase("Payment Done")) {
-                    if(mReportActivities.getPaymentDone()!=null && !mReportActivities.getPaymentDone().equals("0"))
-                        ordervalue = String.valueOf(mReportActivities.getPaymentDone());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay155", ""+ordervalue);
-                } else if (orderTakenByFilter.equalsIgnoreCase("Credit Raised")) {
-                    if(mReportActivities.getCreditRaised()!=null && !mReportActivities.getCreditRaised().equals("0"))
-                        ordervalue = String.valueOf(mReportActivities.getCreditRaised());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay15", ""+ ordervalue);
-                } else if (orderTakenByFilter.equalsIgnoreCase("Dispatch Pending")) {
-                    if(mReportActivities.getDispatchPending()!=null && !mReportActivities.getDispatchPending().equals("0"))
-                        ordervalue = String.valueOf(mReportActivities.getDispatchPending());
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);
-                    //  txtTotalValue.setText("Rs . "+ ordervalue);
-                    Log.e("pay15", ""+ ordervalue);
-                } else {
-
-                    txtTotalValue.setText("Rs.0");
-                }*/
                 }
 
                 try
@@ -549,7 +491,6 @@ List<ReportModel> filteredList = new ArrayList<>();
 
                             }
 
-
                             String orderStatus = "";
                             if(r.getOrderStatus()!=null && !r.getOrderStatus().equals("")  && !r.getOrderStatus().equals("null") ){
                                 orderStatus = r.getOrderStatus();
@@ -557,104 +498,18 @@ List<ReportModel> filteredList = new ArrayList<>();
                                     OrderStatusList.add(orderStatus);
                             }
 
-
-
                         }
 
                         txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
 
                     }
-/*                    for (int l = 0; l < jsonArray.length(); l++) {
-                        JsonObject = jsonArray.getJSONObject(l);
-                        String orderStatus = "";
-                        if(!JsonObject.isNull("Order_Status") && !JsonObject.getString("Order_Status").equals("")){
-                            orderStatus = JsonObject.getString("Order_Status");
-                            if(!OrderStatusList.contains(orderStatus))
-                                OrderStatusList.add(orderStatus);
-                        }
 
-                        Float orderValue= Float.valueOf(JsonObject.getString("Order_Value"));
 
-                        if (orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
-                            mDReportModels=mReportActivities.getData();
-
-                        } else if(orderTakenByFilter.equalsIgnoreCase("All")) {
-                            mDReportModels=mReportActivities.getData();
-
-                            intSum = intSum +orderValue;
-
-                            txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
-
-                        }else{
-                            mDReportModels=mReportActivities.getData();
-                        }
-                    }*/
                     updateFilterList();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-/*                try {
 
-                    for (int i = 0; i < mDReportModels.size(); i++) {
-                        Log.e("data", String.valueOf(mDReportModels.get(i).getOrderValue()));
-                        mArrayList.add(Float.valueOf((mDReportModels.get(i).getOrderValue())));
-
-                    }
-                }catch (Exception ee){
-                    ee.printStackTrace();
-                }
-                Log.v("DATA_COMING", new Gson().toJson(mDReportModels));*/
-
-                //  Float intSum = Float.valueOf(0);
-//                try {
-//                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
-//                    JSONObject JsonObjects;
-//                    modeOrderData.clear();
-////                    Float intSum = Float.valueOf(0);
-////                    txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-//                    for (int l = 0; l <= jsonArray.length(); l++) {
-//                        JsonObjects = jsonArray.getJSONObject(l);
-//
-//
-//                      //  intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-//                        String orderStatus=JsonObjects.getString("Order_Status");
-//                         String orderNo=JsonObjects.getString("Order_No");
-//                        Log.v("status",JsonObjects.getString("Order_Status"));
-//
-//                   //   Float orderValue= Float.valueOf(JsonObjects.getString("Order_Value"));
-//                     //   Log.v("JSON_OBEJCTSvalue" + "",orderValue.toString());
-////                        intSum = in
-////                        tSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-////                        txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-//                        Log.v("JSON_OBEJCTSvaluest" ,   orderTakenByFilter.toString());
-//                        Log.v("JSON_OBEJCTSstattus" ,  orderStatus.toString());
-////                        if (orderTakenByFilter.equals(orderStatus)||orderTakenByFilter.equalsIgnoreCase(orderStatus)) {
-////                            intSum = intSum +orderValue;
-////                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-////                            Log.e("Total_Value11", String.valueOf(intSum));
-////                          //  mDReportModels=mReportActivities.getData();
-////                        } else {
-////                            intSum = intSum +orderValue;
-////                           // intSum = intSum +Float.valueOf(JsonObjects.getString("Order_Value"));
-////                            txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));
-////                            Log.e("Total_Value22", String.valueOf(intSum));
-////                           // mDReportModels=mReportActivities.getData();
-////
-////                        }
-//
-//
-////                        mCommon_model_spinner = new Common_Model(orderNo, orderStatus, "flag");
-////                      modeOrderData.add(mCommon_model_spinner);
-//
-//
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
-                //Float intSum = Float.valueOf(mArrayList.stream().mapToLong(Float::longValue).sum());
-                // txtTotalValue.setText("Rs . "+ new DecimalFormat("##.##").format(intSum));//working code commented jul 15
-                //  Log.e("Total_Value", String.valueOf(intSum));
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
                     @Override
                     public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag) {//,String TaxValue,String Tax
@@ -669,12 +524,10 @@ List<ReportModel> filteredList = new ArrayList<>();
                         intnet.putExtra("Paymentflag", Paymentflag);
                         intnet.putExtra("Dispatch_Flag", Dispatch_Flag);
 
-
-
                         startActivity(intnet);
                         //  finish();
                     }
-                },orderTakenByFilter,txtTotalValue, OrderType);
+                },orderTakenByFilter,txtTotalValue, OrderType, viewType);
                 mReportList.setAdapter(mReportViewAdapter);
             }
 

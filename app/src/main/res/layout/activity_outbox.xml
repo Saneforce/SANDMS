@@ -165,6 +165,18 @@ tools:context=".Activity.OutboxActivity">
 
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_outbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_bg"
+        android:divider="@color/colorPrimary"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_outbox"
+        android:elevation="2dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </LinearLayout>
 
 

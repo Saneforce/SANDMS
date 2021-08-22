@@ -68,4 +68,13 @@ public class FinanceActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
     }
+
+    public void onClickReport(View view) {
+        Intent intent =new Intent(FinanceActivity.this, ReportActivity.class);
+        shared_common_pref.save("OrderType", "1");
+        intent.putExtra("title", "VERIFIED PAYMENT");
+        intent.putExtra("viewType", 2);
+        startActivity(intent);
+
+    }
 }

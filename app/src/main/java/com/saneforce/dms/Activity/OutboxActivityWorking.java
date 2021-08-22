@@ -6,11 +6,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.saneforce.dms.Model.OutboxModel;
 import com.saneforce.dms.R;
 import com.saneforce.dms.sqlite.DBController;
 
-public class OutboxActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OutboxActivityWorking extends AppCompatActivity {
 
     TextView tv_primary_count;
     TextView tv_secondary_count;
@@ -18,6 +24,9 @@ public class OutboxActivity extends AppCompatActivity {
     TextView tv_retailer_visit;
 //    TextView tv_non_productive_calls;
     DBController dbController;
+
+    List<OutboxModel> outboxModelList = new ArrayList<>();
+//    OutboxAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +42,25 @@ public class OutboxActivity extends AppCompatActivity {
 //        tv_non_productive_calls = findViewById(R.id.tv_non_productive_calls);
 
         dbController = new DBController(this);
+        getToolbar();
+        updateRecyclerView();
+
+    }
+
+    private void updateRecyclerView() {
+        getOutboxData();
+         //see sample project's GenreDataFactory.java class for getGenres() method
+        RecyclerView recyclerView =  findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+        //instantiate your adapter with the list of genres
+//        adapter = new OutboxAdapter(outboxModelList);
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setAdapter(adapter);
+
+    }
+
+    private void getOutboxData() {
 
     }
 
@@ -91,5 +119,17 @@ public class OutboxActivity extends AppCompatActivity {
         }
 
         tvCount.setText(count);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        adapter.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+//        adapter.onRestoreInstanceState(savedInstanceState);
     }
 }

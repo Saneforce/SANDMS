@@ -72,7 +72,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ViewCartActivity extends AppCompatActivity {
-    private static final String TAG = "ViewCartActivity";
+    private static final String TAG = ViewCartActivity.class.getSimpleName();
     TextView toolHeader;
     ImageView imgBack;
     String SF_CODE, DIVISION_CODE, totalValueString, locationValue, dateTime, dateTime1, checkInTime, keyEk = "EK",
@@ -619,13 +619,15 @@ public class ViewCartActivity extends AppCompatActivity {
                         public void onChanged(List<PrimaryProduct> contacts) {
                             deleteViewModel.delete(contacts);
                             progressDialog.dismiss();
+                            completePreviousActivity(true);
+
                         }
                     });
 
 //                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+//                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                 } else {
-                    finish();
+                    completePreviousActivity(true);
                 }
 
             } else
@@ -1067,28 +1069,29 @@ public class ViewCartActivity extends AppCompatActivity {
                 else
                     Toast.makeText(ViewCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
 
-                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+//                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
 
+                if (product_count != 0) {
 
+                    deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
+                    deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
+                        @Override
+                        public void onChanged(List<PrimaryProduct> contacts) {
+                            deleteViewModel.delete(contacts);
+                            progressDialog.dismiss();
+                            completePreviousActivity(true);
+                        }
+                    });
+
+//                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                } else {
+                    completePreviousActivity(true);
+                }
             }
             else
                 Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
 
-            if (product_count != 0) {
 
-                deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
-                deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
-                    @Override
-                    public void onChanged(List<PrimaryProduct> contacts) {
-                        deleteViewModel.delete(contacts);
-                        progressDialog.dismiss();
-                    }
-                });
-
-                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
-            } else {
-                finish();
-            }
         }
 
     }
@@ -1127,13 +1130,15 @@ public class ViewCartActivity extends AppCompatActivity {
                                     public void onChanged(List<PrimaryProduct> contacts) {
                                         deleteViewModel.delete(contacts);
                                         progressDialog.dismiss();
+                                        completePreviousActivity(true);
                                     }
                                 });
 
-                                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+//                                startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                             } else {
-                                finish();
+                                completePreviousActivity(true);
                             }
+
                         }else {
 
                             if(jsonRootObject.has("Msg"))
@@ -1145,16 +1150,27 @@ public class ViewCartActivity extends AppCompatActivity {
 
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(ViewCartActivity.this,"Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+                Toast.makeText(ViewCartActivity.this,"Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
 
+
+    private void completePreviousActivity(boolean closeActivity) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("closeActivity", closeActivity);
+        setResult(-1, resultIntent);
+        finish();
+    }
 
 
 

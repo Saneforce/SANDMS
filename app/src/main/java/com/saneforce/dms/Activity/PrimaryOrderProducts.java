@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -58,10 +59,12 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryProducts {//implements DMS.Master_Interface
-//HorizontalScrollView priCategoryRecycler;
+    //HorizontalScrollView priCategoryRecycler;
+    private static final String TAG = PrimaryOrderProducts.class.getSimpleName();
+    public static final int ACTIVITY_REQUEST_CODE = 3;
     Gson gson;
 
-//   CustomListViewDialog customDialog;
+    //   CustomListViewDialog customDialog;
     Shared_Common_Pref mShared_common_pref;
     RecyclerView priCategoryRecycler;
     RecyclerView priProductRecycler;
@@ -69,24 +72,24 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     ProductAdapter priProdAdapter;
     JSONArray jsonBrandCateg = null;
     JSONArray jsonBrandProduct = null;
-//    Common_Model mCommon_model_spinner;
-   public JSONObject jsonProductuom;
+    //    Common_Model mCommon_model_spinner;
+    public JSONObject jsonProductuom;
     public String a;
     ArrayList<Product_Array> Product_Array_List;
     TextView text_checki;
     TextView grandTotal, item_count;
     float sum = 0;
     Button forward,backward;
-//    Product_Array product_array;
+    //    Product_Array product_array;
 //    ArrayList<String> list;
     /* Submit button */
     LinearLayout proceedCart;
-//    JSONObject person1;
+    //    JSONObject person1;
 //    JSONObject PersonObjectArray;
 //    ArrayList<String> listV = new ArrayList<>();
     String JsonDatas;
     LinearLayout bottomLinear;
-//    Type listType;
+    //    Type listType;
 //    String ZeroPosId = "", ZeroPosNam = "", ZeroImg = "";
 //    List<Product> eventsArrayList;
 //    List<Product> Product_Modal;
@@ -94,11 +97,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     PrimaryProductViewModel mPrimaryProductViewModel;
     String productBarCode = "a", productBarCodes = "";
     SearchView searchEdit;
-//    EditText edt_serach;
+    //    EditText edt_serach;
     PrimaryProductDatabase primaryProductDatabase;
     PrimaryProductViewModel deleteViewModel;
-   Common_Class mCommon_class;
-//    int product_count = 0;
+    Common_Class mCommon_class;
+    //    int product_count = 0;
     List<PrimaryProduct> mPrimaryProduct = new ArrayList<>();
     String sPrimaryProd = "";
     int mFirst=0, mLast=0;
@@ -112,10 +115,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     int editMode = 0, categoryCode = -1;
     String orderVal = "0";
     String orderNo = "";
+    boolean isFirstTime = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_primary_order_products);
+
         Log.v("Primary_order", "OnCreate");
         gson = new Gson();
         grandTotal = (TextView) findViewById(R.id.total_amount);
@@ -165,7 +170,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 //                .horizontal_scrollview);
         forward=findViewById(R.id.forward);
         backward=findViewById(R.id.backward);
-      //  getProductId();
+        //  getProductId();
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,7 +222,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void ProdcutDetails(int position, String id, String name, String img) {
                 searchEdit.setQuery("", false);
 
-               // getProductId();
+                // getProductId();
                 productBarCode = id;
                 loadFilteredTodos(productBarCode);
 
@@ -229,9 +234,9 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             }
         });
 
-      //  priCategoryRecycler.set
-       priCategoryRecycler.setAdapter(priCateAdapter);
-       // priCategoryRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        //  priCategoryRecycler.set
+        priCategoryRecycler.setAdapter(priCateAdapter);
+        // priCategoryRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         priCategoryRecycler.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -250,7 +255,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
-              //  llm.scrollToPositionWithOffset(mLast + 1, List.length());
+                //  llm.scrollToPositionWithOffset(mLast + 1, List.length());
                 llm.scrollToPositionWithOffset(mLast + 2, priCateAdapter.jsonArray.length());
             }
         });
@@ -259,7 +264,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
-             //   llm.scrollToPositionWithOffset(mFirst - 1, List.length());
+                //   llm.scrollToPositionWithOffset(mFirst - 1, List.length());
                 llm.scrollToPositionWithOffset(mFirst - 2,priCateAdapter.jsonArray.length());
             }
         });
@@ -314,6 +319,35 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                 }
             });
         }*/
+
+
+
+        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
+        contactViewModels.getFilterDatas().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
+            @Override
+            public void onChanged(List<PrimaryProduct> contacts) {
+//                Log.v("TotalSize", new Gson().toJson(contacts.size()));
+                item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+                float sum = 0;
+//                        float tax=0;
+                for (PrimaryProduct cars : contacts) {
+                    try {
+                        if(cars.getSubtotal()!=null && !cars.getSubtotal().equals(""))
+                            sum = sum + Float.parseFloat(cars.getSubtotal());
+                        // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
+                        ;
+                        //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
+//                        Log.v("Total_valuebefore", String.valueOf(sum));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
+                mShared_common_pref.save("GrandTotal", String.valueOf(sum));
+                mShared_common_pref.save("SubTotal", "0.0");
+            }
+        });
+
     }
 
     private void showExitDialog() {
@@ -332,12 +366,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                             deleteViewModel.delete(contacts);
 //                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
-                            finish();
+                            completePreviousActivity(true);
                         }
                     });
 
                 }else{
-                    finish();
+                    completePreviousActivity(true);
 //                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
                 }
 
@@ -373,6 +407,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 //                String productImage = jsonObject.getString("Cat_Image");
                 // getProductId();
                 productBarCode = productId;
+                Log.d(TAG, "loadFirstItem: productBarCode "+ productBarCode);
                 loadFilteredTodos(productBarCode);
 
                 text_checki.setVisibility(View.VISIBLE);
@@ -489,34 +524,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: Called");
 
-
-        PrimaryProductViewModel contactViewModels = ViewModelProviders.of(PrimaryOrderProducts.this).get(PrimaryProductViewModel.class);
-        contactViewModels.getFilterDatas().observe(PrimaryOrderProducts.this, new Observer<List<PrimaryProduct>>() {
-            @Override
-            public void onChanged(List<PrimaryProduct> contacts) {
-//                Log.v("TotalSize", new Gson().toJson(contacts.size()));
-                item_count.setText("Items :" + new Gson().toJson(contacts.size()));
-                float sum = 0;
-//                        float tax=0;
-                for (PrimaryProduct cars : contacts) {
-                    try {
-                        if(cars.getSubtotal()!=null && !cars.getSubtotal().equals(""))
-                            sum = sum + Float.parseFloat(cars.getSubtotal());
-                        // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
-                        ;
-                        //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
-//                        Log.v("Total_valuebefore", String.valueOf(sum));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                }
-                grandTotal.setText("" + Constants.roundTwoDecimals(sum));
-                mShared_common_pref.save("GrandTotal", String.valueOf(sum));
-                mShared_common_pref.save("SubTotal", "0.0");
-            }
-        });
-
+        if(!isFirstTime)
+            loadFilteredTodos(productBarCode);
+        else
+            isFirstTime = false;
   /*      Log.v("Primary_order", "onResume");
         if (productBarCode.equalsIgnoreCase("")) {
             mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
@@ -554,20 +567,62 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Called ");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+
+            if(requestCode == ACTIVITY_REQUEST_CODE) {
+
+                boolean closeActivity = false;
+                if(data!=null && data.hasExtra("closeActivity"))
+                    closeActivity = data.getBooleanExtra("closeActivity", false);
+
+                if(closeActivity){
+                    if(orderType ==2){
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("closeActivity", closeActivity);
+                        setResult(-1, resultIntent);
+                    }
+
+                    finish();
+                }
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        Log.v("Primary_order", "onPause");
+        Log.d(TAG, "onPause: Called ");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v("Primary_order", "onStop");
+        Log.d(TAG, "onStop: Called ");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart: Called ");
+    }
+
+
+    private void completePreviousActivity(boolean closeActivity) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("closeActivity", closeActivity);
+        setResult(-1, resultIntent);
+        finish();
     }
 
     public void SaveDataValue(String GrandTotal) {
@@ -583,7 +638,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         mIntent.putExtra("order_type",orderType);
         mIntent.putExtra("PhoneOrderTypes",PhoneOrderTypes);
         mIntent.putExtra("orderNo",orderNo);
-        startActivity(mIntent);
+        startActivityForResult(mIntent, ACTIVITY_REQUEST_CODE);
+//        startActivity(mIntent);
 //        startActivityForResult(mIntent,66);
     }
 
@@ -595,7 +651,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
     @SuppressLint("StaticFieldLeak")
     private void loadFilteredTodos(String category) {
-
+        Log.d(TAG, "loadFilteredTodos: ");
         Log.v("AsynTASk_VALUE", category);
         new AsyncTask<String, Void, List<PrimaryProduct>>() {
             @Override
@@ -607,6 +663,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             protected void onPostExecute(List<PrimaryProduct> todoList) {
                 priProdAdapter.setContact(todoList, category);
                 mPrimaryProduct = todoList;
+                Log.d(TAG, "onPostExecute: ");
 
 //                Log.v("calculate_value", new Gson().toJson(todoList.size()));
 //                Log.v("mPrimaryProduct_123456", String.valueOf(todoList.size()));
@@ -668,7 +725,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
             String productName = jsFuel.getString("name");
             productImage = "";
             if(jsFuel.has("Cat_Image"))
-            productImage = jsFuel.getString("Cat_Image");
+                productImage = jsFuel.getString("Cat_Image");
 
             if(jsFuel.has("isSelected") && jsFuel.getBoolean("isSelected")){
                 holder.mText.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
@@ -707,6 +764,10 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
             martl_view = itemView.findViewById(R.id.martl_view);
         }
     }
+
+
+
+
 }
 
 class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
@@ -750,20 +811,20 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             View.OnClickListener,DMS.Master_Interface {
 
 
-//        Common_Model mCommon_model_spinner;
+        //        Common_Model mCommon_model_spinner;
         TextView subProdcutChildName, subProdcutChildRate, productItem,
                 productItemTotal, ProductTax, ProductDis, ProductTaxAmt,
                 ProductDisAmt, ProductUnit;
 
         LinearLayout linPLus, linMinus, linInfo;
         TextView mProductCount;
-       LinearLayout image_dropdown;
+        LinearLayout image_dropdown;
         CustomListViewDialog customDialog;
 
         LinearLayout ll_free_qty;
         LinearLayout ll_disc;
         TextView tv_free_qty;
-//        LinearLayout ll_disc_reduction;
+        //        LinearLayout ll_disc_reduction;
 //        TextView tv_disc_amt;
 //        TextView tv_disc_amt_total;
         TextView tv_final_total_amt;
@@ -841,7 +902,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
         int product_Sale_Unit_Cn_Qty = 1;
         if(mContact.getProduct_Sale_Unit_Cn_Qty()!=0)
-        product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
+            product_Sale_Unit_Cn_Qty= mContact.getProduct_Sale_Unit_Cn_Qty();
 //        Log.v("Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
 
 //        Log.v("PRODUCT_LIST_INNER", new Gson().toJson(mContact));
@@ -862,7 +923,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             }
         });
         holder.ProductUnit.setText(mContact.getProduct_Sale_Unit());
-String orderid=mContact.getUID();
+        String orderid=mContact.getUID();
         holder.image_dropdown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -874,7 +935,7 @@ String orderid=mContact.getUID();
                 aa.putExtra("orderid",orderid);
                 aa.putExtra("pos",workinglist.get(position).getProduct_Sale_Unit());
                 aa.putExtra("uomList",workinglist.get(position).getUOMList());
-             //   aa.putExtra("productunit",workinglist.get(position).getProduct_Sale_Unit());
+                //   aa.putExtra("productunit",workinglist.get(position).getProduct_Sale_Unit());
                 mCtx.startActivity(aa);
             }
         });
@@ -1898,7 +1959,7 @@ String orderid=mContact.getUID();
                             discountValue = ((int)tempQty/Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
                         holder.ll_disc.setVisibility(View.GONE);
 
-                    break;
+                        break;
                     }
                 default:
                     holder.ProductDis.setText("0");
@@ -1989,7 +2050,7 @@ String orderid=mContact.getUID();
     /*    if(totalAmt==0)
             itemPrice = totalAmt;
         else*/
-            itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
+        itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
         holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
         holder.productItem.setText(String.valueOf(qty));
         holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
@@ -2158,11 +2219,17 @@ String orderid=mContact.getUID();
     public void setContact(List<PrimaryProduct> contacts, String code) {
         if (!code.equalsIgnoreCase("Nil")) {
             this.exampleList.clear();
+            this.workinglist.clear();
             this.exampleList.addAll(contacts);
             this.workinglist = contacts;
-            notifyDataSetChanged();
+            ProductAdapter.this.notifyDataSetChanged();
+            Log.d("ProductAdapt", "setContact: "+ workinglist);
+            Log.d("ProductAdapt", "setContact: "+ exampleList);
         }
     }
+
+
+
 
 
 }

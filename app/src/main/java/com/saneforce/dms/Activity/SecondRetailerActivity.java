@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -56,6 +57,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SecondRetailerActivity extends AppCompatActivity implements DMS.Master_Interface {
+
+    public static final int ACTIVITY_REQUEST_CODE = 2;
 
     List<Common_Model> listOrderType = new ArrayList<>();
     List<Common_Model> RetailerType = new ArrayList<>();
@@ -798,7 +801,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         dashIntent.putExtra("Mode", "0");
         dashIntent.putExtra("order_type", 2);
         dashIntent.putExtra("PhoneOrderTypes", PhoneOrderTypes);
-        startActivity(dashIntent);
+        startActivityForResult(dashIntent, ACTIVITY_REQUEST_CODE);
+//        startActivity(dashIntent);
 
     }
 
@@ -814,4 +818,25 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 Toast.makeText(this, "Empty retailer list, please sync it", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+
+            if(requestCode == ACTIVITY_REQUEST_CODE) {
+
+                boolean closeActivity = false;
+                if(data!=null && data.hasExtra("closeActivity"))
+                    closeActivity = data.getBooleanExtra("closeActivity", false);
+
+                if(closeActivity)
+                    finish();
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
 }

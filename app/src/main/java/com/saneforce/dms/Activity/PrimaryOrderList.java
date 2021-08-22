@@ -186,7 +186,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
 
     public class ProducAdapter extends RecyclerView.Adapter<ProducAdapter.MyViewHolder> {
-            private List<PrimaryProduct.UOMlist> productList;
+        private List<PrimaryProduct.UOMlist> productList;
         Context ct;
         Double subtot,subtotal;
         int cqty;
