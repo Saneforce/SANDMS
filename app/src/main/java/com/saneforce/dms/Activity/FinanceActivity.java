@@ -30,7 +30,7 @@ public class FinanceActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
         TextView toolbar_title = findViewById(R.id.toolbar_title);;
-        toolbar_title.setText("Finance");
+        toolbar_title.setText("FINANCE");
 
         ImageView toolbar_back = findViewById(R.id.toolbar_back);
         toolbar_back.setOnClickListener(new View.OnClickListener() {

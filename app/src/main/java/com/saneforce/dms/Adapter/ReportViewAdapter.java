@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.saneforce.dms.Interface.DMS;
 import com.saneforce.dms.Model.ReportModel;
 import com.saneforce.dms.R;
+import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
 
 import java.math.BigDecimal;
@@ -95,14 +96,20 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
                 holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-                holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+
+                String orderTakenBy = mDate.get(position).getOrderTakenBy();
+
+                if(mDate.get(position).getERP_Code()!=null && !mDate.get(position).getERP_Code().equals(""))
+                    orderTakenBy = orderTakenBy + " - " + mDate.get(position).getERP_Code();
+
+                holder.txtOrderTakenBy.setText("Taken By: " + orderTakenBy);
 //        if(mDate.get(position).getOrderStatus().equalsIgnoreCase())
 
-                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+//                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
 //textTotalValue.setText(String.valueOf(totalfin));
                 if(reportType.equals("Secondary")) {
                     holder.txtRetailerName.setVisibility(View.VISIBLE);
-                    holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+                    holder.txtRetailerName.setText("Retailer Name: " + mDate.get(position).getRetailerName());
                 }
 
                 float total = Float.parseFloat(mDate.get(position).getOrderValue());
@@ -123,7 +130,14 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
                 holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-                holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+
+                String orderTakenBy = mDate.get(position).getOrderTakenBy();
+
+                if(mDate.get(position).getERP_Code()!=null && !mDate.get(position).getERP_Code().equals(""))
+                    orderTakenBy = orderTakenBy + " - " + mDate.get(position).getERP_Code();
+
+                holder.txtOrderTakenBy.setText("Taken By: " + orderTakenBy);
+
                 double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
                 // textTotalValue.setText(String.valueOf(totalfin));
 
@@ -131,7 +145,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 if(reportType.equals("Secondary")) {
                     holder.txtRetailerName.setVisibility(View.VISIBLE);
-                    holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+                    holder.txtRetailerName.setText("Retailer Name: " + mDate.get(position).getRetailerName());
                 }
 
                 float total = Float.parseFloat(mDate.get(position).getOrderValue());
@@ -150,7 +164,14 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
             holder.txtOrderID.setText(mDate.get(position).getOrderNo());
             holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
-            holder.txtOrderTakenBy.setText("Taken By:" + mDate.get(position).getOrderTakenBy());
+
+            String orderTakenBy = mDate.get(position).getOrderTakenBy();
+
+            if(mDate.get(position).getERP_Code()!=null && !mDate.get(position).getERP_Code().equals(""))
+                orderTakenBy = orderTakenBy + " - " + mDate.get(position).getERP_Code();
+
+            holder.txtOrderTakenBy.setText("Taken By: " + orderTakenBy);
+
             float total = Float.parseFloat(mDate.get(position).getOrderValue());
 
             BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
@@ -161,7 +182,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             String reportType=mDate.get(position).getReportType();
             if(reportType.equals("Secondary")) {
                 holder.txtRetailerName.setVisibility(View.VISIBLE);
-                holder.txtRetailerName.setText("Retailer Name:" + mDate.get(position).getRetailerName());
+                holder.txtRetailerName.setText("Retailer Name: " + mDate.get(position).getRetailerName());
             }
             //holder.txtPaymentOption.setText("Payment Type:"+mDate.get(position).getPaymentOption());
         }
@@ -169,16 +190,25 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             MyViewHolderFinance holderFinance = (MyViewHolderFinance) holder1;
 //            holderFinance.cv_root.setText();
 
-            holderFinance.tv_sl_no.setText(mDate.get(position).getSlno());
             holderFinance.tv_customer_name.setText(mDate.get(position).getCustomer_Name());
             holderFinance.tv_payment_status.setText(mDate.get(position).getOrderStatus());
             holderFinance.tv_order_id.setText(mDate.get(position).getOrderNo());
-            holderFinance.tv_sales_value.setText(mDate.get(position).getOrderValue());
-            holderFinance.tv_received_amt.setText(mDate.get(position).getReceived_Amt());
+            double orderValue = 0;
+            if(mDate.get(position).getOrderValue()!=null)
+                orderValue = Double.parseDouble(mDate.get(position).getOrderValue());
+
+            holderFinance.tv_sales_value.setText(Constants.roundTwoDecimals(orderValue));
+
+            double receivedValue = 0;
+            if(mDate.get(position).getReceived_Amt()!=null)
+                receivedValue = Double.parseDouble(mDate.get(position).getReceived_Amt());
+
+            holderFinance.tv_received_amt.setText(Constants.roundTwoDecimals(receivedValue));
+
             holderFinance.tv_ordered_date.setText(mDate.get(position).getOrderDate());
             holderFinance.tv_date_paid.setText(mDate.get(position).getPaid_Date());
             holderFinance.tv_payment_mode.setText(mDate.get(position).getPayment_Mode());
-            holderFinance.tv_cutomer_id.setText(mDate.get(position).getCustomer_Id());
+            holderFinance.tv_cutomer_id.setText(mDate.get(position).getERP_Code());
 
 
         }
@@ -225,7 +255,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MyViewHolderFinance extends RecyclerView.ViewHolder {
 
         CardView cv_root;
-        TextView tv_sl_no, tv_customer_name, tv_payment_status, tv_order_id, tv_sales_value, tv_received_amt, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
+        TextView tv_customer_name, tv_payment_status, tv_order_id, tv_sales_value, tv_received_amt, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
 
 
 //        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
@@ -246,7 +276,6 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //            itemView.setOnClickListener(this);
 
             cv_root=itemView.findViewById(R.id.cv_root);
-            tv_sl_no=itemView.findViewById(R.id.tv_sl_no);
             tv_customer_name=itemView.findViewById(R.id.tv_customer_name);
             tv_payment_status=itemView.findViewById(R.id.tv_payment_status);
             tv_order_id=itemView.findViewById(R.id.tv_order_id);

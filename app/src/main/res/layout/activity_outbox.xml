@@ -172,6 +172,7 @@ tools:context=".Activity.OutboxActivity">
         android:background="@drawable/custom_bg"
         android:divider="@color/colorPrimary"
         tools:itemCount="5"
+        android:visibility="gone"
         tools:listitem="@layout/item_outbox"
         android:elevation="2dp">
 

@@ -127,7 +127,7 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
     JSONArray jsonArray;
     DMS.CheckingInterface itemClick;
     Shared_Common_Pref shared_common_pref;
-
+    String Stockist_Name = "";
 
     public DispatchCreated(Context context, JSONArray jsonArray) {
         this.context = context;
@@ -166,18 +166,30 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
                 Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
-            String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
             String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
             String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
+
+
+            if(!jsonObject.isNull("Stockist_Name"))
+                Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+            else
+                Stockist_Name = "";
+
+            if(!jsonObject.isNull("ERP_Code") && !jsonObject.getString("ERP_Code").equals("")){
+                Stockist_Name = Stockist_Name+" - "+ jsonObject.getString("ERP_Code");
+            }
+
             holder.orderDistributor.setText(Stockist_Name);
-            holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
+
+            holder.txtPaymentOption.setText("Payment Type : "+ Payment_Option);
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
-                holder.txtPaymentMode.setText("Payment Mode :" +Payment_Mode);
+                holder.txtPaymentMode.setText("Payment Mode : " +Payment_Mode);
             }else {
                 holder.txtPaymentMode.setVisibility(View.GONE);
                 holder.txtPaymentMode.setText("");

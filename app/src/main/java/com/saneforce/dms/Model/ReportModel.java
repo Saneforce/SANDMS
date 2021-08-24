@@ -4,19 +4,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ReportModel {
-    @SerializedName(value = "slno", alternate = {"rw"})
+    @SerializedName("slno")
     @Expose
     private String slno;
-    @SerializedName(value = "Order_No", alternate = {"orderId"})
+    @SerializedName("Order_No")
     @Expose
     private String orderNo;
-    @SerializedName(value = "stockist_Code", alternate = {"Stockist_Code"})
+    @SerializedName("stockist_Code")
     @Expose
     private String stockistCode;
     @SerializedName("sf_code")
     @Expose
     private String sfCode;
-    @SerializedName(value = "Order_Date", alternate = {"OrderDate"} )
+    @SerializedName("Order_Date")
     @Expose
     private String orderDate;
 
@@ -53,7 +53,7 @@ public class ReportModel {
     @Expose
     private String taxValue;
 
-    @SerializedName(value = "Order_Status", alternate = {"Status"})
+    @SerializedName("Order_Status")
     @Expose
     private String orderStatus;
     @SerializedName("Order_Taken_By")
@@ -68,15 +68,13 @@ public class ReportModel {
     @Expose
     private String tax;
 
-
-
     @SerializedName("Stockist_Name")
     @Expose
     private String Customer_Name;
 
     @SerializedName("ERP_Code")
     @Expose
-    private String Customer_Id;
+    private String ERP_Code;
 
     @SerializedName("Invoice_Amount")
     @Expose
@@ -92,6 +90,7 @@ public class ReportModel {
     private String Payment_Mode;
 
 
+
     public String getPayment_Mode() {
         return Payment_Mode;
     }
@@ -100,12 +99,12 @@ public class ReportModel {
         Payment_Mode = payment_Mode;
     }
 
-    public String getCustomer_Id() {
-        return Customer_Id;
+    public String getERP_Code() {
+        return ERP_Code;
     }
 
-    public void setCustomer_Id(String customer_Id) {
-        Customer_Id = customer_Id;
+    public void setERP_Code(String ERP_Code) {
+        this.ERP_Code = ERP_Code;
     }
 
     public String getCustomer_Name() {

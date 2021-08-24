@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     String Sf_Code, Division_Code, Cut_Off_Time, Sf_Name, SteCode,
-            SfUsrNme, StckLstCde, StckLstMb, SpCode, SpNme, StckLstAdd, SpAddr, logintype;
+            SfUsrNme, StckLstCde, StckLstMb, SpCode, SpNme, StckLstAdd, SpAddr, logintype, ERP_Code;
     JSONObject jsonObject1;
     Shared_Common_Pref shared_common_pref;
     Button Login;
@@ -301,6 +301,7 @@ public class LoginActivity extends AppCompatActivity {
                         SpNme = jsonObject.optString("sup_name");
                         StckLstAdd = jsonObject.optString("Stockist_Address");
                         SpAddr = jsonObject.optString("sup_addr");
+                        ERP_Code = jsonObject.optString("ERP_Code");
                     }
                     if (logintype.equalsIgnoreCase("Finance")) {
 
@@ -317,6 +318,7 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                         shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
+                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
 
                         startActivity(intent);
                         finish();
@@ -335,6 +337,7 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                         shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                         shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
+                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
 
                         startActivity(intent);
                         finish();
@@ -357,6 +360,7 @@ public class LoginActivity extends AppCompatActivity {
                         shared_common_pref.save(Shared_Common_Pref.USER_NAME, Sf_Name);
 //                        shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
                         shared_common_pref.save(Shared_Common_Pref.USER_PHONE, StckLstMb);
+                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
 
                         TimeUtils.addLoginDate(DMSApplication.getApplication());
                         startActivity(intent);

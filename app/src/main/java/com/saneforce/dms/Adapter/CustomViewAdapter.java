@@ -522,7 +522,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //        else
 //            itemPrice = totalAmt;
 
-        viewHolder.txtPrice.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
+        viewHolder.txtPrice.setText("Rs: " + Constants.roundTwoDecimals(itemPrice));
         viewHolder.txtQty.setText(String.valueOf(qty));
         viewHolder.item_amount.setText(Constants.roundTwoDecimals(totalAmt));
 

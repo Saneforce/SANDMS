@@ -345,8 +345,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                         paymentCompleted(true);
 
-                    }else
-                        Toast.makeText(PaymentDetailsActivity.this, "something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                    }else if(jsonObject.has("Msg"))
+                        Toast.makeText(PaymentDetailsActivity.this, ""+ jsonObject.get("Msg").toString(), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
 
 //                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);

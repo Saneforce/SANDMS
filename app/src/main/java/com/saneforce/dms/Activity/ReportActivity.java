@@ -136,7 +136,11 @@ List<ReportModel> filteredList = new ArrayList<>();
         getToolbar();
         txtOrderStatus=findViewById(R.id.txt_orderstatus);
         txtName = findViewById(R.id.dist_name);
-        txtName.setText("Name:"+ ""+shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
+        txtName.setText("Name: "+ ""+shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
+
+        TextView tv_erp_code = findViewById(R.id.tv_erp_code);
+        tv_erp_code.setText("ERP Code: "+ ""+shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
+
         @SuppressLint("WrongConstant")
         SharedPreferences sh = getSharedPreferences("MyPrefs", MODE_APPEND);
         SF_CODE = sh.getString("Sf_Code", "");
@@ -398,7 +402,8 @@ List<ReportModel> filteredList = new ArrayList<>();
 
         }else
             axn = "get/finreport";
-        responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), fromDateString, toDateString);
+
+        responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
 
 //        Log.v("Request_cal", responseBodyCall.request().toString());
         responseBodyCall.enqueue(new Callback<ReportDataList>() {
@@ -412,7 +417,7 @@ List<ReportModel> filteredList = new ArrayList<>();
 
                     if (mReportActivities.getData() != null)
                         mDReportModels = mReportActivities.getData();
-                    String ordervalue = "0";
+                    /*String ordervalue = "0";
 
                     switch (orderTakenByFilter){
                         case "Payment Pending" :
@@ -459,7 +464,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                     BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
                     double totalroundoff = bd.doubleValue();
 
-                    txtTotalValue.setText("Rs . " + totalroundoff);
+                    txtTotalValue.setText("Rs . " + totalroundoff);*/
 
                 }
 
@@ -499,11 +504,8 @@ List<ReportModel> filteredList = new ArrayList<>();
                             }
 
                         }
-
                         txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
-
                     }
-
 
                     updateFilterList();
                 }catch (Exception e){

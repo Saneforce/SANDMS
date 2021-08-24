@@ -33,7 +33,7 @@ public class OutboxActivity extends AppCompatActivity {
 //        tv_non_productive_calls = findViewById(R.id.tv_non_productive_calls);
 
         dbController = new DBController(this);
-
+        getToolbar();
     }
 
     /*Toolbar*/

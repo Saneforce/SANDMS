@@ -53,7 +53,7 @@ public interface ApiInterface {
 
     /*ReportView*/
     @POST("dms_db_V1.php?")
-    Call<ReportDataList> reportValues(@Query("axn") String Axn,@Query("Sf_code") String sFCode, @Query("fromdate") String fromdate, @Query("todate") String todate);
+    Call<ReportDataList> reportValues(@Query("axn") String Axn,@Query("Sf_code") String sFCode, @Query("divisionCode") String divisionCode, @Query("fromdate") String fromdate, @Query("todate") String todate);
 
     /*DateReportView*/
     @POST("dms_db_V1.php?")

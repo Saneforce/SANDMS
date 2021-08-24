@@ -154,7 +154,7 @@
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="Dis Amt:"
+                                android:text="Dis Amt: "
                                 android:textSize="12sp" />
 
                             <TextView
@@ -175,7 +175,7 @@
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="Tax :"
+                                android:text="Tax : "
                                 android:textSize="12sp" />
 
                             <TextView
@@ -190,7 +190,7 @@
 
                             <TextView
                                 style="@style/TextStyle"
-                                android:text="Tax Amt:"
+                                android:text="Tax Amt: "
                                 android:textSize="12sp" />
 
                             <TextView

@@ -81,7 +81,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         ProductCount = Integer.parseInt(mProductCount.getText().toString());
         subTotal = Float.parseFloat(productQty.getText().toString()) *
-                Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
         Log.v("total", String.valueOf(subTotal));
         float subTT = subTotal + Float.parseFloat(productTaxAmt.getText().toString());
         productTotal.setText("" + subTT);
@@ -123,7 +123,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                // productTotal.setText("" + subTotal);
             }else{
                 subTotal = (taxAmt * subTotal) / 100;
-                Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                 Log.e("calculate",calculate.toString());
                 valueTotal = subTotal - calculate;
                 Log.e("tax220", valueTotal.toString());
@@ -157,7 +157,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 ProductCount = ProductCount + 1;
                 mProductCount.setText("" + ProductCount);
                 productQty.setText(mProductCount.getText().toString());
-                subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                 Log.v("PRODUCT_COUNT", String.valueOf(subTotal));
                 //updateTask(task);
                 tax = Float.valueOf(productTax.getText().toString());
@@ -167,7 +167,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                     subTotal = (taxAmt * subTotal) / 100;
                     productTotal.setText("" + subTotal);
                     Log.e("Total_Distcount", "=" + subTotal);
-                    Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                    Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                     Float valueTotal = subTotal - calculate;
                     productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                 } else {
@@ -185,7 +185,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 if (ProductCount >= 0) {
                     mProductCount.setText("" + ProductCount);
                     productQty.setText(mProductCount.getText().toString());
-                    subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                    subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                     productTotal.setText("" + subTotal);
                     // updateTask(task);
 
@@ -200,7 +200,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                         subTotal = (taxAmt * subTotal) / 100;
                         productTotal.setText("" + subTotal);
                         Log.e("Total_Distcount", "=" + subTotal);
-                        Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                        Float calculate = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                         Float valueTotal = subTotal - calculate;
                         productTaxAmt.setText("" + new DecimalFormat("##.##").format(valueTotal));
                     } else {
@@ -238,7 +238,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
                 } else {
                     productQty.setText(mProductCount.getText().toString());
-                    subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs:", ""));
+                    subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                     productTotal.setText("" + subTotal);
                     //   updateTask(task);
 
@@ -713,7 +713,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //        else
 //            itemPrice = totalAmt;
 
-        productPrice.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
+        productPrice.setText("Rs: " + Constants.roundTwoDecimals(itemPrice));
         productQty.setText(String.valueOf(qty));
 
 //        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));

@@ -327,7 +327,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onChanged(List<PrimaryProduct> contacts) {
 //                Log.v("TotalSize", new Gson().toJson(contacts.size()));
-                item_count.setText("Items :" + new Gson().toJson(contacts.size()));
+                item_count.setText("Items : " + new Gson().toJson(contacts.size()));
                 float sum = 0;
 //                        float tax=0;
                 for (PrimaryProduct cars : contacts) {
@@ -2051,7 +2051,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             itemPrice = totalAmt;
         else*/
         itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty;
-        holder.subProdcutChildRate.setText("Rs:" + Constants.roundTwoDecimals(itemPrice));
+        holder.subProdcutChildRate.setText("Rs: " + Constants.roundTwoDecimals(itemPrice));
         holder.productItem.setText(String.valueOf(qty));
         holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
 

@@ -59,9 +59,9 @@ public class ProfileActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.ema_edt);
         tie_erp_code = findViewById(R.id.tie_erp_code);
         tie_sales_team_name = findViewById(R.id.tie_sales_team_name);
-        Log.v("sfcode", sf_Code);
+
         if(Constants.isInternetAvailable(this))
-            getProfileData(sf_Code);
+            getProfileData();
         else{
             Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
             finish();
@@ -181,8 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void getProfileData(String sf_Code) {
-    this.sf_Code=sf_Code;
+    public void getProfileData() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getProfile(sf_Code);
         Log.v("DMS_REQUEST", call.request().toString());

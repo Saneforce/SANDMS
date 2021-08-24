@@ -136,7 +136,7 @@
             style="@style/TextStyle"
             android:visibility="gone"
             android:layout_width="match_parent"
-            android:text="Retailer Name:"
+            android:text="Retailer Name: "
             android:textSize="@dimen/C12dp"
             android:paddingLeft="@dimen/C5dp" />
     </LinearLayout>
@@ -151,7 +151,7 @@
             style="@style/TextStyle"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Taken By:"
+            android:text="Taken By: "
             android:textSize="13sp"
             android:paddingLeft="@dimen/C5dp" />
 

@@ -31,7 +31,7 @@
                     <TextView
                         style="@style/TextStyle"
                         android:textStyle="bold"
-                        android:text="Order ID:" />
+                        android:text="Order ID: " />
                     <TextView
 
                         style="@style/TextStyle"
@@ -59,7 +59,7 @@
                     <TextView
                         style="@style/TextStyle"
                         android:textStyle="bold"
-                        android:text="Order ID:" />
+                        android:text="Order ID: " />
                     <TextView
                         android:id="@+id/product_order_id"
                         style="@style/TextStyle"
@@ -83,7 +83,7 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Order Amount:" />
+                        android:text="Order Amount: " />
                     <TextView
                         android:id="@+id/product_amnt"
                         style="@style/TextStyle"
@@ -128,7 +128,7 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Paid Amount:" />
+                        android:text="Paid Amount: " />
                     <TextView
                         android:id="@+id/tv_paid_amount"
                         style="@style/TextStyle"
@@ -151,7 +151,7 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Distributor :" />
+                        android:text="Distributor : " />
                     <TextView
                         android:id="@+id/product_distributor"
                         style="@style/TextStyle"
@@ -175,7 +175,7 @@
                     style="@style/TextStyle"
                     android:layout_weight=".5"
                     android:layout_width="0dp"
-                    android:text="Payment Type:"
+                    android:text="Payment Type: "
 
                     android:textStyle="bold"
                     android:textColor="#C40F0F0F" />
@@ -186,7 +186,7 @@
                     android:layout_weight=".5"
                     android:layout_width="0dp"
                     android:visibility="gone"
-                    android:text="Payment Mode:"
+                    android:text="Payment Mode: "
                     android:textStyle="bold"
                     android:textColor="#C40F0F0F" /> </LinearLayout>
         </LinearLayout>

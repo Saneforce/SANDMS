@@ -70,7 +70,8 @@ public class PaymentVerified extends AppCompatActivity {
         if (LoginType.equalsIgnoreCase("Logistics")) {
             //below api is omitted because new
             // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
-            ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+            ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),
+                    mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         }else{
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),
                     mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
@@ -161,6 +162,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
     Shared_Common_Pref shared_common_pref;
 
     String Amount = "0";
+    String Stockist_Name = "";
     public VerifiedAdapter(Context context, JSONArray jsonArray) {
         this.context = context;
         this.jsonArray = jsonArray;
@@ -197,19 +199,28 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
                 Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
-            String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+            if(!jsonObject.isNull("Stockist_Name"))
+                Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+            else
+                Stockist_Name = "";
+
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
             String Payment_Option=String.valueOf(jsonObject.get("Payment_Option"));
             String Payment_Mode=String.valueOf(jsonObject.get("Payment_Mode"));
 
+            if(!jsonObject.isNull("ERP_Code") && !jsonObject.getString("ERP_Code").equals("")){
+                Stockist_Name = Stockist_Name+" - "+ jsonObject.getString("ERP_Code");
+            }
+
+
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderDistributor.setText(Stockist_Name);
-            holder.txtPaymentOption.setText("Payment Type :"+ Payment_Option);
+            holder.txtPaymentOption.setText("Payment Type : "+ Payment_Option);
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
-                holder.txtPaymentMode.setText("Payment Mode :"+ Payment_Mode);
+                holder.txtPaymentMode.setText("Payment Mode : "+ Payment_Mode);
             }else {
                 holder.txtPaymentMode.setVisibility(View.GONE);
                 holder.txtPaymentMode.setText("");

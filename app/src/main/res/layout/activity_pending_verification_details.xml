@@ -25,7 +25,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Order ID:" />
+                    android:text="Order ID: " />
 
                 <TextView
                     android:id="@+id/product_order_id"
@@ -40,7 +40,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Order Value:" />
+                    android:text="Order Value: " />
 
                 <TextView
                     android:id="@+id/product_amnt"
@@ -55,7 +55,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Distributor:" />
+                    android:text="Distributor: " />
 
                 <TextView
                     android:id="@+id/product_distributor"
@@ -69,7 +69,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="UTR Number :" />
+                    android:text="UTR Number : " />
 
                 <TextView
                     android:id="@+id/product_number"
@@ -84,7 +84,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Payemnt Type :" />
+                    android:text="Payemnt Type : " />
 
                 <TextView
                     android:id="@+id/tv_payment_type"
@@ -100,7 +100,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Payment Option :" />
+                    android:text="Payment Option : " />
 
                 <TextView
                     android:id="@+id/tv_payment_option"
@@ -115,7 +115,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:layout_weight="1"
-                    android:text="Receipt :" />
+                    android:text="Receipt : " />
 
                 <ImageView
                     android:id="@+id/bank_receipt"

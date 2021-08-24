@@ -44,10 +44,10 @@ public class PendingVerification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_verification);
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
-        getToolbar();
-
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
+
+        getToolbar();
 
     }
 
@@ -129,8 +129,8 @@ public class PendingVerification extends AppCompatActivity {
 class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
     Context context;
     JSONArray jsonArray;
-    DMS.CheckingInterface itemClick;
-
+//    DMS.CheckingInterface itemClick;
+    String Stockist_Name = "";
 
     public PendingAdapter(Context context, JSONArray jsonArray) {
         this.context = context;
@@ -161,7 +161,12 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             String OrderID = String.valueOf(jsonObject.get("OrderID"));
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
             String Amount = String.valueOf(jsonObject.get("Amount"));
-            String Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+
+            if(!jsonObject.isNull("Stockist_Name"))
+                Stockist_Name = String.valueOf(jsonObject.get("Stockist_Name"));
+            else
+                Stockist_Name = "";
+
             String UTRNumber = String.valueOf(jsonObject.get("UTRNumber"));
             String Imgurl = String.valueOf(jsonObject.get("Imgurl"));
             Log.v("iage",Imgurl);
@@ -170,11 +175,16 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             holder.orderID.setText(OrderID);
             holder.orderDate.setText(PayDt);
             holder.orderValue.setText(Amount);
+
+            if(!jsonObject.isNull("ERP_Code") && !jsonObject.getString("ERP_Code").equals("")){
+                Stockist_Name = Stockist_Name+" - "+ jsonObject.getString("ERP_Code");
+            }
             holder.orderDistributor.setText(Stockist_Name);
-            holder.txtPaymentOption.setText("Payment Type :"+Payment_Option);
+
+            holder.txtPaymentOption.setText("Payment Type : "+Payment_Option);
             if(Payment_Option.equals("Offline")){
                 holder.txtPaymentMode.setVisibility(View.VISIBLE);
-                holder.txtPaymentMode.setText("Payment Mode :"+Payment_Mode);
+                holder.txtPaymentMode.setText("Payment Mode : "+Payment_Mode);
             }else {
                 holder.txtPaymentMode.setVisibility(View.GONE);
                 holder.txtPaymentMode.setText("");

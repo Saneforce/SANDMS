@@ -26,7 +26,7 @@
 
                 <TextView
                     style="@style/TextStyle"
-                    android:text="Name:" />
+                    android:text="Name: " />
 
                 <TextView
                     android:id="@+id/dis_name"
@@ -42,7 +42,7 @@
 
                 <TextView
                     style="@style/TextStyle"
-                    android:text="Address:" />
+                    android:text="Address: " />
 
                 <TextView
                     android:textStyle="bold"

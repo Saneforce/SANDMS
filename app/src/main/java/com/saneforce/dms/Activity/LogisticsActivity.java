@@ -31,7 +31,7 @@ public class LogisticsActivity extends AppCompatActivity {
         ib_logout = findViewById(R.id.ib_logout);
         ib_logout.setVisibility(View.VISIBLE);
         TextView toolbar_title = findViewById(R.id.toolbar_title);;
-        toolbar_title.setText("Logistics");
+        toolbar_title.setText("LOGISTICS");
         ImageView toolbar_back = findViewById(R.id.toolbar_back);
         toolbar_back.setOnClickListener(new View.OnClickListener() {
             @Override

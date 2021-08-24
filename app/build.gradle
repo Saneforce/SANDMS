@@ -5,12 +5,12 @@ apply plugin: 'realm-android'
 
 android {
     signingConfigs {
-        debug {
+     /*   debug {
             storeFile file('D:\\Vengat\\dms_keystore.jks')
             storePassword '12345678'
             keyPassword '12345678'
             keyAlias 'key0'
-        }
+        }*/
         release {
             storeFile file('D:\\Vengat\\dms_keystore.jks')
             storePassword '12345678'
@@ -26,8 +26,8 @@ android {
         applicationId "com.saneforce.dms"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

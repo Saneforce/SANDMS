@@ -30,7 +30,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="OrderId:" />
+                        android:text="OrderId: " />
 
                     <TextView
                         android:id="@+id/ord_id"
@@ -46,7 +46,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="Date :" />
+                        android:text="Date : " />
 
                     <TextView
                         android:id="@+id/dis_date"
@@ -62,7 +62,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="Amount :" />
+                        android:text="Amount : " />
 
                     <TextView
                         android:id="@+id/dis_amt"
