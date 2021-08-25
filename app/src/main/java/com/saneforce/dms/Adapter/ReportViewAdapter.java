@@ -30,18 +30,18 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //    String OrderValue;
     String OrderTakenbyFilter;
     TextView textTotalValue;
-    String orderType;
+    String reportType;
     Shared_Common_Pref shared_common_pref;
 
     int viewType  = 1;
 
-    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport ,String ordertakenbyFilter ,TextView textTotalValue, String orderType, int viewType) {
+    public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport , String ordertakenbyFilter , TextView textTotalValue, String reportType, int viewType) {
         this.context = context;
         this.mDate = mDate;
         this.mViewReport = mViewReport;
         this.OrderTakenbyFilter=ordertakenbyFilter;
         this.textTotalValue=textTotalValue;
-        this.orderType=orderType;
+        this.reportType = reportType;
         this.viewType=viewType;
         shared_common_pref = new Shared_Common_Pref(context);
     }
@@ -77,11 +77,15 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             double totalvalue=0.0;
             String reportType=mDate.get(position).getReportType();
 
-            String orderType = "F";
-            if(mDate.get(position).getOrder_type().equals("1"))
-                orderType = "P";
+            String orderType = "";
+            if(mDate.get(position).getOrder_type()!=null){
+                if(mDate.get(position).getOrder_type().equals("1"))
+                    orderType = "P";
+                else if(mDate.get(position).getOrder_type().equals("0"))
+                    orderType = "F";
+            }
 
-            if(this.orderType.equals("1")){
+            if(this.reportType.equals("1") || orderType.equals("")){
                 holder.tv_order_type.setVisibility(View.GONE);
             }
             else{
@@ -243,11 +247,15 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void onClick(View v) {
             String editOrder = "0";
 
+            try {
                 if(mDate.get(getAdapterPosition()).getSfCode()!=null && shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code).equals(mDate.get(getAdapterPosition()).getSfCode())){
                     editOrder = "1";
                 }else{
                     editOrder = "0";
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag());
         }
     }

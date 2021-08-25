@@ -28,7 +28,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,7 +55,6 @@ import com.saneforce.dms.Utils.Common_Class;
 import com.saneforce.dms.Utils.Constants;
 import com.saneforce.dms.Utils.PrimaryProductDatabase;
 import com.saneforce.dms.Utils.Shared_Common_Pref;
-import com.saneforce.dms.Utils.TimeUtils;
 import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
@@ -85,7 +83,7 @@ public class ViewReportActivity extends AppCompatActivity {
     String formDate;
     String toDate;
     //secondary or primary
-    String OrderType;
+    String reportType;
     //    String OrderAmt;
 //    String OrderTax;
     DateReportAdapter mDateReportAdapter;
@@ -106,12 +104,14 @@ public class ViewReportActivity extends AppCompatActivity {
     LinearLayout ll_order_type;
     int categoryCode = -1;
     ImageView ib_logout;
-//    String orderCreatedDateTime= "";
+    //    String orderCreatedDateTime= "";
     String orderNo = "";
 
     String editOrder ="0";
 
     int Paymentflag = 1, Dispatch_Flag = 1;
+    int orderType =- 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +128,7 @@ public class ViewReportActivity extends AppCompatActivity {
         TotalValue = findViewById(R.id.total_value);
         shared_common_pref = new Shared_Common_Pref(this);
 
-        OrderType = shared_common_pref.getvalue("OrderType");
+        reportType = shared_common_pref.getvalue("OrderType");
         dbController = new DBController(this);
         mCommon_class = new Common_Class(this);
 
@@ -154,6 +154,25 @@ public class ViewReportActivity extends AppCompatActivity {
         Paymentflag = intent.getIntExtra("Paymentflag", 1);
         Dispatch_Flag = intent.getIntExtra("Dispatch_Flag", 1);
 
+        try {
+            if(intent.hasExtra("orderType") && intent.getStringExtra("orderType")!=null && !intent.getStringExtra("orderType").equals(""))
+                orderType = Integer.parseInt(intent.getStringExtra("orderType"));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        if(orderType!=-1){
+            ll_order_type.setVisibility(View.VISIBLE);
+
+            String orderValue = "Field Order";
+            if(orderType == 1)
+                orderValue = "Phone Order";
+
+            tv_order_type.setText(orderValue);
+
+        }else {
+            ll_order_type.setVisibility(View.GONE);
+        }
 
 
         DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
@@ -179,29 +198,29 @@ public class ViewReportActivity extends AppCompatActivity {
                 showDeleteDialog();
             }
         });
-        if(OrderType.equals("2")){
+        if(reportType.equals("2")){
             if(editOrder.equals("1") && Paymentflag == 0){
-            ib_logout.setVisibility(View.VISIBLE);
-            ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_24, null));
-            ib_logout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(Constants.isInternetAvailable(ViewReportActivity.this)){
-                        mCommon_class.ProgressdialogShow(1, "");
-                        if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
-                                !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                            new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                ib_logout.setVisibility(View.VISIBLE);
+                ib_logout.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_edit_24, null));
+                ib_logout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(Constants.isInternetAvailable(ViewReportActivity.this)){
+                            mCommon_class.ProgressdialogShow(1, "");
+                            if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                                    !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                                new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                            }else
+                                brandSecondaryApi();
                         }else
-                            brandSecondaryApi();
-                    }else
-                        Toast.makeText(ViewReportActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ViewReportActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
 
-                }
-            });
+                    }
+                });
             }else {
                 ib_logout.setVisibility(View.GONE);
             }
-            if(OrderType.equals("1") || Dispatch_Flag ==0){
+            if(reportType.equals("1") || Dispatch_Flag ==0){
                 PayNow.setText("Dispatch");
                 PayNow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -366,7 +385,7 @@ public class ViewReportActivity extends AppCompatActivity {
     public void ViewDateReport() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> responseBodyCall;
-        if (OrderType.equalsIgnoreCase("1")) {
+        if (reportType.equalsIgnoreCase("1")) {
             responseBodyCall = apiInterface.dateReport("get/ViewReport_Details", productId, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         } else {
             responseBodyCall = apiInterface.dateReport("get/secviewreport_details", productId, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
@@ -422,7 +441,7 @@ public class ViewReportActivity extends AppCompatActivity {
                         Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
                         Log.v("PAYMENT_VALUE1", String.valueOf(OrderAmtNew));
 
-                        if(OrderType.equals("2")){
+                        if(reportType.equals("2")){
 
                             if (editOrder.equals("1") && Paymentflag == 0) {
                                 Delete.setVisibility(View.VISIBLE);
@@ -449,20 +468,6 @@ public class ViewReportActivity extends AppCompatActivity {
                             }
                         }
 
-                       /* if(OrderType.equals("2") && !jsonObject.isNull("OrderType") && !jsonObject.getString("OrderType").equals("")){
-                            ll_order_type.setVisibility(View.VISIBLE);
-                            String orderType = jsonObject.getString("OrderType");
-
-                            if(orderType.equals("0"))
-                                orderType = "Field Order";
-                            else
-                                orderType = "Phone Order";
-
-                            tv_order_type.setText(orderType);
-
-                        }else {*/
-                            ll_order_type.setVisibility(View.GONE);
-//                        }
                         if(!jsonObject.isNull("Cust_Code")){
                             custCode =jsonObject.getString("Cust_Code");
                         }
@@ -497,7 +502,7 @@ public class ViewReportActivity extends AppCompatActivity {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
 
-            if (OrderType.equalsIgnoreCase("1")) {
+            if (reportType.equalsIgnoreCase("1")) {
                 responseBodyCall = apiInterface.getDetails("dcr/cancelprimaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
             } else {
                 responseBodyCall = apiInterface.getDetails("dcr/cancelsecondaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());

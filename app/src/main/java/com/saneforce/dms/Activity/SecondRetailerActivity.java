@@ -326,7 +326,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         ApiInterface apiInterface2 = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface2.retailerViewDetails(retailerID, shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
 
-        Log.v("Retailer_Details_req", call.request().toString());
+//        Log.v("Retailer_Details_req", call.request().toString());
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -346,6 +346,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                             retailerClass = jsonObject.getString("DrCat");
                         txtClass.setText(retailerClass);
 
+                    String lastVisit = "-";
+                    if(jsonObject.has("last_visit_date") && !jsonObject.getString("last_visit_date").equals(""))
+                        lastVisit = jsonObject.getString("last_visit_date");
+                    txtLastVisited.setText(lastVisit);
 
                         double total = 0;
                         if(!jsonObject.isNull("MOV")){
@@ -369,15 +373,17 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                         tv_sch_enrollment.setText(scheme);
 
                         String lastOrderAmt = "-";
-                        if(jsonObject.has("LastorderAmount") && !jsonObject.getString("LastorderAmount").equals(""))
-                            lastOrderAmt = jsonObject.getString("LastorderAmount");
-                        lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constants.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
-                        txtLastOrderAmount.setText(lastOrderAmt);
+                        JSONArray jsonArray = jsonObject.getJSONArray("StockistDetails");
 
-                        String lastVisit = "-";
-                        if(jsonObject.has("lastVisit"))
-                            lastVisit = jsonObject.getString("lastVisit");
-                        txtLastVisited.setText(lastVisit);
+                        if(jsonArray.length()>0){
+                            lastOrderAmt = jsonArray.getJSONObject(0).getString("LastOrderAmt");
+                            if(!lastOrderAmt.equals(""))
+                            lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constants.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
+                            txtLastOrderAmount.setText(lastOrderAmt);
+
+                        }
+
+
 
                         String mob1 = "-";
 //                        String mob2 = "";

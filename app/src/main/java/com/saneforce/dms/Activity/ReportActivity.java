@@ -139,7 +139,11 @@ List<ReportModel> filteredList = new ArrayList<>();
         txtName.setText("Name: "+ ""+shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
 
         TextView tv_erp_code = findViewById(R.id.tv_erp_code);
-        tv_erp_code.setText("ERP Code: "+ ""+shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
+        if(!shared_common_pref.getvalue1(Shared_Common_Pref.USER_ERP_CODE).equals("")){
+            tv_erp_code.setVisibility(View.VISIBLE);
+            tv_erp_code.setText("ERP Code: "+ ""+shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
+        }else
+            tv_erp_code.setVisibility(View.GONE);
 
         @SuppressLint("WrongConstant")
         SharedPreferences sh = getSharedPreferences("MyPrefs", MODE_APPEND);

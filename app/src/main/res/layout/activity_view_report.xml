@@ -96,7 +96,7 @@
                     android:paddingHorizontal="10dp"
                     android:id="@+id/ll_order_type"
                     android:layout_marginBottom="10dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -108,7 +108,7 @@
                         android:id="@+id/tv_order_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="Field Order"
                         android:textColor="@android:color/black" />
 
                 </LinearLayout>
