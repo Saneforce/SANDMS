@@ -373,15 +373,14 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                         tv_sch_enrollment.setText(scheme);
 
                         String lastOrderAmt = "-";
-                        JSONArray jsonArray = jsonObject.getJSONArray("StockistDetails");
-
-                        if(jsonArray.length()>0){
-                            lastOrderAmt = jsonArray.getJSONObject(0).getString("LastOrderAmt");
+//                        JSONArray jsonArray = jsonObject.getJSONArray("StockistDetails");
+//                        if(jsonArray.length()>0){
+                            lastOrderAmt = jsonObject.getString("LastOrderAmt");
                             if(!lastOrderAmt.equals(""))
                             lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constants.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
                             txtLastOrderAmount.setText(lastOrderAmt);
 
-                        }
+//                        }
 
 
 

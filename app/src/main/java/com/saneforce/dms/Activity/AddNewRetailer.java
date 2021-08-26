@@ -1,22 +1,23 @@
 package com.saneforce.dms.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,12 +27,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -86,12 +81,11 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
 
     private static final int REQUEST_LOCATION = 1;
-//    Button btnGetLocation;
-    LocationManager locationManager;
+    //    Button btnGetLocation;
     String latitude, longitude;
 
     DBController dbController;
-
+    LocationManager mLocationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,14 +145,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             }
         });
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            OnGPS();
-        } else {
-            getLocation();
-        }
+
+
+
     }
 
     private void OnGPS() {
@@ -178,16 +167,47 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         alertDialog.show();
     }
 
-    private void getLocation() {
+    /*private void getLocation() {
         if (ActivityCompat.checkSelfPermission(
                 AddNewRetailer.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 AddNewRetailer.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
-            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (locationGPS != null) {
-                double lat = locationGPS.getLatitude();
-                double longi = locationGPS.getLongitude();
+
+            updateLocation();
+        }
+    }*/
+
+    @SuppressLint("MissingPermission")
+    private void updateLocation() {
+        try {
+
+
+
+            // Now create a location manager
+            // Now first make a criteria with your requirements
+            // this is done to save the battery life of the device
+            // there are various other other criteria you can search for..
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+
+
+            // This is the Best And IMPORTANT part
+            final Looper looper = null;
+
+            mLocationManager.requestSingleUpdate(criteria, locationListener, looper);
+
+           /* Location myLocation = getLastKnownLocation();
+            if (myLocation != null) {
+                double lat = myLocation.getLatitude();
+                double longi = myLocation.getLongitude();
                 latitude = String.valueOf(lat);
                 longitude = String.valueOf(longi);
 
@@ -197,8 +217,11 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                 Log.v("Your_Location: ", "\n" + "Latitude: " + latitude + "\n" + "Longitude: " + longitude);
             } else {
                 Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
-            }
+            }*/
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     public void LinearRoute(View v) {
@@ -500,7 +523,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     public void OnBackClick(View v) {
-onBackPressed();
+        onBackPressed();
 
     }
 
@@ -535,5 +558,79 @@ onBackPressed();
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(Constants.checkPermissions(AddNewRetailer.this)){
+            if(mLocationManager == null)
+                mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                OnGPS();
+            } else {
+                if(txtLat.getText().toString().equals("") ||txtLon.getText().toString().equals("")  )
+                    updateLocation();
+            }
+
+        }else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+        }
+
+
+
+    }
+
+
+    private Location getLastKnownLocation() {
+
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
+
+    @Override
+    protected void onDestroy() {
+        mLocationManager.removeUpdates(locationListener);
+        super.onDestroy();
+
+    }
+
+    final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d("Location Changes", location.toString());
+            latitude = String.valueOf(location.getLatitude());
+            longitude = String.valueOf(location.getLongitude());
+
+            txtLat.setText(latitude);
+            txtLon.setText(longitude);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d("Status Changed", String.valueOf(status));
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d("Provider Enabled", provider);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d("Provider Disabled", provider);
+        }
+    };
 
 }

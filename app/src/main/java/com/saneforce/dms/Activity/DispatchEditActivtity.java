@@ -53,7 +53,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
     ArrayList<Object> listdata = new ArrayList<>();
-    String jsonsds = "";
+//    String jsonsds = "";
     JSONArray jsonArray = null;
     JSONObject jsonObject = null;
     ImageView imgBack;
@@ -274,6 +274,9 @@ class ViewProductEdit extends RecyclerView.Adapter<ViewProductEdit.MyViewHolder>
                 String free = "0";
                 if(jsonObject.has("Free"))
                     free = jsonObject.getString("Free");
+
+                if(!jsonObject.isNull("Offer_Product_Unit"))
+                    free = free + " "+ jsonObject.getString("Offer_Product_Unit");
 
                 holder.tv_free_value.setText(free);
 
