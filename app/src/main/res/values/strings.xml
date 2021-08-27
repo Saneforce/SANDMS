@@ -23,7 +23,7 @@
     <string name="name_star">Name <font color='#F44336'>*</font></string>
     <string name="address_star">Address <font color='#F44336'>*</font></string>
     <string name="city_star">City <font color='#F44336'>*</font></string>
-    <string name="phone_star">Phone <font color='#F44336'>*</font></string>
+    <string name="mob_star">Mobile <font color='#F44336'>*</font></string>
     <string name="email_star">Email <font color='#F44336'>*</font></string>
     <string name="latitude_star">Latitude <font color='#F44336'>*</font></string>
     <string name="longitude_star">Longitude <font color='#F44336'>*</font></string>

@@ -87,7 +87,7 @@
                             android:layout_margin="@dimen/C5dp"
                             android:padding="10dp"
                             android:singleLine="true"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
@@ -103,7 +103,7 @@
                             android:elevation="@dimen/C2dp"
                             android:hint="Enter the Address"
                             android:padding="10dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
@@ -120,25 +120,25 @@
                             android:layout_margin="@dimen/C5dp"
                             android:elevation="@dimen/C2dp"
                             android:singleLine="true"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/phone_star" />
+                            android:text="@string/mob_star" />
 
                         <EditText
-                            android:id="@+id/edt_new_phone"
+                            android:id="@+id/edt_new_mob"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/round_white_backround"
                             android:gravity="start"
                             android:elevation="@dimen/C2dp"
-                            android:hint="Enter the Phone No"
+                            android:hint="Enter the Mobile No"
                             android:inputType="number"
                             android:layout_margin="@dimen/C5dp"
                             android:maxLength="10"
                             android:padding="10dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
@@ -155,7 +155,7 @@
                             android:inputType="textEmailAddress"
                             android:padding="10dp"
                             android:layout_margin="@dimen/C5dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"

@@ -2,7 +2,6 @@ package com.saneforce.dms.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Criteria;
@@ -67,7 +66,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     String KeyDate = "", keyCodeValue = "", keyEk = "", KeyHyp = "", routeID = "", classID = "", channelID = "",
             locationValue = "", str1 = "", str2 = "";
     JSONObject docMasterObject;
-    EditText edtName, edtAdds, edtCity, edtPhone, edtEmail;
+    EditText edtName, edtAdds, edtCity, edtMobile, edtEmail;
     JSONArray mainArray;
 //    private FusedLocationProviderClient mFusedLocationClient;
 //    private SettingsClient mSettingsClient;
@@ -133,7 +132,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         edtName = findViewById(R.id.edt_new_name);
         edtAdds = findViewById(R.id.edt_new_address);
         edtCity = findViewById(R.id.edt_new_city);
-        edtPhone = findViewById(R.id.edt_new_phone);
+        edtMobile = findViewById(R.id.edt_new_mob);
         edtEmail = findViewById(R.id.edt_new_email);
 
 
@@ -406,7 +405,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             Toast.makeText(this, "Please Enter Retailer Address", Toast.LENGTH_SHORT).show();
         } else if (edtCity.getText().toString().equals("")) {
             Toast.makeText(this, "Please Enter Retailer City", Toast.LENGTH_SHORT).show();
-        } else if (edtPhone.getText().toString().equals("")) {
+        } else if (edtMobile.getText().toString().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Phone", Toast.LENGTH_SHORT).show();
         } else if (edtEmail.getText().toString().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Email", Toast.LENGTH_SHORT).show();
@@ -437,7 +436,8 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             reportObject.put("wlkg_sequence", "null");
             reportObject.put("unlisted_doctor_name", "'" + edtName.getText().toString() + "'");
             reportObject.put("unlisted_doctor_address", "'" + edtAdds.getText().toString() + "'");
-            reportObject.put("unlisted_doctor_phone", "'" + edtPhone.getText().toString() + "'");
+            reportObject.put("unlisted_doctor_phone", "'" +""  + "'");
+            reportObject.put("unlisted_doctor_mobile", "'" + edtMobile.getText().toString() + "'");
             reportObject.put("unlisted_doctor_cityname", "'" + edtCity.getText().toString() + "'");
             reportObject.put("unlisted_doctor_email", "'" + edtEmail.getText().toString() + "'");
             reportObject.put("unlisted_doctor_landmark", "''");
