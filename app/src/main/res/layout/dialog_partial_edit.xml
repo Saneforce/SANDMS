@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="20dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+<TextView
+    android:id="@+id/tv_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:background="@color/textColor"
+    android:paddingVertical="10dp"
+    android:text="@string/generate_a_new_order_or_discard_the_edit"
+    android:textColor="@color/black"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/tv_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Product Name"
+            />
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            >
+
+            <TextView
+                android:id="@+id/tv_order"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Order"
+                />
+
+            <TextView
+                android:id="@+id/tv_dispatch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dispatch"
+                />
+
+            <TextView
+                android:id="@+id/tv_pending"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pending"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/dark_grey"/>
+
+    </LinearLayout>
+
+<ListView
+    android:background="@color/textColor"
+    android:id="@+id/lv_partial_dispatch"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    tools:listitem="@layout/item_partial_edit"
+    />
+    <LinearLayout
+        android:background="@color/textColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_new_order"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingVertical="3dp"
+                android:text="@string/new_order"
+                android:background="@drawable/sign_bg"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="normal"/>
+
+            <TextView
+                android:id="@+id/tv_discard"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:paddingVertical="3dp"
+                android:gravity="center"
+                android:text="@string/discard"
+                android:background="@drawable/sign_bg"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="normal"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

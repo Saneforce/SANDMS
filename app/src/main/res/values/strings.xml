@@ -62,6 +62,11 @@
     <string name="retailer_visit">Retailer Visit</string>
     <string name="no_order">No Order</string>
     <string name="non_productive_calls">Non Productive Calls</string>
+    <string name="generate_a_new_order_or_discard_the_edit">Generate a new order or discard the edit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="new_order">New Order</string>
+    <string name="discard">Discard</string>
 
 
 </resources>
