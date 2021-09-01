@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -215,6 +216,12 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holderFinance.tv_cutomer_id.setText(mDate.get(position).getERP_Code());
 
 
+/*
+            OrderGroupAdapter mAdapterDayReportList = new OrderGroupAdapter(context, mDate.get(position).getSubOrderGroup());
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            holderFinance.rv_sub_orders.setLayoutManager(mLayoutManager);
+            holderFinance.rv_sub_orders.setAdapter(mAdapterDayReportList);*/
+
         }
 
     }
@@ -227,6 +234,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
         LinearLayout linearLayout,linearLayoutTakenby;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -263,25 +271,13 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MyViewHolderFinance extends RecyclerView.ViewHolder {
 
         CardView cv_root;
-        TextView tv_customer_name, tv_payment_status, tv_order_id, tv_sales_value, tv_received_amt, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
-
-
-//        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
-//        LinearLayout linearLayout,linearLayoutTakenby;
+        TextView tv_customer_name, tv_payment_status, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
+        TextView tv_order_id, tv_sales_value, tv_received_amt;
+//        RecyclerView rv_sub_orders;
 
         public MyViewHolderFinance(@NonNull View itemView) {
             super(itemView);
-//            txtsNo = (TextView) itemView.findViewById(R.id.txt_serial);
-//            txtOrderID = (TextView) itemView.findViewById(R.id.txt_order);
-//            txtOrderDate = (TextView) itemView.findViewById(R.id.txt_date);
-//            txtValue = (TextView) itemView.findViewById(R.id.txt_total);
-//            txtOrderStatus=itemView.findViewById(R.id.txt_status);
-//            linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
-//            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
-//            txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
-//            txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
-//            tv_order_type=itemView.findViewById(R.id.tv_order_type);
-//            itemView.setOnClickListener(this);
+
 
             cv_root=itemView.findViewById(R.id.cv_root);
             tv_customer_name=itemView.findViewById(R.id.tv_customer_name);
@@ -293,6 +289,8 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_date_paid=itemView.findViewById(R.id.tv_date_paid);
             tv_payment_mode=itemView.findViewById(R.id.tv_payment_mode);
             tv_cutomer_id=itemView.findViewById(R.id.tv_cutomer_id);
+
+//            rv_sub_orders=itemView.findViewById(R.id.rv_sub_orders);
 
 
         }

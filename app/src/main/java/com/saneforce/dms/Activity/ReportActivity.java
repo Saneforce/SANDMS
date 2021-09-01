@@ -48,6 +48,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.saneforce.dms.Adapter.ReportViewAdapter;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
+import com.saneforce.dms.Model.OrderGroup;
 import com.saneforce.dms.Model.ReportDataList;
 import com.saneforce.dms.Model.ReportModel;
 import com.saneforce.dms.R;
@@ -421,73 +422,27 @@ List<ReportModel> filteredList = new ArrayList<>();
 
                     if (mReportActivities.getData() != null)
                         mDReportModels = mReportActivities.getData();
-                    /*String ordervalue = "0";
-
-                    switch (orderTakenByFilter){
-                        case "Payment Pending" :
-                            if (mReportActivities.getPaymentPending() != null && !mReportActivities.getPaymentPending().equals(""))
-                                ordervalue = String.valueOf(mReportActivities.getPaymentPending());
-                            break;
-                        case "Payment Verified" :
-
-                            if(mReportActivities.getPaymentVerified()!=null && !mReportActivities.getPaymentVerified().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getPaymentVerified());
-
-                            break;
-                        case "Credit Verified" :
-                            if(mReportActivities.getCreditVerified()!=null && !mReportActivities.getCreditVerified().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getCreditVerified());
-
-                            break;
-                        case "Order Dispatched" :
-                            if(mReportActivities.getOrderDispatched()!=null && !mReportActivities.getOrderDispatched().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getOrderDispatched());
-
-                            break;
-                        case "Credit Dispatched" :
-                            if(mReportActivities.getCreditDispatched()!=null && !mReportActivities.getCreditDispatched().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getCreditDispatched());
-                            break;
-                        case "Payment Done" :
-                            if(mReportActivities.getPaymentDone()!=null && !mReportActivities.getPaymentDone().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getPaymentDone());
-                            break;
-                        case "Credit Raised" :
-                            if(mReportActivities.getCreditRaised()!=null && !mReportActivities.getCreditRaised().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getCreditRaised());
-                            break;
-                        case "Dispatch Pending" :
-                            if(mReportActivities.getDispatchPending()!=null && !mReportActivities.getDispatchPending().equals("0"))
-                                ordervalue = String.valueOf(mReportActivities.getDispatchPending());
-                            break;
-                        default:
-                            ordervalue = "0";
-                    }
-
-
-                    BigDecimal bd = new BigDecimal(ordervalue).setScale(2, RoundingMode.HALF_UP);
-                    double totalroundoff = bd.doubleValue();
-
-                    txtTotalValue.setText("Rs . " + totalroundoff);*/
 
                 }
 
                 try
                 {
 
-//                    Log.v("JSOn_VAlue", new Gson().toJson(response.body()));
-//                    JSONArray jsonArray = new JSONArray(new Gson().toJson(mDReportModels));
-//                    JSONObject JsonObject;
                     modeOrderData.clear();
                     filteredList.clear();
                     Float intSum = 0f;
-                    //  String order=mReportActivities.getPayment_Pending();
+
                     OrderStatusList.clear();
                     OrderStatusList.add("All");
 
                     if(mDReportModels!=null){
                         for(ReportModel r : mDReportModels){
                             if(orderTakenByFilter.equalsIgnoreCase("All") || r.getOrderStatus().equalsIgnoreCase(orderTakenByFilter))
+                                if(viewType == 2 && (r.getSubOrderGroup()==null || r.getSubOrderGroup().size()==0)){
+                                    List<OrderGroup> orderGroupList = new ArrayList<>();
+                                    orderGroupList.add(new OrderGroup(r.getOrderNo(), r.getOrderValue(), r.getReceived_Amt(), r.getOrderValue()));
+                                    r.setSubOrderGroup(orderGroupList);
+                                }
                                 filteredList.add(r);
 
                             if(orderTakenByFilter.equalsIgnoreCase("All") || orderTakenByFilter.equalsIgnoreCase(r.getOrderStatus())){

@@ -87,14 +87,14 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     //    JSONObject person1;
 //    JSONObject PersonObjectArray;
 //    ArrayList<String> listV = new ArrayList<>();
-    String JsonDatas;
+//    String JsonDatas;
     LinearLayout bottomLinear;
     //    Type listType;
 //    String ZeroPosId = "", ZeroPosNam = "", ZeroImg = "";
 //    List<Product> eventsArrayList;
 //    List<Product> Product_Modal;
 //    List<Product> Product_ModalSetAdapter;
-    PrimaryProductViewModel mPrimaryProductViewModel;
+//    PrimaryProductViewModel mPrimaryProductViewModel;
     String productBarCode = "a", productBarCodes = "";
     SearchView searchEdit;
     //    EditText edt_serach;
@@ -199,57 +199,60 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             jsonBrandCateg = new JSONArray(dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND));
             jsonBrandProduct = new JSONArray(dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA));
             Log.v("JSON_Band_Product", jsonBrandProduct.toString());
+
+            priCategoryRecycler = findViewById(R.id.rec_checking);
+            priCategoryRecycler.setHasFixedSize(true);
+            priCategoryRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            priCategoryRecycler.setNestedScrollingEnabled(false);
+            priProductRecycler = findViewById(R.id.rec_checking1);
+            priProductRecycler.setHasFixedSize(true);
+            priProductRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            priProductRecycler.setNestedScrollingEnabled(false);
+            priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData, orderType);
+            priProductRecycler.setAdapter(priProdAdapter);
+
+            Log.v("productBarCodeproduct", productBarCode);
+
+            priCateAdapter = new CategoryAdapter(getApplicationContext(),
+                    jsonBrandCateg, jsonBrandProduct,jsonProductuom, new DMS.CheckingInterface1() {
+
+                @Override
+                public void ProdcutDetails(int position, String id, String name, String img) {
+                    searchEdit.setQuery("", false);
+
+                    // getProductId();
+                    productBarCode = id;
+                    loadFilteredTodos(productBarCode);
+
+
+                    text_checki.setVisibility(View.VISIBLE);
+                    text_checki.setText(name);
+
+                    highlightPosition(position);
+                }
+            });
+
+            //  priCategoryRecycler.set
+            priCategoryRecycler.setAdapter(priCateAdapter);
+            // priCategoryRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            priCategoryRecycler.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
+                    mLast = llm.findLastCompletelyVisibleItemPosition();
+                    mFirst = llm.findFirstCompletelyVisibleItemPosition();
+                }
+            });
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        priCategoryRecycler = findViewById(R.id.rec_checking);
-        priCategoryRecycler.setHasFixedSize(true);
-        priCategoryRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        priCategoryRecycler.setNestedScrollingEnabled(false);
-        priProductRecycler = findViewById(R.id.rec_checking1);
-        priProductRecycler.setHasFixedSize(true);
-        priProductRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        priProductRecycler.setNestedScrollingEnabled(false);
-        priProdAdapter = new ProductAdapter(this, sPrimaryProd,jsonProductuom,productCodeOffileData, orderType);
-        priProductRecycler.setAdapter(priProdAdapter);
-
-        Log.v("productBarCodeproduct", productBarCode);
-
-        priCateAdapter = new CategoryAdapter(getApplicationContext(),
-                jsonBrandCateg, jsonBrandProduct,jsonProductuom, new DMS.CheckingInterface1() {
-
-            @Override
-            public void ProdcutDetails(int position, String id, String name, String img) {
-                searchEdit.setQuery("", false);
-
-                // getProductId();
-                productBarCode = id;
-                loadFilteredTodos(productBarCode);
-
-
-                text_checki.setVisibility(View.VISIBLE);
-                text_checki.setText(name);
-
-                highlightPosition(position);
-            }
-        });
-
-        //  priCategoryRecycler.set
-        priCategoryRecycler.setAdapter(priCateAdapter);
-        // priCategoryRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        priCategoryRecycler.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
-                mLast = llm.findLastCompletelyVisibleItemPosition();
-                mFirst = llm.findFirstCompletelyVisibleItemPosition();
-            }
-        });
 
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,7 +388,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     }
 
     private void loadFirstItem() {
-        if(jsonBrandCateg.length()>0){
+        if(jsonBrandCateg!=null && jsonBrandCateg.length()>0){
 
 
             try {

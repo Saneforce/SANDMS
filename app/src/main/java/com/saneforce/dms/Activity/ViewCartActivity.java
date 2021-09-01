@@ -1022,6 +1022,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
             js.put("Retcode", shared_common_pref.getvalue("RetailerID"));
             js.put("Retname", shared_common_pref.getvalue("RetailName"));
+            js.put("sfCode", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));

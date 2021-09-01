@@ -3,6 +3,8 @@ package com.saneforce.dms.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ReportModel {
     @SerializedName("slno")
     @Expose
@@ -35,7 +37,6 @@ public class ReportModel {
     @SerializedName("Dispatch_Flag")
     @Expose
     private int Dispatch_Flag;
-
 
     @SerializedName("ReportType")
     @Expose
@@ -90,6 +91,17 @@ public class ReportModel {
     private String Payment_Mode;
 
 
+    @SerializedName("subOrderGroup")
+    @Expose
+    private List<OrderGroup> subOrderGroup;
+
+    public List<OrderGroup> getSubOrderGroup() {
+        return subOrderGroup;
+    }
+
+    public void setSubOrderGroup(List<OrderGroup> subOrderGroup) {
+        this.subOrderGroup = subOrderGroup;
+    }
 
     public String getPayment_Mode() {
         return Payment_Mode;

@@ -41,6 +41,7 @@ import com.saneforce.dms.Utils.Shared_Common_Pref;
 import com.saneforce.dms.Utils.TimeUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -287,87 +288,79 @@ public class LoginActivity extends AppCompatActivity {
                     Log.v("FinanceFinanceFinance", logintype);
                     Log.e("LoginResponse", response.body().toString());
                     JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Sf_Code = jsonObject.optString("Sf_Code");
-                        Division_Code = jsonObject.optString("div_Code");
-                        Cut_Off_Time = jsonObject.optString("Cut_Off_Time");
-                        Sf_Name = jsonObject.optString("Sf_Name");
-                        SteCode = jsonObject.optString("State_Code");
-                        SfUsrNme = jsonObject.optString("Sf_UserName");
-                        StckLstCde = jsonObject.optString("Stockist_Code");
-                        StckLstMb = jsonObject.optString("Stockist_Mobile");
-                        SpCode = jsonObject.optString("sup_code");
-                        SpNme = jsonObject.optString("sup_name");
-                        StckLstAdd = jsonObject.optString("Stockist_Address");
-                        SpAddr = jsonObject.optString("sup_addr");
-                        ERP_Code = jsonObject.optString("ERP_Code");
+
+                    if(jsonArray!=null && jsonArray.length()>0){
+
+                        try {
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            Sf_Code = jsonObject.optString("Sf_Code");
+                            Division_Code = jsonObject.optString("div_Code");
+                            Cut_Off_Time = jsonObject.optString("Cut_Off_Time");
+                            Sf_Name = jsonObject.optString("Sf_Name");
+                            SteCode = jsonObject.optString("State_Code");
+                            SfUsrNme = jsonObject.optString("Sf_UserName");
+                            StckLstCde = jsonObject.optString("Stockist_Code");
+                            StckLstMb = jsonObject.optString("Stockist_Mobile");
+                            SpCode = jsonObject.optString("sup_code");
+                            SpNme = jsonObject.optString("sup_name");
+                            StckLstAdd = jsonObject.optString("Stockist_Address");
+                            SpAddr = jsonObject.optString("sup_addr");
+                            ERP_Code = jsonObject.optString("ERP_Code");
+                        } catch (JSONException jsonException) {
+                            jsonException.printStackTrace();
+                        }
+
+                        shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
+                        shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
+                        shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
+                        shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
+                        shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
+                        shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
+                        shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
+                        shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
+                        shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
+                        shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
+                        shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
+                        shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
+                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
+
+
                     }
+
                     if (logintype.equalsIgnoreCase("Finance")) {
 
                         Intent intent = new Intent(LoginActivity.this, FinanceActivity.class);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
-                        shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
-                        shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
-                        shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
-                        shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
-
                         startActivity(intent);
                         finish();
+                    } else if (logintype.equalsIgnoreCase("Logistics")) {
 
-                    } else if (logintype.equals("Logistics")) {
                         Intent intent = new Intent(LoginActivity.this, LogisticsActivity.class);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
-                        shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
-                        shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
-                        shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
-                        shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
+                        startActivity(intent);
+                        finish();
+                    } else if (logintype.equalsIgnoreCase("DSM")) {
+
+                        TimeUtils.addLoginDate(DMSApplication.getApplication());
+                        Intent intent = new Intent(LoginActivity.this, DSMActivity.class);
+                        intent.putExtra("syncData",true);
 
                         startActivity(intent);
                         finish();
                     } else {
-                        Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
-                        intent.putExtra("syncData",true);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
-                        shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
-                        shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
-                        shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
-                        shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-
                         shared_common_pref.save(Shared_Common_Pref.USER_NAME, Sf_Name);
 //                        shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
                         shared_common_pref.save(Shared_Common_Pref.USER_PHONE, StckLstMb);
-                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
 
-                        TimeUtils.addLoginDate(DMSApplication.getApplication());
-                        startActivity(intent);
-                        finish();
                         if(jsonObject1.has("Msm"))
                             Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
+
+                        TimeUtils.addLoginDate(DMSApplication.getApplication());
+                        Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                        intent.putExtra("syncData",true);
+                        startActivity(intent);
+                        finish();
                     }
+
                     }else if(jsonObject1.has("Msm"))
                         Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
                     else

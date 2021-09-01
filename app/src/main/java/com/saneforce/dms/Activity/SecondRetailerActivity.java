@@ -81,6 +81,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     DBController dbController;
     int PhoneOrderTypes = 0;
     TextView tv_sch_enrollment;
+
+    String sfCode = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +105,10 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         shared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
         dbController = new DBController(this);
-
+        if(getIntent().hasExtra("isDSM"))
+            sfCode = shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code);
+        else
+            sfCode = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
 /*
         if(!dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
             processTemplateList(new Gson().fromJson(dbController.getResponseFromKey(DBController.TEMPLATE_LIST), JsonArray.class));
@@ -228,7 +233,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     public void RetailerType() {
         String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\",\\\"Slan_Name\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
+        Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -324,7 +329,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     public void RetailerViewDetailsMethod(String retailerID) {
         ApiInterface apiInterface2 = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface2.retailerViewDetails(retailerID, shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        Call<JsonObject> call = apiInterface2.retailerViewDetails(retailerID, shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode);
 
 //        Log.v("Retailer_Details_req", call.request().toString());
 
@@ -413,7 +418,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     /*public void getTemplate() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getTemplates(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
+        Call<JsonObject> call = apiInterface.getTemplates(sfCode);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -462,6 +467,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             js.put("Retname", txtRtNme.getText().toString());
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
+            js.put("sfCode", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
             js.put("Remark", editRemarks.getText().toString());
             js.put("save_order", 1);
@@ -540,7 +546,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
 
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
@@ -610,6 +616,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("Stkname", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Name));
             js.put("Divcode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("sfCode", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             js.put("Remark", editRemarks.getText().toString());
             js.put("save_order", 0);
         } catch (JSONException e) {
@@ -637,7 +644,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
             }else {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit",shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
+            Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit",sfCode, js.toString());
 
             Log.v("REQUEST_VALUE", call.request().toString());
             call.enqueue(new Callback<JsonObject>() {

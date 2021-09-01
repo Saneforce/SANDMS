@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <include layout="@layout/custom_toolbar" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:padding="@dimen/C10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:text="Name: " />
+
+                <TextView
+                    android:id="@+id/dis_name"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/C14dp"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextStyle"
+                    android:text="Address: " />
+
+                <TextView
+                    android:textStyle="bold"
+                    android:textSize="@dimen/C14dp"
+                    android:id="@+id/dis_place"
+                    style="@style/TextStyle" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/ll_secondary_order"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/prim"
+                    android:contentDescription="@string/app_name" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/secondary_orders" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

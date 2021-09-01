@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -91,6 +91,13 @@
                 android:layout_height="1dp"
                 android:background="@color/grey"
                 android:layout_marginBottom="10dp"/>
+<!--
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_sub_orders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_order_group_fin"
+                tools:itemCount="3"/>-->
 
             <LinearLayout
                 android:id="@+id/ll_order"
@@ -101,9 +108,8 @@
 
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="start"
                     android:orientation="vertical">
 
@@ -124,11 +130,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginStart="5dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -147,11 +153,36 @@
                 </LinearLayout>
 
 
-                <LinearLayout
+              <!--  <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="11sp"
+                        android:text="Invoice Amt"/>
+
+                    <TextView
+                        android:id="@+id/tv_invoice_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="120000"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>-->
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:layout_marginStart="5dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
