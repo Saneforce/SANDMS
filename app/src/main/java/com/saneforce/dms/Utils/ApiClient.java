@@ -3,12 +3,19 @@ package com.saneforce.dms.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.convert.AnnotationStrategy;
+import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 
 public class ApiClient {
@@ -31,7 +38,7 @@ public class ApiClient {
     public static final String BASE_WEBVIEW = BASE;//server
 
 //    public static final String BASE_URLS = "http://govind.sanfmcg.com/";
-    private static Retrofit retrofit = null;
+    private static Retrofit retrofit = null, retrofit2 = null;
 
 
     public static Retrofit getClient() {
@@ -57,6 +64,36 @@ public class ApiClient {
             }
         return retrofit;
     }
+
+
+
+    public static Retrofit getXMLClient() {
+
+        if (retrofit2 == null) {
+
+            Strategy strategy = new AnnotationStrategy();
+            Serializer serializer = new Persister(strategy);
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.writeTimeout(61, TimeUnit.SECONDS)
+                    .connectTimeout(61, TimeUnit.SECONDS)
+                    .readTimeout(61, TimeUnit.SECONDS);
+
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(interceptor);
+            OkHttpClient okHttpClient = builder.build();
+            retrofit2 = new Retrofit.Builder()
+                    .baseUrl(BASE_GOVIND)
+                    .addConverterFactory(SimpleXmlConverterFactory.create(serializer))
+                    .client(okHttpClient)
+                    .build();
+        }
+        return retrofit2;
+    }
+
+
 
     public static Gson gson = new GsonBuilder()
             .setLenient()

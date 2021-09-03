@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonObject;
 import com.saneforce.dms.R;
 
 import org.json.JSONArray;
@@ -130,6 +131,11 @@ public class Constants {
 						android.Manifest.permission.ACCESS_FINE_LOCATION) &&
 				PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context,
 						android.Manifest.permission.ACCESS_COARSE_LOCATION);
+	}
+
+	// This method  converts String to RequestBody
+	public static RequestBody toRequestBody (String value) {
+		return RequestBody.create(MediaType.parse("text/xml"), value);
 	}
 
 
