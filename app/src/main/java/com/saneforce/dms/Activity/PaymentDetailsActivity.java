@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -23,17 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
-import com.razorpay.Order;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
 import com.saneforce.dms.BuildConfig;
 import com.saneforce.dms.Interface.ApiInterface;
 import com.saneforce.dms.Interface.DMS;
@@ -51,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,6 +54,7 @@ import java.util.List;
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,7 +84,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             AmountValue = "", PaymntMode = "", PaymentTypecode = "";
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
-//    int Amount;
+    //    int Amount;
     double AMOUNTFINAL ;
 //    SoapPrimitive resultString;
 //    JSONObject jsonObjectRazorpay;
@@ -289,6 +286,62 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
 
+
+    public void getOrderId() {
+        String inputXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +"\r\n    <soap:Body>\r\n        <Get_Order_ID xmlns=\"http://tempuri.org/\">" +"\r\n            <Order_Amt>"+(long)AMOUNTFINAL+"</Order_Amt>\r\n            <Stk>"+mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code)+"</Stk>\r\n            <Div>"+mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code)+"</Div>\r\n        </Get_Order_ID>\r\n    </soap:Body>\r\n</soap:Envelope>";
+
+        ApiInterface apiInterface = ApiClient.getXMLClient().create(ApiInterface.class);
+        Call<ResponseBody> call = apiInterface.getOrderId(Constants.toRequestBody(inputXml));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                String xmlResponseModel = null;
+                try {
+                    xmlResponseModel = response.body().string();
+
+                    /*String wordToFind = "<Get_Order_IDResult>";
+                    String wordToFind1 = "</Get_Order_IDResult>";
+                    Pattern word = Pattern.compile(wordToFind);
+                    Pattern word1 = Pattern.compile(wordToFind1);
+                    Matcher match = word.matcher(xmlResponseModel);
+                    Matcher match1 = word1.matcher(xmlResponseModel);*/
+                    orderIDRazorpay = xmlResponseModel.substring(xmlResponseModel.lastIndexOf("<Get_Order_IDResult>")+20, xmlResponseModel.indexOf("</Get_Order_IDResult>"));
+                    Log.d(TAG, "orderIDRazorpay: " + orderIDRazorpay);
+                getOnlinePayment(orderIDRazorpay);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                }
+                Log.v(TAG, " res => " +xmlResponseModel);
+                    /*if(jsonRootObject.has("Data")){
+                        JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                        for (int a = 0; a < jsonArray.length(); a++) {
+                            JSONObject jso = jsonArray.getJSONObject(a);
+                            String className = String.valueOf(jso.get("Name"));
+                            String id = String.valueOf(jso.get("Code"));
+                            mCommon_model_spinner = new Common_Model(id, className, "flag");
+                            modelOffileData.add(mCommon_model_spinner);
+
+                            Log.v("NAME_STRING", className);
+                        }
+
+                    }*/
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Log.e("Route_response", "ERROR");
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     public void ProceedPayment(String razorid,String responseid,String signature) {
         JSONObject js = new JSONObject();
         try {
@@ -404,13 +457,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
             if(getOnlinePaymentOrderId()){
 
                 AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(AmountValue))));
-            if(AMOUNTFINAL>0)
-                AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
+                if(AMOUNTFINAL>0)
+                    AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
 
                 try {
                     if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
 
-                        RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret);
+/*                        RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret);
 //            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
 //                    "O0wqElBi2A5HUrb2MkbyeNQ4");
                         JSONObject orderRequest = new JSONObject();
@@ -434,18 +487,20 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                             getOnlinePayment(orderIDRazorpay);
 
+
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
+                        }*/
+                        getOrderId();
+
                     }else {
                         Toast.makeText(PaymentDetailsActivity.this, "Empty key ID or secret key", Toast.LENGTH_SHORT).show();
                     }
 
 
-                } catch (RazorpayException xception ) {
-                    System.out.println(xception .getMessage());
                 } catch (Exception e) {//Razorpay
                     e.printStackTrace();
+                    Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
                 }
             }else {
                 Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
