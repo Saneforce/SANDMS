@@ -228,7 +228,6 @@ public class DashBoardActivity extends AppCompatActivity {
                 Log.v("Product_Response_size", String.valueOf(jProd.size()));
 
             }
-
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 mCommon_class.ProgressdialogShow(2, "");

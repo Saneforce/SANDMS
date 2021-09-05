@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -24,7 +26,11 @@
         android:theme="@style/AppBaseTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="p">
-        <activity android:name=".Activity.DispatchCreditedActivity"></activity>
+        <activity android:name=".BulkSales.OrderIntend"></activity>
+        <activity android:name=".BulkSales.BlkCusPriOrder" />
+        <activity android:name=".BulkSales.BlkSalCusOrder" />
+        <activity android:name=".BulkSales.BlkMainActivity" />
+        <activity android:name=".Activity.DispatchCreditedActivity" />
         <activity android:name=".Activity.DispatchEditActivtity" />
         <activity android:name=".Activity.LogisticsActivity" />
         <activity android:name=".Activity.PaymentVerified" />

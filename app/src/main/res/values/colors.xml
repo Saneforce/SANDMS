@@ -10,4 +10,11 @@
     <color name="subHeader">#9C000000</color>
     <color name="dark_grey">#453E3E3E</color>
     <color name="Approvals">#014143</color>
+    <color name="grey_text">#898A8A</color>
+
+
+    <color name="IconColor">#FB8C00</color>
+    <color name="StateGreen">#7CB342</color>
+    <color name="grey_line">#E0E0E0</color>
+    <color name="grey_line1">#F5F4F4F4</color>
 </resources>

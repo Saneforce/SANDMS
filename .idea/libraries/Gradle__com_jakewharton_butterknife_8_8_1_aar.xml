@@ -4,6 +4,12 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f186455e33c1c01e724bf57c9316c526/jetified-butterknife-8.8.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f186455e33c1c01e724bf57c9316c526/jetified-butterknife-8.8.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f186455e33c1c01e724bf57c9316c526/jetified-butterknife-8.8.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8adb058ae3ef3974a1c7cac97a06291d/jetified-butterknife-8.8.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8adb058ae3ef3974a1c7cac97a06291d/jetified-butterknife-8.8.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8adb058ae3ef3974a1c7cac97a06291d/jetified-butterknife-8.8.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/26566c19657ac9fdfbd5b747d4c69a47/jetified-butterknife-8.8.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/26566c19657ac9fdfbd5b747d4c69a47/jetified-butterknife-8.8.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/26566c19657ac9fdfbd5b747d4c69a47/jetified-butterknife-8.8.1/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/8.8.1/9ab020267dec74a72a89e4aa6d04e34a13072f74/butterknife-8.8.1-javadoc.jar!/" />

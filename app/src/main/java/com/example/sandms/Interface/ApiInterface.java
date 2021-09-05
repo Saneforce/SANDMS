@@ -4,7 +4,10 @@ package com.example.sandms.Interface;
 
 import com.example.sandms.Model.HeaderCat;
 import com.example.sandms.Model.ReportDataList;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -116,5 +119,13 @@ ApiInterface {
     @FormUrlEncoded
     @POST("db_v14.php?axn=save/editpriorderlg")
     Call<JsonObject> Dispatch(@Query("sfCode") String OrderID, @Field("data") String data);
+
+
+    //BulkSales Division
+
+    @FormUrlEncoded
+    @POST("BulkSales_Db.php?")
+    Call<JsonArray> getDetailsArray(@Query("axn") String Axn, @Field("data") String data);
+
 }
 

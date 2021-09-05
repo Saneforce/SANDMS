@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.sandms.BuildConfig;
+import com.example.sandms.BulkSales.BlkMainActivity;
+import com.example.sandms.BulkSales.Database.DatabaseHandler;
 import com.example.sandms.Interface.ApiInterface;
 import com.example.sandms.R;
 import com.example.sandms.Utils.ApiClient;
@@ -39,6 +45,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,9 +56,11 @@ import retrofit2.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static String Tag = "HAPDMS_Login";
+    SharedPreferences UserDetailsIns;
+    public static final String UserInfo = "UserInfo";
 
-
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "";
     private SignInButton signInButton;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 1;
@@ -59,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     String idToken;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-    String Sf_Code, Division_Code, Cut_Off_Time, Sf_Name, SteCode,
+    String  Sf_Code, Division_Code, Cut_Off_Time, Sf_Name, SteCode,
             SfUsrNme, StckLstCde, StckLstMb, SpCode, SpNme, StckLstAdd, SpAddr, logintype;
     JSONObject jsonObject1;
     Shared_Common_Pref shared_common_pref;
@@ -70,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences UserDetails;
     public static final String MyPREFERENCES = "MyPrefs";
 
+    DatabaseHandler db;
     //SignInButton mSignInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +89,14 @@ public class LoginActivity extends AppCompatActivity {
         initilaize();
         googleSignInitial();
         UserDetails = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        UserDetailsIns=getSharedPreferences(UserInfo,Context.MODE_PRIVATE);
+
+        db = new DatabaseHandler(this);
 
         shared_common_pref = new Shared_Common_Pref(this);
         gson = new Gson();
+
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Calendar calobj = Calendar.getInstance();
         String dateTime = "'" + df.format(calobj.getTime()) + "'";
@@ -92,9 +107,34 @@ public class LoginActivity extends AppCompatActivity {
         edtPass = findViewById(R.id.pass_edt);
         Login.setText("Login");
         Login.setTextColor(Color.WHITE);
+
+        if (BuildConfig.DEBUG) {
+            edtEmail.setText("1007120@hap.in");
+            edtPass.setText("hap");
+        }
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               /* StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
+                String urld=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/";
+                File outputPath= new File(urld+"TSR_7_2_1.apk");
+                Intent promptInstall = new Intent(Intent.ACTION_VIEW);
+                promptInstall.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                promptInstall.setDataAndType(Uri.parse("file://"+outputPath),
+                         "application/vnd.android.package-archive");
+                // .setDataAndType(Uri.parse("file://"+urld+"TSR_7_2_1.apk"),
+                //         "application/vnd.android.package-archive");
+                //promptInstall.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+outputPath));
+                //promptInstall.setType("application/vnd.android.package-archive");
+
+                promptInstall.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                promptInstall.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+                //promptInstall.data = contentUri
+                promptInstall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(promptInstall);*/
 
                 NamePassword(edtEmail.getText().toString(), edtPass.getText().toString());
             }
@@ -330,7 +370,31 @@ public class LoginActivity extends AppCompatActivity {
 
                         startActivity(intent);
                         finish();
-                    } else {
+                    }else if(logintype.equalsIgnoreCase("Institution")){
+                        UserDetailsIns.edit()
+                                .putString("StkCode",Sf_Code)
+                                .putString("Div_Code",Division_Code)
+                                .putString("Cut_Off_Time", Cut_Off_Time)
+                                .putString("StkName", Sf_Name)
+                                .putString("Sf_UserName", SfUsrNme)
+                                .putString("Stockist_Code", StckLstCde)
+                                .putString("Stockist_Mobile", StckLstMb)
+                                .putString("sup_code", SpCode)
+                                .putString("sup_name", SpNme)
+                                .putString("Stockist_Address", StckLstAdd)
+                                .putString("sup_addr", SpAddr)
+                                .putString("State_Code", SteCode)
+                                .apply();
+
+                        db.deleteMasterData("DMSCustomers");
+                        db.deleteMasterData("DMSProducts");
+
+                        Intent intent = new Intent(LoginActivity.this, BlkMainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    else {
                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                         shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
                         shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
