@@ -38,6 +38,7 @@ public class DSMActivity extends AppCompatActivity {
     ImageView ib_logout;
 
     LinearLayout ll_secondary_order;
+    LinearLayout ll_financial;
 
     DBController dbController;
     boolean syncData = false;
@@ -55,6 +56,7 @@ public class DSMActivity extends AppCompatActivity {
         shared_common_pref = new Shared_Common_Pref(this);
         ib_logout = findViewById(R.id.ib_logout);
         ll_secondary_order = findViewById(R.id.ll_secondary_order);
+        ll_financial = findViewById(R.id.ll_financial);
         dbController = new DBController(this);
         mCommon_class = new Common_Class(this);
 
@@ -94,6 +96,14 @@ public class DSMActivity extends AppCompatActivity {
                 intent.putExtra("isDSM", true);
                 startActivity(intent);
             }
+        });
+
+
+        ll_financial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+        }
         });
 
 

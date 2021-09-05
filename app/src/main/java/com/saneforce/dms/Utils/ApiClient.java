@@ -28,13 +28,14 @@ public class ApiClient {
     public static final int APP_TYPE = 1;
     public static final boolean IS_TEST_MODE = false;
 
+    public static final String BASE_LOCALHOST ="http://192.168.1.22:8080/";
     public static final String BASE_FMCG ="http://fmcg.sanfmcg.com/";
     public static final String BASE_GOVIND ="http://govind.sanfmcg.com/";
     public static final String BASE_HAP ="http://hap.sanfmcg.com/";
-    public static String BASE =BASE_GOVIND;
+    public static String BASE =BASE_LOCALHOST;
 
     //  public static final String BASE_URL = "http://govind.sanfmcg.com/server/";//working code commented
-    public static final String BASE_URL = BASE+"server/";//server1
+    public static final String BASE_URL = BASE+"server/";
     public static final String BASE_WEBVIEW = BASE;//server
 
 //    public static final String BASE_URLS = "http://govind.sanfmcg.com/";

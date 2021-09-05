@@ -67,6 +67,7 @@
     <string name="no">No</string>
     <string name="new_order">New Order</string>
     <string name="discard">Discard</string>
+    <string name="finance">Finance</string>
 
 
 </resources>
