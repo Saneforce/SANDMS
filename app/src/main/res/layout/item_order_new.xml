@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cl_root"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        app:layout_constraintTop_toTopOf="@+id/cl_root"
+        app:layout_constraintStart_toStartOf="@+id/cl_root"
+        app:layout_constraintEnd_toEndOf="@+id/cl_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/child_product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextStyle"
+        android:layout_weight="1"
+        android:textColor="@color/appColor"
+        android:text="SAN Honey-Almond Cold"
+        android:textSize="15sp"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_golden_scheme"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="G"
+        android:textColor="#fff"
+        android:layout_marginEnd="15dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="1dp"
+        android:background="@drawable/shape_golden_scheme"/>
+
+    <!--                        android:background="@drawable/oval_background"-->
+
+
+    <LinearLayout
+        android:id="@+id/image_down"
+        android:layout_width="wrap_content"
+        android:background="@drawable/oval_background"
+        android:paddingHorizontal="5dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/child_pro_unit"
+            style="@style/TextStyle"
+            android:text="BOX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/appColor"
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:maxLength="5"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="16dp"
+            android:layout_height="12dp"
+            android:background="@drawable/expan"
+            android:gravity="center">
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

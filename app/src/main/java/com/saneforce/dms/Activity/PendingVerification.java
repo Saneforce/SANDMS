@@ -95,8 +95,8 @@ public class PendingVerification extends AppCompatActivity {
 //                    JSONObject jsonObject = null;
                     if(!jsonObject1.isNull("success") && jsonObject1.getBoolean("success") && !jsonObject1.isNull("Data")){
                         jsonArray = jsonObject1.optJSONArray("Data");
-                    }else
-                        Toast.makeText(PendingVerification.this, "No Data, please try again", Toast.LENGTH_SHORT).show();
+                    }/*else
+                        Toast.makeText(PendingVerification.this, "No Data, please try again", Toast.LENGTH_SHORT).show();*/
 
 
                     pendingRecycle.setHasFixedSize(true);
