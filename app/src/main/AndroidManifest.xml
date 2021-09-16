@@ -5,13 +5,15 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    //remove when publishing in playstore
+    <uses-permission  android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="false"
@@ -27,97 +29,97 @@
         tools:targetApi="p">
 
         <activity
-            android:name=".Activity.DSMActivity"
+            android:name=".activity.DSMActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
         <activity
-            android:name=".Activity.OutboxActivity"
+            android:name=".activity.OutboxActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
         <activity
-            android:name=".Activity.CompanyProfile"
+            android:name=".activity.CompanyProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PrimaryOrderList"
+            android:name=".activity.PrimaryOrderList"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ProfileActivity"
+            android:name=".activity.ProfileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.DispatchCreditedActivity"
+            android:name=".activity.DispatchCreditedActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.DispatchEditActivtity"
+            android:name=".activity.DispatchEditActivtity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.LogisticsActivity"
+            android:name=".activity.LogisticsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PaymentVerified"
+            android:name=".activity.PaymentVerified"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PendingVerificationDetails"
+            android:name=".activity.PendingVerificationDetails"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PendingVerification"
+            android:name=".activity.PendingVerification"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.FinanceActivity"
+            android:name=".activity.FinanceActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.RazorPayment"
+            android:name=".activity.RazorPayment"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PaymentDetailsActivity"
+            android:name=".activity.PaymentDetailsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.PaymentDashAcitivity"
+            android:name=".activity.PaymentDashAcitivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.UpdatePrimaryProduct"
+            android:name=".activity.UpdatePrimaryProduct"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".Activity.PrimaryOrderProducts"
+            android:name=".activity.PrimaryOrderProducts"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.EventCapture"
+            android:name=".activity.EventCapture"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ReportDashBoard"
+            android:name=".activity.ReportDashBoard"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.AddNewRetailer"
+            android:name=".activity.AddNewRetailer"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.CounterSaleActivity"
+            android:name=".activity.CounterSaleActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.SecondRetailerActivity"
+            android:name=".activity.SecondRetailerActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.SplashScreen"
+            android:name=".activity.SplashScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -127,45 +129,45 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.DashBoardActivity"
+            android:name=".activity.DashBoardActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.MyOrdersActivity"
+            android:name=".activity.MyOrdersActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ReportActivity"
+            android:name=".activity.ReportActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ViewReportActivity"
+            android:name=".activity.ViewReportActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.TimeOut"
+            android:name=".activity.TimeOut"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ViewCartActivity"
+            android:name=".activity.ViewCartActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.ProductImageView"
+            android:name=".activity.ProductImageView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.WebViewActivity"
+            android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activity.StatusActivity"
+            android:name=".activity.StatusActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
@@ -193,6 +195,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+<!--        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove"/>-->
     </application>
 
 </manifest>
