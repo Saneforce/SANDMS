@@ -108,14 +108,14 @@ public class DBController extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<HashMap<String, String>> getAllLocationData() {
+    public ArrayList<HashMap<String, String>> getAllLocationData(boolean isNeedUpdated) {
 
         ArrayList<HashMap<String, String>> locationList = new ArrayList<>();
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_LOCATION, null);
         if (cursor.moveToFirst()) {
             do {
-                if(cursor.getString(8).equals("0")){
+                if(!isNeedUpdated || cursor.getString(8).equals("0")){
                     HashMap<String, String> map = new HashMap<>();
                     map.put(ID, cursor.getString(0));
                     map.put(Latitude, cursor.getString(1));
@@ -174,7 +174,7 @@ public class DBController extends SQLiteOpenHelper {
             cv.put(Speed, String.valueOf(location.getSpeed()));
             cv.put(Bearing, String.valueOf(location.getBearing()));
             cv.put(IS_UPDATED_TO_SERVER, isUpdatedToServer);
-            cv.put(CurrentTime, TimeUtils.getCurrentTimeStamp(TimeUtils.FORMAT));
+            cv.put(CurrentTime, TimeUtils.getCurrentTime(TimeUtils.FORMAT));
 
             long value =  db.insert(TABLE_LOCATION, null, cv);
 
@@ -356,9 +356,17 @@ public class DBController extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 */
-
-
         return String.valueOf(count);
     }
 
+    public boolean isValidLocation(long time) {
+        String lastInsertTime;
+        int size = getAllLocationData(false).size();
+        if(size>0)
+            lastInsertTime = getAllLocationData(false).get(size-1).get(CurrentTime);
+        else
+            return true;
+
+        return TimeUtils.minDifference(TimeUtils.getDate(TimeUtils.FORMAT, lastInsertTime), TimeUtils.getDate(TimeUtils.FORMAT3, TimeUtils.getCurrentTimeStamp(time, TimeUtils.FORMAT3))) >= 12;
+    }
 }

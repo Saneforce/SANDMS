@@ -59,6 +59,7 @@ public class AutoStartHelper {
      */
 
     private final String BRAND_VIVO = "vivo";
+    private final String BRAND_VIVO1 = "iqoo";
     private String PACKAGE_VIVO_MAIN = "com.iqoo.secure";
     private String PACKAGE_VIVO_FALLBACK = "com.vivo.perm;issionmanager";
     private String PACKAGE_VIVO_COMPONENT = "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity";
@@ -102,6 +103,7 @@ public class AutoStartHelper {
                 autoStartOppo(context);
                 break;
             case BRAND_VIVO:
+            case BRAND_VIVO1:
                 autoStartVivo(context);
                 break;
             case BRAND_NOKIA:

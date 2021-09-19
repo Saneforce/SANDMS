@@ -4,25 +4,47 @@ package com.saneforce.dms;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-import com.google.firebase.FirebaseApp;
 
-public class DMSApplication extends Application {
-//implements Configuration.Provider
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.work.Configuration;
+
+import com.google.firebase.FirebaseApp;
+import com.saneforce.dms.activity.DashBoardActivity;
+import com.saneforce.dms.cromappwhitelist.AppWhitelist;
+import com.saneforce.dms.utils.Common_Class;
+
+public class DMSApplication extends Application  implements LifecycleObserver, Configuration.Provider  {
+
     private static final String TAG = DMSApplication.class.getSimpleName();
     static DMSApplication sharedInstance;
 
-//    double latitude = 0.0;
-//    double longitude = 0.0;
+    
     public static Activity activeScreen;
-
+    public boolean isAppInForeground = false;
+    Common_Class common_class ;
     @Override
     public void onCreate() {
         super.onCreate();
         FirebaseApp.initializeApp(this);
 
         sharedInstance = this;
-
         setupActivityListener();
+        common_class= new Common_Class(sharedInstance);
+        try {
+            common_class.registerReceiverGPS(sharedInstance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+//        AppWhitelist.settingForAutoStart(this);
+//        AppWhitelist.settingForBatterySaver(this);
+//        AppWhitelist.settingForMemoryAcceleration(this);
+//        AppWhitelist.settingForNotification(this);
+
     }
 
 
@@ -78,10 +100,34 @@ public class DMSApplication extends Application {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                //unregisterReceiver(mNetworkReceiver);
+
             }
+
         });
+
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded() {
+        //App in background
+        isAppInForeground = false;
+    }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded() {
+        // App in foreground
+        isAppInForeground = true;
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onDestroy() {
+        unregisterReceiver(common_class.yourReceiver);
+    }
+
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder()
+                .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                .build();
+    }
 }

@@ -1,21 +1,31 @@
 package com.saneforce.dms.utils;
 
+import static android.content.Context.POWER_SERVICE;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
+import com.saneforce.dms.DMSApplication;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -106,22 +116,6 @@ public class Constants {
 
 	}
 
-	public static void showSnackbar(Context context, View view){
-
-		Snackbar.make(view, "Please enable permission from settings",
-				Snackbar.LENGTH_INDEFINITE)
-				.setAction("OK", new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						Intent intent = new Intent();
-						intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-						Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-						intent.setData(uri);
-						context.startActivity(intent);
-					}
-				})
-				.show();
-	}
 
 	public static boolean checkPermissions(Context context) {
 		return
@@ -141,6 +135,131 @@ public class Constants {
 		return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 	}
 
+
+	public static void showSnackbar(Context context, View view){
+		boolean hasBackgroundPermission;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			hasBackgroundPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED);
+		}else
+			hasBackgroundPermission = true;
+
+		if(hasBackgroundPermission){
+			Snackbar.make(view, "Please enable permissions from settings",
+					Snackbar.LENGTH_INDEFINITE)
+					.setAction("OK", new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							Intent intent = new Intent();
+							intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+							Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+							intent.setData(uri);
+							context.startActivity(intent);
+						}
+					}).show();
+
+		}else {
+			showBackgroundPermissionDialog(context);
+		}
+	}
+
+
+
+	public static void checkOptimizationDialog(Context context) {
+		try {
+
+			PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				if (pm != null && !pm.isIgnoringBatteryOptimizations(context.getPackageName())) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(context);
+					builder.setTitle("Battery Optimization and Auto Start");
+					builder.setMessage("Please Find San DMS in the list of applications and choose ‘Don’t optimize’ and turn on auto start ");
+					builder.setPositiveButton("Allow",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+
+									Intent intent = new Intent();
+									intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+									context.startActivity(intent);
+//                                    askIgnoreOptimization();
+								}
+							});
+
+					builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
+							dialogInterface.dismiss();
+						}
+					});
+					builder.show();
+
+//					redirectToOptimizationSettings();
+				}/* else {
+					// already ignoring battery optimization code here next you want to do
+				}*/
+			} /*else {
+				// already ignoring battery optimization code here next you want to do
+			}*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	public static void showBackgroundPermissionDialog(Context context) {
+		try {
+
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("Permission");
+				builder.setMessage("Please provide background location all the time");
+				builder.setPositiveButton("Allow",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+								Intent intent = new Intent();
+								intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+								Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+								intent.setData(uri);
+								context.startActivity(intent);
+							}
+						});
+
+				builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						dialogInterface.dismiss();
+					}
+				});
+				builder.show();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static void askIgnoreOptimization() {
+
+//		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+		@SuppressLint({"BatteryLife", "InlinedApi"})
+		Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+		intent.setData(Uri.parse("package:" + DMSApplication.getActiveScreen().getPackageName()));
+		DMSApplication.getActiveScreen().startActivityForResult(intent, 111);
+		/*} else {
+		}*/
+
+	}
+/*
+    private static void redirectToOptimizationSettings() {
+        if(DMSApplication.getActiveScreen()!=null){
+            Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            DMSApplication.getActiveScreen().startActivity(intent);
+        }
+
+    }
+*/
 
 
 }

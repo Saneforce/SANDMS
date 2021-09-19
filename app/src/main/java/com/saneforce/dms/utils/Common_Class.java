@@ -4,30 +4,52 @@ package com.saneforce.dms.utils;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.sqlite.DBController;
@@ -46,6 +68,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.functions.Action;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -57,18 +80,26 @@ public class Common_Class {
     private static final String TAG =Common_Class.class.getSimpleName();
     Intent intent;
     Activity activity;
-    Dialog dialog_invitation = null;
     public Context context;
     Shared_Common_Pref shared_common_pref;
     ProgressDialog nDialog;
-    Type userType;
-    ;
-    Gson gson;
-
-    // Gson gson;
     String Result = "false";
-    public static String Version_Name = "Ver 2.3.2";
-    public static String Work_Type = "0";
+
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+    /**
+     * The fastest rate for active location updates. Updates will never be more frequent
+     * than this value.
+     */
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    LocationRequest mLocationRequest;
+
+
 
     public void CommonIntentwithFinish(Class classname) {
         intent = new Intent(activity, classname);
@@ -393,6 +424,135 @@ public class Common_Class {
     }
 
 
+    public BroadcastReceiver yourReceiver;
+    private static final String ACTION_GPS = "android.location.PROVIDERS_CHANGED";
+
+    public void registerReceiverGPS(Context context) {
+        if (yourReceiver == null) {
+            final IntentFilter theFilter = new IntentFilter();
+            theFilter.addAction(ACTION_GPS);
+            yourReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if(!isGpsON(context)) {
+                        if(DMSApplication.getApplication().isAppInForeground)
+                            ShowLocationWarn(context);
+                        createNotification( context,context.getString(R.string.gps_require_info),"");
+
+                        try {
+                            Location location = new Location("");
+                            location.setLatitude(-1);
+                            location.setLongitude(-1);
+                            location.setAccuracy(-1);
+                            location.setBearing(-1);
+                            location.setSpeed(-1);
+                            location.setTime(TimeUtils.getTimeStamp(TimeUtils.getCurrentTime(TimeUtils.FORMAT3), TimeUtils.FORMAT3));
+
+                            new DBController(context).addLocation(location, "0", "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+
+            context.registerReceiver(yourReceiver, theFilter);
+        }
+    }
+
+    public static boolean isGpsON(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        int mode = Settings.Secure.getInt(
+                contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF);
+
+        return mode != Settings.Secure.LOCATION_MODE_OFF;
+
+    }
+
+
+    public void ShowLocationWarn(Context context){
+
+        if(mLocationRequest == null){
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+            mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        }
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        builder.setAlwaysShow(true);
+        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
+        settingsClient.checkLocationSettings(builder.build())
+                .addOnSuccessListener(DMSApplication.getActiveScreen(), new OnSuccessListener<LocationSettingsResponse>() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                        Log.d(TAG, "onSuccess: Called ");
+                    }
+                })
+                .addOnFailureListener(DMSApplication.getActiveScreen(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        int statusCode = ((ApiException) e).getStatusCode();
+                        switch (statusCode) {
+                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(), and check the
+                                    // result in onActivityResult().
+                                    Log.i(TAG, "PendingIntent INSAP.");
+                                    ResolvableApiException rae = (ResolvableApiException) e;
+                                    rae.startResolutionForResult(DMSApplication.getActiveScreen(), 1000);
+
+                                } catch (IntentSender.SendIntentException sie) {
+                                    Log.i(TAG, "PendingIntent unable to execute request.");
+                                }
+                                break;
+                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                String errorMessage = "Location settings are inadequate, and cannot be " +
+                                        "fixed here. Fix in Settings.";
+                                Log.e(TAG, errorMessage);
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+
+    }
+
+
+    public static void createNotification(Context mContext, String message, String address) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        CharSequence name = mContext.getString(R.string.app_name);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String description = mContext.getString(R.string.app_name);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(mContext.getString(R.string.app_name), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, mContext.getString(R.string.app_name))
+                .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+                .setContentTitle(name)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        if(!address.equals(""))
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText("You are at Location " + address));
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1001, builder.build());
+    }
+
+
 
     private void displayNotification(String title, String task, Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -410,6 +570,8 @@ public class Common_Class {
 
         notificationManager.notify(1, notification.build());
     }
+
+
 
 
 }

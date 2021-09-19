@@ -2,10 +2,8 @@ package com.saneforce.dms.activity;
 
 
 import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -67,7 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
 
 
     private static final String TAG = "LoginActivity";
@@ -298,84 +295,84 @@ public class LoginActivity extends AppCompatActivity {
                     String san = jsonObject1.getString("success");
                     if(san.equals("true")){
 
-                    shared_common_pref.save("Login_Successfully", san);
-                    logintype = jsonObject1.optString("logintype");
-                    shared_common_pref.save("Login_details", logintype);
-                    Log.v("FinanceFinanceFinance", logintype);
-                    Log.e("LoginResponse", response.body().toString());
-                    JSONArray jsonArray = jsonObject1.optJSONArray("Data");
+                        shared_common_pref.save("Login_Successfully", san);
+                        logintype = jsonObject1.optString("logintype");
+                        shared_common_pref.save("Login_details", logintype);
+                        Log.v("FinanceFinanceFinance", logintype);
+                        Log.e("LoginResponse", response.body().toString());
+                        JSONArray jsonArray = jsonObject1.optJSONArray("Data");
 
-                    if(jsonArray!=null && jsonArray.length()>0){
+                        if(jsonArray!=null && jsonArray.length()>0){
 
-                        try {
+                            try {
 //                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            Sf_Code = jsonObject.optString("Sf_Code");
-                            Division_Code = jsonObject.optString("div_Code");
-                            Cut_Off_Time = jsonObject.optString("Cut_Off_Time");
-                            Sf_Name = jsonObject.optString("Sf_Name");
-                            SteCode = jsonObject.optString("State_Code");
-                            SfUsrNme = jsonObject.optString("Sf_UserName");
-                            StckLstCde = jsonObject.optString("Stockist_Code");
-                            StckLstMb = jsonObject.optString("Stockist_Mobile");
-                            SpCode = jsonObject.optString("sup_code");
-                            SpNme = jsonObject.optString("sup_name");
-                            StckLstAdd = jsonObject.optString("Stockist_Address");
-                            SpAddr = jsonObject.optString("sup_addr");
-                            ERP_Code = jsonObject.optString("ERP_Code");
-                        } catch (JSONException jsonException) {
-                            jsonException.printStackTrace();
+                                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                Sf_Code = jsonObject.optString("Sf_Code");
+                                Division_Code = jsonObject.optString("div_Code");
+                                Cut_Off_Time = jsonObject.optString("Cut_Off_Time");
+                                Sf_Name = jsonObject.optString("Sf_Name");
+                                SteCode = jsonObject.optString("State_Code");
+                                SfUsrNme = jsonObject.optString("Sf_UserName");
+                                StckLstCde = jsonObject.optString("Stockist_Code");
+                                StckLstMb = jsonObject.optString("Stockist_Mobile");
+                                SpCode = jsonObject.optString("sup_code");
+                                SpNme = jsonObject.optString("sup_name");
+                                StckLstAdd = jsonObject.optString("Stockist_Address");
+                                SpAddr = jsonObject.optString("sup_addr");
+                                ERP_Code = jsonObject.optString("ERP_Code");
+                            } catch (JSONException jsonException) {
+                                jsonException.printStackTrace();
+                            }
+
+                            shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
+                            shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
+                            shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
+                            shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
+                            shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
+                            shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
+                            shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
+                            shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
+                            shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
+                            shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
+                            shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
+                            shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
+                            shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
+
+
                         }
 
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Code, Sf_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Div_Code, Division_Code);
-                        shared_common_pref.save(Shared_Common_Pref.Cut_Off_Time, Cut_Off_Time);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_Name, Sf_Name);
-                        shared_common_pref.save(Shared_Common_Pref.Sf_UserName, SfUsrNme);
-                        shared_common_pref.save(Shared_Common_Pref.State_Code, SteCode);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Code, StckLstCde);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Mobile, StckLstMb);
-                        shared_common_pref.save(Shared_Common_Pref.sup_code, SpCode);
-                        shared_common_pref.save(Shared_Common_Pref.sup_name, SpNme);
-                        shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
-                        shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
-                        shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
+                        if (logintype.equalsIgnoreCase("Finance")) {
 
+                            Intent intent = new Intent(LoginActivity.this, FinanceActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if (logintype.equalsIgnoreCase("Logistics")) {
 
-                    }
+                            Intent intent = new Intent(LoginActivity.this, LogisticsActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if (logintype.equalsIgnoreCase("DSM")) {
 
-                    if (logintype.equalsIgnoreCase("Finance")) {
+                            TimeUtils.addLoginDate(DMSApplication.getApplication());
+                            Intent intent = new Intent(LoginActivity.this, DSMActivity.class);
+                            intent.putExtra("syncData",true);
 
-                        Intent intent = new Intent(LoginActivity.this, FinanceActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else if (logintype.equalsIgnoreCase("Logistics")) {
-
-                        Intent intent = new Intent(LoginActivity.this, LogisticsActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else if (logintype.equalsIgnoreCase("DSM")) {
-
-                        TimeUtils.addLoginDate(DMSApplication.getApplication());
-                        Intent intent = new Intent(LoginActivity.this, DSMActivity.class);
-                        intent.putExtra("syncData",true);
-
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        shared_common_pref.save(Shared_Common_Pref.USER_NAME, Sf_Name);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            shared_common_pref.save(Shared_Common_Pref.USER_NAME, Sf_Name);
 //                        shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
-                        shared_common_pref.save(Shared_Common_Pref.USER_PHONE, StckLstMb);
+                            shared_common_pref.save(Shared_Common_Pref.USER_PHONE, StckLstMb);
 
-                        if(jsonObject1.has("Msm"))
-                            Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
+                            if(jsonObject1.has("Msm"))
+                                Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
 
-                        TimeUtils.addLoginDate(DMSApplication.getApplication());
-                        Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
-                        intent.putExtra("syncData",true);
-                        startActivity(intent);
-                        finish();
-                    }
+                            TimeUtils.addLoginDate(DMSApplication.getApplication());
+                            Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                            intent.putExtra("syncData",true);
+                            startActivity(intent);
+                            finish();
+                        }
 
                     }else if(jsonObject1.has("Msm"))
                         Toast.makeText(LoginActivity.this, jsonObject1.getString("Msm"), Toast.LENGTH_LONG).show();
@@ -410,32 +407,30 @@ public class LoginActivity extends AppCompatActivity {
     public void checkPermission(){
         List<String> permissions = new ArrayList<>();
         permissions.add(ACCESS_FINE_LOCATION);
-        permissions.add(ACCESS_COARSE_LOCATION);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissions.add(ACCESS_BACKGROUND_LOCATION);
         }
+
         Dexter.withContext(this)
                 .withPermissions(permissions)
                 .withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport report)
-            {
-                if(!report.areAllPermissionsGranted()){
-                    Constants.showSnackbar(LoginActivity.this, findViewById(R.id.scrolllayout));
-                }
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (!report.areAllPermissionsGranted()) {
+                           Constants.showSnackbar(LoginActivity.this, findViewById(R.id.scrolllayout));
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                permissionToken.continuePermissionRequest();
-            }
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
 
-        }).check();
+
+                }).check();
+
     }
-
-
 
 }
 

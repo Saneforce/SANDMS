@@ -36,17 +36,12 @@ public class TimeUtils {
         return date2.getTime();
     }
 
-    public static String getCurrentTimeStamp(String format){
+    public static String getCurrentTimeStamp(long timeStamp, String format){
 
-        String stringDate ="";
-
-        long timestampMilliseconds =System.currentTimeMillis();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-        stringDate = simpleDateFormat.format(new Date(timestampMilliseconds));
-
-        return stringDate;
+        return simpleDateFormat.format(new Date(timeStamp));
     }
 
     public static String getCurrentTime(String format){
@@ -119,8 +114,13 @@ public class TimeUtils {
         return (int) (date2.getTime() - date1.getTime()) / MILLI_TO_HOUR;
     }
 
-    public static Date getDate(String format, String dateString) {
+    public static int minDifference(Date date1, Date date2) {
 
+        final int MILLI_TO_HOUR = 1000 * 60;
+        return (int) (date2.getTime() - date1.getTime()) / MILLI_TO_HOUR;
+    }
+
+    public static Date getDate(String format, String dateString) {
         SimpleDateFormat formatter1=new SimpleDateFormat(format, Locale.ENGLISH);
         Date date = null;
         try {

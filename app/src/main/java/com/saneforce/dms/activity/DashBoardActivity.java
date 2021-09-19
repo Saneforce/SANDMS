@@ -1,8 +1,9 @@
 package com.saneforce.dms.activity;
 
 
+
+
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,13 +36,14 @@ import com.saneforce.dms.model.HeaderCat;
 import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
-import com.saneforce.dms.utils.AutoStartHelper;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Constants;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.worker.MyLocationWorker;
+import com.thelittlefireman.appkillermanager.managers.KillerManager;
+import com.thelittlefireman.appkillermanager.ui.DialogKillerManagerBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -140,15 +142,22 @@ public class DashBoardActivity extends AppCompatActivity {
 
         checkPermission();
 
-//        AutoStartHelper.getInstance().getAutoStartPermission(this);
-
+        try {
+            Constants.checkOptimizationDialog(DashBoardActivity.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//            startDialog(KillerManager.Actions.ACTION_AUTOSTART);
+//            startDialog(KillerManager.Actions.ACTION_POWERSAVING);
 
     }
-
+    public void startDialog(KillerManager.Actions actions) {
+        new DialogKillerManagerBuilder().setContext(this).setAction(actions).show();
+    }
     private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: Constants.isInternetAvailable(DashBoardActivity.this) "+ Constants.isInternetAvailable(DashBoardActivity.this));
+
             if (Constants.isInternetAvailable(DashBoardActivity.this)) {
                 Log.d(TAG, "Network Available ");
 
