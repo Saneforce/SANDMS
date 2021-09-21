@@ -52,7 +52,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
@@ -205,7 +205,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 ib_logout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(Constants.isInternetAvailable(ViewReportActivity.this)){
+                        if(Constant.isInternetAvailable(ViewReportActivity.this)){
                             mCommon_class.ProgressdialogShow(1, "");
                             if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
                                     !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
@@ -264,7 +264,7 @@ public class ViewReportActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(Constants.isInternetAvailable(this)){
+        if(Constant.isInternetAvailable(this)){
             ViewDateReport();
         }else
             Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
@@ -416,7 +416,7 @@ public class ViewReportActivity extends AppCompatActivity {
                         //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
                         String total = "0";
                         if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
-                            total = Constants.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
+                            total = Constant.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
 
                         /*if(jsonObject.has("OrderDate")) {
                             orderCreatedDateTime = jsonObject.getString("OrderDate");
@@ -646,7 +646,7 @@ public class ViewReportActivity extends AppCompatActivity {
 
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                 }else
-                    Constants.showSnackbar(ViewReportActivity.this, findViewById(R.id.scrolllayout));
+                    Constant.showSnackbar(ViewReportActivity.this, findViewById(R.id.scrolllayout));
 //                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 
             }
@@ -1009,8 +1009,8 @@ public class ViewReportActivity extends AppCompatActivity {
 //                            contact.setDis_amt(Constants.roundTwoDecimals(discountValue));
 //                            contact.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
 
-                primaryProduct.setDis_amt(Constants.roundTwoDecimals(Double.parseDouble(discAmtValue)));
-                primaryProduct.setSelectedDisValue(Constants.roundTwoDecimals(Double.parseDouble(discAmtValue)));
+                primaryProduct.setDis_amt(Constant.roundTwoDecimals(Double.parseDouble(discAmtValue)));
+                primaryProduct.setSelectedDisValue(Constant.roundTwoDecimals(Double.parseDouble(discAmtValue)));
                 primaryProduct.setSelectedScheme(selectedSchemeValue);
                 primaryProduct.setOff_Pro_code(selectedProductCode);
                 primaryProduct.setOff_Pro_name(selectedProductName);

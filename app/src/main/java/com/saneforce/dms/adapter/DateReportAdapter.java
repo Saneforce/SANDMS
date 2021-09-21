@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.saneforce.dms.R;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,28 +42,28 @@ public class DateReportAdapter extends RecyclerView.Adapter<DateReportAdapter.My
             JSONObject jsonObjec = jsonArray.getJSONObject(position);
             holder.txtName.setText(jsonObjec.getString("Product_Name"));
             holder.txtQty.setText(jsonObjec.getString("CQty"));
-            holder.txtRate.setText(Constants.roundTwoDecimals(jsonObjec.getDouble("Rate")));
+            holder.txtRate.setText(Constant.roundTwoDecimals(jsonObjec.getDouble("Rate")));
 
 
             String taxRate = "0";
             if(jsonObjec.has("taxRate") && !jsonObjec.getString("taxRate").equals(""))
-                taxRate =Constants.roundTwoDecimals(jsonObjec.getDouble("taxRate"));
+                taxRate = Constant.roundTwoDecimals(jsonObjec.getDouble("taxRate"));
             holder.txtTax.setText(taxRate);
 
             String taxVal = "0";
             if(jsonObjec.has("taxval") && !jsonObjec.getString("taxval").equals("") )
-                taxVal =Constants.roundTwoDecimals(jsonObjec.getDouble("taxval"));
+                taxVal = Constant.roundTwoDecimals(jsonObjec.getDouble("taxval"));
             holder.txtTotal.setText(taxVal);
 
             String disPrice = "0";
             if(jsonObjec.has("discount_price")  && !jsonObjec.getString("discount_price").equals("") )
-                disPrice =Constants.roundTwoDecimals(jsonObjec.getDouble("discount_price"));
+                disPrice = Constant.roundTwoDecimals(jsonObjec.getDouble("discount_price"));
 
             holder.txtDis.setText(disPrice);
 
             String free = "0";
             if(jsonObjec.has("Free")  && !jsonObjec.getString("Free").equals(""))
-                free =Constants.roundTwoDecimals(jsonObjec.getDouble("Free"));
+                free = Constant.roundTwoDecimals(jsonObjec.getDouble("Free"));
 
             String free_unit = "";
             if(jsonObjec.has("Offer_Product_Unit")  && !jsonObjec.getString("Offer_Product_Unit").equals(""))

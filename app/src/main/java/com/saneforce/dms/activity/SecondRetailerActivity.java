@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 
 import com.google.gson.Gson;
@@ -46,7 +44,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Common_Model;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
@@ -228,7 +226,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             public void onPermissionsChecked(MultiplePermissionsReport report)
             {
                 if(!report.areAllPermissionsGranted()){
-                    Constants.showSnackbar(SecondRetailerActivity.this, findViewById(R.id.scrolllayout));
+                    Constant.showSnackbar(SecondRetailerActivity.this, findViewById(R.id.scrolllayout));
                 }else{
                     @SuppressLint("MissingPermission")
                     Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -427,7 +425,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                             }
                         }
 
-                        txtModelOrderValue.setText(Constants.roundTwoDecimals(total));
+                        txtModelOrderValue.setText(Constant.roundTwoDecimals(total));
 
                         String scheme = "-";
                         if(jsonObject.has("Slan_Name"))
@@ -439,7 +437,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //                        if(jsonArray.length()>0){
                             lastOrderAmt = jsonObject.getString("LastOrderAmt");
                             if(!lastOrderAmt.equals(""))
-                            lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constants.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
+                            lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constant.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
                             txtLastOrderAmount.setText(lastOrderAmt);
 
 //                        }
@@ -534,7 +532,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //            brandSecondaryApi();
             Log.v("JS_VALUE", js.toString());
 
-            if(!Constants.isInternetAvailable(SecondRetailerActivity.this)){
+            if(!Constant.isInternetAvailable(SecondRetailerActivity.this)){
                 if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
                     shared_common_pref.save("RetailerID", retailerId);
                     shared_common_pref.save("RetailName", txtRtNme.getText().toString());
@@ -691,7 +689,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 //            brandSecondaryApi();
             Log.v("JS_VALUE", js.toString());
 
-            if(!Constants.isInternetAvailable(this)){
+            if(!Constant.isInternetAvailable(this)){
                 if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
                     mCommon_class.ProgressdialogShow(2, "");
                     Toast.makeText(DMSApplication.getApplication(), "No Order call will be saved in offline", Toast.LENGTH_SHORT).show();
@@ -881,7 +879,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         if(shared_common_pref.getBooleanvalue(Shared_Common_Pref.YET_TO_SYN) || !dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
             processRetailerList(new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JsonArray.class));
         }else {
-            if(Constants.isInternetAvailable(this))
+            if(Constant.isInternetAvailable(this))
                 RetailerType();
             else
                 Toast.makeText(this, "Empty retailer list, please sync it", Toast.LENGTH_SHORT).show();

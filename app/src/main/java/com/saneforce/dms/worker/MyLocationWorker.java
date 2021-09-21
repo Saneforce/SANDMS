@@ -1,31 +1,14 @@
 package com.saneforce.dms.worker;
 
-import static android.content.Context.POWER_SERVICE;
-import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
-
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import androidx.work.BackoffPolicy;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ForegroundInfo;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -42,13 +25,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.jetbrains.annotations.NotNull;
@@ -232,7 +214,7 @@ public class MyLocationWorker extends Worker {
                                                     returnRetry = true;
                                                 }
 
-                                                if(Constants.isInternetAvailable(mContext))
+                                                if(Constant.isInternetAvailable(mContext))
                                                     updateLocationToServer();
 
                                                 mFusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -310,7 +292,7 @@ public class MyLocationWorker extends Worker {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("SF_code", shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code));
         jsonObject.addProperty("SF_Name", shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Name));
-        jsonObject.addProperty("DvcID", Constants.getDeviceIdNew(mContext));
+        jsonObject.addProperty("DvcID", Constant.getDeviceIdNew(mContext));
 
 
 
@@ -343,7 +325,7 @@ public class MyLocationWorker extends Worker {
 
         Log.d(TAG, "updateLocationToServer: jsonArray "+ jsonArray);
         ApiInterface request = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> call = request.updateLocation(Constants.toRequestBody(jsonArray), "save/trackloc",
+        Call<ResponseBody> call = request.updateLocation(Constant.toRequestBody(jsonArray), "save/trackloc",
                 shared_common_pref.getvalue1(Shared_Common_Pref.Div_Code),
                 shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code),
                 1,

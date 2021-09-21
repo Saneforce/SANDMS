@@ -6,7 +6,6 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -18,6 +17,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -46,7 +46,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.saneforce.dms.DMSApplication;
@@ -59,7 +58,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,7 +66,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.functions.Action;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -83,8 +80,7 @@ public class Common_Class {
     public Context context;
     Shared_Common_Pref shared_common_pref;
     ProgressDialog nDialog;
-    String Result = "false";
-
+    public static int NOTIFICATION_ID =  1001;
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
@@ -98,7 +94,6 @@ public class Common_Class {
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     LocationRequest mLocationRequest;
-
 
 
     public void CommonIntentwithFinish(Class classname) {
@@ -387,9 +382,9 @@ public class Common_Class {
         RequestBody requestBody = null;
         try {
             if(data.get(DBController.AXN_KEY)!=null && data.get(DBController.AXN_KEY).equalsIgnoreCase("dcr/retailervisit"))
-                requestBody = Constants.toRequestBody(new JSONObject(data.get(DBController.DATA_RESPONSE)));
+                requestBody = Constant.toRequestBody(new JSONObject(data.get(DBController.DATA_RESPONSE)));
             else
-                requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
+                requestBody = Constant.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -425,33 +420,37 @@ public class Common_Class {
 
 
     public BroadcastReceiver yourReceiver;
-    private static final String ACTION_GPS = "android.location.PROVIDERS_CHANGED";
 
     public void registerReceiverGPS(Context context) {
         if (yourReceiver == null) {
             final IntentFilter theFilter = new IntentFilter();
-            theFilter.addAction(ACTION_GPS);
+            theFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
             yourReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if(!isGpsON(context)) {
-                        if(DMSApplication.getApplication().isAppInForeground)
-                            ShowLocationWarn(context);
-                        createNotification( context,context.getString(R.string.gps_require_info),"");
+                    if(intent.getAction().matches(LocationManager.PROVIDERS_CHANGED_ACTION)){
+                        if(!isGpsON(context)) {
+                            if(DMSApplication.getApplication().isAppInForeground)
+                                ShowLocationWarn(context);
+                            createNotification( context,context.getString(R.string.gps_require_info),"");
 
-                        try {
-                            Location location = new Location("");
-                            location.setLatitude(-1);
-                            location.setLongitude(-1);
-                            location.setAccuracy(-1);
-                            location.setBearing(-1);
-                            location.setSpeed(-1);
-                            location.setTime(TimeUtils.getTimeStamp(TimeUtils.getCurrentTime(TimeUtils.FORMAT3), TimeUtils.FORMAT3));
+                            try {
+                                Location location = new Location("");
+                                location.setLatitude(-1);
+                                location.setLongitude(-1);
+                                location.setAccuracy(-1);
+                                location.setBearing(-1);
+                                location.setSpeed(-1);
+                                location.setTime(TimeUtils.getTimeStamp(TimeUtils.getCurrentTime(TimeUtils.FORMAT3), TimeUtils.FORMAT3));
 
-                            new DBController(context).addLocation(location, "0", "");
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                                new DBController(context).addLocation(location, "0", "");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            Common_Class.clearNotification(context);
                         }
+
                     }
                 }
             };
@@ -549,10 +548,13 @@ public class Common_Class {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
 
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1001, builder.build());
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
-
+    public static void clearNotification(Context context){
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
 
     private void displayNotification(String title, String task, Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

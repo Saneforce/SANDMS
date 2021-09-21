@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.saneforce.dms.R;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 public class ReportDashBoard extends AppCompatActivity {
@@ -36,7 +36,7 @@ public class ReportDashBoard extends AppCompatActivity {
     }
 
     public void PrimaryReports(View v) {
-        if(Constants.isInternetAvailable(this)){
+        if(Constant.isInternetAvailable(this)){
             startActivity(new Intent(getApplicationContext(), ReportActivity.class));
             mShared_common_pref.save("OrderType", "1");
         }else
@@ -44,7 +44,7 @@ public class ReportDashBoard extends AppCompatActivity {
     }
 
     public void SecodaryReports(View v) {
-        if(Constants.isInternetAvailable(this)){
+        if(Constant.isInternetAvailable(this)){
 
             startActivity(new Intent(getApplicationContext(), ReportActivity.class));
             mShared_common_pref.save("OrderType", "2");

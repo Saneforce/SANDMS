@@ -195,22 +195,19 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+<!--
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="location"
             tools:node="merge" />
+-->
 
 <!--        <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
             tools:node="remove"/>-->
 
-<!--        <receiver android:name="com.saneforce.dms.receiver.GpsReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.location.PROVIDERS_CHANGED" />
-            </intent-filter>
-        </receiver>-->
+
     </application>
 
 </manifest>

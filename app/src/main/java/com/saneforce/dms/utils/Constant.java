@@ -35,7 +35,7 @@ import java.text.DecimalFormat;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-public class Constants {
+public class Constant {
 
 
 	public static final String PARAMETER_SEP = "&";
@@ -138,8 +138,9 @@ public class Constants {
 
 	public static void showSnackbar(Context context, View view){
 		boolean hasBackgroundPermission;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			hasBackgroundPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+				hasBackgroundPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
 		}else
 			hasBackgroundPermission = true;
 

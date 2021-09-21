@@ -21,7 +21,7 @@ import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
@@ -119,8 +119,8 @@ public class DSMActivity extends AppCompatActivity {
     private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: Constants.isInternetAvailable(DashBoardActivity.this) "+ Constants.isInternetAvailable(DSMActivity.this));
-            if (Constants.isInternetAvailable(DSMActivity.this)) {
+            Log.d(TAG, "onReceive: Constants.isInternetAvailable(DashBoardActivity.this) "+ Constant.isInternetAvailable(DSMActivity.this));
+            if (Constant.isInternetAvailable(DSMActivity.this)) {
                 Log.d(TAG, "Network Available ");
 
                 // Do something

@@ -37,13 +37,11 @@ import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.worker.MyLocationWorker;
-import com.thelittlefireman.appkillermanager.managers.KillerManager;
-import com.thelittlefireman.appkillermanager.ui.DialogKillerManagerBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,7 +141,7 @@ public class DashBoardActivity extends AppCompatActivity {
         checkPermission();
 
         try {
-            Constants.checkOptimizationDialog(DashBoardActivity.this);
+            Constant.checkOptimizationDialog(DashBoardActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,14 +149,11 @@ public class DashBoardActivity extends AppCompatActivity {
 //            startDialog(KillerManager.Actions.ACTION_POWERSAVING);
 
     }
-    public void startDialog(KillerManager.Actions actions) {
-        new DialogKillerManagerBuilder().setContext(this).setAction(actions).show();
-    }
     private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (Constants.isInternetAvailable(DashBoardActivity.this)) {
+            if (Constant.isInternetAvailable(DashBoardActivity.this)) {
                 Log.d(TAG, "Network Available ");
 
                 // Do something
@@ -702,7 +697,7 @@ public class DashBoardActivity extends AppCompatActivity {
             public void onPermissionsChecked(MultiplePermissionsReport report)
             {
                 if(!report.areAllPermissionsGranted()){
-                    Constants.showSnackbar(DashBoardActivity.this, findViewById(R.id.scrolllayout));
+                    Constant.showSnackbar(DashBoardActivity.this, findViewById(R.id.scrolllayout));
                 }else
                     MyLocationWorker.createMyLocationWorker(DashBoardActivity.this);
 

@@ -49,7 +49,7 @@ import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
@@ -297,7 +297,7 @@ List<ReportModel> filteredList = new ArrayList<>();
     @Override
     protected void onResume() {
         super.onResume();
-        if(Constants.isInternetAvailable(this)){
+        if(Constant.isInternetAvailable(this)){
             ViewDateReport(orderTakenByFilter);
         }else
             Toast.makeText(ReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
@@ -453,7 +453,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                             }
 
                         }
-                        txtTotalValue.setText("Rs . "+ Constants.roundTwoDecimals(intSum));
+                        txtTotalValue.setText("Rs . "+ Constant.roundTwoDecimals(intSum));
                     }
 
                     updateFilterList();
@@ -613,7 +613,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                     saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                 }else {
 //                    Toast.makeText(ReportActivity.this, "Please enable storage permission to share pdf", Toast.LENGTH_SHORT).show();
-                    Constants.showSnackbar(ReportActivity.this, findViewById(R.id.scrolllayout));
+                    Constant.showSnackbar(ReportActivity.this, findViewById(R.id.scrolllayout));
                 }
 
             }

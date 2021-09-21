@@ -36,7 +36,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Common_Model;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
@@ -95,7 +95,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         if(!dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
             processRouteDetails(new Gson().fromJson(dbController.getResponseFromKey(DBController.ROUTE_LIST), JsonArray.class));
         }else {
-            if(Constants.isInternetAvailable(this))
+            if(Constant.isInternetAvailable(this))
                 getRouteDetails();
             else
                 Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
@@ -105,7 +105,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         if(!dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
             processClassList(new Gson().fromJson(dbController.getResponseFromKey(DBController.CLASS_LIST), JsonArray.class));
         }else {
-            if(Constants.isInternetAvailable(this))
+            if(Constant.isInternetAvailable(this))
                 getRouteClass();
             else
                 Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
@@ -115,7 +115,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         if(!dbController.getResponseFromKey(DBController.CHANNEL_LIST).equals("")){
             processChannelList(new Gson().fromJson(dbController.getResponseFromKey(DBController.CHANNEL_LIST), JsonArray.class));
         }else {
-            if(Constants.isInternetAvailable(this))
+            if(Constant.isInternetAvailable(this))
                 getRouteChannel();
             else
                 Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
@@ -473,11 +473,11 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         Log.e("TOTAL_VALUE_STRING", totalValueString);
 
 
-        if(!Constants.isInternetAvailable(AddNewRetailer.this)){
+        if(!Constant.isInternetAvailable(AddNewRetailer.this)){
             DBController dbController = new DBController(AddNewRetailer.this);
             if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 0)){
                 mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
-                if(Constants.isInternetAvailable(this)){
+                if(Constant.isInternetAvailable(this)){
                     new Common_Class(this).checkData(dbController,getApplicationContext());
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -562,7 +562,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     protected void onResume() {
         super.onResume();
 
-        if(Constants.checkPermissions(AddNewRetailer.this)){
+        if(Constant.checkPermissions(AddNewRetailer.this)){
             if(mLocationManager == null)
                 mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

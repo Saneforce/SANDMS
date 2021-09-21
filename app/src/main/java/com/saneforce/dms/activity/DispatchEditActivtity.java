@@ -35,7 +35,7 @@ import com.saneforce.dms.model.DispatchModel;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -129,7 +129,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
     public void dipatchItem(View v) {
 //        listdata = adap
-        if(!Constants.isInternetAvailable(this)){
+        if(!Constant.isInternetAvailable(this)){
             Toast.makeText(this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
         }else if (!priProdAdapter.isValid())
             Toast.makeText(this, "All the product cannot be postponed", Toast.LENGTH_SHORT).show();
@@ -426,12 +426,12 @@ public class DispatchEditActivtity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            jsonObject.put("tempNewvalue", Constants.roundTwoDecimals((oldValue - newValue) * jsonObject.getDouble("Rate"))); //6 * Rates
+                                            jsonObject.put("tempNewvalue", Constant.roundTwoDecimals((oldValue - newValue) * jsonObject.getDouble("Rate"))); //6 * Rates
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            jsonObject.put("tempOldvalue", Constants.roundTwoDecimals(newValue * jsonObject.getDouble("Rate")));//4 * Rates
+                                            jsonObject.put("tempOldvalue", Constant.roundTwoDecimals(newValue * jsonObject.getDouble("Rate")));//4 * Rates
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -508,12 +508,12 @@ public class DispatchEditActivtity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            jsonObject.put("tempNewvalue", Constants.roundTwoDecimals((oldValue - newValue) * jsonObject.getDouble("Rate"))); //6 * Rates
+                                            jsonObject.put("tempNewvalue", Constant.roundTwoDecimals((oldValue - newValue) * jsonObject.getDouble("Rate"))); //6 * Rates
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                         try {
-                                            jsonObject.put("tempOldvalue", Constants.roundTwoDecimals(newValue * jsonObject.getDouble("Rate")));//4 * Rates
+                                            jsonObject.put("tempOldvalue", Constant.roundTwoDecimals(newValue * jsonObject.getDouble("Rate")));//4 * Rates
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }

@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.saneforce.dms.model.PrimaryProduct;
 
 import com.saneforce.dms.R;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
@@ -460,7 +460,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //        if(totalAmt==0)
         itemPrice = Double.parseDouble(task.getProduct_Cat_Code())*task.getProduct_Sale_Unit_Cn_Qty();
 
-        productPrice.setText(Constants.roundTwoDecimals(itemPrice));
+        productPrice.setText(Constant.roundTwoDecimals(itemPrice));
         productQty.setText(task.getTxtqty());
         mProductCount.setText(task.getQty());
         productTax.setText(task.getTax_Value());
@@ -662,22 +662,22 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                     }
                 default:
                     discountValue = 0;
-                    unitDiscountValue = Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty));
+                    unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty));
             }
 
 
 
-            unitDiscountValue = Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty))-unitDiscountValue;
+            unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty))-unitDiscountValue;
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
 
             if(!discountType.equals("") && discountValue>0){
 //                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
-                task.setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
+                task.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
 
 //                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
-                task.setDis_amt(Constants.roundTwoDecimals(discountValue));
-                task.setSelectedDisValue(Constants.roundTwoDecimals(discountValue));
+                task.setDis_amt(Constant.roundTwoDecimals(discountValue));
+                task.setSelectedDisValue(Constant.roundTwoDecimals(discountValue));
 /*
                 totalAmt = (productAmt * (qty * product_Sale_Unit_Cn_Qty)) -discountValue;
                 holder.ll_disc_reduction.setVisibility(View.VISIBLE);
@@ -730,7 +730,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 //        else
 //            itemPrice = totalAmt;
 
-        productPrice.setText("Rs: " + Constants.roundTwoDecimals(itemPrice));
+        productPrice.setText("Rs: " + Constant.roundTwoDecimals(itemPrice));
         productQty.setText(String.valueOf(qty));
 
 //        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
@@ -746,7 +746,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         }
 
 //        holder.ProductTaxAmt.setText(Constants.roundTwoDecimals(taxAmt));
-        productTotal.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
+        productTotal.setText(Constant.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));
         subTotal = (float) totalAmt;
         valueTotal = (float) taxAmt;
         finalPrice = (float) ((totalAmt - discountValue) + taxAmt);

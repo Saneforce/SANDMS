@@ -23,7 +23,7 @@ import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -195,7 +195,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
             String PayDt = String.valueOf(jsonObject.get("PayDt"));
             Amount = "0";
             if(jsonObject.has("Order_Value") && !jsonObject.getString("Order_Value").equals("") )
-                Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
+                Amount = Constant.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
             if(!jsonObject.isNull("Stockist_Name"))
@@ -233,7 +233,7 @@ class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder>
 
             String paidAmt = "0";
             if(jsonObject.has("Amount") && !jsonObject.getString("Amount").equals(""))
-                paidAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Amount"));
+                paidAmt = Constant.roundTwoDecimals(jsonObject.getDouble("Amount"));
 
             holder.tv_paid_amount.setText(paidAmt);
 

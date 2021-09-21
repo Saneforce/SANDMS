@@ -23,7 +23,7 @@ import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -162,7 +162,7 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
 
             String Amount = "0";
             if(jsonObject.has("Order_Value") && !jsonObject.isNull("Order_Value")  && !jsonObject.getString("Order_Value").equals("")  && !jsonObject.getString("Order_Value").equals("null") )
-                Amount = Constants.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
+                Amount = Constant.roundTwoDecimals(jsonObject.getDouble("Order_Value"));
             holder.orderValue.setText(Amount);
 
 
@@ -196,14 +196,14 @@ class DispatchCreated extends RecyclerView.Adapter<DispatchCreated.MyViewHolder>
 
             String paidAmt = "0";
             if(jsonObject.has("Amount") && !jsonObject.getString("Amount").equals(""))
-                paidAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Amount"));
+                paidAmt = Constant.roundTwoDecimals(jsonObject.getDouble("Amount"));
 
             holder.tv_paid_amount.setText(paidAmt);
 
 
             String invoiceAmt = "0";
             if(jsonObject.has("Invoice_Amount") && !jsonObject.getString("Invoice_Amount").equals(""))
-                invoiceAmt = Constants.roundTwoDecimals(jsonObject.getDouble("Invoice_Amount"));
+                invoiceAmt = Constant.roundTwoDecimals(jsonObject.getDouble("Invoice_Amount"));
 
             holder.tv_invoice_amount.setText(invoiceAmt);
 

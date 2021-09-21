@@ -3,9 +3,15 @@ package com.saneforce.dms;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -17,7 +23,7 @@ import com.saneforce.dms.activity.DashBoardActivity;
 import com.saneforce.dms.cromappwhitelist.AppWhitelist;
 import com.saneforce.dms.utils.Common_Class;
 
-public class DMSApplication extends Application  implements LifecycleObserver, Configuration.Provider  {
+public class DMSApplication extends Application implements LifecycleObserver, Configuration.Provider {
 
     private static final String TAG = DMSApplication.class.getSimpleName();
     static DMSApplication sharedInstance;
@@ -130,4 +136,7 @@ public class DMSApplication extends Application  implements LifecycleObserver, C
                 .setMinimumLoggingLevel(android.util.Log.DEBUG)
                 .build();
     }
+
+
+
 }

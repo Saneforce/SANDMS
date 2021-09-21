@@ -41,8 +41,8 @@ public class DBController extends SQLiteOpenHelper {
     public static final String SECONDARY_PRODUCT_BRAND = "secondary_product_brand";
     public static final String SECONDARY_PRODUCT_DATA = "secondary_product_data";
 
-
-    public static final String TABLE_LOCATION = "table_location"; // tablename
+    //location
+    public static final String TABLE_LOCATION = "table_location";
     public static final String Latitude = "column_latitude";
     public static final String Longitude = "column_longitude";
     public static final String Time = "column_time";
@@ -108,6 +108,31 @@ public class DBController extends SQLiteOpenHelper {
     }
 
 
+
+    public boolean addDataOfflineCalls(String tableName, String tableValue, String axnKey, int isOrder) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put(DATA_KEY, tableName);
+            cv.put(DATA_RESPONSE, tableValue);
+            cv.put(IS_UPDATED_TO_SERVER, "0");
+            cv.put(DBController.AXN_KEY, axnKey);
+            cv.put(DBController.IS_ORDER_KEY, isOrder);
+
+            long value =  db.insert(TABLE_NAME, null, cv);
+
+            Log.d(TAG, "addProduct: value "+ value);
+//            db.close();
+
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+    }
+
+
     public ArrayList<HashMap<String, String>> getAllLocationData(boolean isNeedUpdated) {
 
         ArrayList<HashMap<String, String>> locationList = new ArrayList<>();
@@ -137,31 +162,6 @@ public class DBController extends SQLiteOpenHelper {
 // return contact list
         return locationList;
     }
-
-    public boolean addDataOfflineCalls(String tableName, String tableValue, String axnKey, int isOrder) {
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues cv = new ContentValues();
-            cv.put(DATA_KEY, tableName);
-            cv.put(DATA_RESPONSE, tableValue);
-            cv.put(IS_UPDATED_TO_SERVER, "0");
-            cv.put(DBController.AXN_KEY, axnKey);
-            cv.put(DBController.IS_ORDER_KEY, isOrder);
-
-            long value =  db.insert(TABLE_NAME, null, cv);
-
-            Log.d(TAG, "addProduct: value "+ value);
-//            db.close();
-
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-
-    }
-
-
     public boolean addLocation(Location location, String isUpdatedToServer, String address) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();

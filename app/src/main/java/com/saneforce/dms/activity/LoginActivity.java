@@ -44,10 +44,9 @@ import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
-import com.saneforce.dms.worker.MyLocationWorker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,7 +110,7 @@ public class LoginActivity extends AppCompatActivity{
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!Constants.isInternetAvailable(LoginActivity.this))
+                if(!Constant.isInternetAvailable(LoginActivity.this))
                     Toast.makeText(LoginActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 else
                     login(edtEmail.getText().toString(), edtPass.getText().toString());
@@ -417,7 +416,7 @@ public class LoginActivity extends AppCompatActivity{
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (!report.areAllPermissionsGranted()) {
-                           Constants.showSnackbar(LoginActivity.this, findViewById(R.id.scrolllayout));
+                           Constant.showSnackbar(LoginActivity.this, findViewById(R.id.scrolllayout));
                         }
 
                     }

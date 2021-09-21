@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         tie_erp_code = findViewById(R.id.tie_erp_code);
         tie_sales_team_name = findViewById(R.id.tie_sales_team_name);
 
-        if(Constants.isInternetAvailable(this))
+        if(Constant.isInternetAvailable(this))
             getProfileData();
         else{
             Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.saneforce.dms.model.OrderGroup;
 import com.saneforce.dms.R;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 
 import java.util.List;
 
@@ -52,13 +52,13 @@ public class OrderGroupAdapter extends RecyclerView.Adapter<OrderGroupAdapter.My
         double orderValue = 0;
         if(orderGroupList.get(position).getSales_value()!=null)
             orderValue = Double.parseDouble(orderGroupList.get(position).getSales_value());
-        holder.tv_sales_value.setText(Constants.roundTwoDecimals(orderValue));
+        holder.tv_sales_value.setText(Constant.roundTwoDecimals(orderValue));
 
 
         double receivedValue = 0;
         if(orderGroupList.get(position).getReceived_amt()!=null)
             receivedValue = Double.parseDouble(orderGroupList.get(position).getReceived_amt());
-        holder.tv_received_amt.setText(Constants.roundTwoDecimals(receivedValue));
+        holder.tv_received_amt.setText(Constant.roundTwoDecimals(receivedValue));
 
     }
 

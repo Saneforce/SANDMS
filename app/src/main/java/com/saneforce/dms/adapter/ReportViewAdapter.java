@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.R;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import java.math.BigDecimal;
@@ -201,13 +201,13 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if(mDate.get(position).getOrderValue()!=null)
                 orderValue = Double.parseDouble(mDate.get(position).getOrderValue());
 
-            holderFinance.tv_sales_value.setText(Constants.roundTwoDecimals(orderValue));
+            holderFinance.tv_sales_value.setText(Constant.roundTwoDecimals(orderValue));
 
             double receivedValue = 0;
             if(mDate.get(position).getReceived_Amt()!=null)
                 receivedValue = Double.parseDouble(mDate.get(position).getReceived_Amt());
 
-            holderFinance.tv_received_amt.setText(Constants.roundTwoDecimals(receivedValue));
+            holderFinance.tv_received_amt.setText(Constant.roundTwoDecimals(receivedValue));
 
             holderFinance.tv_ordered_date.setText(mDate.get(position).getOrderDate());
             holderFinance.tv_date_paid.setText(mDate.get(position).getPaid_Date());

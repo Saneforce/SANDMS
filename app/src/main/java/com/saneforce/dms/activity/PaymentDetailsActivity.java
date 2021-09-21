@@ -36,7 +36,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
 import com.saneforce.dms.utils.Common_Model;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
@@ -223,7 +223,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
     public void ProceedOrder(View v) {
-        if(!Constants.isInternetAvailable(PaymentDetailsActivity.this))
+        if(!Constant.isInternetAvailable(PaymentDetailsActivity.this))
             Toast.makeText(PaymentDetailsActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
         else if(PaymntMode.equals(""))
             Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
@@ -291,7 +291,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         String inputXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +"\r\n    <soap:Body>\r\n        <Get_Order_ID xmlns=\"http://tempuri.org/\">" +"\r\n            <Order_Amt>"+(long)AMOUNTFINAL+"</Order_Amt>\r\n            <Stk>"+mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code)+"</Stk>\r\n            <Div>"+mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code)+"</Div>\r\n        </Get_Order_ID>\r\n    </soap:Body>\r\n</soap:Envelope>";
 
         ApiInterface apiInterface = ApiClient.getXMLClient().create(ApiInterface.class);
-        Call<ResponseBody> call = apiInterface.getOrderId(Constants.toRequestBody(inputXml));
+        Call<ResponseBody> call = apiInterface.getOrderId(Constant.toRequestBody(inputXml));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -456,7 +456,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Log.i(TAG, "doInBackground");
             if(getOnlinePaymentOrderId()){
 
-                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constants.roundTwoDecimals(Double.parseDouble(AmountValue))));
+                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(AmountValue))));
                 if(AMOUNTFINAL>0)
                     AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
 

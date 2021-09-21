@@ -46,7 +46,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
-import com.saneforce.dms.utils.Constants;
+import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
@@ -147,17 +147,17 @@ public class ViewCartActivity extends AppCompatActivity {
 
                 if (SubTotal != "0.0" || !("0.0").equals(SubTotal) || !("0").equals(SubTotal)) {
                     GrandTotal = String.valueOf(Integer.parseInt(GrandTotal) - Integer.parseInt(SubTotal));
-                    viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
+                    viewTotal.setText(Constant.roundTwoDecimals(Double.parseDouble(GrandTotal)));
                     shared_common_pref.clear_pref("SubTotal");
                     Log.v("grandsub", GrandTotal);
                 } else {
                     Log.v("grand", GrandTotal);
-                    viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
+                    viewTotal.setText(Constant.roundTwoDecimals(Double.parseDouble(GrandTotal)));
                 }
             }
         }catch (NumberFormatException ee){
             Log.v("11grand", GrandTotal);
-            viewTotal.setText(Constants.roundTwoDecimals(Double.parseDouble(GrandTotal)));
+            viewTotal.setText(Constant.roundTwoDecimals(Double.parseDouble(GrandTotal)));
         }
 //new code added stop
         contactViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
@@ -187,7 +187,7 @@ public class ViewCartActivity extends AppCompatActivity {
                     if(orderType == 1)
                         SavePrimaryProduct(adapter.getData());
                     else{
-                        if(!Constants.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
+                        if(!Constant.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
                             Toast.makeText(ViewCartActivity.this, "Edit order cannot be offline", Toast.LENGTH_SHORT).show();
                         }else
                             SaveSecondaryProduct(adapter.getData());
@@ -416,7 +416,7 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("superstockistid", "''");
             stockReportObject.put("Stk_Meet_Time", dateTime);
             stockReportObject.put("modified_time", dateTime);
-            stockReportObject.put("orderValue", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            stockReportObject.put("orderValue", Constant.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             stockReportObject.put("Aob", null);
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
@@ -513,7 +513,7 @@ public class ViewCartActivity extends AppCompatActivity {
             JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            JsonObjtHead.put("order_value", Constant.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             JsonObjtHead.put("sub_tot", 0);
             JsonObjtHead.put("dis_tot", 0);
             JsonObjtHead.put("tax_tot", 0);
@@ -549,12 +549,12 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("tax", carsList.get(z).getTax_Value());
                 String disAmt = "0";
                 if(!carsList.get(z).getDis_amt().equals(""))
-                    disAmt = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", "")));
+                    disAmt = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", "")));
                 person1.put("dis_value", disAmt);
 
                 String taxAmt = "0";
                 if(!carsList.get(z).getTax_amt().equals(""))
-                    taxAmt = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", "")));
+                    taxAmt = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", "")));
                 person1.put("tax_value", taxAmt);
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name", carsList.get(z).getOff_Pro_name());
@@ -564,7 +564,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("UOM", carsList.get(z).getUOM());
                 String subTot = "0";
                 if(!carsList.get(z).getSubtotal().equals(""))
-                    subTot = Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal()));
+                    subTot = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal()));
                 person1.put("Val", subTot);
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());
                 fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
@@ -597,7 +597,7 @@ public class ViewCartActivity extends AppCompatActivity {
         progressDialog.dismiss();
 
 
-        if(Constants.isInternetAvailable(ViewCartActivity.this)){
+        if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
             data.put(DBController.AXN_KEY,"dcr/save");
             data.put(DBController.DATA_RESPONSE,totalValueString);
@@ -607,7 +607,7 @@ public class ViewCartActivity extends AppCompatActivity {
             DBController dbController = new DBController(ViewCartActivity.this);
             if (dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 1)) {
 
-                if (Constants.isInternetAvailable(this))
+                if (Constant.isInternetAvailable(this))
                     new Common_Class(this).checkData(dbController, getApplicationContext());
                 else
                     Toast.makeText(ViewCartActivity.this, "Primary Order saved in offline", Toast.LENGTH_SHORT).show();
@@ -756,7 +756,7 @@ public class ViewCartActivity extends AppCompatActivity {
             //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
             Log.v("Total_foreviewcart", String.valueOf(itemTotal));
         }
-        viewTotal.setText("" + Constants.roundTwoDecimals(itemTotal));
+        viewTotal.setText("" + Constant.roundTwoDecimals(itemTotal));
         shared_common_pref.save("GrandTotal", String.valueOf(itemTotal));
 
         try {
@@ -810,7 +810,7 @@ public class ViewCartActivity extends AppCompatActivity {
             stockReportObject.put("superstockistid", "''");
             stockReportObject.put("Stk_Meet_Time", dateTime);
             stockReportObject.put("modified_time", dateTime);
-            stockReportObject.put("orderValue", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            stockReportObject.put("orderValue", Constant.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             stockReportObject.put("Aob", null);
             stockReportObject.put("CheckinTime", checkInTime);
             stockReportObject.put("CheckoutTime", checkInTime);
@@ -917,15 +917,15 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
                 person1.put("dis", carsList.get(z).getDiscount());
                 person1.put("tax", carsList.get(z).getTax_Value());
-                person1.put("dis_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
-                person1.put("tax_value", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
+                person1.put("dis_value", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
+                person1.put("tax_value", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name",carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_free_unit());
                 person1.put("Off_Scheme_Unit", carsList.get(z).getOff_Pro_Unit());
                 person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
-                person1.put("Val", Constants.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
+                person1.put("Val", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());
                 fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
                 myJSONObjects.add(person1);
@@ -1003,7 +1003,7 @@ public class ViewCartActivity extends AppCompatActivity {
             JsonObjtHead.put("sf_code", shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             JsonObjtHead.put("stk_code", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             JsonObjtHead.put("com_add", shared_common_pref.getvalue(Shared_Common_Pref.sup_addr));
-            JsonObjtHead.put("order_value", Constants.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
+            JsonObjtHead.put("order_value", Constant.roundTwoDecimals(Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))));
             JsonObjtHead.put("sub_tot", 0);
             JsonObjtHead.put("dis_tot", 0);
             JsonObjtHead.put("tax_tot", 0);
@@ -1055,7 +1055,7 @@ public class ViewCartActivity extends AppCompatActivity {
         totalValueString = sendArray.toString();
         progressDialog.dismiss();
 
-        if(Constants.isInternetAvailable(ViewCartActivity.this)){
+        if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
             data.put(DBController.AXN_KEY,"dcr/secordersave");
             data.put(DBController.DATA_RESPONSE,totalValueString);
@@ -1065,7 +1065,7 @@ public class ViewCartActivity extends AppCompatActivity {
             DBController dbController = new DBController(ViewCartActivity.this);
 
             if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/secordersave", 1)){
-                if(Constants.isInternetAvailable(this))
+                if(Constant.isInternetAvailable(this))
                     new Common_Class(this).checkData(dbController,getApplicationContext());
                 else
                     Toast.makeText(ViewCartActivity.this, "Secondary Order saved in offline", Toast.LENGTH_SHORT).show();
@@ -1103,7 +1103,7 @@ public class ViewCartActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         RequestBody requestBody = null;
         try {
-            requestBody = Constants.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
+            requestBody = Constant.toRequestBody(new JSONArray(data.get(DBController.DATA_RESPONSE)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
