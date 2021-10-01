@@ -5,6 +5,7 @@ import static io.realm.Realm.getApplicationContext;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -86,6 +87,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //        mShared_common_pref.clear_pref("SubTotal");
         //  mShared_common_pref.clear_pref("ItemTotal");
         holder.txtCatName.setText(mProductArray.getName());
+        holder.txtPrice.setPaintFlags(holder.txtPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.txtPrice.setText(mProductArray.getProduct_Cat_Code());
 //        holder.txtQty.setText(mProductArray.getQty());
 //        holder.editCount.setText("" + mProductArray.getQty());

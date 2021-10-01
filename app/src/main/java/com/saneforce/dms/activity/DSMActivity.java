@@ -279,7 +279,6 @@ public class DSMActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
 
-        Log.v("KArthic_Retailer", call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

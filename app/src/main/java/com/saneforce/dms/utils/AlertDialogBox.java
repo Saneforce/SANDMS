@@ -35,8 +35,49 @@ public class AlertDialogBox {
             }
         }
     }
+    public static void showDialog(Context context, String title, String message) {
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(title)
+                    .setMessage(message)
+                    .setCancelable(true).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
 
+            AlertDialog alert = builder.create();
+            alert.setCancelable(true);
+            alert.show();
 
+        }
+    }
+
+    public static void showDialog(Context context, String title, String message,final DMS.AlertBox target) {
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(title).setMessage(message).setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    target.PositiveMethod(dialog, id);
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    target.NegativeMethod(dialog, id);
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }
+    }
 
 
 

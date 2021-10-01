@@ -72,6 +72,5 @@
 
     <string name="gps_require_info">App requires GPS ON, please turn on to work seamlessly</string>
 
-    <string name="not_implemented">Not implemented in this device</string>
 
 </resources>

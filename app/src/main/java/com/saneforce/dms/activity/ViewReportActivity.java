@@ -4,6 +4,8 @@ package com.saneforce.dms.activity;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,10 +16,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,11 +61,16 @@ import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
+import com.saneforce.dms.utils.CameraPermission;
 import com.saneforce.dms.utils.Common_Class;
+import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
+import com.saneforce.dms.utils.CustomListViewDialog;
+import com.saneforce.dms.utils.ImageFilePath;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
+import com.saneforce.dms.utils.TimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,16 +80,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewReportActivity extends AppCompatActivity {
+public class ViewReportActivity extends AppCompatActivity implements DMS.Master_Interface{
+    private static final String TAG = ViewReportActivity.class.getSimpleName();
     TextView toolHeader, txtProductId, txtProductDate;
 
     public static final int ACTIVITY_REQUEST_CODE = 2;
+    private static final int SELECT_PICTURE = 103;
+    private static final int CAMERA_REQUEST = 1888;
+
     ImageView imgBack,imgShare;
 
     RecyclerView DateRecyclerView;
@@ -112,6 +135,23 @@ public class ViewReportActivity extends AppCompatActivity {
     int Paymentflag = 1, Dispatch_Flag = 1;
     int orderType =- 1;
 
+    LinearLayout lin_offline;
+    EditText edt_utr;
+    TextView tv_date;
+    TextView txt_offline_mode;
+    EditText et_amount;
+    ImageView imgSource;
+    ImageView iv_choose_photo;
+    Uri outputFileUri;
+    String serverFileName = "";
+    String finalPath = "", filePath = "", PaymentTypecode = "";
+    String currentDate ="";
+
+    List<Common_Model> modelOffileData = new ArrayList<>();
+    Common_Model mCommon_model_spinner;
+    boolean isDisPatch = false;
+    CustomListViewDialog customDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,8 +161,16 @@ public class ViewReportActivity extends AppCompatActivity {
         toolbar_top=findViewById(R.id.toolbar_top);
         tv_order_type=findViewById(R.id.tv_order_type);
         ll_order_type=findViewById(R.id.ll_order_type);
-        toolbar_top.setVisibility(View.VISIBLE);
 
+        lin_offline=findViewById(R.id.lin_offline);
+        edt_utr=findViewById(R.id.edt_utr);
+        tv_date=findViewById(R.id.tv_date);
+        et_amount=findViewById(R.id.et_amount);
+        imgSource=findViewById(R.id.imgSource);
+        txt_offline_mode=findViewById(R.id.txt_offline_mode);
+        iv_choose_photo=findViewById(R.id.iv_choose_photo);
+
+        toolbar_top.setVisibility(View.VISIBLE);
 
         mArrayList = new ArrayList<>();
         TotalValue = findViewById(R.id.total_value);
@@ -198,6 +246,7 @@ public class ViewReportActivity extends AppCompatActivity {
                 showDeleteDialog();
             }
         });
+
         if(reportType.equals("2")){
             if(editOrder.equals("1") && Paymentflag == 0){
                 ib_logout.setVisibility(View.VISIBLE);
@@ -221,14 +270,62 @@ public class ViewReportActivity extends AppCompatActivity {
                 ib_logout.setVisibility(View.GONE);
             }
             if(reportType.equals("1") || Dispatch_Flag ==0){
+                lin_offline.setVisibility(View.VISIBLE);
+                isDisPatch = true;
+
                 PayNow.setText("Dispatch");
                 PayNow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        payOffline();
+                        if(!Constant.isInternetAvailable(ViewReportActivity.this))
+                            Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+                        else if(isDisPatch && txt_offline_mode.getText().toString().equals(""))
+                            Toast.makeText(ViewReportActivity.this, "Please Select the Payment Type", Toast.LENGTH_SHORT).show();
+                        else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
+                            Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
+                        }else {
+                            payOffline();
+                        }
+
                     }
                 });
+                currentDate = TimeUtils.getCurrentTime(TimeUtils.FORMAT2);
+                tv_date.setText(currentDate);
+                tv_date.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int day, month, year;
+                        if(!tv_date.getText().toString().equals("")){
+                            String[] dateArray =  tv_date.getText().toString().split("/");
+                            day = Integer.parseInt(dateArray[0]);
+                            month = Integer.parseInt(dateArray[1])-1;
+                            year = Integer.parseInt(dateArray[2]);
+                        }else {
+                            Calendar c = Calendar.getInstance();
 
+                            day = c.get(Calendar.MONTH);
+                            month = c.get(Calendar.MONTH);
+                            year = c.get(Calendar.YEAR);
+                        }
+                        DatePickerDialog dialog = new DatePickerDialog(ViewReportActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                String _year = String.valueOf(year);
+                                String _month = (month+1) < 10 ? "0" + (month+1) : String.valueOf(month+1);
+                                String _date = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+                                String _pickedDate = year + "-" + _month + "-" + _date;
+                                Log.e("PickedDate: ", "Date: " + _pickedDate); //2019-02-12
+                                currentDate = _date +"/"+_month+"/"+_year;
+                                tv_date.setText(currentDate);
+
+
+                            }
+                        }, year, month, day);
+                        dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                        dialog.show();
+                    }
+                });
+                getOfflineMode();
             }else{
                 PayNow.setVisibility(View.GONE);
             }
@@ -275,16 +372,33 @@ public class ViewReportActivity extends AppCompatActivity {
         JSONObject js = new JSONObject();
         try {
 
+
             js.put("OrderID", productId);
             js.put("Stkcode", shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
             js.put("Retcode", custCode);
+            js.put("divisionCode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
 
+            String option = txt_offline_mode.getText().toString();
+
+            js.put("PaymentTypeName", option);
+            js.put("PaymentTypeCode", PaymentTypecode);
+            js.put("UTRNumber", edt_utr.getText().toString());
+            js.put("Attachement", serverFileName);
+
+
+            if(option.equalsIgnoreCase("cheque")){
+                js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
+                js.put("cheque_amount", et_amount.getText().toString());
+            }else {
+                js.put("cheque_date", "");
+                js.put("cheque_amount", "");
+            }
 
             Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
             responseBodyCall = apiInterface.getDetails("dcr/dispatchsecondaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
-            Log.v("Payment_Request", responseBodyCall.request().toString());
+
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
@@ -431,15 +545,17 @@ public class ViewReportActivity extends AppCompatActivity {
                             }
                         }*/
 
+                        if(isDisPatch)
+                            et_amount.setText(String.valueOf(OrderValueTotal));
                         if(jsonObject.has("OrderNo")) {
                             orderNo = jsonObject.getString("OrderNo");
                         }
 
                         TotalValue.setText("Rs. "+total);
                         Integer PaymentValue = (Integer) jsonObject.get("Paymentflag");
-                        Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
-                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
-                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderAmtNew));
+//                        Log.v("PAYMENT_VALUE", String.valueOf(PaymentValue));
+//                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderValueTotal));
+//                        Log.v("PAYMENT_VALUE1", String.valueOf(OrderAmtNew));
 
                         if(reportType.equals("2")){
 
@@ -677,6 +793,71 @@ public class ViewReportActivity extends AppCompatActivity {
     }
 
 
+    public void OffImg(View v) {
+        CameraPermission cameraPermission = new CameraPermission(ViewReportActivity.this, getApplicationContext());
+        if (!cameraPermission.checkPermission()) {
+            cameraPermission.requestPermission();
+            Log.v("PERMISSION_CJEDFLHDSL", "NO");
+        } else {
+            showImageChooserDialog();
+        }
+    }
+
+    private void showImageChooserDialog(){
+
+        final Dialog dialog = new Dialog(ViewReportActivity.this);
+        dialog.setContentView(R.layout.dialog_upload_image);
+
+        ImageButton ibClose = dialog.findViewById(R.id.ib_close);
+        ImageButton ibCamera = dialog.findViewById(R.id.ib_camera);
+        ImageButton ibGallery = dialog.findViewById(R.id.ib_gallery);
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ibCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                openCamera();
+
+            }
+        });
+        ibGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                imageChooser();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        outputFileUri = FileProvider.getUriForFile(ViewReportActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir().getPath(), Shared_Common_Pref.Sf_Code + "_" + System.currentTimeMillis() + ".jpeg"));
+        Log.v("FILE_PATH", String.valueOf(outputFileUri));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent, CAMERA_REQUEST);
+    }
+
+    void imageChooser() {
+
+        // create an instance of the
+        // intent of the type image
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK) {
@@ -689,10 +870,38 @@ public class ViewReportActivity extends AppCompatActivity {
 
                 if(closeActivity)
                     ViewReportActivity.this.finish();
-            }
-            return;
-        }
+            } else if (requestCode == CAMERA_REQUEST) {
 
+            if (outputFileUri != null) {
+                finalPath = "/storage/emulated/0";
+                filePath = outputFileUri.getPath();
+                filePath = filePath.substring(1);
+//                    str = filePath.replaceAll("external_files/Android/data/" + BuildConfig.APPLICATION_ID + "/cache/", "");
+                filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                imgSource.setImageURI(Uri.parse(filePath));
+                imgSource.setVisibility(View.VISIBLE);
+                getMulipart(filePath);
+            }else
+                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+
+            } else if (requestCode == SELECT_PICTURE) {
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            // Get the url of the image from data
+            if(data!=null && data.getData()!=null){
+                Uri selectedImageUri = data.getData();
+                // update the preview image in the layout
+                imgSource.setImageURI(selectedImageUri);
+                imgSource.setVisibility(View.VISIBLE);
+                String filePath = ImageFilePath.getPath(ViewReportActivity.this, selectedImageUri);
+                getMulipart(filePath);
+
+            }else
+                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+        }
+        return;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
     //permision stop
@@ -1135,6 +1344,127 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    public void getMulipart(String path) {
+        Log.v("PATH_IMAGE", path);
+        MultipartBody.Part imgg = convertimg("file", path);
+
+        sendImageToServer(imgg);
+    }
+
+    public MultipartBody.Part convertimg(String tag, String path) {
+        MultipartBody.Part yy = null;
+        try {
+            if (!TextUtils.isEmpty(path)) {
+
+                File file ;
+                if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg"))
+                    file = new Compressor(getApplicationContext()).compressToFile(new File(path));
+                else
+                    file = new File(path);
+
+                try {
+                    serverFileName = "Sf_Code_"+ shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code) +"_"+ System.currentTimeMillis()+ ".jpeg";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    serverFileName = "Sf_Code_"+ System.currentTimeMillis() + ".jpeg";
+                }
+                RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+                yy = MultipartBody.Part.createFormData(tag, serverFileName, requestBody);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return yy;
+    }
+
+    private void sendImageToServer(MultipartBody.Part imgg) {
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> mCall = apiInterface.offlineImage("upload/paymentimg", imgg);
+
+        mCall.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject jsonObject = response.body();
+                if(jsonObject!=null && !jsonObject.has("success") && jsonObject.get("success").getAsBoolean()){
+                    Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("SEND_IMAGE_Response", "ERROR");
+                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void getOfflineMode() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getOfflineMode("get/paymentmode", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    JSONObject jsonRootObject = new JSONObject(response.body().toString());
+                    Log.v(TAG, "getOfflineMode"+ jsonRootObject.toString());
+                    if(jsonRootObject.has("Data")){
+                        JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                        for (int a = 0; a < jsonArray.length(); a++) {
+                            JSONObject jso = jsonArray.getJSONObject(a);
+                            String className = String.valueOf(jso.get("Name"));
+                            String id = String.valueOf(jso.get("Code"));
+                            mCommon_model_spinner = new Common_Model(id, className, "flag");
+                            modelOffileData.add(mCommon_model_spinner);
+
+                            Log.v("NAME_STRING", className);
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+            }
+        });
+    }
+
+    public void LinearOfflineMode(View v) {
+        customDialog = new CustomListViewDialog(ViewReportActivity.this, modelOffileData, 10);
+        Window window = customDialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        customDialog.show();
+    }
+
+
+    @Override
+    public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
+        customDialog.dismiss();
+        if (type == 10) {
+            String name = myDataset.get(position).getName();
+            txt_offline_mode.setText(name);
+            PaymentTypecode = myDataset.get(position).getId();
+
+            if(name.equalsIgnoreCase("cheque"))
+                iv_choose_photo.setVisibility(View.VISIBLE);
+            else
+                iv_choose_photo.setVisibility(View.GONE);
+
+        }
+    }
+
 
 
 }

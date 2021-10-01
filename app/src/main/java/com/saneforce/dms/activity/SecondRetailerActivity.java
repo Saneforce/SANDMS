@@ -216,9 +216,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        }
+        }*/
         Dexter.withContext(this)
                 .withPermissions(permissions)
                 .withListener(new MultiplePermissionsListener() {

@@ -137,14 +137,14 @@ public class Constant {
 
 
 	public static void showSnackbar(Context context, View view){
-		boolean hasBackgroundPermission;
+		/*boolean hasBackgroundPermission;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				hasBackgroundPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED);
 
 		}else
 			hasBackgroundPermission = true;
 
-		if(hasBackgroundPermission){
+		if(hasBackgroundPermission){*/
 			Snackbar.make(view, "Please enable permissions from settings",
 					Snackbar.LENGTH_INDEFINITE)
 					.setAction("OK", new View.OnClickListener() {
@@ -158,9 +158,9 @@ public class Constant {
 						}
 					}).show();
 
-		}else {
+		/*}else {
 			showBackgroundPermissionDialog(context);
-		}
+		}*/
 	}
 
 

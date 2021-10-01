@@ -3,35 +3,24 @@ package com.saneforce.dms;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.work.Configuration;
 
 import com.google.firebase.FirebaseApp;
-import com.saneforce.dms.activity.DashBoardActivity;
-import com.saneforce.dms.cromappwhitelist.AppWhitelist;
-import com.saneforce.dms.utils.Common_Class;
 
-public class DMSApplication extends Application implements LifecycleObserver, Configuration.Provider {
-
+public class DMSApplication extends Application implements LifecycleObserver{
+    //, Configuration.Provider
     private static final String TAG = DMSApplication.class.getSimpleName();
     static DMSApplication sharedInstance;
 
-    
+
     public static Activity activeScreen;
     public boolean isAppInForeground = false;
-    Common_Class common_class ;
+    //    Common_Class common_class ;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -39,12 +28,12 @@ public class DMSApplication extends Application implements LifecycleObserver, Co
 
         sharedInstance = this;
         setupActivityListener();
-        common_class= new Common_Class(sharedInstance);
+        /*common_class= new Common_Class(sharedInstance);
         try {
             common_class.registerReceiverGPS(sharedInstance);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 //        AppWhitelist.settingForAutoStart(this);
 //        AppWhitelist.settingForBatterySaver(this);
@@ -126,16 +115,16 @@ public class DMSApplication extends Application implements LifecycleObserver, Co
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDestroy() {
-        unregisterReceiver(common_class.yourReceiver);
+//        unregisterReceiver(common_class.yourReceiver);
     }
 
-    @NonNull
+   /* @NonNull
     @Override
     public Configuration getWorkManagerConfiguration() {
         return new Configuration.Builder()
                 .setMinimumLoggingLevel(android.util.Log.DEBUG)
                 .build();
-    }
+    }*/
 
 
 

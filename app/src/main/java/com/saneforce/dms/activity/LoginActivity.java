@@ -406,9 +406,9 @@ public class LoginActivity extends AppCompatActivity{
     public void checkPermission(){
         List<String> permissions = new ArrayList<>();
         permissions.add(ACCESS_FINE_LOCATION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissions.add(ACCESS_BACKGROUND_LOCATION);
-        }
+        }*/
 
         Dexter.withContext(this)
                 .withPermissions(permissions)

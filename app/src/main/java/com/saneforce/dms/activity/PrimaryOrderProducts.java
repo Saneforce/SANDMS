@@ -79,7 +79,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     ArrayList<Product_Array> Product_Array_List;
     TextView text_checki;
     TextView grandTotal, item_count;
-    float sum = 0;
+//    float sum = 0;
     Button forward,backward;
     //    Product_Array product_array;
 //    ArrayList<String> list;

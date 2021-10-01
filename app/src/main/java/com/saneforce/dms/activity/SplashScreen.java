@@ -35,9 +35,9 @@ public class SplashScreen extends AppCompatActivity {
                 if (LoginType.equalsIgnoreCase("Stockist") && TimeUtils.compareCurrentAndLoginDate(shared_common_pref.getvalue(Shared_Common_Pref.LOGIN_DATE)) <0 ) {
 
                     DBController dbController = new DBController(SplashScreen.this);
-                    MyLocationWorker.stopLocationTracker();
+//                    MyLocationWorker.stopLocationTracker();
                     dbController.clearDatabase(DBController.TABLE_NAME);
-                    dbController.clearDatabase(DBController.TABLE_LOCATION);
+//                    dbController.clearDatabase(DBController.TABLE_LOCATION);
                     shared_common_pref.logoutUser(SplashScreen.this);
 
                 }else{

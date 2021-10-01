@@ -1,6 +1,9 @@
 package com.saneforce.dms.activity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,15 +33,17 @@ import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
-import com.saneforce.dms.BuildConfig;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
+import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
 import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
+import com.saneforce.dms.utils.ImageFilePath;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
 
@@ -62,6 +68,8 @@ import retrofit2.Response;
 public class PaymentDetailsActivity extends AppCompatActivity
         implements DMS.Master_Interface,  PaymentResultWithDataListener {//PaymentResultListener,
     private static final String TAG = PaymentDetailsActivity.class.getSimpleName();
+    private static final int SELECT_PICTURE = 103;
+    private static final int CAMERA_REQUEST = 1888;
 
     TextView productId, productDate, productAmt, offlineMode;
     private RadioGroup radioGroup;
@@ -79,8 +87,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String key_Secret="";
     String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
-    private static final int CAMERA_REQUEST = 1888;
-    String str = "", finalPath = "", filePath = "", OrderIDValue = "", DateValue = "",
+
+    String finalPath = "", filePath = "", OrderIDValue = "", DateValue = "",
             AmountValue = "", PaymntMode = "", PaymentTypecode = "";
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
@@ -95,6 +103,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
     LinearLayout ll_amount;
     EditText et_amount;
     String currentDate ="";
+    String serverFileName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,14 +239,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
         else if(PaymntMode.equalsIgnoreCase("Offline") && offlineMode.getText().toString().equals("")) {
             Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();
-        }else if(PaymntMode.equalsIgnoreCase("Offline") && str.equals("")) {
+        }else if(PaymntMode.equalsIgnoreCase("Offline") && serverFileName.equals("")) {
             Toast.makeText(this, "Please choose Valid Image", Toast.LENGTH_SHORT).show();
         }else {
             if (PaymntMode.equalsIgnoreCase("Offline")) {
                 ProceedPayment("","","");
             } else if (PaymntMode.equalsIgnoreCase("Online")) {
-                AsyncCallWS task = new AsyncCallWS();
-                task.execute();
+                getOnlinePaymentKeys();
             } else if(PaymntMode.equalsIgnoreCase("Credit")) {
                 ProceedPayment("","","");
 //                AsyncCallWS task = new AsyncCallWS();
@@ -252,13 +261,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public void getOfflineMode() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getOfflineMode("get/paymentmode", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-        Log.v("KArthic_Retailer", call.request().toString());
+
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     JSONObject jsonRootObject = new JSONObject(response.body().toString());
-                    Log.v("KArthic_Retailer", jsonRootObject.toString());
+                    Log.v(TAG, "getOfflineMode"+ jsonRootObject.toString());
                     if(jsonRootObject.has("Data")){
                         JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
                         for (int a = 0; a < jsonArray.length(); a++) {
@@ -308,27 +317,14 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Matcher match1 = word1.matcher(xmlResponseModel);*/
                     orderIDRazorpay = xmlResponseModel.substring(xmlResponseModel.lastIndexOf("<Get_Order_IDResult>")+20, xmlResponseModel.indexOf("</Get_Order_IDResult>"));
                     Log.d(TAG, "orderIDRazorpay: " + orderIDRazorpay);
-                getOnlinePayment(orderIDRazorpay);
+                    getOnlinePayment(orderIDRazorpay);
 
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                    AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Order Id Error", "Unable to get order Id from server, please try again");
                 }
-                Log.v(TAG, " res => " +xmlResponseModel);
-                    /*if(jsonRootObject.has("Data")){
-                        JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                        for (int a = 0; a < jsonArray.length(); a++) {
-                            JSONObject jso = jsonArray.getJSONObject(a);
-                            String className = String.valueOf(jso.get("Name"));
-                            String id = String.valueOf(jso.get("Code"));
-                            mCommon_model_spinner = new Common_Model(id, className, "flag");
-                            modelOffileData.add(mCommon_model_spinner);
 
-                            Log.v("NAME_STRING", className);
-                        }
-
-                    }*/
 
             }
 
@@ -336,7 +332,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
                 Log.e("Route_response", "ERROR");
-                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Order Id Error", "Unable to get order Id from server, please try again");
             }
         });
     }
@@ -358,7 +354,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             js.put("PaymentTypeCode", PaymentTypecode);
             js.put("UTRNumber", edtUTR.getText().toString());
             js.put("Amount", AmountValue);
-            js.put("Attachement", str);
+            js.put("Attachement", serverFileName);
 
             if(PaymntMode.equalsIgnoreCase("Offline")){
                 js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
@@ -442,7 +438,62 @@ public class PaymentDetailsActivity extends AppCompatActivity
         finish();
     }
 
+    private void getOnlinePaymentKeys(){
 
+        try {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> call = apiInterface.getPaymentKey( mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    try {
+                        JSONObject jsonRootObject = new JSONObject(response.body().toString());
+                        if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) {
+
+                            Log.v("NAME_STRING", response.toString());
+                            JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
+                            if(jsonArray!=null && jsonArray.length()>0){
+                                JSONObject jso = jsonArray.getJSONObject(0);
+                                keyID = String.valueOf(jso.get("KeyID"));
+                                key_Secret = String.valueOf(jso.get("Key_Secret"));
+                                Log.v("NAME_STRING1",key_Secret);
+                                Log.v("NAME_STRING",keyID);
+                                if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
+                                    AMOUNTFINAL= 100 * Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(AmountValue)));
+                                    if(AMOUNTFINAL>0)
+                                        AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
+
+                                    getOrderId();
+
+                                }else
+                                    AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
+                            }else
+                                AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
+
+                            //order id createion jul 22
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
+                    AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
+        }
+
+
+    }
+/*
     private class AsyncCallWS extends AsyncTask<Void, Void, Void> {
 
 
@@ -456,14 +507,14 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Log.i(TAG, "doInBackground");
             if(getOnlinePaymentOrderId()){
 
-                AMOUNTFINAL= Double.valueOf(100 * Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(AmountValue))));
+                AMOUNTFINAL= 100 * Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(AmountValue)));
                 if(AMOUNTFINAL>0)
                     AMOUNTFINAL = Math.ceil(AMOUNTFINAL);
 
                 try {
                     if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
 
-/*                        RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret);
+*//*                        RazorpayClient razorpayClient = new RazorpayClient(keyID,key_Secret);
 //            RazorpayClient razorpayClient = new RazorpayClient("rzp_live_z2t2tkpQ8YERR0",
 //                    "O0wqElBi2A5HUrb2MkbyeNQ4");
                         JSONObject orderRequest = new JSONObject();
@@ -490,7 +541,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }*/
+                        }*//*
                         getOrderId();
 
                     }else {
@@ -519,7 +570,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             // getOnlinePayment(orderIDRazorpay);//working code commented
         }
 
-    }
+    }*/
 
 
     public void OffImg(View v) {
@@ -528,30 +579,95 @@ public class PaymentDetailsActivity extends AppCompatActivity
             cameraPermission.requestPermission();
             Log.v("PERMISSION_CJEDFLHDSL", "NO");
         } else {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            outputFileUri = FileProvider.getUriForFile(PaymentDetailsActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir().getPath(), Shared_Common_Pref.Sf_Code + "_" + System.currentTimeMillis() + ".jpeg"));
-            Log.v("FILE_PATH", String.valueOf(outputFileUri));
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivityForResult(intent, CAMERA_REQUEST);
-
+            showImageChooserDialog();
         }
     }
+
+    private void showImageChooserDialog(){
+
+        final Dialog dialog = new Dialog(PaymentDetailsActivity.this);
+        dialog.setContentView(R.layout.dialog_upload_image);
+
+        ImageButton ibClose = dialog.findViewById(R.id.ib_close);
+        ImageButton ibCamera = dialog.findViewById(R.id.ib_camera);
+        ImageButton ibGallery = dialog.findViewById(R.id.ib_gallery);
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ibCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                openCamera();
+
+            }
+        });
+        ibGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                imageChooser();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        outputFileUri = FileProvider.getUriForFile(PaymentDetailsActivity.this, getApplicationContext().getPackageName() + ".provider", new File(getExternalCacheDir().getPath(), Shared_Common_Pref.Sf_Code + "_" + System.currentTimeMillis() + ".jpeg"));
+        Log.v("FILE_PATH", String.valueOf(outputFileUri));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent, CAMERA_REQUEST);
+    }
+
+    void imageChooser() {
+
+        // create an instance of the
+        // intent of the type image
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                if(outputFileUri!=null){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CAMERA_REQUEST) {
+
+                if (outputFileUri != null) {
                     finalPath = "/storage/emulated/0";
                     filePath = outputFileUri.getPath();
                     filePath = filePath.substring(1);
-                    str = filePath.replaceAll("external_files/Android/data/"+ BuildConfig.APPLICATION_ID+"/cache/", " ");
+//                    str = filePath.replaceAll("external_files/Android/data/" + BuildConfig.APPLICATION_ID + "/cache/", "");
                     filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                     imgSource.setImageURI(Uri.parse(filePath));
                     getMulipart(filePath);
                 }
+
+            } else if (requestCode == SELECT_PICTURE) {
+                // compare the resultCode with the
+                // SELECT_PICTURE constant
+                // Get the url of the image from data
+                if(data!=null && data.getData()!=null){
+                    Uri selectedImageUri = data.getData();
+                    // update the preview image in the layout
+                    imgSource.setImageURI(selectedImageUri);
+                    String filePath = ImageFilePath.getPath(PaymentDetailsActivity.this, selectedImageUri);
+                    getMulipart(filePath);
+
+                }else
+                    Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -570,7 +686,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public void getMulipart(String path) {
         Log.v("PATH_IMAGE", path);
         MultipartBody.Part imgg = convertimg("file", path);
-        Log.v("PATH_IMAGE_imgg", String.valueOf(imgg));
+
         sendImageToServer(imgg);
     }
 
@@ -584,8 +700,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     file = new Compressor(getApplicationContext()).compressToFile(new File(path));
                 else
                     file = new File(path);
+
+                try {
+                    serverFileName = "Sf_Code_"+ mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code) +"_"+ System.currentTimeMillis()+ ".jpeg";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    serverFileName = "Sf_Code_"+ System.currentTimeMillis() + ".jpeg";
+                }
                 RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-                yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+                yy = MultipartBody.Part.createFormData(tag, serverFileName, requestBody);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -597,67 +720,26 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> mCall = apiInterface.offlineImage("upload/paymentimg", imgg);
-        Log.e("SEND_IMAGE_SERVER", mCall.request().toString());
+
         mCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject jsonObject = response.body();
-                Log.v("SEND_IMAGE_RESPPONSE", jsonObject.toString());
+                if(jsonObject!=null && !jsonObject.has("success") && jsonObject.get("success").getAsBoolean()){
+                    Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("SEND_IMAGE_Response", "ERROR");
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-
-    public boolean getOnlinePaymentOrderId() {
-//        keyID = "";
-//        key_Secret = "";
-
-        if(ApiClient.IS_TEST_MODE){
-            keyID="rzp_test_JOC0wRKpLH1cVW";
-            //test key secret 9EzSlxvJbTyQ2Hg0Us5ZX4VD
-            key_Secret="9EzSlxvJbTyQ2Hg0Us5ZX4VD";
-
-            return true;
-        }
-        Call<JsonObject> call = null;
-
-        Response<JsonObject> response = null;
-        try {
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            call = apiInterface.getPaymentKey( mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
-
-            response = call.execute();
-
-            JSONObject jsonRootObject = new JSONObject(response.body().toString());
-            if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) {
-
-                Log.v("NAME_STRING", response.toString());
-                JSONArray jsonArray = jsonRootObject.optJSONArray("Data");
-                if(jsonArray!=null && jsonArray.length()>0){
-                    JSONObject jso = jsonArray.getJSONObject(0);
-                    keyID = String.valueOf(jso.get("KeyID"));
-                    key_Secret = String.valueOf(jso.get("Key_Secret"));
-                    Log.v("NAME_STRING1",key_Secret);
-                    Log.v("NAME_STRING",keyID);
-                    if(keyID!=null && !keyID.equals("") && key_Secret!=null && !key_Secret.equals("") ){
-                        return true;
-                    }
-                }
-                //order id createion jul 22
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-        return false;
-    }
 
     public void getOnlinePayment(String orderId){
 
@@ -718,7 +800,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(PaymentDetailsActivity.this, "Error in starting Razorpay Checkout", Toast.LENGTH_SHORT).show();
+            AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Checkout Error", "Unable to create checkout, please try again");
         }
     }
 
@@ -777,15 +859,40 @@ public class PaymentDetailsActivity extends AppCompatActivity
 //        {"error":{"code":"BAD_REQUEST_ERROR","description":"Payment processing cancelled by user",
 //                "source":"customer","step":"payment_authentication","reason":"payment_cancelled"}}
         Log.d(TAG, "onPaymentError: s "+ s);
+        String error = "Something went wrong, please try again later";
         try {
             JSONObject jsonObject = new JSONObject(s);
-            JSONObject errorObject = jsonObject.getJSONObject("error");
-            s  = errorObject.getString("description");
+            if(jsonObject.has("description")) {
+                error  = jsonObject.getString("description");
+
+            }else if(jsonObject.has("error")){
+                JSONObject errorObject = null;
+
+                errorObject = jsonObject.getJSONObject("error");
+
+                if(errorObject.has("description"))
+                    error  = errorObject.getString("description");
+//                "code":"BAD_REQUEST_ERROR","description":"The id provided does not exist","source":"business","step":"payment_initiation","reason":"input_validation_failed","metadata":{}}
+
+            }
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Toast.makeText(PaymentDetailsActivity.this, s, Toast.LENGTH_SHORT).show();
-        paymentCompleted(false);
+        AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Payment Error", error, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                paymentCompleted(false);
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
 
 
 //        Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
@@ -805,7 +912,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         toolbar_title = findViewById(R.id.toolbar_title);
         toolbar_title.setText("Payment Details");
 
-        imgBack = (ImageView) findViewById(R.id.toolbar_back);
+        imgBack = findViewById(R.id.toolbar_back);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

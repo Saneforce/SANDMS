@@ -121,9 +121,9 @@ public class DashBoardActivity extends AppCompatActivity {
         ib_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyLocationWorker.stopLocationTracker();
+//                MyLocationWorker.stopLocationTracker();
                 dbController.clearDatabase(DBController.TABLE_NAME);
-                dbController.clearDatabase(DBController.TABLE_LOCATION);
+//                dbController.clearDatabase(DBController.TABLE_LOCATION);
                 shared_common_pref.logoutUser(DashBoardActivity.this);
             }
         });
@@ -140,11 +140,11 @@ public class DashBoardActivity extends AppCompatActivity {
 
         checkPermission();
 
-        try {
+       /* try {
             Constant.checkOptimizationDialog(DashBoardActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 //            startDialog(KillerManager.Actions.ACTION_AUTOSTART);
 //            startDialog(KillerManager.Actions.ACTION_POWERSAVING);
 
@@ -282,7 +282,6 @@ public class DashBoardActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
 
-        Log.v("KArthic_Retailer", call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -687,9 +686,9 @@ public class DashBoardActivity extends AppCompatActivity {
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        }
+        }*/
         Dexter.withContext(this)
                 .withPermissions(permissions)
                 .withListener(new MultiplePermissionsListener() {
@@ -698,9 +697,9 @@ public class DashBoardActivity extends AppCompatActivity {
             {
                 if(!report.areAllPermissionsGranted()){
                     Constant.showSnackbar(DashBoardActivity.this, findViewById(R.id.scrolllayout));
-                }else
+                }/*else
                     MyLocationWorker.createMyLocationWorker(DashBoardActivity.this);
-
+*/
 
 //                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 

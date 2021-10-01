@@ -116,8 +116,8 @@ public class TimeUtils {
 
     public static int minDifference(Date date1, Date date2) {
 
-        final int MILLI_TO_HOUR = 1000 * 60;
-        return (int) (date2.getTime() - date1.getTime()) / MILLI_TO_HOUR;
+        final int MILLI_TO_MIN = 1000 * 60;
+        return (int) (date2.getTime() - date1.getTime()) / MILLI_TO_MIN;
     }
 
     public static Date getDate(String format, String dateString) {
