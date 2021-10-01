@@ -600,17 +600,26 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
         public boolean isValid() {
             int postponedCount = 0;
+            int qtyCount = 0;
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("postponed") && jsonObject.getString("postponed").equals("true"))
                         ++postponedCount;
+                    else {
+                        try {
+                            if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals(""))
+                                qtyCount +=  jsonObject.getInt("OldCQty");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-            return postponedCount != jsonArray.length();
+            return qtyCount > 0 && postponedCount != jsonArray.length();
         }
 
         public boolean isAnyPostpondEdit() {

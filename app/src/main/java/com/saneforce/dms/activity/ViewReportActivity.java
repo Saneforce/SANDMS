@@ -384,7 +384,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             js.put("PaymentTypeCode", PaymentTypecode);
             js.put("UTRNumber", edt_utr.getText().toString());
             js.put("Attachement", serverFileName);
-
+            js.put("Retcode", custCode);
+            js.put("Amount", OrderValueTotal);
 
             if(option.equalsIgnoreCase("cheque")){
                 js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
@@ -394,10 +395,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 js.put("cheque_amount", "");
             }
 
-            Log.v("JS_VALUEdata", js.toString());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> responseBodyCall;
-            responseBodyCall = apiInterface.getDetails("dcr/dispatchsecondaryorder", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
+            responseBodyCall = apiInterface.getDetails("save/dispatchpayment", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
 
             responseBodyCall.enqueue(new Callback<JsonObject>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)

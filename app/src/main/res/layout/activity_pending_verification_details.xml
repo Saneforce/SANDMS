@@ -53,13 +53,17 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    style="@style/TextStyle"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
                     android:text="Distributor: " />
 
                 <TextView
                     android:id="@+id/product_distributor"
-                    style="@style/TextStyle" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
 
             </LinearLayout>
             <LinearLayout

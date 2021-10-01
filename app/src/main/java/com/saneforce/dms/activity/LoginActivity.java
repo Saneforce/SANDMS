@@ -1,14 +1,12 @@
 package com.saneforce.dms.activity;
 
 
-import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -66,7 +64,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity{
 
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private SignInButton signInButton;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 1;
@@ -236,14 +234,12 @@ public class LoginActivity extends AppCompatActivity{
         gMail.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("DMS_RESPONSE", response.body().toString());
 
                 try {
                     jsonObject1 = new JSONObject(response.body().toString());
                     String san = jsonObject1.getString("success");
                     shared_common_pref.save("Login_Successfully", san);
 
-                    Log.e("LoginResponse", response.body().toString());
                     JSONArray jsonArray = jsonObject1.optJSONArray("Data");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);

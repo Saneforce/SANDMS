@@ -28,7 +28,7 @@ public class ApiClient {
     public static final int APP_TYPE = 1;
     public static final boolean IS_TEST_MODE = false;
 
-    public static final String BASE_LOCALHOST ="http://192.168.1.22:8080/";
+    public static final String BASE_LOCALHOST ="http://192.168.1.77:8080/";
     public static final String BASE_FMCG ="http://fmcg.sanfmcg.com/";
     public static final String BASE_GOVIND ="http://govind.sanfmcg.com/";
     public static final String BASE_HAP ="http://hap.sanfmcg.com/";
