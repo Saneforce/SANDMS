@@ -11,12 +11,12 @@ android {
             keyPassword '12345678'
             keyAlias 'key0'
         }*/
-        release {
+      /*  release {
             storeFile file('D:\\Vengat\\dms_keystore.jks')
             storePassword '12345678'
             keyPassword '12345678'
             keyAlias 'key0'
-        }
+        }*/
 
     }
     compileSdkVersion 30
@@ -53,7 +53,7 @@ android {
 
             minifyEnabled false
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
 
         }
        /* debug {
