@@ -574,10 +574,10 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         super.onResume();
         Log.d(TAG, "onResume: Called");
 
-     /*   if(!isFirstTime)
+        if(!isFirstTime)
             loadFilteredTodos(productBarCode);
         else
-            isFirstTime = false;*/
+            isFirstTime = false;
   /*      Log.v("Primary_order", "onResume");
         if (productBarCode.equalsIgnoreCase("")) {
             mPrimaryProductViewModel = ViewModelProviders.of(this).get(PrimaryProductViewModel.class);
@@ -1683,7 +1683,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 
 //                    String discountType = "";
-                    double discountValue = 0, schemeDis = 0, originalPrice  = 0;
+                    double discountValue = 0,  originalPrice  = 0;
                     if(currentValue != editedPrice) {
 //                        discountType = "Rs";
 
@@ -1714,7 +1714,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                         mContact.setSchemeProducts(schemeProducts);
                    }*/
                     dialog.dismiss();
-                    updateScheme(mContact, position, schemeDis);
+                    updateScheme(mContact, position);
 
                 }else {
                     Toast.makeText(mCtx, "Please enter valid unit price", Toast.LENGTH_SHORT).show();
@@ -2156,7 +2156,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 
 
-    private void updateScheme(final PrimaryProduct task, int position, double schemeDis) {
+    private void updateScheme(final PrimaryProduct task, int position) {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
 
             @Override
@@ -2164,7 +2164,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
-                        .updateEditDiscount(task.getPID(),true, String.valueOf(schemeDis));
+                        .updateEditDiscount(task.getPID(),true, task.getEditedDiscount(), task.getEditedPrice());
 
                 workinglist.set(position, task);
                 ProductAdapter.this.notifyItemChanged(position);
