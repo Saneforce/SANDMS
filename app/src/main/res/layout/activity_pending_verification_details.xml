@@ -50,7 +50,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -61,7 +62,10 @@
 
                 <TextView
                     android:id="@+id/product_distributor"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text=""/>
 
@@ -153,6 +157,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/date_recycler"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 

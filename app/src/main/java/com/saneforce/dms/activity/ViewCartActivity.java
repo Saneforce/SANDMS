@@ -526,7 +526,7 @@ public class ViewCartActivity extends AppCompatActivity {
         }
 
         /*product_order_list*/
-        List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(carsList.size());
+        List<JSONObject> myJSONObjects = new ArrayList<>(carsList.size());
 
         JSONArray personarray = new JSONArray();
         PersonObjectArray = new JSONObject();
@@ -739,12 +739,22 @@ public class ViewCartActivity extends AppCompatActivity {
             double discountValue = 0;
             double taxValue = 0;
             double totalAmt = 0;
+            double productCode = 0;
+            double productQty = 0;
+
             if(!cars.getSelectedDisValue().equals("") )
                 discountValue = Double.parseDouble(cars.getSelectedDisValue());
             int unitQty = 1;
             if(cars.getProduct_Sale_Unit_Cn_Qty()!=0)
                 unitQty = cars.getProduct_Sale_Unit_Cn_Qty();
-            totalAmt = Double.parseDouble(cars.getProduct_Cat_Code()) * (Double.parseDouble(cars.getQty()) * unitQty);
+
+            if(cars.getProduct_Cat_Code()!=null && !cars.getProduct_Cat_Code().equals(""))
+                productCode = Double.parseDouble(cars.getProduct_Cat_Code());
+
+            if(cars.getQty()!=null && !cars.getQty().equals(""))
+                productQty = Double.parseDouble(cars.getQty());
+
+            totalAmt = productCode * (productQty * unitQty);
             if(!cars.getTax_amt().equals(""))
                 taxValue = Double.parseDouble(cars.getTax_amt());
 
@@ -754,7 +764,7 @@ public class ViewCartActivity extends AppCompatActivity {
             // sum = sum +Float.parseFloat( cars.getTax_Value())+ Float.parseFloat(cars.getSubtotal())+ Float.parseFloat(cars.getDis_amt())+;
             ;
             //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
-            Log.v("Total_foreviewcart", String.valueOf(itemTotal));
+//            Log.v("Total_foreviewcart", String.valueOf(itemTotal));
         }
         viewTotal.setText("" + Constant.roundTwoDecimals(itemTotal));
         shared_common_pref.save("GrandTotal", String.valueOf(itemTotal));
@@ -912,6 +922,18 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Rate", carsList.get(z).getProduct_Cat_Code());
                 person1.put("cb_qty", 0);
                 person1.put("ProductRate", carsList.get(z).getProduct_Cat_Code());
+
+                double actualRate = 0;
+                try {
+                    actualRate = Double.parseDouble(carsList.get(z).getProduct_Cat_Code());
+
+                    if(carsList.get(z).getEditedPrice()!=null && !carsList.get(z).getEditedPrice().equals(""))
+                        actualRate = Double.parseDouble(carsList.get(z).getEditedPrice());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+                person1.put("actualRate", actualRate);
                 person1.put("free", carsList.get(z).getSelectedFree());
                 person1.put("f_key", fkeyprodcut);
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());

@@ -124,7 +124,6 @@ public class DispatchEditActivtity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void dipatchItem(View v) {
@@ -132,7 +131,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
         if(!Constant.isInternetAvailable(this)){
             Toast.makeText(this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
         }else if (!priProdAdapter.isValid())
-            Toast.makeText(this, "All the product cannot be postponed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please add atleast 1 quantity of product", Toast.LENGTH_SHORT).show();
         else if (priProdAdapter.isAnyPostpondEdit()) {
             showPartialEditDialog(priProdAdapter.getPospondEditData());
         } else
@@ -224,8 +223,8 @@ public class DispatchEditActivtity extends AppCompatActivity {
         ArrayAdapter<DispatchModel> arrayAdapter = new PartialDispatchAdapter(this, R.layout.item_partial_edit, dispatchLIst);
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener((adapterView, view, which, l) -> {
-            Log.d(TAG, "showPartialEditDialog: " + dispatchLIst.get(which));
-            // TODO : Listen to click callbacks at the position
+//            Log.d(TAG, "showPartialEditDialog: " + dispatchLIst.get(which));
+
         });
         tv_new_order.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -537,8 +536,6 @@ public class DispatchEditActivtity extends AppCompatActivity {
                             @Override
                             public void afterTextChanged(Editable s) {
                                 Log.d("afterTextChanged", "afterTextChanged: " + s);
-
-
                             }
                         });
 
@@ -607,13 +604,10 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("postponed") && jsonObject.getString("postponed").equals("true"))
                         ++postponedCount;
                     else {
-                        try {
-                            if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals(""))
-                                qtyCount +=  jsonObject.getInt("OldCQty");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals("")
+                                            && !jsonObject.isNull("tempnewCQty") && !jsonObject.getString("tempnewCQty").equals("") )
+                                qtyCount +=  (jsonObject.getInt("OldCQty")-jsonObject.getInt("tempnewCQty"));
                         }
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

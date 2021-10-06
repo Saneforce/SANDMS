@@ -40,6 +40,9 @@ public interface PrimaryProductDao {
     @Query("UPDATE primary_product SET Product_Sale_Unit = :sPdtQty,Product_Sale_Unit_Cn_Qty = :Product_Sale_Unit_Cn_Qty,Subtotal = :sSubTotal WHERE PID= :sID")
     void updateDATA(String sID,String sPdtQty,int Product_Sale_Unit_Cn_Qty,String sSubTotal);
 
+    @Query("UPDATE primary_product SET isEdited = :isEdited,editedDiscount = :editedDiscount WHERE PID= :sID")
+    void updateEditDiscount(String sID,boolean isEdited, String editedDiscount);
+
 
     @Query("DELETE FROM Primary_Product WHERE PID = :Pid")
     void deleteById(String Pid);

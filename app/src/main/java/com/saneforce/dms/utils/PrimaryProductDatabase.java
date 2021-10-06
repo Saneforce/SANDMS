@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.saneforce.dms.listener.PrimaryProductDao;
 import com.saneforce.dms.model.PrimaryProduct;
 
-@Database(entities = {PrimaryProduct.class}, version = 10)
+@Database(entities = {PrimaryProduct.class}, version = 11)
 public abstract class PrimaryProductDatabase extends RoomDatabase {
 
 

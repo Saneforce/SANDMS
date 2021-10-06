@@ -46,7 +46,33 @@ public class PrimaryProduct implements Serializable {
     private String Off_disc_type = "";
     private String Off_free_unit = "";
     private String golden_scheme = "";
+    private boolean isEdited = false;
+    private String editedDiscount = "";
+    private String editedPrice = "";
 
+    public String getEditedPrice() {
+        return editedPrice;
+    }
+
+    public void setEditedPrice(String editedPrice) {
+        this.editedPrice = editedPrice;
+    }
+
+    public String getEditedDiscount() {
+        return editedDiscount;
+    }
+
+    public void setEditedDiscount(String editedDiscount) {
+        this.editedDiscount = editedDiscount;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
+    }
 
     @TypeConverters({SchemeConverter.class})
     List<SchemeProducts> schemeProducts;
@@ -328,6 +354,10 @@ public class PrimaryProduct implements Serializable {
         private String Free;
         private String Discount_Type;
         private String Free_Unit;
+
+        public SchemeProducts() {
+
+        }
 
         public String getFree() {
             return Free;

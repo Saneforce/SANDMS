@@ -99,6 +99,17 @@ public class Constant {
 	}
 
 
+	public static double roundTwoDecimals1(double d) {
+		try {
+			DecimalFormat twoDForm = new DecimalFormat("#.##");
+			return Double.parseDouble(twoDForm.format(d));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return d;
+		}
+	}
+
+
 	public static void hideKeyboard(Activity activity) {
 		try {
 

@@ -11,6 +11,8 @@ import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.saneforce.dms.utils.Shared_Common_Pref;
 
 public class DMSApplication extends Application implements LifecycleObserver{
     //, Configuration.Provider
@@ -24,9 +26,10 @@ public class DMSApplication extends Application implements LifecycleObserver{
     @Override
     public void onCreate() {
         super.onCreate();
-        FirebaseApp.initializeApp(this);
-
         sharedInstance = this;
+
+        FirebaseApp.initializeApp(this);
+        FirebaseCrashlytics.getInstance().setUserId(new Shared_Common_Pref(this).getvalue1(Shared_Common_Pref.Sf_UserName));
         setupActivityListener();
         /*common_class= new Common_Class(sharedInstance);
         try {

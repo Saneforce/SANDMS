@@ -195,10 +195,10 @@ public class PrimaryOrderList extends AppCompatActivity {
             ConstraintLayout row_category;
             public MyViewHolder(View view) {
                 super(view);
-                title = (TextView) view.findViewById(R.id.child_product_name);
-                productvalue = (TextView) view.findViewById(R.id.child_pro_unit);
-                image_down=view.findViewById(R.id.image_down);
-                row_category=view.findViewById(R.id.row_category);
+                title = view.findViewById(R.id.child_product_name);
+                productvalue = view.findViewById(R.id.child_pro_unit);
+                image_down = view.findViewById(R.id.image_down);
+                row_category = view.findViewById(R.id.row_category);
 
             }
         }
