@@ -1745,10 +1745,10 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 
         selectedScheme = null;
-        double previousSchemeCount = 0;
+        int previousSchemeCount = 0;
         for(PrimaryProduct.SchemeProducts scheme : schemeProducts){
             if(!scheme.getScheme().equals("")) {
-                double currentSchemeCount = Double.parseDouble(scheme.getScheme());
+                int currentSchemeCount = Integer.parseInt(scheme.getScheme());
                 if(previousSchemeCount <= currentSchemeCount &&  currentSchemeCount <= tempQty){
                     previousSchemeCount =currentSchemeCount;
                     selectedScheme = scheme;
@@ -1869,11 +1869,11 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                     case "Rs":
                         if (productAmt != 0) {
                             if (!packageType.equals("Y")) {
-                                discountValue = ((double) tempQty / Double.parseDouble(selectedScheme.getScheme())) * schemeDisc;
-                                unitDiscountValue = ((double) product_Sale_Unit_Cn_Qty / Double.parseDouble(selectedScheme.getScheme())) * schemeDisc;
+                                discountValue = ((double) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                unitDiscountValue = ((double) product_Sale_Unit_Cn_Qty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
 
                             } else {
-                                int schInt = (int) Double.parseDouble(selectedScheme.getScheme());
+                                int schInt = (int) Integer.parseInt(selectedScheme.getScheme());
                                 discountValue = ((int) tempQty / schInt) * schemeDisc;
                                 unitDiscountValue = ((int) product_Sale_Unit_Cn_Qty / schInt) * schemeDisc;
 
@@ -1887,20 +1887,23 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                         discountValue = 0;
                         unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty));
                 }
-                unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty))-unitDiscountValue;
-
             }
+            unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty))-unitDiscountValue;
+
         }else {
             discountType = "Rs";
+            double editedDis = 0;
             if(mContact.getEditedDiscount()!=null && !mContact.getEditedDiscount().equals(""))
-                schemeDisc = Double.parseDouble(mContact.getEditedDiscount());
+                editedDis = Double.parseDouble(mContact.getEditedDiscount());
 
-            discountValue =schemeDisc * tempQty;
+            discountValue =editedDis * tempQty;
 
             if(mContact.getEditedPrice()!=null && !mContact.getEditedPrice().equals(""))
                 unitDiscountValue = Double.parseDouble(mContact.getEditedPrice()) * product_Sale_Unit_Cn_Qty;
             else
                 unitDiscountValue = itemPrice;
+
+            schemeDisc = Constant.roundTwoDecimals1((editedDis/itemPrice) * 100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
 
