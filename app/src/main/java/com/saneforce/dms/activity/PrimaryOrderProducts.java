@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,14 +34,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
+import com.saneforce.dms.R;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.listener.PrimaryProducts;
 import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.model.Product_Array;
-import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Common_Model;
@@ -52,7 +50,6 @@ import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
-import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -388,7 +385,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                     //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
 //                    Log.v("Total_foreviewcart", String.valueOf(itemTotal));
                 }
-
+                if(itemTotal<=0)
+                    itemTotal = 0;
 
                 grandTotal.setText("" + Constant.roundTwoDecimals(itemTotal));
                 mShared_common_pref.save("GrandTotal", String.valueOf(itemTotal));
@@ -1662,57 +1660,56 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             holder.ll_free_qty.setVisibility(View.GONE);
         }*/
     }
-
+    double orgPrice = 0;
+    double unitQty = 1;
     private void showEditPriceDialog(PrimaryProduct mContact, int position, double currentValue) {
 
         final Dialog dialog = new Dialog(mCtx);
         dialog.setContentView(R.layout.dialog_edit_price);
 
+
         EditText et_price = dialog.findViewById(R.id.et_price);
         TextView tv_new_order = dialog.findViewById(R.id.tv_new_order);
 
-        et_price.setText(String.valueOf(currentValue));
 
+        if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
+            orgPrice = Double.parseDouble(mContact.getProduct_Cat_Code());
+
+        unitQty = mContact.getProduct_Sale_Unit_Cn_Qty();
+
+        et_price.setText(String.valueOf(currentValue));
         tv_new_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+
+                orgPrice = orgPrice * unitQty;
                 double editedPrice = 0;
-                if(!et_price.getText().toString().equals("")){
+                if(!et_price.getText().toString().equals("")) {
                     editedPrice = Double.parseDouble(et_price.getText().toString());
+                }
 
-
-//                    String discountType = "";
-                    double discountValue = 0,  originalPrice  = 0;
-                    if(currentValue != editedPrice) {
+                if(orgPrice < editedPrice){
+                    Toast.makeText(mCtx, "Please enter price less than the orignal price", Toast.LENGTH_SHORT).show();
+                }else if(editedPrice> 0){
+                    editedPrice = Double.parseDouble(et_price.getText().toString());
+                    double discountValue = 0;
+                    if(orgPrice > editedPrice) {
 //                        discountType = "Rs";
 
-                        originalPrice = Double.parseDouble(mContact.getProduct_Cat_Code()) * mContact.getProduct_Sale_Unit_Cn_Qty();
-                        discountValue = Constant.roundTwoDecimals1(originalPrice - editedPrice);
+
+                        discountValue = Constant.roundTwoDecimals1(orgPrice - editedPrice);
 
 //                        schemeDis = Constant.roundTwoDecimals1(discountValue/originalPrice) * 100;
                         mContact.setEdited(true);
-                        mContact.setEditedPrice(Constant.roundTwoDecimals(editedPrice/mContact.getProduct_Sale_Unit_Cn_Qty()));
-                        mContact.setEditedDiscount(Constant.roundTwoDecimals(discountValue /mContact.getProduct_Sale_Unit_Cn_Qty()));
+                        mContact.setEditedPrice(Constant.roundTwoDecimals(editedPrice/unitQty));
+                        mContact.setEditedDiscount(Constant.roundTwoDecimals(discountValue /unitQty));
+                    }else if(orgPrice == editedPrice) {
+                        mContact.setEdited(false);
+                        mContact.setEditedPrice("0");
+                        mContact.setEditedDiscount("0");
                     }
-                    /*if(mContact.getSchemeProducts()!=null){
-                        for(PrimaryProduct.SchemeProducts scheme : mContact.getSchemeProducts()){
-                            scheme.setScheme(String.valueOf(schemeDis));
-                            scheme.setDiscountvalue(String.valueOf(discountValue));
-                            if(!discountType.equals(""))
-                                scheme.setDiscount_Type(discountType);
-                        }
-                    }else {
-                        ArrayList<PrimaryProduct.SchemeProducts> schemeProducts = new ArrayList<>();
-                        PrimaryProduct.SchemeProducts schemeProducts1= new PrimaryProduct.SchemeProducts();
-                        schemeProducts1.setScheme(String.valueOf(schemeDis));
-                        schemeProducts1.setDiscountvalue(String.valueOf(discountValue));
-                        if(!discountType.equals(""))
-                            schemeProducts1.setDiscount_Type(discountType);
-                        schemeProducts.add(schemeProducts1);
 
-                        mContact.setSchemeProducts(schemeProducts);
-                   }*/
                     dialog.dismiss();
                     updateScheme(mContact, position);
 
@@ -1873,9 +1870,9 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                                 unitDiscountValue = ((double) product_Sale_Unit_Cn_Qty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
 
                             } else {
-                                int schInt = (int) Integer.parseInt(selectedScheme.getScheme());
-                                discountValue = ((int) tempQty / schInt) * schemeDisc;
-                                unitDiscountValue = ((int) product_Sale_Unit_Cn_Qty / schInt) * schemeDisc;
+                                int schInt = Integer.parseInt(selectedScheme.getScheme());
+                                discountValue = (int)(tempQty / schInt) * schemeDisc;
+                                unitDiscountValue = (int)(product_Sale_Unit_Cn_Qty / schInt) * schemeDisc;
 
                             }
 //                        holder.ll_disc.setVisibility(View.GONE);
@@ -1903,7 +1900,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             else
                 unitDiscountValue = itemPrice;
 
-            schemeDisc = Constant.roundTwoDecimals1((editedDis/itemPrice) * 100);
+            schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
 
@@ -1960,6 +1957,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
         }
         try {
             taxPercent = Double.parseDouble(mContact.getTax_Value());
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -1974,17 +1972,20 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 //        holder.productItem.setText(String.valueOf(qty));
 //        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
-        if(unitDiscountValue ==0){
-            holder.ProductDisAmt.setText(Constant.roundTwoDecimals(itemPrice));
-        }else
-            holder.ProductDisAmt.setText(String.valueOf(Constant.roundTwoDecimals(unitDiscountValue)));
+        double finalDiscountAmt = unitDiscountValue;
 
+        if(unitDiscountValue ==0){
+            finalDiscountAmt = itemPrice;
+        }
+        if(finalDiscountAmt<=0)
+            finalDiscountAmt = 0;
+        holder.ProductDisAmt.setText(Constant.roundTwoDecimals(finalDiscountAmt));
 
         holder.ProductTax.setText(String.valueOf(taxPercent));
 
         try {
             taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
-            if(taxAmt<0)
+            if(taxAmt<=0)
                 taxAmt = 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1992,7 +1993,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
         holder.ProductTaxAmt.setText(Constant.roundTwoDecimals(taxAmt));
         double finalTotal = Constant.roundTwoDecimals1(((totalAmt - discountValue) + taxAmt));
-        if(finalTotal<0)
+        if(finalTotal<=0)
             finalTotal = 0;
 
         holder.tv_final_total_amt.setText(String.valueOf(finalTotal));
@@ -2167,7 +2168,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
-                        .updateEditDiscount(task.getPID(),true, task.getEditedDiscount(), task.getEditedPrice());
+                        .updateEditDiscount(task.getPID(),task.isEdited(), task.getEditedDiscount(), task.getEditedPrice());
 
                 workinglist.set(position, task);
                 ProductAdapter.this.notifyItemChanged(position);

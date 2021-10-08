@@ -695,10 +695,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 if(mContact.getEditedPrice()!=null && !mContact.getEditedPrice().equals(""))
                     unitDiscountValue = Double.parseDouble(mContact.getEditedPrice()) * product_Sale_Unit_Cn_Qty;
 
-                schemeDisc = Constant.roundTwoDecimals1((editedDis/itemPrice) * 100);
+                schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-
+                task.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
             }
 
 
@@ -720,7 +720,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             }else {
                 task.setSelectedDisValue("0");
-                task.setDiscount("0");
+                task.setDiscount(Constant.roundTwoDecimals(schemeDisc));
                 task.setDis_amt("0");
             }
 
@@ -754,7 +754,8 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         try {
             taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
-
+            if(taxAmt<=0)
+                taxAmt = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

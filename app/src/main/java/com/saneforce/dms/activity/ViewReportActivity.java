@@ -151,7 +151,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     Common_Model mCommon_model_spinner;
     boolean isDisPatch = false;
     CustomListViewDialog customDialog;
-
+    boolean isEditedPrice = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -587,6 +587,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         if(!jsonObject.isNull("Cust_Code")){
                             custCode =jsonObject.getString("Cust_Code");
                         }
+                        isEditedPrice = !jsonObject.isNull("rateMode") && !jsonObject.isNull("free");
+
 
                     }
                     mDateReportAdapter = new DateReportAdapter(ViewReportActivity.this, jsonArray);
@@ -1060,8 +1062,13 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     double discountValue = 0;
                     double productAmt = 0;
                     double schemeDisc = 0;
+
+
+                    if(PRate!=null && !PRate.equals(""))
+                        productAmt = Double.parseDouble(PRate);
 //                    String OffFreeUnit = "";
-                    if(selectedScheme != null){
+                    if(!isEditedPrice) {
+                        if (selectedScheme != null) {
 
 //                        if(selectedScheme.getFree_Unit()!=null)
 //                            OffFreeUnit = selectedScheme.getFree_Unit();
@@ -1073,57 +1080,53 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 //                        contact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
 
 
-                        if(!selectedScheme.getDiscount_Type().equals(""))
-                            discountType= selectedScheme.getDiscount_Type();
-                        else
-                            discountType= "%";
+                            if (!selectedScheme.getDiscount_Type().equals(""))
+                                discountType = selectedScheme.getDiscount_Type();
+                            else
+                                discountType = "%";
 
 
+                            String packageType = selectedScheme.getPackage();
 
-                        String packageType = selectedScheme.getPackage();
+                            double freeQty = 0;
+                            double packageCalc = (tempQty / Double.parseDouble(selectedScheme.getScheme()));
 
-                        double freeQty = 0;
-                        double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
+                            if (packageType.equals("Y"))
+                                packageCalc = (int) packageCalc;
 
-                        if(packageType.equals("Y"))
-                            packageCalc = (int)packageCalc;
-
-                        if(!selectedScheme.getFree().equals(""))
-                            freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
-                        freeQtValue = String.valueOf((int)freeQty);
+                            if (!selectedScheme.getFree().equals(""))
+                                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+                            freeQtValue = String.valueOf((int) freeQty);
 
 //                        contact.setSelectedFree(String.valueOf((int) freeQty));
 
 
-                        if(PRate!=null && !PRate.equals(""))
-                            productAmt = Double.parseDouble(PRate);
+                            if (selectedScheme.getDiscountvalue() != null && !selectedScheme.getDiscountvalue().equals(""))
+                                schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
 
-                        if(selectedScheme.getDiscountvalue()!=null && !selectedScheme.getDiscountvalue().equals(""))
-                            schemeDisc = Double.parseDouble(selectedScheme.getDiscountvalue());
-
-                        switch (discountType){
-                            case "%":
-                                discountValue = (productAmt * tempQty) * (schemeDisc/100);
-                                break;
-                            case "Rs":
-                                if(productAmt!=0) {
-                                    if (!packageType.equals("Y"))
-                                        discountValue = ((double) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
-                                    else
-                                        discountValue = ((int) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                            switch (discountType) {
+                                case "%":
+                                    discountValue = (productAmt * tempQty) * (schemeDisc / 100);
                                     break;
-                                }
-                            default:
-                                discountValue = 0;
-                        }
+                                case "Rs":
+                                    if (productAmt != 0) {
+                                        if (!packageType.equals("Y"))
+                                            discountValue = ((double) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                        else
+                                            discountValue = ((int) tempQty / Integer.parseInt(selectedScheme.getScheme())) * schemeDisc;
+                                        break;
+                                    }
+                                default:
+                                    discountValue = 0;
+                            }
 
-                        discAmtValue = String.valueOf(discountValue);
+                            discAmtValue = String.valueOf(discountValue);
 
-                        selectedDiscPercent = String.valueOf(schemeDisc);
-                        selectedSchemeValue = selectedScheme.getScheme();
-                        selectedProductCode = selectedScheme.getProduct_Code();
-                        selectedProductName = selectedScheme.getProduct_Name();
-                        selectedProductUnit = selectedScheme.getScheme_Unit();
+                            selectedDiscPercent = String.valueOf(schemeDisc);
+                            selectedSchemeValue = selectedScheme.getScheme();
+                            selectedProductCode = selectedScheme.getProduct_Code();
+                            selectedProductName = selectedScheme.getProduct_Name();
+                            selectedProductUnit = selectedScheme.getScheme_Unit();
 
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
@@ -1141,7 +1144,29 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
 //                        }
 
+                        }
+
+                    }else {
+                      /*  discountType = "Rs";
+                        double editedDis = 0;
+                        if(mContact.getEditedDiscount()!=null && !mContact.getEditedDiscount().equals(""))
+                            editedDis = Double.parseDouble(mContact.getEditedDiscount());
+
+                        discountValue =editedDis * tempQty;
+
+                        if(mContact.getEditedPrice()!=null && !mContact.getEditedPrice().equals(""))
+                            unitDiscountValue = Double.parseDouble(mContact.getEditedPrice()) * product_Sale_Unit_Cn_Qty;
+                        else
+                            unitDiscountValue = itemPrice;
+
+                        schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
+//                    holder.ll_disc.setVisibility(View.VISIBLE);
+//            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
+                        task.isEdited(), task.getEditedDiscount(), task.getEditedPrice()
+*/
                     }
+
+
 //                    else {
 
 //                        contact.setDis_amt(Constants.roundTwoDecimals(discountValue));

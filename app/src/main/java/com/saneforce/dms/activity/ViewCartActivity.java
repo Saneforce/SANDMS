@@ -766,6 +766,10 @@ public class ViewCartActivity extends AppCompatActivity {
             //  Log.v("taxamttotal_valbefore", String.valueOf(tax));
 //            Log.v("Total_foreviewcart", String.valueOf(itemTotal));
         }
+
+        if(itemTotal <= 0)
+            itemTotal = 0;
+
         viewTotal.setText("" + Constant.roundTwoDecimals(itemTotal));
         shared_common_pref.save("GrandTotal", String.valueOf(itemTotal));
 
@@ -920,7 +924,26 @@ public class ViewCartActivity extends AppCompatActivity {
                 double currentUOMPrice = 0;
                 double currentUOMDis = 0;
                 double currentPieceDis = 0;
+
+
+                //adding items to first json object
+                person1.put("Productname", carsList.get(z).getPname());
+                person1.put("ProductCode", carsList.get(z).getUID());
+                person1.put("Qty", carsList.get(z).getQty());
+                person1.put("Rate", carsList.get(z).getProduct_Cat_Code());
+                person1.put("cb_qty", 0);
+                person1.put("ProductRate", carsList.get(z).getProduct_Cat_Code());
+
+                String rateMode = "free";
+                if(carsList.get(z).isEdited())
+
+                if(carsList.get(z).isEdited()){
+                    rateMode = "priceEdit";
                 try {
+                    if(carsList.get(z).getEditedDiscount()!=null && !carsList.get(z).getEditedDiscount().equals("")){
+                        currentPieceDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()));
+                        currentUOMDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
+                    }
 
                     if(carsList.get(z).getEditedPrice()!=null && !carsList.get(z).getEditedPrice().equals("")){
 
@@ -933,26 +956,6 @@ public class ViewCartActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                //adding items to first json object
-                person1.put("Productname", carsList.get(z).getPname());
-                person1.put("ProductCode", carsList.get(z).getUID());
-                person1.put("Qty", carsList.get(z).getQty());
-                person1.put("Rate", String.valueOf(currentPiecePrice));
-                person1.put("cb_qty", 0);
-                person1.put("ProductRate", String.valueOf(currentPiecePrice));
-                person1.put("OriginalRate", carsList.get(z).getProduct_Cat_Code());
-
-
-                try {
-
-                    if(carsList.get(z).getEditedDiscount()!=null && !carsList.get(z).getEditedDiscount().equals("")){
-                        currentPieceDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()));
-                        currentUOMDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-
 
                 person1.put("currentPiecePrice", currentPiecePrice);
                 person1.put("currentUOMPrice", currentUOMPrice);
@@ -960,7 +963,9 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("currentPieceDis", currentPieceDis);
                 person1.put("totalDis", currentUOMDis * Integer.parseInt(carsList.get(z).getQty()));
                 person1.put("totalPrice", currentUOMPrice * Integer.parseInt(carsList.get(z).getQty()));
+                }
 
+                person1.put("rateMode", rateMode);
                 person1.put("free", carsList.get(z).getSelectedFree());
                 person1.put("f_key", fkeyprodcut);
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
@@ -991,7 +996,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        /*    try {
+           /* try {
                 //adding items to first json object
                 person1.put("Productname", carsList.get(z).getProductName());
                 person1.put("ProductCode", carsList.get(z).getProductcode());
@@ -1104,7 +1109,7 @@ public class ViewCartActivity extends AppCompatActivity {
         totalValueString = sendArray.toString();
         progressDialog.dismiss();
 
-    /*    if(Constant.isInternetAvailable(ViewCartActivity.this)){
+      /*  if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
             data.put(DBController.AXN_KEY,"dcr/secordersave");
             data.put(DBController.DATA_RESPONSE,totalValueString);

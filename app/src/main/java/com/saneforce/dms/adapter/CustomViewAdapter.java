@@ -505,7 +505,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 unitDiscountValue = itemPrice;
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-            schemeDisc = Constant.roundTwoDecimals1((editedDis/itemPrice) * 100);
+            schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //
 //            mProduct_arrays.get(position).setSelectedDisValue(String.valueOf(discountValue));
 //            contact.setSelectedDisValue(String.valueOf(discountValue));
@@ -579,16 +579,20 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         }
         viewHolder.tv_dis.setText(dis);
 
+        double finalDiscountAmt = unitDiscountValue;
+
         if(unitDiscountValue ==0){
-            viewHolder.ProductDisAmt.setText(Constant.roundTwoDecimals(itemPrice));
-        }else
-            viewHolder.ProductDisAmt.setText(String.valueOf(Constant.roundTwoDecimals(unitDiscountValue)));
+            finalDiscountAmt = itemPrice;
+        }
+        if(finalDiscountAmt<=0)
+            finalDiscountAmt = 0;
+        viewHolder.ProductDisAmt.setText(Constant.roundTwoDecimals(finalDiscountAmt));
 
         viewHolder.item_tax.setText(String.valueOf(taxPercent));
 
         try {
             taxAmt =  (totalAmt- discountValue) * (taxPercent/100);
-            if(taxAmt<0)
+            if(taxAmt<=0)
                 taxAmt = 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -597,7 +601,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         viewHolder.tax_amount.setText(Constant.roundTwoDecimals(taxAmt));
 
         double finalTotal = Constant.roundTwoDecimals1(((totalAmt - discountValue) + taxAmt));
-        if(finalTotal<0)
+        if(finalTotal<=0)
             finalTotal = 0;
 
 //        viewHolder.tv_final_total_amt.setText(Constants.roundTwoDecimals(((totalAmt - discountValue) + taxAmt)));

@@ -1,4 +1,4 @@
-package com.saneforce.dms.activity;
+package com.saneforce.dms.utils;
 
 import android.text.InputFilter;
 import android.text.Spanned;
