@@ -151,7 +151,6 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     Common_Model mCommon_model_spinner;
     boolean isDisPatch = false;
     CustomListViewDialog customDialog;
-    boolean isEditedPrice = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -523,14 +522,15 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         //    OrderValueTotal=Double.valueOf(jsonObject.getString("Order_Value"));
-                        if(!jsonObject.isNull("OrderVal"))
-                            OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
                         if(!jsonObject.isNull("taxval"))
                             OrderAmtNew= Double.valueOf(jsonObject.getString("taxval"));
                         //  TotalValue.setText("Rs."+jsonObject.getString("taxval"));//working code commented
                         String total = "0";
-                        if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals(""))
+                        if(jsonObject.has("OrderVal") && !jsonObject.getString("OrderVal").equals("")){
                             total = Constant.roundTwoDecimals(Double.parseDouble(jsonObject.getString("OrderVal")));
+                            OrderValueTotal=Double.valueOf(jsonObject.getString("OrderVal"));
+
+                        }
 
                         /*if(jsonObject.has("OrderDate")) {
                             orderCreatedDateTime = jsonObject.getString("OrderDate");
@@ -587,7 +587,6 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         if(!jsonObject.isNull("Cust_Code")){
                             custCode =jsonObject.getString("Cust_Code");
                         }
-                        isEditedPrice = !jsonObject.isNull("rateMode") && !jsonObject.isNull("free");
 
 
                     }
@@ -949,7 +948,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 String qty = "0", finalPrice = "0", PSaleUnit ="", taxAmtValue ="0", selectedDiscPercent ="0",
                         discAmtValue ="0", freeQtValue ="0", selectedSchemeValue = "", selectedProductCode = ""
                         , selectedProductName = "", selectedProductUnit = "", discountType = "";
-                ;
+                double editedDisValue = 0, editedPrice = 0;
+                boolean isEditedPrice = false;
+
 
 //                        contact.setSelectedScheme(selectedScheme.getScheme());
 //                        contact.setSelectedDisValue(selectedScheme.getDiscountvalue());
@@ -1039,7 +1040,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
                 if(!qty.equals("0")){
                     unitQty = getConQty(id);
-                    PSaleUnit = getConQtyName(id);
+                    PSaleUnit = getValue(id, "unit");
 
                     int product_Sale_Unit_Cn_Qty = 1;
                     if(unitQty!=0)
@@ -1067,6 +1068,10 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     if(PRate!=null && !PRate.equals(""))
                         productAmt = Double.parseDouble(PRate);
 //                    String OffFreeUnit = "";
+                    String rateMode = getValue(id, "rateMode");
+                    isEditedPrice = rateMode.equals("priceEdit");
+
+
                     if(!isEditedPrice) {
                         if (selectedScheme != null) {
 
@@ -1147,23 +1152,28 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         }
 
                     }else {
-                      /*  discountType = "Rs";
-                        double editedDis = 0;
-                        if(mContact.getEditedDiscount()!=null && !mContact.getEditedDiscount().equals(""))
-                            editedDis = Double.parseDouble(mContact.getEditedDiscount());
+                        discountType = "Rs";
 
-                        discountValue =editedDis * tempQty;
+                        selectedDiscPercent  = getValue(id, "discount");
 
-                        if(mContact.getEditedPrice()!=null && !mContact.getEditedPrice().equals(""))
-                            unitDiscountValue = Double.parseDouble(mContact.getEditedPrice()) * product_Sale_Unit_Cn_Qty;
-                        else
-                            unitDiscountValue = itemPrice;
+                        discAmtValue  = getValue(id, "discount_price");
 
-                        schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
+                        if(discAmtValue!=null && !discAmtValue.equals("")){
+                            editedDisValue  = discountValue = Double.parseDouble(discAmtValue)/tempQty;
+                            editedPrice = productAmt - editedDisValue;
+                        }
+
+//                        if(mContact.getEditedPrice()!=null && !mContact.getEditedPrice().equals(""))
+//                            unitDiscountValue = editedPrice * product_Sale_Unit_Cn_Qty;
+//                        else
+//                            unitDiscountValue = itemPrice;
+
+//                        schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-                        task.isEdited(), task.getEditedDiscount(), task.getEditedPrice()
-*/
+//                        task.isEdited(), task.getEditedDiscount(), task.getEditedPrice()
+
+
                     }
 
 
@@ -1232,7 +1242,6 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 primaryProduct.setQty(qty);
                 primaryProduct.setTxtqty(qty);
                 primaryProduct.setSubtotal(finalPrice);
-                primaryProduct.setDis_amt(discAmtValue);
                 primaryProduct.setTax_amt(taxAmtValue);
                 primaryProduct.setSchemeProducts(schemeList);
                 primaryProduct.setProduct_Sale_Unit_Cn_Qty(unitQty);
@@ -1250,6 +1259,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 primaryProduct.setOff_Pro_name(selectedProductName);
                 primaryProduct.setOff_Pro_Unit(selectedProductUnit);
                 primaryProduct.setOff_disc_type(discountType);
+                primaryProduct.setEdited(isEditedPrice);
+                primaryProduct.setEditedDiscount(String.valueOf(editedDisValue));
+                primaryProduct.setEditedPrice(String.valueOf(editedPrice));
 
                 contact.insert(primaryProduct);
 
@@ -1338,6 +1350,24 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
 
         return conQtyName;
+    }
+
+    private String getValue(String id, String key) {
+        String value = "";
+        if(jsonArray!=null && jsonArray.length()>0){
+            for(int i = 0; i< jsonArray.length(); i++){
+                try {
+                    if(jsonArray.getJSONObject(i).getString("Product_Code").equals(id)){
+                        value = jsonArray.getJSONObject(i).getString(key);
+                        break;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return value;
     }
 
 

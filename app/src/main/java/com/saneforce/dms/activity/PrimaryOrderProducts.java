@@ -1769,6 +1769,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
         if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
             productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
+
         if(selectedScheme != null){
 
             if(selectedScheme.getFree_Unit()!=null)

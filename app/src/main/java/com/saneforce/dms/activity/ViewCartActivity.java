@@ -1109,7 +1109,7 @@ public class ViewCartActivity extends AppCompatActivity {
         totalValueString = sendArray.toString();
         progressDialog.dismiss();
 
-      /*  if(Constant.isInternetAvailable(ViewCartActivity.this)){
+        if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
             data.put(DBController.AXN_KEY,"dcr/secordersave");
             data.put(DBController.DATA_RESPONSE,totalValueString);
@@ -1147,7 +1147,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
 
 
-        }*/
+        }
 
     }
 
