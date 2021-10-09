@@ -441,8 +441,8 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                          }//new stop
                 }  //jul 11
 
-                if(ProductCount>0)
-                updateSchemeData(task.getSchemeProducts(), ProductCount, task);
+//                if(ProductCount>0)
+//                    updateSchemeData(task.getSchemeProducts(), ProductCount, task);
 
             }
 
