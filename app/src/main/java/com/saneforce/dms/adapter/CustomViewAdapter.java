@@ -370,11 +370,14 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
         String packageType = "";
 
         double itemPrice = 0;
+        String displayedDis = "0";
 
-        itemPrice = Double.parseDouble(contact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty;
 
         if(contact.getProduct_Cat_Code()!=null && !contact.getProduct_Cat_Code().equals(""))
             productAmt = Double.parseDouble(contact.getProduct_Cat_Code());
+
+        itemPrice = productAmt * product_Sale_Unit_Cn_Qty;
+
         if(selectedScheme != null){
             if(selectedScheme.getFree_Unit()!=null)
                 OffFreeUnit = selectedScheme.getFree_Unit();
@@ -406,13 +409,15 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
             packageType = selectedScheme.getPackage();
 
             double freeQty = 0;
-            double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
+            if(productAmt > 0){
+                double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
 
-            if(packageType.equals("Y"))
-                packageCalc = (int)packageCalc;
+                if(packageType.equals("Y"))
+                    packageCalc = (int)packageCalc;
 
-            if(!selectedScheme.getFree().equals(""))
-                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+                if(!selectedScheme.getFree().equals(""))
+                    freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+            }
 //            freeQty = (int) freeQty;
 
             mProduct_arrays.get(position).setSelectedFree(String.valueOf((int) freeQty));
@@ -464,6 +469,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
                         viewHolder.tv_dis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
 //                    viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
+                        displayedDis = selectedScheme.getDiscountvalue();
                         break;
                     case "Rs":
                         if (productAmt != 0) {
@@ -478,6 +484,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                             }
 //                        viewHolder.dis_amount.setText(String.valueOf(Constants.roundTwoDecimals(discountValue)));
 //                        viewHolder.ll_disc.setVisibility(View.GONE);
+                            displayedDis = String.valueOf(unitDiscountValue);
                             break;
                         }
                     default:
@@ -485,11 +492,12 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                         viewHolder.tv_dis.setText("0");
                         discountValue = 0;
                         unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(contact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty));
+                        displayedDis = "0";
 
                 }
 
             }
-            unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(contact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty)) - unitDiscountValue;
+            unitDiscountValue = Double.parseDouble(contact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty - unitDiscountValue;
 
         }else {
             discountType = "Rs";
@@ -501,14 +509,15 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
             if (contact.getEditedPrice() != null && !contact.getEditedPrice().equals(""))
                 unitDiscountValue = Double.parseDouble(contact.getEditedPrice()) * product_Sale_Unit_Cn_Qty;
-            else
-                unitDiscountValue = itemPrice;
+
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
             schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //
 //            mProduct_arrays.get(position).setSelectedDisValue(String.valueOf(discountValue));
 //            contact.setSelectedDisValue(String.valueOf(discountValue));
+            displayedDis = Constant.roundTwoDecimals(itemPrice - (Double.parseDouble(contact.getEditedPrice()) * product_Sale_Unit_Cn_Qty));
+
         }
 
         if(!contact.isEdited() && discountType.equals("%"))
@@ -519,8 +528,8 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //            discountValue = discountValue*product_Sale_Unit_Cn_Qty;
 
             if(!discountType.equals("") && discountValue>0){
-                mProduct_arrays.get(position).setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-                contact.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
+                mProduct_arrays.get(position).setDiscount(String.valueOf(schemeDisc));
+                contact.setDiscount(String.valueOf(schemeDisc));
 
                 mProduct_arrays.get(position).setDis_amt(Constant.roundTwoDecimals(discountValue));
                 contact.setDis_amt(Constant.roundTwoDecimals(discountValue));
@@ -535,8 +544,8 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
                 viewHolder.tv_disc_amt_total.setText(String.valueOf(Constants.roundTwoDecimals(totalAmt)));*/
 
             }else {
-                mProduct_arrays.get(position).setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-                contact.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
+                mProduct_arrays.get(position).setDiscount(String.valueOf(schemeDisc));
+                contact.setDiscount(String.valueOf(schemeDisc));
 
                 mProduct_arrays.get(position).setDis_amt("0");
                 mProduct_arrays.get(position).setSelectedDisValue("0");
@@ -546,10 +555,6 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //                viewHolder.dis_amount.setText("0");
                 viewHolder.tv_dis.setText("0");
             }
-
-
-
-        String dis = String.valueOf(Constant.roundTwoDecimals(schemeDisc));
 
 
         viewHolder.tv_free_unit.setText(OffFreeUnit);
@@ -575,9 +580,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //        viewHolder.txtQty.setText(String.valueOf(qty));
 //        viewHolder.item_amount.setText(Constants.roundTwoDecimals(totalAmt));
         if(!discountType.equals("%")){
-            dis = context.getResources().getString(R.string.rupee_symbol) +" "+ Constant.roundTwoDecimals(itemPrice - unitDiscountValue);
+            displayedDis = context.getResources().getString(R.string.rupee_symbol) +" "+ Constant.roundTwoDecimals(Double.parseDouble(displayedDis));
         }
-        viewHolder.tv_dis.setText(dis);
+        viewHolder.tv_dis.setText(displayedDis);
 
         double finalDiscountAmt = unitDiscountValue;
 

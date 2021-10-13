@@ -583,10 +583,12 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         double itemPrice = 0;
 
-        itemPrice = Double.parseDouble(mContact.getProduct_Cat_Code()) * product_Sale_Unit_Cn_Qty;
-
         if(mContact.getProduct_Cat_Code()!=null && !mContact.getProduct_Cat_Code().equals(""))
             productAmt = Double.parseDouble(mContact.getProduct_Cat_Code());
+
+        itemPrice = productAmt * product_Sale_Unit_Cn_Qty;
+
+
         if(selectedScheme != null){
 //            workinglist.get(position).setSelectedScheme(selectedScheme.getScheme());
             task.setSelectedScheme(selectedScheme.getScheme());
@@ -617,13 +619,16 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             packageType = selectedScheme.getPackage();
 
             double freeQty = 0;
-            double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
+            if(productAmt> 0){
+                double packageCalc = (tempQty/Double.parseDouble(selectedScheme.getScheme()));
 
-            if(packageType.equals("Y"))
-                packageCalc = (int)packageCalc;
+                if(packageType.equals("Y"))
+                    packageCalc = (int)packageCalc;
 
-            if(!selectedScheme.getFree().equals(""))
-                freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+                if(!selectedScheme.getFree().equals(""))
+                    freeQty = packageCalc * Integer.parseInt(selectedScheme.getFree());
+            }
+
 //            freeQty = (int) freeQty;
 //            workinglist.get(position).setSelectedFree(String.valueOf(freeQty));
             task.setSelectedFree(String.valueOf((int) freeQty));
@@ -674,7 +679,6 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
                         }
 //                        holder.ll_disc.setVisibility(View.GONE);
-
                         break;
                     }
                 default:
@@ -682,7 +686,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                     unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty));
             }
                 }
-                unitDiscountValue = Double.parseDouble(Constant.roundTwoDecimals(Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty))-unitDiscountValue;
+                unitDiscountValue = Double.parseDouble(mContact.getProduct_Cat_Code())*product_Sale_Unit_Cn_Qty-unitDiscountValue;
 
             }else {
                 discountType = "Rs";
@@ -698,7 +702,6 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                 schemeDisc = Constant.roundTwoDecimals1(((editedDis * product_Sale_Unit_Cn_Qty)/itemPrice) * 100);
 //                    holder.ll_disc.setVisibility(View.VISIBLE);
 //            holder.ProductDis.setText(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
-                task.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
             }
 
 
@@ -707,7 +710,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             if(!discountType.equals("") && discountValue>0){
 //                workinglist.get(position).setDiscount(String.valueOf(Constants.roundTwoDecimals(schemeDisc)));
-                task.setDiscount(String.valueOf(Constant.roundTwoDecimals(schemeDisc)));
+                task.setDiscount(String.valueOf(schemeDisc));
 
 //                workinglist.get(position).setDis_amt(Constants.roundTwoDecimals(discountValue));
                 task.setDis_amt(Constant.roundTwoDecimals(discountValue));
@@ -720,7 +723,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
             }else {
                 task.setSelectedDisValue("0");
-                task.setDiscount(Constant.roundTwoDecimals(schemeDisc));
+                task.setDiscount(String.valueOf(schemeDisc));
                 task.setDis_amt("0");
             }
 
@@ -761,7 +764,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         }
 
 //        holder.ProductTaxAmt.setText(Constants.roundTwoDecimals(taxAmt));
-        productTotal.setText(String.valueOf(unitDiscountValue * qty));
+        productTotal.setText(Constant.roundTwoDecimals(unitDiscountValue * qty));
         subTotal = (float) totalAmt;
         valueTotal = (float) taxAmt;
         finalPrice = (float) ((totalAmt - discountValue) + taxAmt);

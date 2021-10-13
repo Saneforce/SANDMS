@@ -30,7 +30,7 @@
 
         <LinearLayout
             android:id="@+id/ll_discount"
-            app:layout_constraintTop_toBottomOf="@+id/child_product_name"
+            app:layout_constraintTop_toBottomOf="@+id/image_down"
             app:layout_constraintStart_toStartOf="@+id/cl_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -43,20 +43,19 @@
 
 
                 <TextView
-                    android:id="@+id/item_total_rupees"
                     style="@style/TextStyle"
                     android:textColor="@color/subHeader"
                     android:text=""
                     android:textSize="13sp"/>
 
                 <TextView
-                    android:id="@+id/child_product_price"
+                    android:id="@+id/child_product_price_total"
                     style="@style/TextStyle"
                     android:text="0"
                     android:layout_gravity="center"
                     android:layout_margin="0dp"
                     android:textColor="@color/subHeader"
-                    android:textSize="13sp"/>
+                    android:textSize="12sp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -67,7 +66,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:text="Rs. "
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -76,7 +75,7 @@
                     android:text="0"
                     android:layout_gravity="center"
                     android:layout_margin="0dp"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -110,7 +109,7 @@
                     android:text="0"
                     android:textColor="@color/textColor"
                     android:textStyle="bold"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/tv_off_label"
@@ -118,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:textColor="@color/textColor"
                     android:text="% off"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -126,8 +125,9 @@
             <ImageButton
                 android:id="@+id/ib_edit_price"
                 android:visibility="visible"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:padding="5dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
                 android:scaleType="fitCenter"
@@ -170,7 +170,7 @@
                 style="@style/TextStyle"
                 android:text="0"
 
-                android:textSize="13sp" />
+                android:textSize="12sp" />
             <TextView
                 android:id="@+id/tv_free_unit"
                 style="@style/TextStyle"
@@ -178,12 +178,12 @@
                 android:layout_marginStart="3dp"
                 android:text=""
                 android:layout_gravity="center"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 style="@style/TextStyle"
                 android:text="Free"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -194,9 +194,10 @@
 
 
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@+id/ll_discount"
+            app:layout_constraintTop_toBottomOf="@+id/child_product_name"
             app:layout_constraintStart_toStartOf="@+id/cl_root"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
             android:id="@+id/image_down"
             android:layout_width="wrap_content"
             android:background="@drawable/oval_background"
@@ -211,7 +212,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/appColor"
-                android:textSize="13sp"
+                android:textSize="11sp"
                 android:maxLines="1"
                 android:maxLength="5"
                 android:textStyle="bold" />
@@ -221,13 +222,39 @@
                 android:background="@drawable/expan"
                 android:gravity="center">
 
-
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            app:layout_constraintTop_toBottomOf="@+id/child_product_name"
+            app:layout_constraintLeft_toRightOf="@+id/image_down"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp">
+
+
+            <TextView
+                style="@style/TextStyle"
+                android:textColor="@color/subHeader"
+                android:text=""
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/child_product_price"
+                style="@style/TextStyle"
+                android:text="0"
+                android:layout_gravity="center"
+                android:layout_margin="0dp"
+                android:textColor="@color/subHeader"
+                android:textSize="11sp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
             app:layout_constraintEnd_toEndOf="@+id/cl_root"
-            app:layout_constraintTop_toBottomOf="@+id/ll_discount"
+            app:layout_constraintTop_toBottomOf="@+id/image_down"
             android:id="@+id/ll_count"
             android:layout_marginTop="5dp"
 
@@ -250,9 +277,9 @@
                     android:gravity="center">
 
                     <LinearLayout
-                        android:layout_width="16dp"
+                        android:layout_width="14dp"
                         android:layout_height="12dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="6dp"
                         android:background="@drawable/minus"
                         android:gravity="center"/>
                 </LinearLayout>
@@ -260,7 +287,7 @@
 
                 <TextView
                     android:id="@+id/text_view_count"
-                    android:layout_width="35dp"
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:gravity="center"
@@ -269,14 +296,14 @@
 
                 <LinearLayout
                     android:id="@+id/image_plus"
-                    android:layout_width="38dp"
+                    android:layout_width="34dp"
                     android:layout_height="match_parent"
                     android:gravity="center">
 
                     <LinearLayout
-                        android:layout_width="13dp"
+                        android:layout_width="12dp"
                         android:layout_height="10dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="4dp"
                         android:background="@drawable/plus"
                         android:gravity="center"/>
 
@@ -303,14 +330,14 @@
                 <TextView
                     style="@style/TextStyle"
                     android:text="Tax : "
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txt_tax"
                     style="@style/TextStyle"
                     android:text="0"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -322,14 +349,14 @@
                     style="@style/TextStyle"
 
                     android:text="Tax Amt : "
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txt_tax_amt"
                     style="@style/TextStyle"
                     android:text="0"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -343,25 +370,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
                 <TextView
                     style="@style/TextStyle"
                     android:text="Rs."
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
-
 
                 <TextView
                     android:id="@+id/tv_final_total_amt"
                     style="@style/TextStyle"
                     android:text="0"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
+                    android:textSize="12sp" />
 
         </LinearLayout>
 

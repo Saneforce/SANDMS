@@ -349,10 +349,10 @@ public class DispatchEditActivtity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
 
-                                if (holder.text_checking.getText().toString().equalsIgnoreCase("Postpone")) {
-                                    holder.ib_edit_qty.setVisibility(View.GONE);
+                                if (holder.text_checking.getText().toString().equalsIgnoreCase("Discard")) {
+//                                    holder.ib_edit_qty.setVisibility(View.GONE);
                                     setQtyEdit(holder.et_qty_value,false, oldValue);
-                                    holder.text_checking.setText("Postponed");
+                                    holder.text_checking.setText("Discarded");
                                     holder.et_qty_value.setText(String.valueOf(oldValue));
 
                                     try {
@@ -369,8 +369,8 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
                                 } else {
                                     setQtyEdit(holder.et_qty_value,true, oldValue);
-                                    holder.ib_edit_qty.setVisibility(View.VISIBLE);
-                                    holder.text_checking.setText("Postpone");
+//                                    holder.ib_edit_qty.setVisibility(View.VISIBLE);
+                                    holder.text_checking.setText("Discard");
                                     try {
                                         JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
                                         jsonObject.put("postponed", "false");
@@ -389,14 +389,14 @@ public class DispatchEditActivtity extends AppCompatActivity {
                         });
 
                         setQtyEdit(holder.et_qty_value,false, oldValue);
-                        holder.ib_edit_qty.setVisibility(View.VISIBLE);
+                        /*holder.ib_edit_qty.setVisibility(View.VISIBLE);
                         holder.ib_edit_qty.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 setQtyEdit(holder.et_qty_value, !holder.et_qty_value.getTag().equals("1"), oldValue);
                             }
-                        });
+                        });*/
 
                         holder.et_qty_value.addTextChangedListener(new TextWatcher() {
                             @Override
@@ -442,7 +442,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                                         }
 
                                         jsonArray.put(holder.getAdapterPosition(), jsonObject);
-                                        holder.et_qty_value.setSelection(holder.et_qty_value.getText().length());
+//                                        holder.et_qty_value.setSelection(holder.et_qty_value.getText().length());
                                         //                            notifyItemChanged(position);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -464,7 +464,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     }else {
                         setQtyEdit(holder.et_qty_value,false, oldValue);
 
-                        holder.ib_edit_qty.setVisibility(View.GONE);
+//                        holder.ib_edit_qty.setVisibility(View.GONE);
                     }
 
 
@@ -524,7 +524,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                                         }
 
                                         jsonArray.put(holder.getAdapterPosition(), jsonObject);
-                                        holder.orderValue.setSelection(holder.orderValue.getText().length());
+//                                        holder.orderValue.setSelection(holder.orderValue.getText().length());
                                         //                            notifyItemChanged(position);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -540,16 +540,16 @@ public class DispatchEditActivtity extends AppCompatActivity {
                             }
                         });
 
-                        holder.ib_edit_qty.setVisibility(View.VISIBLE);
+/*                        holder.ib_edit_qty.setVisibility(View.VISIBLE);
                         holder.ib_edit_qty.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 setQtyEdit(holder.orderValue, !holder.orderValue.getTag().equals("1"), oldValue);
                             }
-                        });
+                        });*/
 
                     } else {
-                        holder.ib_edit_qty.setVisibility(View.GONE);
+//                        holder.ib_edit_qty.setVisibility(View.GONE);
                         holder.orderValue.setEnabled(false);
                         holder.orderValue.setClickable(false);
                     }
@@ -568,8 +568,8 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView orderID, orderDate, orderDistributor, orderStatus;
-            EditText orderValue;
+            TextView orderID, orderDistributor;
+            TextView orderValue;
 //        CardView martl_view;
 
 
@@ -578,8 +578,8 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
             MaterialCardView martl_view;
             TextView text_checking;
-            EditText et_qty_value;
-            ImageButton ib_edit_qty;
+            TextView et_qty_value;
+//            ImageButton ib_edit_qty;
 
             public MyViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -592,7 +592,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
                 tv_disc_amt_value = itemView.findViewById(R.id.tv_disc_amt_value);
                 martl_view = itemView.findViewById(R.id.martl_view);
                 text_checking = itemView.findViewById(R.id.text_checking);
-                ib_edit_qty = itemView.findViewById(R.id.ib_edit_qty);
+//                ib_edit_qty = itemView.findViewById(R.id.ib_edit_qty);
             }
         }
 
@@ -602,7 +602,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("postponed") && jsonObject.getString("postponed").equals("true"))
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("Discarded") && jsonObject.getString("Discarded").equals("true"))
                         ++postponedCount;
                     else {
                             if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals("")
@@ -621,7 +621,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("postponed") || jsonObject.getString("postponed").equals("false")) &&
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("Discarded") || jsonObject.getString("Discarded").equals("false")) &&
                         !jsonObject.isNull("tempOldCQty") && !jsonObject.isNull("OldCQty") &&
                         !jsonObject.getString("tempOldCQty").equals( jsonObject.getString("OldCQty")))
                         return true;
@@ -639,7 +639,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("postponed") || jsonObject.getString("postponed").equals("false"))
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("Discarded") || jsonObject.getString("Discarded").equals("false"))
                             && !jsonObject.isNull("tempOldCQty") &&
                             !jsonObject.getString("tempOldCQty").equals(jsonObject.getString("OldCQty")) ){
                         DispatchModel dispatchModel = new DispatchModel();
@@ -710,18 +710,18 @@ public class DispatchEditActivtity extends AppCompatActivity {
 
     }
 
-    private void setQtyEdit(EditText et_qty_value, boolean isActive, long oldValue) {
-        et_qty_value.setEnabled(isActive);
-        et_qty_value.setClickable(isActive);
-        et_qty_value.setFocusable(isActive);
-        et_qty_value.setFocusableInTouchMode(isActive);
+    private void setQtyEdit(TextView et_qty_value, boolean isActive, long oldValue) {
+//        et_qty_value.setEnabled(isActive);
+//        et_qty_value.setClickable(isActive);
+//        et_qty_value.setFocusable(isActive);
+//        et_qty_value.setFocusableInTouchMode(isActive);
 
         if(isActive){
-            et_qty_value.setBackground(getDrawable(R.drawable.oval_background));
+//            et_qty_value.setBackground(getDrawable(R.drawable.oval_background));
             et_qty_value.setTag("1");
         }
         else{
-            et_qty_value.setBackground(null);
+//            et_qty_value.setBackground(null);
             et_qty_value.setTag("0");
             et_qty_value.setText(String.valueOf(oldValue));
 
