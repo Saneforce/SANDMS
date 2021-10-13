@@ -1772,8 +1772,6 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
         itemPrice = productAmt * product_Sale_Unit_Cn_Qty;
 
-
-
         if(selectedScheme != null){
 
             if(selectedScheme.getFree_Unit()!=null)
@@ -1790,9 +1788,9 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
             workinglist.get(position).setOff_Pro_Unit(selectedScheme.getScheme_Unit());
             mContact.setOff_Pro_Unit(selectedScheme.getScheme_Unit());
-            if(!selectedScheme.getDiscount_Type().equals("")){
+            if(!selectedScheme.getDiscount_Type().equals(""))
                 discountType= selectedScheme.getDiscount_Type();
-            }
+
 
 
 /*            if(discountType.equals("Rs"))
@@ -1979,13 +1977,13 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 //        holder.productItem.setText(String.valueOf(qty));
 //        holder.productItemTotal.setText(Constants.roundTwoDecimals(totalAmt));
-        double finalDiscountAmt = unitDiscountValue;
+       /* double finalDiscountAmt = unitDiscountValue;
 
         if(unitDiscountValue ==0){
             finalDiscountAmt = itemPrice;
         }
         if(finalDiscountAmt<=0)
-            finalDiscountAmt = 0;
+            finalDiscountAmt = 0;*/
         holder.ProductDisAmt.setText(Constant.roundTwoDecimals((productAmt *tempQty) - discountValue));
 
         holder.ProductTax.setText(String.valueOf(taxPercent));

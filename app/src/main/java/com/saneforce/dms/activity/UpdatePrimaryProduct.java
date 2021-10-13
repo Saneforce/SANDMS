@@ -648,7 +648,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             task.setSelectedDisValue("0");
             task.setOff_Pro_code("0");
             task.setOff_Pro_name("0");
-            task.setOff_Pro_Unit("0");
+            task.setOff_Pro_Unit("");
 
         }
             if(!mContact.isEdited()) {

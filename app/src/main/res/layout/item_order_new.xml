@@ -156,12 +156,12 @@
             android:background="@drawable/shape_golden_scheme"/>
 
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@+id/child_product_name"
+            app:layout_constraintTop_toBottomOf="@+id/image_down"
             app:layout_constraintEnd_toEndOf="@+id/cl_root"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/ll_free_qty"
+            android:layout_marginTop="8dp"
             android:visibility="visible">
 
 
@@ -253,8 +253,8 @@
 
 
         <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/child_product_name"
             app:layout_constraintEnd_toEndOf="@+id/cl_root"
-            app:layout_constraintTop_toBottomOf="@+id/image_down"
             android:id="@+id/ll_count"
             android:layout_marginTop="5dp"
 
@@ -318,7 +318,7 @@
         <LinearLayout
             android:id="@+id/ll_tax"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/ll_count"
+            app:layout_constraintTop_toBottomOf="@+id/ll_discount"
             app:layout_constraintStart_toStartOf="@+id/cl_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -363,7 +363,7 @@
 
 
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@+id/ll_count"
+            app:layout_constraintTop_toBottomOf="@+id/ll_free_qty"
             app:layout_constraintEnd_toEndOf="@+id/cl_root"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"

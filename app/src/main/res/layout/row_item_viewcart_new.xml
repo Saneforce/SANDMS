@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
@@ -24,7 +23,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/C10dp"
+            android:layout_margin="8dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -35,8 +34,8 @@
 
                 <ImageView
                     android:id="@+id/image_product"
-                    android:layout_width="@dimen/C80dp"
-                    android:layout_height="@dimen/C80dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:scaleType="fitCenter"
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/cl_root"
                 android:layout_marginStart="3dp"
-                android:layout_marginEnd="3dp">
+                android:layout_marginEnd="2dp">
 
                 <TextView
                     app:layout_constraintTop_toTopOf="@+id/cl_root"
@@ -64,7 +63,7 @@
                     android:singleLine="true"
                     android:textColor="@color/black"
                     android:text="SAN Honey-Almond Cold dfsadf asd fsadfasdf asdfsadfasdf"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:layout_gravity="center_vertical"/>
 
                     <TextView
@@ -85,44 +84,49 @@
 
                 <LinearLayout
                     android:id="@+id/ll_discount"
-                    app:layout_constraintTop_toBottomOf="@+id/item_product_name"
+                    app:layout_constraintTop_toBottomOf="@+id/image_down"
                     app:layout_constraintStart_toStartOf="@+id/cl_root"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
+
                     <LinearLayout
+                        android:id="@+id/ll_total_price"
+                        app:layout_constraintTop_toBottomOf="@+id/item_product_name"
+                        app:layout_constraintLeft_toRightOf="@id/image_down"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="3dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/C4dp"
-                        android:layout_marginEnd="10dp">
+                        >
 
 
                         <TextView
-                            android:id="@+id/item_total_rupees"
                             style="@style/TextStyle"
                             android:textColor="@color/subHeader"
                             android:text=""
-                            android:textSize="13sp"/>
+                            android:textSize="12sp"/>
 
                         <TextView
-                            android:id="@+id/item_price"
+                            android:id="@+id/child_product_price_total"
                             style="@style/TextStyle"
                             android:text="0"
                             android:layout_gravity="center"
                             android:layout_margin="0dp"
                             android:textColor="@color/subHeader"
-                            android:textSize="13sp"/>
+                            android:textSize="12sp"/>
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/C4dp"
-                        android:layout_marginEnd="10dp">
+                        android:layout_marginEnd="5dp">
 
                         <TextView
                             style="@style/TextStyle"
                             android:text="Rs. "
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -131,7 +135,7 @@
                             android:text="0"
                             android:layout_gravity="center"
                             android:layout_margin="0dp"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -142,7 +146,7 @@
                             android:visibility="gone"
                             android:text=""
                             android:textColor="@android:color/black"
-                            android:textSize="14sp"/>
+                            android:textSize="12sp"/>
 
                     </LinearLayout>
 
@@ -154,7 +158,7 @@
                         android:layout_gravity="center"
                         android:paddingHorizontal="3dp"
                         android:paddingVertical="1dp"
-                        android:layout_marginEnd="@dimen/C10dp"
+                        android:layout_marginEnd="3dp"
                         android:layout_marginTop="@dimen/C4dp">
 
 
@@ -165,7 +169,7 @@
                             android:text="0"
                             android:textColor="@color/textColor"
                             android:textStyle="bold"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/tv_off_label"
@@ -173,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:textColor="@color/textColor"
                             android:text="% off"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -205,7 +209,7 @@
 
 
                 <LinearLayout
-                    app:layout_constraintTop_toBottomOf="@+id/ll_discount"
+                    app:layout_constraintTop_toBottomOf="@+id/item_product_name"
                     app:layout_constraintStart_toStartOf="@+id/cl_root"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="5dp"
@@ -223,7 +227,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/appColor"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:maxLines="1"
                         android:maxLength="5"
                         android:textStyle="bold" />
@@ -231,8 +235,35 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    app:layout_constraintTop_toBottomOf="@+id/ll_discount"
+                    android:id="@+id/ll_price"
+                    app:layout_constraintTop_toBottomOf="@+id/item_product_name"
                     app:layout_constraintLeft_toRightOf="@id/image_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/C4dp"
+                    android:layout_marginEnd="10dp">
+
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:textColor="@color/subHeader"
+                        android:text=""
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/item_price"
+                        style="@style/TextStyle"
+                        android:text="0"
+                        android:layout_gravity="center"
+                        android:layout_margin="0dp"
+                        android:textColor="@color/subHeader"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    app:layout_constraintTop_toBottomOf="@+id/item_product_name"
+                    app:layout_constraintLeft_toRightOf="@id/ll_price"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_width="wrap_content"
@@ -247,7 +278,7 @@
                         style="@style/TextStyle"
                         android:text="0"
 
-                        android:textSize="13sp" />
+                        android:textSize="12sp" />
                     <TextView
                         android:id="@+id/tv_free_unit"
                         style="@style/TextStyle"
@@ -255,12 +286,12 @@
                         android:layout_marginStart="3dp"
                         android:text=""
                         android:layout_gravity="center"
-                        android:textSize="13sp" />
+                        android:textSize="12sp" />
 
                     <TextView
                         style="@style/TextStyle"
                         android:text="Free"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -270,7 +301,7 @@
                 <LinearLayout
                     android:id="@+id/ll_tax"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/image_down"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_discount"
                     app:layout_constraintStart_toStartOf="@+id/cl_root"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -282,14 +313,14 @@
                         <TextView
                             style="@style/TextStyle"
                             android:text="Tax : "
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/item_tax"
                             style="@style/TextStyle"
                             android:text="0"
-                            android:textSize="13sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -301,14 +332,14 @@
                             style="@style/TextStyle"
 
                             android:text="Tax Amt : "
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/item_tax_amount"
                             style="@style/TextStyle"
                             android:text="0"
-                            android:textSize="13sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -350,7 +381,7 @@
                     android:padding="10dp"
                     android:text="0"
                     android:textColor="@android:color/black"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -363,7 +394,8 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/edit"
                 android:scaleType="fitCenter"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:contentDescription="@string/app_name" />
             <ImageView
                 android:id="@+id/delete_product"
                 android:layout_width="30dp"
@@ -373,7 +405,8 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/delete_cart"
                 android:onClick="DeleteOrder"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:contentDescription="@string/app_name" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
