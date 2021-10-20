@@ -584,7 +584,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //        viewHolder.item_amount.setText(Constants.roundTwoDecimals(totalAmt));
         if(!discountType.equals("%")){
             displayedDis = context.getResources().getString(R.string.rupee_symbol) +" "+ Constant.roundTwoDecimals(discountValue);
-        }
+        }else
+            displayedDis = Constant.roundTwoDecimals(schemeDisc);
+
         viewHolder.tv_dis.setText(displayedDis);
 
         /*double finalDiscountAmt = unitDiscountValue;

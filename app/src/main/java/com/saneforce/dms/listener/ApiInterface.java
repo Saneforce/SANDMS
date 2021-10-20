@@ -154,7 +154,15 @@ public interface ApiInterface {
     @POST("dms_db_V1.php")
     Call<ResponseBody> updateLocation(@Part("data") RequestBody data, @Query("axn") String axn,
                                       @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
-                                      @Query("State_Code") int State_Code, @Query("desig") String desig);
+                                      @Query("State_Code") String State_Code, @Query("desig") String desig);
 
+
+    @POST("dms_db_V1.php?")
+    Call<JsonObject> getSdkParams(@Query("axn") String Axn, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
+                                  @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId);
+
+    @POST("dms_db_V1.php?")
+    Call<JsonObject> updateResponse(@Query("axn") String Axn, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
+                                  @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId, @Field("response") String response);
 
 }

@@ -1,8 +1,8 @@
 package com.saneforce.dms.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,13 +28,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.billdesk.sdk.PaymentOptions;
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import com.saneforce.dms.R;
+import com.saneforce.dms.billdesk.SampleCallBack;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
-import com.saneforce.dms.R;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
@@ -103,6 +105,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String currentDate ="";
     String serverFileName = "";
 
+    //1 razor pay
+    //2 bill desk
+
+    int paymentType = 2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +133,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
         AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
+        paymentType = getIntent().getIntExtra("paymentType", 2);
 
         productId.setText(OrderIDValue);
         productDate.setText(DateValue);
@@ -243,7 +252,30 @@ public class PaymentDetailsActivity extends AppCompatActivity
             if (PaymntMode.equalsIgnoreCase("Offline")) {
                 ProceedPayment("","","");
             } else if (PaymntMode.equalsIgnoreCase("Online")) {
-                getOnlinePaymentKeys();
+                if(paymentType == 1)
+                    getOnlinePaymentKeys();
+                else {
+//                    AmountValue
+                    //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
+                    String strPGMsg = "AIRMTST|ARP1523968042763|NA|"+2+"|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|3277831407";
+                    String strTokenMsg = null;// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+
+                    SampleCallBack objSampleCallBack = new SampleCallBack();
+
+                    Intent sdkIntent = new Intent(this, PaymentOptions.class);
+                    sdkIntent.putExtra("msg",strPGMsg);
+                    if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                        sdkIntent.putExtra("token",strTokenMsg);
+                    }
+                    sdkIntent.putExtra("user-email","test@bd.com");
+                    sdkIntent.putExtra("user-mobile","9800000000");
+                    sdkIntent.putExtra("callback", objSampleCallBack);
+
+                    startActivity(sdkIntent);
+
+//                    getSdkParams();
+                }
+
             } else if(PaymntMode.equalsIgnoreCase("Credit")) {
                 ProceedPayment("","","");
 //                AsyncCallWS task = new AsyncCallWS();
@@ -255,6 +287,105 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
     }
 
+
+    public void getSdkParams() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    String res = response.body().toString();
+                    if(res!=null && !res.equals("")){
+
+                        JSONObject jsonRootObject = new JSONObject(res);
+                        Log.v(TAG, "getSdkParams "+ jsonRootObject.toString());
+
+                        //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
+                        String strPGMsg = jsonRootObject.getString("strPGMsg");
+                        String strTokenMsg = jsonRootObject.getString("strTokenMsg");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+                        String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+                        String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+
+                        SampleCallBack objSampleCallBack = new SampleCallBack();
+                        objSampleCallBack.setPaymentResponseListener(new DMS.PaymentResponse() {
+                            @Override
+                            public void onResponse(String response) {
+                                updateResponseToServer(response);
+                            }
+                        });
+                        Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
+                        sdkIntent.putExtra("msg",strPGMsg);
+                        if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                            sdkIntent.putExtra("token",strTokenMsg);
+                        }
+                        sdkIntent.putExtra("user-email",userEmail);
+                        sdkIntent.putExtra("user-mobile",userMobile);
+                        sdkIntent.putExtra("callback", objSampleCallBack);
+                        startActivity(sdkIntent);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+
+
+    public void updateResponseToServer(String response) {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject> call = apiInterface.updateResponse("get/updateResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, response);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    String res = response.body().toString();
+                    if(res!=null && !res.equals("")){
+
+                        JSONObject jsonRootObject = new JSONObject(res);
+                        Log.v(TAG, "updateResponseToServer "+ jsonRootObject.toString());
+
+                        //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
+                        String strPGMsg = jsonRootObject.getString("strPGMsg");
+                        String strTokenMsg = jsonRootObject.getString("strTokenMsg");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+                        String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+                        String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+
+                        SampleCallBack objSampleCallBack = new SampleCallBack();
+
+                        Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
+                        sdkIntent.putExtra("msg",strPGMsg);
+                        if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                            sdkIntent.putExtra("token",strTokenMsg);
+                        }
+                        sdkIntent.putExtra("user-email",userEmail);
+                        sdkIntent.putExtra("user-mobile",userMobile);
+                        sdkIntent.putExtra("callback", objSampleCallBack);
+                        startActivity(sdkIntent);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("Route_response", "ERROR");
+                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
 
     public void getOfflineMode() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);

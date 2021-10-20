@@ -135,7 +135,9 @@ public class DispatchEditActivtity extends AppCompatActivity {
             Toast.makeText(this, "Please add atleast 1 quantity of product", Toast.LENGTH_SHORT).show();
         else if (priProdAdapter.isAnyPostpondEdit()) {
             showPartialEditDialog(priProdAdapter.getPospondEditData());
-        } else
+        }
+        else
+//            priProdAdapter.getUpdatedData(false);
             dispatchData(false);
     }
 
@@ -602,12 +604,13 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("Discarded") && jsonObject.getString("Discarded").equals("true"))
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && !jsonObject.isNull("postponed") && jsonObject.getString("postponed").equals("true"))
                         ++postponedCount;
                     else {
-                            if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals("")
-                                            && !jsonObject.isNull("tempnewCQty") && !jsonObject.getString("tempnewCQty").equals("") )
-                                qtyCount +=  (jsonObject.getInt("OldCQty")-jsonObject.getInt("tempnewCQty"));
+//                        && !jsonObject.isNull("tempnewCQty") && !jsonObject.getString("tempnewCQty").equals("")
+                        if(qtyCount ==0 && !jsonObject.isNull("OldCQty") && !jsonObject.getString("OldCQty").equals(""))
+                                qtyCount +=  (jsonObject.getInt("OldCQty"));
+//                        -jsonObject.getInt("tempnewCQty")
                         }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -621,7 +624,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("Discarded") || jsonObject.getString("Discarded").equals("false")) &&
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("postponed") || jsonObject.getString("postponed").equals("false")) &&
                         !jsonObject.isNull("tempOldCQty") && !jsonObject.isNull("OldCQty") &&
                         !jsonObject.getString("tempOldCQty").equals( jsonObject.getString("OldCQty")))
                         return true;
@@ -639,7 +642,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("Discarded") || jsonObject.getString("Discarded").equals("false"))
+                    if (jsonObject.getString("SchemeAvail").equalsIgnoreCase("Yes") && (jsonObject.isNull("postponed") || jsonObject.getString("postponed").equals("false"))
                             && !jsonObject.isNull("tempOldCQty") &&
                             !jsonObject.getString("tempOldCQty").equals(jsonObject.getString("OldCQty")) ){
                         DispatchModel dispatchModel = new DispatchModel();

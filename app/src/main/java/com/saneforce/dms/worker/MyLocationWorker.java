@@ -341,7 +341,7 @@ public class MyLocationWorker extends Worker {
         Call<ResponseBody> call = request.updateLocation(Constant.toRequestBody(jsonArray), "save/trackloc",
                 shared_common_pref.getvalue1(Shared_Common_Pref.Div_Code),
                 shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code),
-                1,
+                shared_common_pref.getvalue1(Shared_Common_Pref.State_Code),
                 "");
 //		shared_common_pref.getIntvalue(Shared_Common_Pref.State_Code)
 //		Constant.DESIG

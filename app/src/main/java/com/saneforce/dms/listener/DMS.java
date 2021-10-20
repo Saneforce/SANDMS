@@ -60,5 +60,9 @@ public interface DMS {
         void onIntentClick(int Name);
     }
 
+    interface PaymentResponse {
+        void onResponse(String response);
+    }
+
 
 }

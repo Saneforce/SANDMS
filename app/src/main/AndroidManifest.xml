@@ -44,10 +44,24 @@
         android:roundIcon="@mipmap/logo"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppBaseTheme"
         android:usesCleartextTraffic="true"
         android:name=".DMSApplication"
-        tools:targetApi="p">
+        android:theme="@style/AppBaseTheme"
+        tools:targetApi="p"
+        tools:replace="android:theme">
+
+
+        <activity
+            android:name=".billdesk.SamplePayNowActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/AppTheme"/>
+
+        <activity
+            android:name=".billdesk.StatusActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name=".activity.DSMActivity"

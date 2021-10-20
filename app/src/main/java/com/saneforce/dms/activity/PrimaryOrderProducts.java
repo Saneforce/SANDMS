@@ -1971,7 +1971,8 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
         if(!discountType.equals("%")){
             displayedDis = mCtx.getResources().getString(R.string.rupee_symbol) +" "+ Constant.roundTwoDecimals(discountValue);
-        }
+        }else
+            displayedDis = Constant.roundTwoDecimals(schemeDisc);
 
         holder.ProductDis.setText(displayedDis);
 

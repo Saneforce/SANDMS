@@ -54,6 +54,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.saneforce.dms.adapter.DateReportAdapter;
+import com.saneforce.dms.billdesk.SamplePayNowActivity;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.listener.PrimaryProductDao;
@@ -151,11 +152,17 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     Common_Model mCommon_model_spinner;
     boolean isDisPatch = false;
     CustomListViewDialog customDialog;
+
+    //1 razor pay
+    //2 bill desk
+
+    int paymentType = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_report);
-        linearLayout = (LinearLayout) findViewById(R.id.linearlayout);
+        linearLayout =  findViewById(R.id.linearlayout);
 
         toolbar_top=findViewById(R.id.toolbar_top);
         tv_order_type=findViewById(R.id.tv_order_type);
@@ -222,10 +229,10 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         }
 
 
-        DateRecyclerView = (RecyclerView) findViewById(R.id.date_recycler);
+        DateRecyclerView = findViewById(R.id.date_recycler);
         DateRecyclerView.setHasFixedSize(true);
         DateRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        txtProductId = (TextView) findViewById(R.id.txt_product_id);
+        txtProductId =  findViewById(R.id.txt_product_id);
         txtProductDate = (TextView) findViewById(R.id.txt_order_Date);
         txtProductId.setText(productId);
         txtProductDate.setText(orderDate);
@@ -485,10 +492,12 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
     public void PayNow() {
         Intent payIntent = new Intent(getApplicationContext(), PaymentDetailsActivity.class);
+
         payIntent.putExtra("OrderId", productId);
         payIntent.putExtra("Date", orderDate);
         //  payIntent.putExtra("Amount", OrderAmt);
         payIntent.putExtra("Amount", OrderValueTotal);
+        payIntent.putExtra("paymentType", paymentType);
         startActivityForResult(payIntent, ACTIVITY_REQUEST_CODE);
 
 //        finish();

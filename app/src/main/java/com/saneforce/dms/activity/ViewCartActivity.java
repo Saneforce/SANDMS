@@ -904,12 +904,12 @@ public class ViewCartActivity extends AppCompatActivity {
         }
 
         String ComProduct = ComProductObjectArray.toString();
-        System.out.println(" Compititor_Product" + ComProduct);
 
+        Log.d("Compititor_Product", ""+ ComProduct);
 
 
         /*product_order_list*/
-        List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(carsList.size());
+        List<JSONObject> myJSONObjects = new ArrayList<>(carsList.size());
 
         JSONArray personarray = new JSONArray();
         PersonObjectArray = new JSONObject();
@@ -971,15 +971,30 @@ public class ViewCartActivity extends AppCompatActivity {
                 person1.put("Productunit", carsList.get(z).getProduct_Sale_Unit());
                 person1.put("dis", carsList.get(z).getDiscount());
                 person1.put("tax", carsList.get(z).getTax_Value());
-                person1.put("dis_value", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", ""))));
-                person1.put("tax_value", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", ""))));
+
+
+                String disAmt = "0";
+                if(!carsList.get(z).getDis_amt().equals(""))
+                    disAmt = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getDis_amt().replaceAll("-", "")));
+                person1.put("dis_value", disAmt);
+
+                String taxAmt = "0";
+                if(!carsList.get(z).getTax_amt().equals(""))
+                    taxAmt = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getTax_amt().replaceAll("-", "")));
+                person1.put("tax_value", taxAmt);
+
                 person1.put("Off_Pro_code", carsList.get(z).getOff_Pro_code());
                 person1.put("Off_Pro_name",carsList.get(z).getOff_Pro_name());
                 person1.put("Off_Pro_Unit", carsList.get(z).getOff_free_unit());
                 person1.put("Off_Scheme_Unit", carsList.get(z).getOff_Pro_Unit());
                 person1.put("Con_Fac", carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
                 person1.put("UOM", carsList.get(z).getUOM());
-                person1.put("Val", Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal())));
+
+                String subTot = "0";
+                if(!carsList.get(z).getSubtotal().equals(""))
+                    subTot = Constant.roundTwoDecimals(Double.parseDouble(carsList.get(z).getSubtotal()));
+                person1.put("Val", subTot);
+
                 person1.put("discount_type", carsList.get(z).getOff_disc_type());
                 fkeyprodcut.put("activity_stockist_code", "Activity_Stockist_Report");
                 myJSONObjects.add(person1);
