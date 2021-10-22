@@ -110,6 +110,7 @@ public class ViewCartActivity extends AppCompatActivity {
     int orderType = 1;
     int PhoneOrderTypes = 4;
     String orderNo = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

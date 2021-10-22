@@ -40,28 +40,21 @@ public class SampleCallBack implements LibraryPaymentStatusProtocol, Parcelable 
 
 	@Override
 	public void paymentStatus(String status, Activity context) {
-		Log.v(TAG,
-				"paymentStatus(String status, Activity context)....::::status:::::"
-						+ status);
-		Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG)
-				.show();
+		Log.v(TAG, "paymentStatus(String status, Activity context)....::::status:::::"+ status);
+//		Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG).show();
 
-		Intent mIntent = new Intent(context, StatusActivity.class);
-		mIntent.putExtra("status", status);
-		context.startActivity(mIntent);
-		context.finish();
-
-/*		if(paymentResponse!=null){
+		if(paymentResponse!=null){
 			paymentResponse.onResponse(status);
-		}else {
-			Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG)
-					.show();
-		}*/
 
+/*			Intent mIntent = new Intent(context, StatusActivity.class);
+			mIntent.putExtra("status", status);
+			context.startActivity(mIntent);
+			context.finish();*/
+		}else {
+			Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG).show();
+		}
 
 	}
-
-
 
 
 	@Override

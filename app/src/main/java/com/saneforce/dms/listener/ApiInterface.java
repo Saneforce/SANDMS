@@ -159,10 +159,24 @@ public interface ApiInterface {
 
     @POST("dms_db_V1.php?")
     Call<JsonObject> getSdkParams(@Query("axn") String Axn, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
-                                  @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId);
+                                  @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId,@Field("mob") String mob, @Field("email") String email);
+
+    /*"axn" - "get/paymentResponse"
+    output response
+
+    {"msg": "AIRMTST|ARP1523968042763|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|3277831407", "token":"", "userEmail":"test@yopmail.com","userMobile":"1234567890" }*/
 
     @POST("dms_db_V1.php?")
     Call<JsonObject> updateResponse(@Query("axn") String Axn, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
                                   @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId, @Field("response") String response);
+
+    /*"axn" - "get/updateResponse"
+    input "response" sample
+
+    failure response
+    AIRMTST|ARP1523968042763|WPHW0351585075|T2110191027438183888995|00000002.00|PHW|NA|05|INR|DIRECT|NA|NA|0.00|19-10-2021 10:26:19|0399|NA|NA|NA|NA|NA|NA|NA|NA|NA|PAYMENT_ERROR|2013414151
+
+    success response
+    AIRMTST|ARP1523968042763|WPHW0351607781|T2110191035490403524906|00000002.00|PHW|NA|05|INR|DIRECT|NA|NA|0.00|19-10-2021 10:33:53|0300|NA|NA|NA|NA|NA|NA|NA|NA|NA|Your payment is successful.|366279967*/
 
 }

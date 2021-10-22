@@ -53,13 +53,13 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.R;
 import com.saneforce.dms.adapter.DateReportAdapter;
-import com.saneforce.dms.billdesk.SamplePayNowActivity;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.listener.PrimaryProductDao;
 import com.saneforce.dms.model.PrimaryProduct;
-import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
@@ -70,7 +70,6 @@ import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.ImageFilePath;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
-import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.TimeUtils;
 
 import org.json.JSONArray;
@@ -153,10 +152,10 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     boolean isDisPatch = false;
     CustomListViewDialog customDialog;
 
-    //1 razor pay
-    //2 bill desk
+    //1 bill desk
+    //2 razor pay
 
-    int paymentType = 2;
+    int paymentType = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -497,7 +496,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         payIntent.putExtra("Date", orderDate);
         //  payIntent.putExtra("Amount", OrderAmt);
         payIntent.putExtra("Amount", OrderValueTotal);
-        payIntent.putExtra("paymentType", paymentType);
+        payIntent.putExtra("paymentGateWayType", shared_common_pref.getIntvalue(Shared_Common_Pref.PAYMENT_GATEWAY_TYPE));
         startActivityForResult(payIntent, ACTIVITY_REQUEST_CODE);
 
 //        finish();
@@ -882,35 +881,35 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     ViewReportActivity.this.finish();
             } else if (requestCode == CAMERA_REQUEST) {
 
-            if (outputFileUri != null) {
-                finalPath = "/storage/emulated/0";
-                filePath = outputFileUri.getPath();
-                filePath = filePath.substring(1);
+                if (outputFileUri != null) {
+                    finalPath = "/storage/emulated/0";
+                    filePath = outputFileUri.getPath();
+                    filePath = filePath.substring(1);
 //                    str = filePath.replaceAll("external_files/Android/data/" + BuildConfig.APPLICATION_ID + "/cache/", "");
-                filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-                imgSource.setImageURI(Uri.parse(filePath));
-                imgSource.setVisibility(View.VISIBLE);
-                getMulipart(filePath);
-            }else
-                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                    imgSource.setImageURI(Uri.parse(filePath));
+                    imgSource.setVisibility(View.VISIBLE);
+                    getMulipart(filePath);
+                }else
+                    Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
 
             } else if (requestCode == SELECT_PICTURE) {
-            // compare the resultCode with the
-            // SELECT_PICTURE constant
-            // Get the url of the image from data
-            if(data!=null && data.getData()!=null){
-                Uri selectedImageUri = data.getData();
-                // update the preview image in the layout
-                imgSource.setImageURI(selectedImageUri);
-                imgSource.setVisibility(View.VISIBLE);
-                String filePath = ImageFilePath.getPath(ViewReportActivity.this, selectedImageUri);
-                getMulipart(filePath);
+                // compare the resultCode with the
+                // SELECT_PICTURE constant
+                // Get the url of the image from data
+                if(data!=null && data.getData()!=null){
+                    Uri selectedImageUri = data.getData();
+                    // update the preview image in the layout
+                    imgSource.setImageURI(selectedImageUri);
+                    imgSource.setVisibility(View.VISIBLE);
+                    String filePath = ImageFilePath.getPath(ViewReportActivity.this, selectedImageUri);
+                    getMulipart(filePath);
 
-            }else
-                Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
-        }
-        return;
+                }else
+                    Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

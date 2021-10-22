@@ -20,12 +20,9 @@ import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
-import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -36,13 +33,12 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
     EditText mProductCount;
     int ProductCount = 0;
     float subTotal = 0;
-    PrimaryProductViewModel contactViewModel;
     PrimaryProduct task;
     String Scheme = "", ClickedData = "";
     Shared_Common_Pref shared_common_pref;
     Float tax, taxAmt, disPercent;
-    JSONObject jsonArray;
-    float finalPrice = 0, disValue = 0, minusCount = 0;
+//    JSONObject jsonArray;
+    float finalPrice = 0, disValue = 0;
     int schemCount =0;
     Float   valueTotal;
     String discountValue = "";

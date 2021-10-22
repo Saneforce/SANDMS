@@ -34,6 +34,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Shared_Common_Pref shared_common_pref;
 
     int viewType  = 1;
+    int slno = 1;
 
     public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport , String ordertakenbyFilter , TextView textTotalValue, String reportType, int viewType) {
         this.context = context;
@@ -96,7 +97,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (OrderTakenbyFilter.equals(mDate.get(position).getOrderStatus()) ||
                     OrderTakenbyFilter.contains(mDate.get(position).getOrderStatus())) {
-                holder.txtsNo.setText(mDate.get(position).getSlno());
+                holder.txtsNo.setText(String.valueOf((this.slno++)));
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
                 holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
@@ -130,7 +131,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 */
 
             } else if (OrderTakenbyFilter.equals("All")) {
-                holder.txtsNo.setText(mDate.get(position).getSlno());
+                holder.txtsNo.setText(String.valueOf((this.slno++)));
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
                 holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
@@ -164,7 +165,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.linearLayoutTakenby.setVisibility(View.GONE);
             }
         }catch (NullPointerException e){
-            holder.txtsNo.setText(mDate.get(position).getSlno());
+            holder.txtsNo.setText(String.valueOf((this.slno++)));
             holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
             holder.txtOrderID.setText(mDate.get(position).getOrderNo());
             holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());

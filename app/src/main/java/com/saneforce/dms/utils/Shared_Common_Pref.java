@@ -34,6 +34,7 @@ public class Shared_Common_Pref {
     public static final String USER_EMAIL = "USER_EMAIL";
     public static final String USER_PHONE = "USER_PHONE";
     public static final String USER_ERP_CODE = "USER_ERP_CODE";
+    public static final String PAYMENT_GATEWAY_TYPE = "PAYMENT_GATEWAY_TYPE";
 
     public static final String YET_TO_SYN = "yet_to_syn";
     public static final String PREF_KEY_APP_AUTO_START = "PREF_KEY_APP_AUTO_START";
@@ -63,6 +64,11 @@ public class Shared_Common_Pref {
         editor.commit();
     }
 
+    public void save(String key, int value) {
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
     public String getvalue(String key) {
         String text = null;
         text = Common_pref.getString(key, "0");
@@ -75,7 +81,6 @@ public class Shared_Common_Pref {
         return text;
     }
     public int getIntvalue(String key) {
-        String text = null;
         return Common_pref.getInt(key, 1);
     }
 

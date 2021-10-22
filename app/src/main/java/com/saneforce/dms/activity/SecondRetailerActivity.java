@@ -442,18 +442,16 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 //                        }
 
-
-
                         String mob1 = "-";
 //                        String mob2 = "";
                         if( !jsonObject.isNull("POTENTIAL") && jsonObject.getJSONArray("POTENTIAL").length() > 0){
 
-                            if(jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone")!=null){
-                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone");
+                            if(jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile")!=null){
+                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile");
                             }
 
-                            if((mob1.equals("-") || mob1.equals("null")) && jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile")!=null){
-                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile");
+                            if((mob1.equals("") || mob1.equals("-") || mob1.equals("null")) && jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone")!=null){
+                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone");
                             }
                         }
                     txtMobile.setText(mob1);

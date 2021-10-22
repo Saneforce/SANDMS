@@ -1,6 +1,5 @@
 package com.saneforce.dms.activity;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -33,10 +32,12 @@ import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
 import com.saneforce.dms.billdesk.SampleCallBack;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
+import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
@@ -108,7 +109,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     //1 razor pay
     //2 bill desk
 
-    int paymentType = 2;
+    int paymentGateWayType = 2;
 
 
     @Override
@@ -133,7 +134,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
         AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
-        paymentType = getIntent().getIntExtra("paymentType", 2);
+        paymentGateWayType = getIntent().getIntExtra("paymentGateWayType", 1);
 
         productId.setText(OrderIDValue);
         productDate.setText(DateValue);
@@ -252,28 +253,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
             if (PaymntMode.equalsIgnoreCase("Offline")) {
                 ProceedPayment("","","");
             } else if (PaymntMode.equalsIgnoreCase("Online")) {
-                if(paymentType == 1)
+                if(paymentGateWayType == 2)
                     getOnlinePaymentKeys();
                 else {
-//                    AmountValue
-                    //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
-                    String strPGMsg = "AIRMTST|ARP1523968042763|NA|"+2+"|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|3277831407";
-                    String strTokenMsg = null;// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
-                    SampleCallBack objSampleCallBack = new SampleCallBack();
 
-                    Intent sdkIntent = new Intent(this, PaymentOptions.class);
-                    sdkIntent.putExtra("msg",strPGMsg);
-                    if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
-                        sdkIntent.putExtra("token",strTokenMsg);
-                    }
-                    sdkIntent.putExtra("user-email","test@bd.com");
-                    sdkIntent.putExtra("user-mobile","9800000000");
-                    sdkIntent.putExtra("callback", objSampleCallBack);
-
-                    startActivity(sdkIntent);
-
-//                    getSdkParams();
+                    showPaymentDetailsDialog();
                 }
 
             } else if(PaymntMode.equalsIgnoreCase("Credit")) {
@@ -287,10 +272,57 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
     }
 
+    private void showPaymentDetailsDialog() {
 
-    public void getSdkParams() {
+        final Dialog dialog = new Dialog(PaymentDetailsActivity.this);
+        dialog.setContentView(R.layout.dialog_payment_credential);
+
+
+        EditText et_email = dialog.findViewById(R.id.et_email);
+        EditText et_mob = dialog.findViewById(R.id.et_mob);
+        TextView tv_proceed = dialog.findViewById(R.id.tv_proceed);
+
+
+        tv_proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!Constant.isInternetAvailable(PaymentDetailsActivity.this)){
+                    Toast.makeText(PaymentDetailsActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+                }else if(et_email.getText().toString().trim().equals("")) {
+                    Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid email id", Toast.LENGTH_SHORT).show();
+                }else if(et_mob.getText().toString().trim().equals("")){
+                    Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid mobile number", Toast.LENGTH_SHORT).show();
+                }else {
+                    dialog.dismiss();
+//                    AmountValue
+                    //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
+                    String strPGMsg = "AIRMTST|ARP1523968042763|NA|"+2+"|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|3277831407";
+                    String strTokenMsg = null;// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+
+                    SampleCallBack objSampleCallBack = new SampleCallBack();
+
+                    Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
+                    sdkIntent.putExtra("msg",strPGMsg);
+                    if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                        sdkIntent.putExtra("token",strTokenMsg);
+                    }
+                    sdkIntent.putExtra("user-email",et_email.getText().toString());
+                    sdkIntent.putExtra("user-mobile",et_mob.getText().toString());
+                    sdkIntent.putExtra("callback", objSampleCallBack);
+
+                    startActivity(sdkIntent);
+
+//                    getSdkParams(et_email.getText().toString(), et_mob.getText().toString());
+                }
+            }
+        });
+        dialog.show();
+
+    }
+    public void getSdkParams(String mob, String email) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue);
+        Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, mob, email);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -302,8 +334,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         Log.v(TAG, "getSdkParams "+ jsonRootObject.toString());
 
                         //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
-                        String strPGMsg = jsonRootObject.getString("strPGMsg");
-                        String strTokenMsg = jsonRootObject.getString("strTokenMsg");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
+                        String strPGMsg = jsonRootObject.getString("msg");
+                        String strTokenMsg = jsonRootObject.getString("token");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
                         String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
                         String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
@@ -311,18 +343,23 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         objSampleCallBack.setPaymentResponseListener(new DMS.PaymentResponse() {
                             @Override
                             public void onResponse(String response) {
-                                updateResponseToServer(response);
+                                Log.d(TAG, "onResponse: "+ response);
+                                /*Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
+                                sdkIntent.putExtra("msg",strPGMsg);
+                                if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                                    sdkIntent.putExtra("token",strTokenMsg);
+                                }
+                                sdkIntent.putExtra("user-email",userEmail);
+                                sdkIntent.putExtra("user-mobile",userMobile);
+                                sdkIntent.putExtra("callback", objSampleCallBack);
+                                startActivity(sdkIntent);*/
+
+//                                updateResponseToServer(response);
+                                finish();
+
                             }
                         });
-                        Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
-                        sdkIntent.putExtra("msg",strPGMsg);
-                        if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
-                            sdkIntent.putExtra("token",strTokenMsg);
-                        }
-                        sdkIntent.putExtra("user-email",userEmail);
-                        sdkIntent.putExtra("user-mobile",userMobile);
-                        sdkIntent.putExtra("callback", objSampleCallBack);
-                        startActivity(sdkIntent);
+
                     }
 
                 } catch (JSONException e) {
@@ -349,28 +386,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     String res = response.body().toString();
+                    Log.v(TAG, "updateResponseToServer res => "+ res);
+
                     if(res!=null && !res.equals("")){
 
                         JSONObject jsonRootObject = new JSONObject(res);
-                        Log.v(TAG, "updateResponseToServer "+ jsonRootObject.toString());
-
-                        //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
-                        String strPGMsg = jsonRootObject.getString("strPGMsg");
-                        String strTokenMsg = jsonRootObject.getString("strTokenMsg");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
-                        String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
-                        String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
-
-                        SampleCallBack objSampleCallBack = new SampleCallBack();
-
-                        Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
-                        sdkIntent.putExtra("msg",strPGMsg);
-                        if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
-                            sdkIntent.putExtra("token",strTokenMsg);
+                        if(jsonRootObject.getBoolean("success")){
+                            Toast.makeText(DMSApplication.getApplication(), "Payment successfully done", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
-                        sdkIntent.putExtra("user-email",userEmail);
-                        sdkIntent.putExtra("user-mobile",userMobile);
-                        sdkIntent.putExtra("callback", objSampleCallBack);
-                        startActivity(sdkIntent);
                     }
 
                 } catch (JSONException e) {

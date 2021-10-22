@@ -3,10 +3,8 @@ package com.saneforce.dms.activity;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,18 +38,19 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.R;
 import com.saneforce.dms.adapter.ReportViewAdapter;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.model.OrderGroup;
 import com.saneforce.dms.model.ReportDataList;
 import com.saneforce.dms.model.ReportModel;
-import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
+import com.saneforce.dms.utils.TimeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,11 +70,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     ImageView imgBack,imgShare;
     Button fromBtn, toBtn;
 
-    String fromDateString, dateTime, toDateString, SF_CODE, FReport = "", TReport = "", OrderType = "1";
+    String fromDateString, dateTime, toDateString, FReport = "", TReport = "", OrderType = "1";
     private int mYear, mMonth, mDay, mHour, mMinute;
     ReportViewAdapter mReportViewAdapter;
     RecyclerView mReportList;
-//    ArrayList<Float> mArrayList;
+    //    ArrayList<Float> mArrayList;
     Shared_Common_Pref shared_common_pref;
     Integer Count = 0;
     List<Common_Model> modeOrderData = new ArrayList<>();
@@ -85,7 +84,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     TextView txtOrderStatus;
     String orderTakenByFilter ="All";
     ArrayList<String> OrderStatusList;
-//    ArrayList<String> OrderStatusListID;
+    //    ArrayList<String> OrderStatusListID;
     LinearLayout linearLayout;
 
     Toolbar toolbar_top;
@@ -98,8 +97,8 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 //    TextView tv_type;
 //    ImageView filter;
 
-//    List<ReportModel> mDReportModels = new ArrayList<>();
-List<ReportModel> filteredList = new ArrayList<>();
+    //    List<ReportModel> mDReportModels = new ArrayList<>();
+    List<ReportModel> filteredList = new ArrayList<>();
     int viewType = 1;
 
     LinearLayout headingLayout;
@@ -136,10 +135,10 @@ List<ReportModel> filteredList = new ArrayList<>();
         }else
             tv_erp_code.setVisibility(View.GONE);
 
-        @SuppressLint("WrongConstant")
-        SharedPreferences sh = getSharedPreferences("MyPrefs", MODE_APPEND);
-        SF_CODE = sh.getString("Sf_Code", "");
-        Log.e("SF_CODE", SF_CODE);
+//        @SuppressLint("WrongConstant")
+//        SharedPreferences sh = getSharedPreferences("MyPrefs", MODE_APPEND);
+//        SF_CODE = sh.getString("Sf_Code", "");
+//        Log.e("SF_CODE", SF_CODE);
         fromBtn = (Button) findViewById(R.id.from_picker);
         toBtn = (Button) findViewById(R.id.to_picker);
         linearOrderMode=findViewById(R.id.lin_order);
@@ -227,7 +226,6 @@ List<ReportModel> filteredList = new ArrayList<>();
                         orderTakenByFilter = "All";
                         txtOrderStatus.setText(orderTakenByFilter);
                         ViewDateReport(orderTakenByFilter);
-
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -385,6 +383,8 @@ List<ReportModel> filteredList = new ArrayList<>();
 
 
     public void ViewDateReport(String orderTakenByFilter) {
+        if(TimeUtils.getDate(TimeUtils.FORMAT1, fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1, toDateString))<=0){
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ReportDataList> responseBodyCall;
         String axn = "";
@@ -433,7 +433,7 @@ List<ReportModel> filteredList = new ArrayList<>();
                                     orderGroupList.add(new OrderGroup(r.getOrderNo(), r.getOrderValue(), r.getReceived_Amt(), r.getOrderValue()));
                                     r.setSubOrderGroup(orderGroupList);
                                 }
-                                filteredList.add(r);
+                            filteredList.add(r);
 
                             if(orderTakenByFilter.equalsIgnoreCase("All") || orderTakenByFilter.equalsIgnoreCase(r.getOrderStatus())){
 
@@ -488,6 +488,10 @@ List<ReportModel> filteredList = new ArrayList<>();
                 Toast.makeText(ReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
         });
+        }else {
+            Toast.makeText(ReportActivity.this, "Invalid date selection", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 

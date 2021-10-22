@@ -270,7 +270,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/child_product_price"
@@ -304,7 +305,7 @@
                             android:paddingLeft="4dp"
                             android:text="="
                             android:textColor="@android:color/black"
-                            android:textSize="10dp"></TextView>
+                            android:textSize="10sp"/>
 
                         <TextView
                             android:id="@+id/product_item_total"
@@ -313,7 +314,7 @@
                             android:paddingLeft="4dp"
                             android:text=""
                             android:textColor="@android:color/black"
-                            android:textSize="10dp"></TextView>
+                            android:textSize="10sp"/>
                     </LinearLayout>
                 </LinearLayout>
 

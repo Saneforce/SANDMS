@@ -296,7 +296,7 @@ public class LoginActivity extends AppCompatActivity{
                         Log.v("FinanceFinanceFinance", logintype);
                         Log.e("LoginResponse", response.body().toString());
                         JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-
+                        int paymentGatewayType = 1;
                         if(jsonArray!=null && jsonArray.length()>0){
 
                             try {
@@ -315,6 +315,7 @@ public class LoginActivity extends AppCompatActivity{
                                 StckLstAdd = jsonObject.optString("Stockist_Address");
                                 SpAddr = jsonObject.optString("sup_addr");
                                 ERP_Code = jsonObject.optString("ERP_Code");
+                                paymentGatewayType  = jsonObject.getInt("Payment_Gateway_Type");
                             } catch (JSONException jsonException) {
                                 jsonException.printStackTrace();
                             }
@@ -332,6 +333,7 @@ public class LoginActivity extends AppCompatActivity{
                             shared_common_pref.save(Shared_Common_Pref.Stockist_Address, StckLstAdd);
                             shared_common_pref.save(Shared_Common_Pref.sup_addr, SpAddr);
                             shared_common_pref.save(Shared_Common_Pref.USER_ERP_CODE, ERP_Code);
+                            shared_common_pref.save(Shared_Common_Pref.PAYMENT_GATEWAY_TYPE, paymentGatewayType);
 
 
                         }

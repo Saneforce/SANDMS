@@ -89,7 +89,7 @@ public class DBController extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 if(cursor.getString(3).equals("0")){
-                    HashMap<String, String> map = new HashMap<String, String>();
+                    HashMap<String, String> map = new HashMap<>();
                     map.put(ID, cursor.getString(0));
                     map.put(DATA_KEY, cursor.getString(1));
                     map.put(DATA_RESPONSE, cursor.getString(2));

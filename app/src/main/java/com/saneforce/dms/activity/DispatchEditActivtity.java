@@ -133,9 +133,9 @@ public class DispatchEditActivtity extends AppCompatActivity {
             Toast.makeText(this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
         }else if (!priProdAdapter.isValid())
             Toast.makeText(this, "Please add atleast 1 quantity of product", Toast.LENGTH_SHORT).show();
-        else if (priProdAdapter.isAnyPostpondEdit()) {
+       /* else if (priProdAdapter.isAnyPostpondEdit()) {
             showPartialEditDialog(priProdAdapter.getPospondEditData());
-        }
+        }*/
         else
 //            priProdAdapter.getUpdatedData(false);
             dispatchData(false);
@@ -480,6 +480,50 @@ public class DispatchEditActivtity extends AppCompatActivity {
 //                    holder.orderValue.setClickable(true);
 
                     if (editMode == 1) {
+
+                        holder.martl_view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                if (holder.text_checking.getText().toString().equalsIgnoreCase("Discard")) {
+//                                    holder.ib_edit_qty.setVisibility(View.GONE);
+                                    setQtyEdit(holder.et_qty_value,false, oldValue);
+                                    holder.text_checking.setText("Discarded");
+                                    holder.et_qty_value.setText(String.valueOf(oldValue));
+
+                                    try {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
+                                        jsonObject.put("postponed", "true");
+                                        jsonArray.put(holder.getAdapterPosition(), jsonObject);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    holder.text_checking.setTextColor(context.getResources().getColor(R.color.textColor));
+                                    holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.postponed));
+                                    holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.postponed));
+
+                                } else {
+                                    setQtyEdit(holder.et_qty_value,true, oldValue);
+//                                    holder.ib_edit_qty.setVisibility(View.VISIBLE);
+                                    holder.text_checking.setText("Discard");
+                                    try {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(holder.getAdapterPosition());
+                                        jsonObject.put("postponed", "false");
+                                        jsonArray.put(holder.getAdapterPosition(), jsonObject);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    holder.text_checking.setTextColor(context.getResources().getColor(R.color.black));
+                                    holder.martl_view.setCardBackgroundColor(context.getResources().getColor(R.color.textColor));
+                                    holder.martl_view.setStrokeColor(context.getResources().getColor(R.color.black));
+
+                                }
+
+                            }
+                        });
+
 
                         holder.orderValue.addTextChangedListener(new TextWatcher() {
                             @Override
