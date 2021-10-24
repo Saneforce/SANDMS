@@ -43,15 +43,7 @@ public class SampleCallBack implements LibraryPaymentStatusProtocol, Parcelable 
 		Log.v(TAG, "paymentStatus(String status, Activity context)....::::status:::::"+ status);
 //		Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG).show();
 
-		if(paymentResponse!=null){
-			paymentResponse.onResponse(status);
-
-/*			Intent mIntent = new Intent(context, StatusActivity.class);
-			mIntent.putExtra("status", status);
-			context.startActivity(mIntent);
-			context.finish();*/
-		}else {
-			Toast.makeText(context, "PG Response:: " + status, Toast.LENGTH_LONG).show();
+		Response:: " + status, Toast.LENGTH_LONG).show();
 		}
 
 	}

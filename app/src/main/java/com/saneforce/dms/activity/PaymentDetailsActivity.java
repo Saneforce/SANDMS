@@ -37,7 +37,6 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.billdesk.SampleCallBack;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
-import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.CameraPermission;
@@ -256,8 +255,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 if(paymentGateWayType == 2)
                     getOnlinePaymentKeys();
                 else {
-
-
                     showPaymentDetailsDialog();
                 }
 
@@ -295,6 +292,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid mobile number", Toast.LENGTH_SHORT).show();
                 }else {
                     dialog.dismiss();
+/*
 //                    AmountValue
                     //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";
                     String strPGMsg = "AIRMTST|ARP1523968042763|NA|"+2+"|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|3277831407";
@@ -312,15 +310,16 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     sdkIntent.putExtra("callback", objSampleCallBack);
 
                     startActivity(sdkIntent);
+*/
 
-//                    getSdkParams(et_email.getText().toString(), et_mob.getText().toString());
+                    getSdkParams(et_email.getText().toString(), et_mob.getText().toString());
                 }
             }
         });
         dialog.show();
 
     }
-    public void getSdkParams(String mob, String email) {
+    public void getSdkParams(String email, String mob) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, mob, email);
         call.enqueue(new Callback<JsonObject>() {
@@ -340,25 +339,27 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
                         SampleCallBack objSampleCallBack = new SampleCallBack();
+
                         objSampleCallBack.setPaymentResponseListener(new DMS.PaymentResponse() {
                             @Override
                             public void onResponse(String response) {
                                 Log.d(TAG, "onResponse: "+ response);
-                                /*Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
-                                sdkIntent.putExtra("msg",strPGMsg);
-                                if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
-                                    sdkIntent.putExtra("token",strTokenMsg);
-                                }
-                                sdkIntent.putExtra("user-email",userEmail);
-                                sdkIntent.putExtra("user-mobile",userMobile);
-                                sdkIntent.putExtra("callback", objSampleCallBack);
-                                startActivity(sdkIntent);*/
 
-//                                updateResponseToServer(response);
+//                              updateResponseToServer(response);
                                 finish();
 
                             }
                         });
+
+                        Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
+                        sdkIntent.putExtra("msg",strPGMsg);
+                        if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
+                            sdkIntent.putExtra("token",strTokenMsg);
+                        }
+                        sdkIntent.putExtra("user-email",userEmail);
+                        sdkIntent.putExtra("user-mobile",userMobile);
+                        sdkIntent.putExtra("callback", objSampleCallBack);
+                        startActivity(sdkIntent);
 
                     }
 
