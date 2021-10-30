@@ -815,7 +815,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
 }
 
 class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
-        implements Filterable{
+        implements Filterable {
     private List<PrimaryProduct> exampleList = new ArrayList<>();
     private List<PrimaryProduct> workinglist = new ArrayList<>();
     int schemCount = 0;

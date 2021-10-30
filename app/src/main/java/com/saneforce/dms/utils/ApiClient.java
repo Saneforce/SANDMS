@@ -48,9 +48,9 @@ public class ApiClient {
         if (retrofit == null) {
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.writeTimeout(61, TimeUnit.SECONDS)
-                    .connectTimeout(61, TimeUnit.SECONDS)
-                    .readTimeout(61, TimeUnit.SECONDS);
+            builder.writeTimeout(150, TimeUnit.SECONDS)
+                    .connectTimeout(150, TimeUnit.SECONDS)
+                    .readTimeout(150, TimeUnit.SECONDS);
 
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);

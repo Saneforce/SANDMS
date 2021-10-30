@@ -41,6 +41,8 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -157,6 +159,17 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
     int paymentType = 1;
 
+    LinearLayout ll_dispatch_date;
+    TextView tv_dispatch_date;
+    LinearLayout ll_payment_type;
+    TextView tv_payment_type;
+    LinearLayout ll_payment_option;
+    TextView tv_payment_option;
+    LinearLayout ll_check_number;
+    TextView tv_check_utr_no;
+    LinearLayout ll_attachment;
+    ImageView iv_attachment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,6 +187,16 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         imgSource=findViewById(R.id.imgSource);
         txt_offline_mode=findViewById(R.id.txt_offline_mode);
         iv_choose_photo=findViewById(R.id.iv_choose_photo);
+        ll_dispatch_date=findViewById(R.id.ll_dispatch_date);
+        tv_dispatch_date=findViewById(R.id.tv_dispatch_date);
+        ll_payment_type=findViewById(R.id.ll_payment_type);
+        tv_payment_type=findViewById(R.id.tv_payment_type);
+        ll_payment_option=findViewById(R.id.ll_payment_option);
+        tv_payment_option=findViewById(R.id.tv_payment_option);
+        ll_check_number=findViewById(R.id.ll_check_number);
+        tv_check_utr_no=findViewById(R.id.tv_check_utr_no);
+        ll_attachment=findViewById(R.id.ll_attachment);
+        iv_attachment=findViewById(R.id.iv_attachment);
 
         toolbar_top.setVisibility(View.VISIBLE);
 
@@ -206,6 +229,78 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         editOrder = intent.getStringExtra("editOrder");
         Paymentflag = intent.getIntExtra("Paymentflag", 1);
         Dispatch_Flag = intent.getIntExtra("Dispatch_Flag", 1);
+
+        String dispatch_date = "", payment_type = "", payment_option = "", check_utr_no = "", attachment = "";
+
+        if(intent.hasExtra("dispatch_date")){
+            dispatch_date = intent.getStringExtra("dispatch_date");
+        }
+
+        if(intent.hasExtra("payment_type")){
+            payment_type = intent.getStringExtra("payment_type");
+        }
+
+        if(intent.hasExtra("payment_option")){
+            payment_option = intent.getStringExtra("payment_option");
+        }
+
+        if(intent.hasExtra("check_utr_no")){
+            check_utr_no = intent.getStringExtra("check_utr_no");
+        }
+
+        if(intent.hasExtra("attachment")){
+            attachment = intent.getStringExtra("attachment");
+        }
+
+        if(dispatch_date!=null && !dispatch_date.equals("")){
+            ll_dispatch_date.setVisibility(View.VISIBLE);
+            tv_dispatch_date.setText(dispatch_date);
+        }else
+            ll_dispatch_date.setVisibility(View.GONE);
+
+
+        if(payment_type!=null && !payment_type.equals("")){
+            ll_payment_type.setVisibility(View.VISIBLE);
+            tv_payment_type.setText(payment_type);
+        }else
+            ll_payment_type.setVisibility(View.GONE);
+
+
+        if(payment_option!=null && !payment_option.equals("")){
+            ll_payment_option.setVisibility(View.VISIBLE);
+            tv_payment_option.setText(payment_option);
+        }else
+            ll_payment_option.setVisibility(View.GONE);
+
+
+        if(check_utr_no!=null && !check_utr_no.equals("")){
+            ll_check_number.setVisibility(View.VISIBLE);
+            tv_check_utr_no.setText(check_utr_no);
+        }else
+            ll_check_number.setVisibility(View.GONE);
+
+
+        if(attachment!=null && !attachment.equals("")){
+            ll_attachment.setVisibility(View.VISIBLE);
+            try {
+                RequestOptions myOptions = new RequestOptions()
+                        .fitCenter() // or centerCrop
+                        .override(100, 100);
+
+                Glide.with(ViewReportActivity.this)
+                        .asBitmap()
+                        .apply(myOptions)
+                        .load(attachment)
+                        .into(iv_attachment);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }else
+            ll_attachment.setVisibility(View.GONE);
+
 
         try {
             if(intent.hasExtra("orderType") && intent.getStringExtra("orderType")!=null && !intent.getStringExtra("orderType").equals(""))
@@ -392,7 +487,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             js.put("Retcode", custCode);
             js.put("Amount", OrderValueTotal);
 
-            if(option.equalsIgnoreCase("cheque")){
+            if(!option.equalsIgnoreCase("cash")){
                 js.put("cheque_date", TimeUtils.changeFormat(TimeUtils.FORMAT2,TimeUtils.FORMAT1,tv_date.getText().toString()));
                 js.put("cheque_amount", et_amount.getText().toString());
             }else {
@@ -1520,7 +1615,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             txt_offline_mode.setText(name);
             PaymentTypecode = myDataset.get(position).getId();
 
-            if(name.equalsIgnoreCase("cheque"))
+            if(!name.equalsIgnoreCase("cash"))
                 iv_choose_photo.setVisibility(View.VISIBLE);
             else
                 iv_choose_photo.setVisibility(View.GONE);

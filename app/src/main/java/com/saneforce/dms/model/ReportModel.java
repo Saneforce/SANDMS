@@ -90,10 +90,44 @@ public class ReportModel {
     @Expose
     private String Payment_Mode;
 
-
     @SerializedName("subOrderGroup")
     @Expose
     private List<OrderGroup> subOrderGroup;
+
+    @SerializedName("PaymentTypeName")
+    @Expose
+    private String PaymentTypeName;
+
+    @SerializedName("UTR")
+    @Expose
+    private String UTR;
+    @SerializedName("Attachment")
+    @Expose
+    private String Attachment;
+
+    public String getPaymentTypeName() {
+        return PaymentTypeName;
+    }
+
+    public void setPaymentTypeName(String paymentTypeName) {
+        PaymentTypeName = paymentTypeName;
+    }
+
+    public String getUTR() {
+        return UTR;
+    }
+
+    public void setUTR(String UTR) {
+        this.UTR = UTR;
+    }
+
+    public String getAttachment() {
+        return Attachment;
+    }
+
+    public void setAttachment(String attachment) {
+        Attachment = attachment;
+    }
 
     public List<OrderGroup> getSubOrderGroup() {
         return subOrderGroup;

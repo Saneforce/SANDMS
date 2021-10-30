@@ -1,11 +1,15 @@
 package com.saneforce.dms.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.billdesk.sdk.LibraryPaymentStatusProtocol;
 import com.billdesk.sdk.PaymentOptions;
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
@@ -34,7 +39,6 @@ import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
 import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
-import com.saneforce.dms.billdesk.SampleCallBack;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.utils.AlertDialogBox;
@@ -88,8 +92,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
 
-    String finalPath = "", filePath = "", OrderIDValue = "", DateValue = "",
-            AmountValue = "", PaymntMode = "", PaymentTypecode = "";
+    String finalPath = "", filePath = "", DateValue = "",
+            PaymntMode = "", PaymentTypecode = "";
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
     //    int Amount;
@@ -110,7 +114,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     int paymentGateWayType = 2;
 
+    public static String OrderIDValue = "", AmountValue = "", divCode, sfCode , stateCode;
 
+    ImageView iv_attachment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +134,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
         tv_date = findViewById(R.id.tv_date);
         ll_amount = findViewById(R.id.ll_amount);
         et_amount = findViewById(R.id.et_amount);
+        iv_attachment = findViewById(R.id.iv_attachment);
+
+        divCode = mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
+        sfCode  = mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
+        stateCode = mShared_common_pref.getvalue(Shared_Common_Pref.State_Code);
 
         getOfflineMode();
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
@@ -246,7 +257,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
         else if(PaymntMode.equalsIgnoreCase("Offline") && offlineMode.getText().toString().equals("")) {
             Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();
-        }else if(PaymntMode.equalsIgnoreCase("Offline") && serverFileName.equals("")) {
+        }else if(PaymntMode.equalsIgnoreCase("Offline") && iv_attachment.getVisibility()==View.VISIBLE && serverFileName.equals("")) {
             Toast.makeText(this, "Please choose Valid Image", Toast.LENGTH_SHORT).show();
         }else {
             if (PaymntMode.equalsIgnoreCase("Offline")) {
@@ -340,17 +351,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                         SampleCallBack objSampleCallBack = new SampleCallBack();
 
-                        objSampleCallBack.setPaymentResponseListener(new DMS.PaymentResponse() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.d(TAG, "onResponse: "+ response);
-
-//                              updateResponseToServer(response);
-                                finish();
-
-                            }
-                        });
-
                         Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
                         sdkIntent.putExtra("msg",strPGMsg);
                         if(strTokenMsg != null && strTokenMsg.length() > strPGMsg.length()) {
@@ -379,9 +379,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
 
 
-    public void updateResponseToServer(String response) {
+    public static void updateResponseToServer(Activity activity, String response) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.updateResponse("get/updateResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, response);
+        Call<JsonObject> call = apiInterface.updateResponse("get/updateResponse", divCode, sfCode , stateCode, AmountValue, OrderIDValue, response);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -394,7 +394,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         JSONObject jsonRootObject = new JSONObject(res);
                         if(jsonRootObject.getBoolean("success")){
                             Toast.makeText(DMSApplication.getApplication(), "Payment successfully done", Toast.LENGTH_SHORT).show();
-                            finish();
+                            activity.finish();
                         }
                     }
 
@@ -406,7 +406,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("Route_response", "ERROR");
-                Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -830,8 +830,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
         customDialog.dismiss();
         if (type == 10) {
-            offlineMode.setText(myDataset.get(position).getName());
+            String name = myDataset.get(position).getName();
+            offlineMode.setText(name);
             PaymentTypecode = myDataset.get(position).getId();
+            if(name.equalsIgnoreCase("cash"))
+                iv_attachment.setVisibility(View.GONE);
+            else
+                iv_attachment.setVisibility(View.VISIBLE);
 
         }
     }
@@ -1074,5 +1079,67 @@ public class PaymentDetailsActivity extends AppCompatActivity
             }
         });
 
+    }
+
+
+    public static class SampleCallBack implements LibraryPaymentStatusProtocol, Parcelable {
+        String TAG = SampleCallBack.class.getSimpleName();
+        public SampleCallBack() {
+            Log.v(TAG, "CallBack()....");
+
+        }
+
+        public SampleCallBack(Parcel in) {
+        }
+
+        @SuppressWarnings("rawtypes")
+        public static final Creator CREATOR = new Creator() {
+            String TAG = "Callback --- Parcelable.Creator ::: > ";
+
+            @Override
+            public SampleCallBack createFromParcel(Parcel in) {
+                Log.v(TAG, "CallBackActivity createFromParcel(Parcel in)....");
+                return new SampleCallBack(in);
+            }
+
+            @Override
+            public Object[] newArray(int size) {
+                Log.v(TAG, "Object[] newArray(int size)....");
+                return new SampleCallBack[size];
+            }
+        };
+
+
+
+
+        @Override
+        public void paymentStatus(String status, Activity context) {
+            Log.v(TAG, "paymentStatus "+ status);
+            updateResponseToServer(context, status);
+        }
+
+        @Override
+        public void tryAgain() {
+            Log.d(TAG, "tryAgain() called");
+        }
+
+        @Override
+        public void onError(Exception e) {
+            Log.d(TAG, "onError() called with: e = [" + e + "]");
+        }
+
+        @Override
+        public void cancelTransaction() {
+            Log.d(TAG, "cancelTransaction() called");
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+        }
     }
 }

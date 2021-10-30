@@ -168,7 +168,9 @@
                         android:hint="Offline Mode" />
 
                     <ImageView
+                        android:id="@+id/iv_attachment"
                         android:layout_width="36dp"
+                        android:visibility="gone"
                         android:layout_height="36dp"
                         android:scaleType="fitCenter"
                         android:layout_gravity="center"
@@ -205,6 +207,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/C5dp"
+                android:maxLength="100"
+                android:singleLine="true"
                 android:background="@drawable/round_white_backround"
                 android:hint="Enter Cheque No./UTR"
                 android:padding="@dimen/C8dp" />

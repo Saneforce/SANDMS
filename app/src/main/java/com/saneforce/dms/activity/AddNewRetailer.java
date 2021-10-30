@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +86,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     DBController dbController;
     LocationManager mLocationManager;
+    ImageButton ib_refresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +136,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         edtCity = findViewById(R.id.edt_new_city);
         edtMobile = findViewById(R.id.edt_new_mob);
         edtEmail = findViewById(R.id.edt_new_email);
+        ib_refresh = findViewById(R.id.ib_refresh);
 
 
         ImageView imgBack = (ImageView) findViewById(R.id.toolbar_back);
@@ -144,8 +147,12 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             }
         });
 
-
-
+        ib_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkLocationData();
+            }
+        });
 
     }
 
@@ -560,8 +567,13 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     @Override
     protected void onResume() {
         super.onResume();
+        checkLocationData();
+    }
 
-        if(Constant.checkPermissions(AddNewRetailer.this)){
+    private void checkLocationData(){
+        if(!Constant.isInternetAvailable(this)){
+            Toast.makeText(AddNewRetailer.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+        }else if(Constant.checkPermissions(AddNewRetailer.this)){
             if(mLocationManager == null)
                 mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -575,11 +587,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
         }
-
-
-
     }
-
 
     private Location getLastKnownLocation() {
 

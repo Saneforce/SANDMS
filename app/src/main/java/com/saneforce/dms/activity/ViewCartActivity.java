@@ -100,7 +100,7 @@ public class ViewCartActivity extends AppCompatActivity {
     ArrayList<String> listV = new ArrayList<>();
     RecyclerView viewRecyclerview;
     int product_count = 0;
-    ProgressDialog progressDialog = null;
+//    ProgressDialog progressDialog = null;
     String GrandTotal = "";
     String SubTotal = "";
     TextView viewTotal;
@@ -111,12 +111,14 @@ public class ViewCartActivity extends AppCompatActivity {
     int PhoneOrderTypes = 4;
     String orderNo = "";
 
+    Common_Class common_class;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_cart);
 
         shared_common_pref = new Shared_Common_Pref(this);
+        common_class = new Common_Class(this);
         SF_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         DIVISION_CODE = shared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         String carListAsString = getIntent().getStringExtra("list_as_string");
@@ -376,8 +378,9 @@ public class ViewCartActivity extends AppCompatActivity {
 
     public void SavePrimaryProduct(List<PrimaryProduct> carsList) {
 
-        Log.v("SAVE_PRODUCT", "INCIKC");
-        progressDialog = createProgressDialog(this);
+//        Log.v("SAVE_PRODUCT", "INCIKC");
+        common_class.ProgressdialogShow(1, "");
+
         /*ActivityReport*/
         DateFormat dfw = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Calendar calobjw = Calendar.getInstance();
@@ -595,8 +598,6 @@ public class ViewCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         totalValueString = sendArray.toString();
 
-        progressDialog.dismiss();
-
 
         if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
@@ -618,8 +619,9 @@ public class ViewCartActivity extends AppCompatActivity {
                     deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
                         @Override
                         public void onChanged(List<PrimaryProduct> contacts) {
+                            common_class.ProgressdialogShow(2, "");
                             deleteViewModel.delete(contacts);
-                            progressDialog.dismiss();
+
                             completePreviousActivity(true);
 
                         }
@@ -628,6 +630,8 @@ public class ViewCartActivity extends AppCompatActivity {
 //                Toast.makeText(ViewCartActivity.this, "Your order submitted successfully", Toast.LENGTH_SHORT).show();
 //                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                 } else {
+                    common_class.ProgressdialogShow(2, "");
+
                     completePreviousActivity(true);
                 }
 
@@ -785,7 +789,8 @@ public class ViewCartActivity extends AppCompatActivity {
 
     public void SaveSecondaryProduct(List<PrimaryProduct> carsList) {
 
-        progressDialog = createProgressDialog(this);
+        common_class.ProgressdialogShow(1, "");
+
         /*ActivityReport*/
         DateFormat dfw = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Calendar calobjw = Calendar.getInstance();
@@ -1123,7 +1128,6 @@ public class ViewCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         sendArray.put(JSONPROCEED);
         totalValueString = sendArray.toString();
-        progressDialog.dismiss();
 
         if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
@@ -1148,8 +1152,9 @@ public class ViewCartActivity extends AppCompatActivity {
                     deleteViewModel.getAllData().observe(ViewCartActivity.this, new Observer<List<PrimaryProduct>>() {
                         @Override
                         public void onChanged(List<PrimaryProduct> contacts) {
+                            common_class.ProgressdialogShow(2, "");
+
                             deleteViewModel.delete(contacts);
-                            progressDialog.dismiss();
                             completePreviousActivity(true);
                         }
                     });
@@ -1159,8 +1164,10 @@ public class ViewCartActivity extends AppCompatActivity {
                     completePreviousActivity(true);
                 }
             }
-            else
+            else {
+                common_class.ProgressdialogShow(2, "");
                 Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+            }
 
 
         }
@@ -1182,6 +1189,8 @@ public class ViewCartActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+                    common_class.ProgressdialogShow(2, "");
+
                     String res = response.body().string();
                     Log.d(TAG, "onResponse: res "+ res);
 
@@ -1200,7 +1209,6 @@ public class ViewCartActivity extends AppCompatActivity {
                                     @Override
                                     public void onChanged(List<PrimaryProduct> contacts) {
                                         deleteViewModel.delete(contacts);
-                                        progressDialog.dismiss();
                                         completePreviousActivity(true);
                                     }
                                 });
@@ -1228,6 +1236,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                common_class.ProgressdialogShow(2, "");
                 Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
                 Toast.makeText(ViewCartActivity.this,"Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 

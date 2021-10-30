@@ -81,7 +81,6 @@ public class PendingVerification extends AppCompatActivity {
 
         Call<JsonObject> ca = apiInterface.getPrimaryVerification(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
 
-        Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

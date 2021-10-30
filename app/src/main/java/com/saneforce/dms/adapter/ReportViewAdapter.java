@@ -264,7 +264,11 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag());
+
+            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),
+                    mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag(),
+                    mDate.get(getAdapterPosition()).getPaid_Date(),mDate.get(getAdapterPosition()).getPayment_Mode(),mDate.get(getAdapterPosition()).getPaymentTypeName(),mDate.get(getAdapterPosition()).getUTR(),
+                    mDate.get(getAdapterPosition()).getAttachment());
         }
     }
 

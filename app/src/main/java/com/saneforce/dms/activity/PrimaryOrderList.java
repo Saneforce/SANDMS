@@ -30,6 +30,7 @@ import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
+import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
@@ -58,13 +59,14 @@ public class PrimaryOrderList extends AppCompatActivity {
     PrimaryProduct task;
 
     List<PrimaryProduct.UOMlist> uoMlistList = new ArrayList<>();
-
+    Common_Class common_class;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_primary_order_list);
         getToolbar();
         mShared_common_pref = new Shared_Common_Pref(this);
+        common_class = new Common_Class(this);
         ClickedData = mShared_common_pref.getvalue("taskdata");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         task = gson.fromJson(ClickedData, PrimaryProduct.class);
@@ -94,7 +96,7 @@ public class PrimaryOrderList extends AppCompatActivity {
     }
 
     public void getProductId() {
-        ProgressDialog progressDialog = createProgressDialog(this);
+        common_class.ProgressdialogShow(1, "");
         //   this.sf_Code=sf_Code;
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getProductuom(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
@@ -103,7 +105,7 @@ public class PrimaryOrderList extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.v("DMS_RESPONSE", response.body().toString());
-                progressDialog.dismiss();
+                common_class.ProgressdialogShow(2, "");
                 try {
                     jsonProductuom = new JSONObject(response.body().toString());
                     Log.e("LoginResponse1", jsonProductuom.toString());
@@ -145,7 +147,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                progressDialog.dismiss();
+                common_class.ProgressdialogShow(2, "");
                 Toast.makeText(PrimaryOrderList.this, "Invalid products", Toast.LENGTH_LONG).show();
             }
         });

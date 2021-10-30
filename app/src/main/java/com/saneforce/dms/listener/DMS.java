@@ -53,7 +53,7 @@ public interface DMS {
     }
 
     interface ViewReport {
-        void reportCliick(String productId, String orderDate,String OrderValue,String orderType,String editOrder,int Paymentflag,int Dispatch_Flag);
+        void reportCliick(String productId, String orderDate,String OrderValue,String orderType,String editOrder,int Paymentflag,int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment);
     }
 
     interface On_ItemCLick_Listner {

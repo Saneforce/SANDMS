@@ -363,7 +363,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             }
         });
 
-        toolHeader = (TextView) findViewById(R.id.toolbar_title);
+        toolHeader =  findViewById(R.id.toolbar_title);
 
         String title  = "";
         if(viewType ==1){
@@ -463,19 +463,25 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
                 mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
                     @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag) {//,String TaxValue,String Tax
-                        Intent intnet = new Intent(ReportActivity.this, ViewReportActivity.class);
-                        intnet.putExtra("ProductID", productId);
-                        intnet.putExtra("OrderDate", orderDate);
-                        intnet.putExtra("FromDate", fromBtn.getText().toString());
-                        intnet.putExtra("ToDate", toBtn.getText().toString());
-                        intnet.putExtra("OderValue", OrderValue);
-                        intnet.putExtra("orderType", orderType);
-                        intnet.putExtra("editOrder", editOrder);
-                        intnet.putExtra("Paymentflag", Paymentflag);
-                        intnet.putExtra("Dispatch_Flag", Dispatch_Flag);
+                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {//,String TaxValue,String Tax
+                        Intent intent = new Intent(ReportActivity.this, ViewReportActivity.class);
+                        intent.putExtra("ProductID", productId);
+                        intent.putExtra("OrderDate", orderDate);
+                        intent.putExtra("FromDate", fromBtn.getText().toString());
+                        intent.putExtra("ToDate", toBtn.getText().toString());
+                        intent.putExtra("OderValue", OrderValue);
+                        intent.putExtra("orderType", orderType);
+                        intent.putExtra("editOrder", editOrder);
+                        intent.putExtra("Paymentflag", Paymentflag);
+                        intent.putExtra("Dispatch_Flag", Dispatch_Flag);
 
-                        startActivity(intnet);
+                        intent.putExtra("dispatch_date", dispatch_date);
+                        intent.putExtra("payment_type", payment_type);
+                        intent.putExtra("payment_option", payment_option);
+                        intent.putExtra("check_utr_no", check_utr_no);
+                        intent.putExtra("attachment", attachment);
+
+                        startActivity(intent);
                         //  finish();
                     }
                 },orderTakenByFilter,txtTotalValue, OrderType, viewType);

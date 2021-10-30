@@ -52,12 +52,6 @@
 
 
         <activity
-            android:name=".billdesk.SamplePayNowActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"
-            android:theme="@style/AppTheme"/>
-
-        <activity
             android:name=".billdesk.StatusActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
