@@ -163,8 +163,6 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     TextView tv_dispatch_date;
     LinearLayout ll_payment_type;
     TextView tv_payment_type;
-    LinearLayout ll_payment_option;
-    TextView tv_payment_option;
     LinearLayout ll_check_number;
     TextView tv_check_utr_no;
     LinearLayout ll_attachment;
@@ -191,8 +189,6 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         tv_dispatch_date=findViewById(R.id.tv_dispatch_date);
         ll_payment_type=findViewById(R.id.ll_payment_type);
         tv_payment_type=findViewById(R.id.tv_payment_type);
-        ll_payment_option=findViewById(R.id.ll_payment_option);
-        tv_payment_option=findViewById(R.id.tv_payment_option);
         ll_check_number=findViewById(R.id.ll_check_number);
         tv_check_utr_no=findViewById(R.id.tv_check_utr_no);
         ll_attachment=findViewById(R.id.ll_attachment);
@@ -258,19 +254,15 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         }else
             ll_dispatch_date.setVisibility(View.GONE);
 
+        if(payment_option!=null && !payment_option.equals("")){
+            payment_type = payment_type + " - "+payment_option;
+        }
 
         if(payment_type!=null && !payment_type.equals("")){
             ll_payment_type.setVisibility(View.VISIBLE);
             tv_payment_type.setText(payment_type);
         }else
             ll_payment_type.setVisibility(View.GONE);
-
-
-        if(payment_option!=null && !payment_option.equals("")){
-            ll_payment_option.setVisibility(View.VISIBLE);
-            tv_payment_option.setText(payment_option);
-        }else
-            ll_payment_option.setVisibility(View.GONE);
 
 
         if(check_utr_no!=null && !check_utr_no.equals("")){
@@ -280,7 +272,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             ll_check_number.setVisibility(View.GONE);
 
 
-        if(attachment!=null && !attachment.equals("")){
+        if(attachment!=null && !attachment.equals("") && !attachment.endsWith("/")){
             ll_attachment.setVisibility(View.VISIBLE);
             try {
                 RequestOptions myOptions = new RequestOptions()
@@ -1478,9 +1470,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), custCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
 
-        Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

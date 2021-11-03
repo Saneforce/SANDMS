@@ -579,7 +579,6 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 OnGPS();
             } else {
-                if(txtLat.getText().toString().equals("") ||txtLon.getText().toString().equals("")  )
                     updateLocation();
             }
 

@@ -131,10 +131,10 @@ public class DSMActivity extends AppCompatActivity {
                 if(!Common_Class.isOnProgress)
                     mCommon_class.checkData(dbController,context);
 
-                if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
+               /* if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
                     brandPrimaryApi(true);
-                }
+                }*/
                 if(syncData || dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
                     brandSecondaryApi();
@@ -165,40 +165,12 @@ public class DSMActivity extends AppCompatActivity {
     };
 
 
-    public void brandPrimaryApi(boolean isUpdateOffline) {
-
-        String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
-
-        Log.v("Product_Request", ca.request().toString());
-        ca.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                JsonObject jsonObject = response.body();
-                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
-                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
-                JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                dbController.updateDataResponse(DBController.PRIMARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
-                dbController.updateDataResponse(DBController.PRIMARY_PRODUCT_DATA, new Gson().toJson(jProd));
-
-
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                mCommon_class.ProgressdialogShow(2, "");
-            }
-        });
-    }
-
 
     public void brandSecondaryApi() {
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code), shared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
 
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {

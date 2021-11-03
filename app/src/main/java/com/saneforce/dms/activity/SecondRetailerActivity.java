@@ -352,13 +352,17 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 PhoneOrderTypes =0;
 
         } else if (type == 10) {
-            if(customDialog10!=null && customDialog10.isShowing())
-                customDialog10.dismiss();
+            if(Constant.isInternetAvailable(this)){
+                if(customDialog10!=null && customDialog10.isShowing())
+                    customDialog10.dismiss();
 
-            txtRtNme.setText(myDataset.get(position).getName());
-            linRtDetails.setVisibility(View.VISIBLE);
-            retailerId = myDataset.get(position).getId();
-            RetailerViewDetailsMethod(retailerId);
+                txtRtNme.setText(myDataset.get(position).getName());
+                linRtDetails.setVisibility(View.VISIBLE);
+                retailerId = myDataset.get(position).getId();
+                RetailerViewDetailsMethod(retailerId);
+
+            }else
+                Toast.makeText(SecondRetailerActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
         } else if (type == 123) {
             if(customDialog123!=null && customDialog123.isShowing())
                 customDialog123.dismiss();
@@ -385,8 +389,6 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     public void RetailerViewDetailsMethod(String retailerID) {
         ApiInterface apiInterface2 = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface2.retailerViewDetails(retailerID, shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode);
-
-//        Log.v("Retailer_Details_req", call.request().toString());
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -460,6 +462,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                brandSecondaryApi();
             }
 
             @Override
@@ -492,7 +496,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             }
         });
-    }*/
+    }
 
     private void processTemplateList(JsonArray jsonArray) {
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -503,7 +507,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             modelTemplates.add(mCommon_model_spinner);
         }
 
-    }
+    }*/
 
 
     @Override
@@ -554,7 +558,6 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
                 Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
 
-                Log.v("REQUEST_VALUE", call.request().toString());
                 call.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -599,9 +602,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, retailerId ,shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
 
-        Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

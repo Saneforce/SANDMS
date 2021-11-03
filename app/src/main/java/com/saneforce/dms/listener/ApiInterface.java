@@ -93,10 +93,9 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?")
     Call<JsonObject> getOfflineMode(@Query("axn") String Axn, @Query("divisionCode") String divisionCode);
 
-    /*CHECKING*/
     @FormUrlEncoded
     @POST("dms_db_V1.php?axn=table/list")
-    Call<JsonObject> Category(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("State_Code") String StateCode, @Field("data") String data);
+    Call<JsonObject> Category(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("retailerCode") String retailerCode, @Query("State_Code") String StateCode, @Field("data") String data);
 
 
     @POST("dms_db_V1.php?axn=get/getpripaymentverfication")

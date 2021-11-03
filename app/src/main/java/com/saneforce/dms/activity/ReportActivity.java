@@ -66,7 +66,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReportActivity extends AppCompatActivity implements DMS.Master_Interface{
-    TextView toolHeader, txtTotalValue, txtProductDate,  txtName;
+    TextView toolHeader, txtTotalValue, txtProductDate, txtName;
     ImageView imgBack,imgShare;
     Button fromBtn, toBtn;
 
