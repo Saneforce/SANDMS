@@ -55,6 +55,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
 import com.saneforce.dms.adapter.DateReportAdapter;
 import com.saneforce.dms.listener.ApiInterface;
@@ -497,17 +498,28 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     JsonObject jsonObject = response.body();
                     Log.v("Payment_Response", jsonObject.toString());
+                    String msg = "";
+
+                    if(jsonObject.has("Msg"))
+                        msg = jsonObject.get("Msg").toString();
+
                     if (jsonObject.get("success").toString().equalsIgnoreCase("true")){
                         //    Toast.makeText(getApplicationContext(), "sign"+signature, Toast.LENGTH_LONG).show();
                         //     Toast.makeText(getApplicationContext(), "razorid"+responseid, Toast.LENGTH_LONG).show();
                         //     Toast.makeText(getApplicationContext(), "razpay"+razorid, Toast.LENGTH_LONG).show();
-                        String successMsg = "Dispatched successfully";
-
-                        Toast.makeText(ViewReportActivity.this, successMsg, Toast.LENGTH_SHORT).show();
+                        if(msg.equals(""))
+                            msg = "Dispatched Successfully";
+                        Toast.makeText(DMSApplication.getApplication(), msg, Toast.LENGTH_SHORT).show();
 
                         onBackPressed();
 
+                    }else {
+                        if(msg.equals(""))
+                            msg = "Server problem, please try again";
+                        Toast.makeText(DMSApplication.getApplication(), msg, Toast.LENGTH_SHORT).show();
+
                     }
+
 
 
 //                    Intent a=new Intent(PaymentDetailsActivity.this,ReportActivity.class);
