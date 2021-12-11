@@ -27,7 +27,7 @@ public class ProductImageView extends Activity {
         Log.e("ImageView",ImageUrl);
         Picasso.with(this)
                 .load(ImageUrl)
-                .error(R.drawable.no_prod)
+                .error(R.drawable.logo_new)
                 .into(ProductZoomImage);
     }
 }

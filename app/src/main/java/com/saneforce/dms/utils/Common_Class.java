@@ -568,7 +568,7 @@ public class Common_Class {
         NotificationCompat.Builder notification = new NotificationCompat.Builder(context, "sandms")
                 .setContentTitle(title)
                 .setContentText(task)
-                .setSmallIcon(R.mipmap.logo);
+                .setSmallIcon(R.mipmap.ic_launcher_round);
 
         notificationManager.notify(1, notification.build());
     }

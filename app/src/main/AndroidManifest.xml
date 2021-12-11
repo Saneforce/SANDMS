@@ -38,10 +38,10 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
@@ -186,11 +186,11 @@
             android:name=".activity.ViewCartActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity
+        <!--<activity
             android:name=".activity.ProductImageView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity" />-->
         <activity
             android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
