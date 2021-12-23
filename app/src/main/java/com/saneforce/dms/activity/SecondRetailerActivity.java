@@ -86,6 +86,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     TextView tv_sch_enrollment;
 
     String sfCode = "";
+    boolean isCallSecActivity = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -357,6 +359,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 txtRtNme.setText(myDataset.get(position).getName());
                 linRtDetails.setVisibility(View.VISIBLE);
                 retailerId = myDataset.get(position).getId();
+                shared_common_pref.save("RetailerID", retailerId);
+                isCallSecActivity = false;
                 RetailerViewDetailsMethod(retailerId);
 
             }else
@@ -378,7 +382,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         } /*else if (editRemarks.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Remarks", Toast.LENGTH_SHORT).show();
         }*/ else {
-
+            isCallSecActivity = true;
             SaveRetials();
 
         }
@@ -861,15 +865,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         mCommon_class.ProgressdialogShow(2, "");
 //        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
-
-        Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
-        dashIntent.putExtra("Mode", "0");
-        dashIntent.putExtra("order_type", 2);
-        dashIntent.putExtra("PhoneOrderTypes", PhoneOrderTypes);
-        startActivityForResult(dashIntent, ACTIVITY_REQUEST_CODE);
+        if(isCallSecActivity){
+            Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
+            dashIntent.putExtra("Mode", "0");
+            dashIntent.putExtra("order_type", 2);
+            dashIntent.putExtra("PhoneOrderTypes", PhoneOrderTypes);
+            startActivityForResult(dashIntent, ACTIVITY_REQUEST_CODE);
 //        startActivity(dashIntent);
+        }
 
     }
+
+
 
     @Override
     protected void onResume() {
