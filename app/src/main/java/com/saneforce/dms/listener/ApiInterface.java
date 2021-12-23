@@ -95,7 +95,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("dms_db_V1.php?axn=table/list")
-    Call<JsonObject> Category(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("retailerCode") String retailerCode, @Query("State_Code") String StateCode, @Field("data") String data);
+    Call<JsonObject> Category(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("rSF") String rSF, @Query("retailerCode") String retailerCode, @Query("State_Code") String StateCode, @Field("data") String data, @Query("ordtyp") int ordType);
 
 
     @POST("dms_db_V1.php?axn=get/getpripaymentverfication")
@@ -113,8 +113,6 @@ public interface ApiInterface {
 
     @POST("dms_db_V1.php?axn=save/pripaymentverify")
     Call<JsonObject> getPayVerification(@Query("Order_Id") String disvisonCode, @Query("Sf_code") String sFCode);
-
-
 
     @Multipart
     @POST("dms_db_V1.php?")

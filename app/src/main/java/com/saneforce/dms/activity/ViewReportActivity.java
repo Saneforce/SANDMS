@@ -1482,7 +1482,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), custCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), custCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 2);
 
         ca.enqueue(new Callback<JsonObject>() {
             @Override

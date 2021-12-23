@@ -616,6 +616,35 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: Called ");
+        gson = null;
+        mShared_common_pref = null;
+        priCategoryRecycler = null;
+        priProductRecycler = null;
+        priCateAdapter = null;
+        priProdAdapter = null;
+        jsonBrandCateg = null;
+        jsonBrandProduct = null;
+        jsonProductuom = null;
+        a = null;
+        Product_Array_List = null;
+        text_checki = null;
+        grandTotal = null;
+        item_count = null;
+        forward = null;
+        backward = null;
+        proceedCart = null;
+        bottomLinear = null;
+        productBarCode = null;
+        searchEdit = null;
+        primaryProductDatabase = null;
+        deleteViewModel = null;
+        mCommon_class = null;
+        mPrimaryProduct = null;
+        sPrimaryProd = null;
+        productCodeOffileData = null;
+        dbController = null;
+        orderVal = null;
+        orderNo = null;
     }
 
     @Override

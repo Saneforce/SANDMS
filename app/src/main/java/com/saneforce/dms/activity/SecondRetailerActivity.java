@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -26,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -36,11 +34,12 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.saneforce.dms.DMSApplication;
+import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.listener.PrimaryProductDao;
 import com.saneforce.dms.model.PrimaryProduct;
-import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Common_Model;
@@ -48,7 +47,6 @@ import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
-import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,7 +79,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     String latitude, longitude;
     Common_Class mCommon_class;
     TextView txtRetailerChannel, txtClass, txtLastOrderAmount, txtModelOrderValue, txtLastVisited, txtMobile;
-//    , txtReamrks, txtDistributor, txtMobileTwo
+    //    , txtReamrks, txtDistributor, txtMobileTwo
 //    SecondaryProductViewModel SecViewModel;
     DBController dbController;
     int PhoneOrderTypes = 0;
@@ -142,7 +140,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);*/
 
         TextView toolHeader = findViewById(R.id.toolbar_title);
-            toolHeader.setText("Select Retailer");
+        toolHeader.setText("Select Retailer");
         ImageView imagView = findViewById(R.id.toolbar_back);
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,35 +220,35 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         Dexter.withContext(this)
                 .withPermissions(permissions)
                 .withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport report)
-            {
-                if(!report.areAllPermissionsGranted()){
-                    Constant.showSnackbar(SecondRetailerActivity.this, findViewById(R.id.scrolllayout));
-                }else{
-                    @SuppressLint("MissingPermission")
-                    Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (locationGPS != null) {
-                        double lat = locationGPS.getLatitude();
-                        double longi = locationGPS.getLongitude();
-                        latitude = String.valueOf(lat);
-                        longitude = String.valueOf(longi);
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report)
+                    {
+                        if(!report.areAllPermissionsGranted()){
+                            Constant.showSnackbar(SecondRetailerActivity.this, findViewById(R.id.scrolllayout));
+                        }else{
+                            @SuppressLint("MissingPermission")
+                            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (locationGPS != null) {
+                                double lat = locationGPS.getLatitude();
+                                double longi = locationGPS.getLongitude();
+                                latitude = String.valueOf(lat);
+                                longitude = String.valueOf(longi);
 
 
-                        Log.v("Your_Location: ", "\n" + "Latitude: " + latitude + "\n" + "Longitude: " + longitude);
-                    }
-                }
+                                Log.v("Your_Location: ", "\n" + "Latitude: " + latitude + "\n" + "Longitude: " + longitude);
+                            }
+                        }
 
 //                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 
-            }
+                    }
 
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                permissionToken.continuePermissionRequest();
-            }
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
 
-        }).check();
+                }).check();
     }
 
 
@@ -270,7 +268,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     public void OrderType() {
         if(customDialog9!=null)
-        customDialog9.show();
+            customDialog9.show();
     }
 
     public void AddRetailer(View v) {
@@ -383,7 +381,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
             SaveRetials();
 
-      }
+        }
     }
 
     public void RetailerViewDetailsMethod(String retailerID) {
@@ -397,65 +395,65 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 try {
                     jsonObject = new JSONObject(response.body().toString());
 
-                        Log.v("Retailer_Details", jsonObject.toString());
-                        String channel = "";
-                        if(jsonObject.has("DrSpl"))
-                            channel = jsonObject.getString("DrSpl");
-                        txtRetailerChannel.setText(channel);
+                    Log.v("Retailer_Details", jsonObject.toString());
+                    String channel = "";
+                    if(jsonObject.has("DrSpl"))
+                        channel = jsonObject.getString("DrSpl");
+                    txtRetailerChannel.setText(channel);
 
-                        String retailerClass = "";
-                        if(jsonObject.has("DrCat"))
-                            retailerClass = jsonObject.getString("DrCat");
-                        txtClass.setText(retailerClass);
+                    String retailerClass = "";
+                    if(jsonObject.has("DrCat"))
+                        retailerClass = jsonObject.getString("DrCat");
+                    txtClass.setText(retailerClass);
 
                     String lastVisit = "-";
                     if(jsonObject.has("last_visit_date") && !jsonObject.getString("last_visit_date").equals(""))
                         lastVisit = jsonObject.getString("last_visit_date");
                     txtLastVisited.setText(lastVisit);
 
-                        double total = 0;
-                        if(!jsonObject.isNull("MOV")){
-                            JSONArray jsonArray = jsonObject.getJSONArray("MOV");
-                            for(int i = 0; i< jsonArray.length(); i++){
-                                try {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    if(!jsonObject1.isNull("MorderSum"))
+                    double total = 0;
+                    if(!jsonObject.isNull("MOV")){
+                        JSONArray jsonArray = jsonObject.getJSONArray("MOV");
+                        for(int i = 0; i< jsonArray.length(); i++){
+                            try {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                if(!jsonObject1.isNull("MorderSum"))
                                     total += jsonObject1.getDouble("MorderSum");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+                    }
 
-                        txtModelOrderValue.setText(Constant.roundTwoDecimals(total));
+                    txtModelOrderValue.setText(Constant.roundTwoDecimals(total));
 
-                        String scheme = "-";
-                        if(jsonObject.has("Slan_Name"))
-                            scheme = jsonObject.getString("Slan_Name");
-                        tv_sch_enrollment.setText(scheme);
+                    String scheme = "-";
+                    if(jsonObject.has("Slan_Name"))
+                        scheme = jsonObject.getString("Slan_Name");
+                    tv_sch_enrollment.setText(scheme);
 
-                        String lastOrderAmt = "-";
+                    String lastOrderAmt = "-";
 //                        JSONArray jsonArray = jsonObject.getJSONArray("StockistDetails");
 //                        if(jsonArray.length()>0){
-                            lastOrderAmt = jsonObject.getString("LastOrderAmt");
-                            if(!lastOrderAmt.equals(""))
-                            lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constant.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
-                            txtLastOrderAmount.setText(lastOrderAmt);
+                    lastOrderAmt = jsonObject.getString("LastOrderAmt");
+                    if(!lastOrderAmt.equals(""))
+                        lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constant.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
+                    txtLastOrderAmount.setText(lastOrderAmt);
 
 //                        }
 
-                        String mob1 = "-";
+                    String mob1 = "-";
 //                        String mob2 = "";
-                        if( !jsonObject.isNull("POTENTIAL") && jsonObject.getJSONArray("POTENTIAL").length() > 0){
+                    if( !jsonObject.isNull("POTENTIAL") && jsonObject.getJSONArray("POTENTIAL").length() > 0){
 
-                            if(jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile")!=null){
-                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile");
-                            }
-
-                            if((mob1.equals("") || mob1.equals("-") || mob1.equals("null")) && jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone")!=null){
-                                mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone");
-                            }
+                        if(jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile")!=null){
+                            mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Mobile");
                         }
+
+                        if((mob1.equals("") || mob1.equals("-") || mob1.equals("null")) && jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone")!=null){
+                            mob1 = jsonObject.getJSONArray("POTENTIAL").getJSONObject(0).getString("ListedDr_Phone");
+                        }
+                    }
                     txtMobile.setText(mob1);
 
 
@@ -570,11 +568,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                         shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
                         shared_common_pref.save("editRemarks", editRemarks.getText().toString());
 
-                            if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
-                                    !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                                processSecondaryOrderList();
-                            }else
-                                brandSecondaryApi();
+                        if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
+                                !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
+                            processSecondaryOrderList();
+                        }else
+                            brandSecondaryApi();
 
 
                     }
@@ -602,7 +600,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, retailerId ,shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, retailerId ,shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 2);
 
         ca.enqueue(new Callback<JsonObject>() {
             @Override
@@ -678,26 +676,26 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             e.printStackTrace();
         }
 
-            shared_common_pref.save("RetailerID", retailerId);
-            shared_common_pref.save("RetailName", txtRtNme.getText().toString());
-            shared_common_pref.save("Remarks", editRemarks.getText().toString());
-            shared_common_pref.save("orderType", txtOrder.getText().toString());
-            shared_common_pref.save("OrderType", txtOrder.getText().toString());
-            shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
-            shared_common_pref.save("editRemarks", editRemarks.getText().toString());
+        shared_common_pref.save("RetailerID", retailerId);
+        shared_common_pref.save("RetailName", txtRtNme.getText().toString());
+        shared_common_pref.save("Remarks", editRemarks.getText().toString());
+        shared_common_pref.save("orderType", txtOrder.getText().toString());
+        shared_common_pref.save("OrderType", txtOrder.getText().toString());
+        shared_common_pref.save("RetailerName", txtRtNme.getText().toString());
+        shared_common_pref.save("editRemarks", editRemarks.getText().toString());
 
 //            brandSecondaryApi();
-            Log.v("JS_VALUE", js.toString());
+        Log.v("JS_VALUE", js.toString());
 
-            if(!Constant.isInternetAvailable(this)){
-                if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
-                    mCommon_class.ProgressdialogShow(2, "");
-                    Toast.makeText(DMSApplication.getApplication(), "No Order call will be saved in offline", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                else
-                    Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-            }else {
+        if(!Constant.isInternetAvailable(this)){
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), js.toString(), "dcr/retailervisit", 0)){
+                mCommon_class.ProgressdialogShow(2, "");
+                Toast.makeText(DMSApplication.getApplication(), "No Order call will be saved in offline", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            else
+                Toast.makeText(SecondRetailerActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+        }else {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> call = apiInterface.getDetails("dcr/retailervisit",sfCode, js.toString());
 
@@ -724,7 +722,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                     t.printStackTrace();
                 }
             });
-            }
+        }
 
 
     }
@@ -801,25 +799,25 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     try {
-                    jsonObject1 = jsonArray1.getJSONObject(j);
-                    Scheme = String.valueOf(jsonObject1.get("Scheme"));
-                    Discount = String.valueOf(jsonObject1.get("Discount"));
-                    Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
-                    Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
-                    Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
-                    Package = String.valueOf(jsonObject1.get("Package"));
-                    Free = String.valueOf(jsonObject1.get("Free"));
-                    if(jsonObject1.has("Discount_Type"))
-                    Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
+                        jsonObject1 = jsonArray1.getJSONObject(j);
+                        Scheme = String.valueOf(jsonObject1.get("Scheme"));
+                        Discount = String.valueOf(jsonObject1.get("Discount"));
+                        Scheme_Unit = String.valueOf(jsonObject1.get("Scheme_Unit"));
+                        Product_Name = String.valueOf(jsonObject1.get("Offer_Product_Name"));
+                        Product_Code = String.valueOf(jsonObject1.get("Offer_Product"));
+                        Package = String.valueOf(jsonObject1.get("Package"));
+                        Free = String.valueOf(jsonObject1.get("Free"));
+                        if(jsonObject1.has("Discount_Type"))
+                            Discount_Type = String.valueOf(jsonObject1.get("Discount_Type"));
 
                         if(jsonObject1.has("Free_Unit"))
                             Free_Unit = String.valueOf(jsonObject1.get("Free_Unit"));
 
 
-                    Log.v("JSON_Array_SCHEMA",Scheme);
-                    Log.v("JSON_Array_DIS",Discount);
-                    schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
-                            Product_Code, Package, Free, Discount_Type,Free_Unit ));
+                        Log.v("JSON_Array_SCHEMA",Scheme);
+                        Log.v("JSON_Array_DIS",Discount);
+                        schemeList.add(new PrimaryProduct.SchemeProducts(Scheme,Discount,Scheme_Unit,Product_Name,
+                                Product_Code, Package, Free, Discount_Type,Free_Unit ));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -906,4 +904,33 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        listOrderType = null;
+        RetailerType = null;
+        modelTemplates = null;
+        oderTypeList = null;
+        mCommon_model_spinner = null;
+        customDialog9 = null;
+        customDialog123 = null;
+        customDialog10 = null;
+        linRtDetails = null;
+        shared_common_pref = null;
+        editRemarks = null;
+        retailerId = null;
+        locationManager = null;
+        latitude = null;
+        longitude = null;
+        mCommon_class = null;
+        txtRetailerChannel = null;
+        txtClass = null;
+        txtLastOrderAmount = null;
+        txtModelOrderValue = null;
+        txtLastVisited = null;
+        txtMobile = null;
+        dbController = null;
+        tv_sch_enrollment = null;
+        sfCode = null;
+    }
 }

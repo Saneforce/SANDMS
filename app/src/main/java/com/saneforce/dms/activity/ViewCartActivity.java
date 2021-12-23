@@ -100,7 +100,7 @@ public class ViewCartActivity extends AppCompatActivity {
     ArrayList<String> listV = new ArrayList<>();
     RecyclerView viewRecyclerview;
     int product_count = 0;
-//    ProgressDialog progressDialog = null;
+    //    ProgressDialog progressDialog = null;
     String GrandTotal = "";
     String SubTotal = "";
     TextView viewTotal;
@@ -943,33 +943,33 @@ public class ViewCartActivity extends AppCompatActivity {
                 String rateMode = "free";
                 if(carsList.get(z).isEdited())
 
-                if(carsList.get(z).isEdited()){
-                    rateMode = "priceEdit";
-                try {
-                    if(carsList.get(z).getEditedDiscount()!=null && !carsList.get(z).getEditedDiscount().equals("")){
-                        currentPieceDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()));
-                        currentUOMDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
+                    if(carsList.get(z).isEdited()){
+                        rateMode = "priceEdit";
+                        try {
+                            if(carsList.get(z).getEditedDiscount()!=null && !carsList.get(z).getEditedDiscount().equals("")){
+                                currentPieceDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()));
+                                currentUOMDis = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedDiscount()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
+                            }
+
+                            if(carsList.get(z).getEditedPrice()!=null && !carsList.get(z).getEditedPrice().equals("")){
+
+                                currentPiecePrice = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedPrice()));
+
+                                currentUOMPrice = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedPrice()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
+
+                            }
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        person1.put("currentPiecePrice", currentPiecePrice);
+                        person1.put("currentUOMPrice", currentUOMPrice);
+                        person1.put("currentUOMDis", currentUOMDis);
+                        person1.put("currentPieceDis", currentPieceDis);
+                        person1.put("totalDis", currentUOMDis * Integer.parseInt(carsList.get(z).getQty()));
+                        person1.put("totalPrice", currentUOMPrice * Integer.parseInt(carsList.get(z).getQty()));
                     }
-
-                    if(carsList.get(z).getEditedPrice()!=null && !carsList.get(z).getEditedPrice().equals("")){
-
-                        currentPiecePrice = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedPrice()));
-
-                        currentUOMPrice = Constant.roundTwoDecimals1(Double.parseDouble(carsList.get(z).getEditedPrice()) * carsList.get(z).getProduct_Sale_Unit_Cn_Qty());
-
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-
-
-                person1.put("currentPiecePrice", currentPiecePrice);
-                person1.put("currentUOMPrice", currentUOMPrice);
-                person1.put("currentUOMDis", currentUOMDis);
-                person1.put("currentPieceDis", currentPieceDis);
-                person1.put("totalDis", currentUOMDis * Integer.parseInt(carsList.get(z).getQty()));
-                person1.put("totalPrice", currentUOMPrice * Integer.parseInt(carsList.get(z).getQty()));
-                }
 
                 person1.put("rateMode", rateMode);
                 person1.put("free", carsList.get(z).getSelectedFree());
@@ -1253,5 +1253,52 @@ public class ViewCartActivity extends AppCompatActivity {
     }
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        toolHeader = null;
+        imgBack = null;
+        SF_CODE = null;
+        DIVISION_CODE = null;
+        totalValueString = null;
+        locationValue = null;
+        dateTime = null;
+        dateTime1 = null;
+        checkInTime = null;
+        keyEk = null;
+        KeyDate = null;
+        KeyHyp = null;
+        keyCodeValue = null;
+        time = null;
+        adapter = null;
+        btnSubmt = null;
+        mFusedLocationClient = null;
+        mSettingsClient = null;
+        mLocationRequest = null;
+        mLocationSettingsRequest = null;
+        mLocationCallback = null;
+        mCurrentLocation = null;
+        shared_common_pref = null;
+        simpleDateFormat = null;
+        calander = null;
+        person1 = null;
+        stockReportObjectArray = null;
+        reportObjectArray = null;
+        PersonObjectArray = null;
+        sampleReportObjectArray = null;
+        eventCapturesObjectArray = null;
+        pendingBillObjectArray = null;
+        ComProductObjectArray = null;
+        JSONHEAD = null;
+        sendArray = null;
+        listV = null;
+        viewRecyclerview = null;
+        GrandTotal = null;
+        SubTotal = null;
+        viewTotal = null;
+        contactViewModel = null;
+        deleteViewModel = null;
+        orderNo = null;
+        common_class = null;
+    }
 }

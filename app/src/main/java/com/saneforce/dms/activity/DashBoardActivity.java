@@ -1,8 +1,6 @@
 package com.saneforce.dms.activity;
 
 
-
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -30,18 +26,16 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.PrimaryProductDao;
-import com.saneforce.dms.model.HeaderCat;
 import com.saneforce.dms.model.PrimaryProduct;
-import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
-import com.saneforce.dms.sqlite.DBController;
-import com.saneforce.dms.worker.MyLocationWorker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +61,7 @@ public class DashBoardActivity extends AppCompatActivity {
     Gson gson;
     Common_Class mCommon_class;
     ImageView imagView,profilePic, ib_logout;
-//    PrimaryProductViewModel mPrimaryProductViewModel;
+    //    PrimaryProductViewModel mPrimaryProductViewModel;
     RelativeLayout profileLayout;
 
     DBController dbController;
@@ -94,7 +88,7 @@ public class DashBoardActivity extends AppCompatActivity {
         profilePic=findViewById(R.id.profileImg);
         profileLayout=findViewById(R.id.imageLayout);
         txtName.setText(shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
-       // brandProdutApi();
+        // brandProdutApi();
 
         if(getIntent().hasExtra("syncData"))
             syncData = getIntent().getBooleanExtra("syncData", false);
@@ -181,15 +175,15 @@ public class DashBoardActivity extends AppCompatActivity {
                     syncData = false;
                     getTemplate();
                 }*/
-               if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
+                if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
                     syncData = false;
                     getRouteDetails();
                 }
-               if(syncData || dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
+                if(syncData || dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
                     syncData = false;
                     getRouteClass();
                 }
-               if(syncData || dbController.getResponseFromKey(DBController.CHANNEL_LIST).equals("")){
+                if(syncData || dbController.getResponseFromKey(DBController.CHANNEL_LIST).equals("")){
                     syncData = false;
                     getRouteChannel();
                 }
@@ -201,7 +195,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 2);
 
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
@@ -413,7 +407,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 JSONArray jsonArray1 = jsonObject.getJSONArray("SchemeArr");
                 JSONArray uomArray = null;
                 if(jsonObject.has("UOMList"))
-                uomArray = jsonObject.getJSONArray("UOMList");
+                    uomArray = jsonObject.getJSONArray("UOMList");
 
                 List<PrimaryProduct.SchemeProducts> schemeList = new ArrayList<>();
 
@@ -430,8 +424,8 @@ public class DashBoardActivity extends AppCompatActivity {
                         if(jsonObject1.has("Discount_Type"))
                             Discount_Type = jsonObject1.getString("Discount_Type");
 
-                       if(jsonObject1.has("Free_Unit"))
-                           Free_Unit = jsonObject1.getString("Free_Unit");
+                        if(jsonObject1.has("Free_Unit"))
+                            Free_Unit = jsonObject1.getString("Free_Unit");
 
 
                         Log.v("JSON_Array_SCHEMA",Scheme);
@@ -447,26 +441,26 @@ public class DashBoardActivity extends AppCompatActivity {
                 ArrayList<PrimaryProduct.UOMlist> uomList = new ArrayList<>();
 
                 if(uomArray!=null)
-                for (int j = 0; j < uomArray.length(); j++) {
-                    try {
-                        JSONObject uomObject = uomArray.getJSONObject(j);
-                        String uomId = "", uomProduct_Code = "", uomName = "", uomConQty = "";
+                    for (int j = 0; j < uomArray.length(); j++) {
+                        try {
+                            JSONObject uomObject = uomArray.getJSONObject(j);
+                            String uomId = "", uomProduct_Code = "", uomName = "", uomConQty = "";
 
-                        if(uomObject.has("id"))
-                            uomId = uomObject.getString("id");
+                            if(uomObject.has("id"))
+                                uomId = uomObject.getString("id");
 
-                        if(uomObject.has("name"))
-                            uomName = uomObject.getString("name");
+                            if(uomObject.has("name"))
+                                uomName = uomObject.getString("name");
 
-                        if(uomObject.has("ConQty"))
-                            uomConQty = uomObject.getString("ConQty");
+                            if(uomObject.has("ConQty"))
+                                uomConQty = uomObject.getString("ConQty");
 
-                        uomList.add(new PrimaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            uomList.add(new PrimaryProduct.UOMlist(uomId, uomProduct_Code, uomName, uomConQty));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-
-                }
 
                 contact.insert(new PrimaryProduct(id, PId, Name, PName, PBarCode, PUOM, PRate,
                         PSaleUnit, PDiscount, PTaxValue, "0", "0", "0", "0", "0",
@@ -488,13 +482,13 @@ public class DashBoardActivity extends AppCompatActivity {
     public void PrimaryOrder(View v) {
 
 //        if(!checkCutOffTime(cutOffTime)){
-            mCommon_class.ProgressdialogShow(1, "");
+        mCommon_class.ProgressdialogShow(1, "");
 
-            if(!dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("") &&
-                    !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
-                processPrimaryData();
-            }else
-                brandPrimaryApi(false);
+        if(!dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("") &&
+                !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
+            processPrimaryData();
+        }else
+            brandPrimaryApi(false);
 //        }else
 //            Toast.makeText(DashBoardActivity.this, "Cut off time is over, please try again later", Toast.LENGTH_SHORT).show();
     }
@@ -521,7 +515,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
     public void SecondaryOrder(View v) {
 //        if(!checkCutOffTime(cutOffTime)) {
-            startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
+        startActivity(new Intent(getApplicationContext(), SecondRetailerActivity.class));
 //        }else
 //            Toast.makeText(DashBoardActivity.this, "Cut off time is over, please try again later", Toast.LENGTH_SHORT).show();
     }
@@ -560,35 +554,16 @@ public class DashBoardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
     }
-    public void productApi() {
 
-        String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<HeaderCat> ca = apiInterface.SubCategory(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
-
-
-        Log.v("Product_request", ca.request().toString());
-        ca.enqueue(new Callback<HeaderCat>() {
-            @Override
-            public void onResponse(Call<HeaderCat> call, Response<HeaderCat> response) {
-                Log.v("Product_response", response.body().toString());
-                shared_common_pref.save(Shared_Common_Pref.Product_List, gson.toJson(response.body().getData()));
-            }
-
-            @Override
-            public void onFailure(Call<HeaderCat> call, Throwable t) {
-
-            }
-        });
-    }
 
 
     public void brandPrimaryApi(boolean isUpdateOffline) {
 
         String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue);
+        Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 1);
 
 
         ca.enqueue(new Callback<JsonObject>() {
@@ -665,27 +640,41 @@ public class DashBoardActivity extends AppCompatActivity {
         Dexter.withContext(this)
                 .withPermissions(permissions)
                 .withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport report)
-            {
-                if(!report.areAllPermissionsGranted()){
-                    Constant.showSnackbar(DashBoardActivity.this, findViewById(R.id.scrolllayout));
-                }/*else
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report)
+                    {
+                        if(!report.areAllPermissionsGranted()){
+                            Constant.showSnackbar(DashBoardActivity.this, findViewById(R.id.scrolllayout));
+                        }/*else
                     MyLocationWorker.createMyLocationWorker(DashBoardActivity.this);
 */
 
 //                    Toast.makeText(ViewReportActivity.this, "Please enable storage permission to share pdf ", Toast.LENGTH_SHORT).show();
 
-            }
+                    }
 
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                permissionToken.continuePermissionRequest();
-            }
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
 
-        }).check();
+                }).check();
     }
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dashIntent = null;
+        txtName = null;
+        txtAddress = null;
+        shared_common_pref = null;
+        gson = null;
+        mCommon_class = null;
+        imagView = null;
+        profilePic = null;
+        ib_logout = null;
+        profileLayout = null;
+        dbController = null;
+    }
 }

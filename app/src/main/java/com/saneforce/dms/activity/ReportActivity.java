@@ -385,115 +385,115 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     public void ViewDateReport(String orderTakenByFilter) {
         if(TimeUtils.getDate(TimeUtils.FORMAT1, fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1, toDateString))<=0){
 
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ReportDataList> responseBodyCall;
-        String axn = "";
-        if(viewType ==1){
-            if (OrderType.equalsIgnoreCase("1")) {
-                axn = "get/ViewReport";
-            } else {
-                axn = "get/secviewreport";
-            }
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<ReportDataList> responseBodyCall;
+            String axn = "";
+            if(viewType ==1){
+                if (OrderType.equalsIgnoreCase("1")) {
+                    axn = "get/ViewReport";
+                } else {
+                    axn = "get/secviewreport";
+                }
 
-        }else
-            axn = "get/finreport";
+            }else
+                axn = "get/finreport";
 
-        responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
+            responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
 
 //        Log.v("Request_cal", responseBodyCall.request().toString());
-        responseBodyCall.enqueue(new Callback<ReportDataList>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onResponse(Call<ReportDataList> call, Response<ReportDataList> response) {
-                ReportDataList mReportActivities = response.body();
-                //  List<ReportModel> mDReportModels;
-                List<ReportModel> mDReportModels = new ArrayList<>();
-                if (mReportActivities != null) {
+            responseBodyCall.enqueue(new Callback<ReportDataList>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onResponse(Call<ReportDataList> call, Response<ReportDataList> response) {
+                    ReportDataList mReportActivities = response.body();
+                    //  List<ReportModel> mDReportModels;
+                    List<ReportModel> mDReportModels = new ArrayList<>();
+                    if (mReportActivities != null) {
 
-                    if (mReportActivities.getData() != null)
-                        mDReportModels = mReportActivities.getData();
+                        if (mReportActivities.getData() != null)
+                            mDReportModels = mReportActivities.getData();
 
-                }
+                    }
 
-                try
-                {
+                    try
+                    {
 
-                    modeOrderData.clear();
-                    filteredList.clear();
-                    Float intSum = 0f;
+                        modeOrderData.clear();
+                        filteredList.clear();
+                        Float intSum = 0f;
 
-                    OrderStatusList.clear();
-                    OrderStatusList.add("All");
+                        OrderStatusList.clear();
+                        OrderStatusList.add("All");
 
-                    if(mDReportModels!=null){
-                        for(ReportModel r : mDReportModels){
-                            if(orderTakenByFilter.equalsIgnoreCase("All") || r.getOrderStatus().equalsIgnoreCase(orderTakenByFilter))
-                                if(viewType == 2 && (r.getSubOrderGroup()==null || r.getSubOrderGroup().size()==0)){
-                                    List<OrderGroup> orderGroupList = new ArrayList<>();
-                                    orderGroupList.add(new OrderGroup(r.getOrderNo(), r.getOrderValue(), r.getReceived_Amt(), r.getOrderValue()));
-                                    r.setSubOrderGroup(orderGroupList);
+                        if(mDReportModels!=null){
+                            for(ReportModel r : mDReportModels){
+                                if(orderTakenByFilter.equalsIgnoreCase("All") || r.getOrderStatus().equalsIgnoreCase(orderTakenByFilter))
+                                    if(viewType == 2 && (r.getSubOrderGroup()==null || r.getSubOrderGroup().size()==0)){
+                                        List<OrderGroup> orderGroupList = new ArrayList<>();
+                                        orderGroupList.add(new OrderGroup(r.getOrderNo(), r.getOrderValue(), r.getReceived_Amt(), r.getOrderValue()));
+                                        r.setSubOrderGroup(orderGroupList);
+                                    }
+                                filteredList.add(r);
+
+                                if(orderTakenByFilter.equalsIgnoreCase("All") || orderTakenByFilter.equalsIgnoreCase(r.getOrderStatus())){
+
+                                    Float orderValue= null;
+                                    if (r.getOrderValue()!=null && !r.getOrderValue().equals("")  && !r.getOrderValue().equals("null") ) {
+                                        orderValue = Float.valueOf(r.getOrderValue());
+                                        intSum = intSum +orderValue;
+                                    }
+
                                 }
-                            filteredList.add(r);
 
-                            if(orderTakenByFilter.equalsIgnoreCase("All") || orderTakenByFilter.equalsIgnoreCase(r.getOrderStatus())){
-
-                                Float orderValue= null;
-                                if (r.getOrderValue()!=null && !r.getOrderValue().equals("")  && !r.getOrderValue().equals("null") ) {
-                                    orderValue = Float.valueOf(r.getOrderValue());
-                                    intSum = intSum +orderValue;
+                                String orderStatus = "";
+                                if(r.getOrderStatus()!=null && !r.getOrderStatus().equals("")  && !r.getOrderStatus().equals("null") ){
+                                    orderStatus = r.getOrderStatus();
+                                    if(!OrderStatusList.contains(orderStatus))
+                                        OrderStatusList.add(orderStatus);
                                 }
 
                             }
-
-                            String orderStatus = "";
-                            if(r.getOrderStatus()!=null && !r.getOrderStatus().equals("")  && !r.getOrderStatus().equals("null") ){
-                                orderStatus = r.getOrderStatus();
-                                if(!OrderStatusList.contains(orderStatus))
-                                    OrderStatusList.add(orderStatus);
-                            }
-
+                            txtTotalValue.setText("Rs . "+ Constant.roundTwoDecimals(intSum));
                         }
-                        txtTotalValue.setText("Rs . "+ Constant.roundTwoDecimals(intSum));
+
+                        updateFilterList();
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
 
-                    updateFilterList();
-                }catch (Exception e){
-                    e.printStackTrace();
+                    mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
+                        @Override
+                        public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {//,String TaxValue,String Tax
+                            Intent intent = new Intent(ReportActivity.this, ViewReportActivity.class);
+                            intent.putExtra("ProductID", productId);
+                            intent.putExtra("OrderDate", orderDate);
+                            intent.putExtra("FromDate", fromBtn.getText().toString());
+                            intent.putExtra("ToDate", toBtn.getText().toString());
+                            intent.putExtra("OderValue", OrderValue);
+                            intent.putExtra("orderType", orderType);
+                            intent.putExtra("editOrder", editOrder);
+                            intent.putExtra("Paymentflag", Paymentflag);
+                            intent.putExtra("Dispatch_Flag", Dispatch_Flag);
+
+                            intent.putExtra("dispatch_date", dispatch_date);
+                            intent.putExtra("payment_type", payment_type);
+                            intent.putExtra("payment_option", payment_option);
+                            intent.putExtra("check_utr_no", check_utr_no);
+                            intent.putExtra("attachment", attachment);
+
+                            startActivity(intent);
+                            //  finish();
+                        }
+                    },orderTakenByFilter,txtTotalValue, OrderType, viewType);
+                    mReportList.setAdapter(mReportViewAdapter);
                 }
 
-                mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
-                    @Override
-                    public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {//,String TaxValue,String Tax
-                        Intent intent = new Intent(ReportActivity.this, ViewReportActivity.class);
-                        intent.putExtra("ProductID", productId);
-                        intent.putExtra("OrderDate", orderDate);
-                        intent.putExtra("FromDate", fromBtn.getText().toString());
-                        intent.putExtra("ToDate", toBtn.getText().toString());
-                        intent.putExtra("OderValue", OrderValue);
-                        intent.putExtra("orderType", orderType);
-                        intent.putExtra("editOrder", editOrder);
-                        intent.putExtra("Paymentflag", Paymentflag);
-                        intent.putExtra("Dispatch_Flag", Dispatch_Flag);
-
-                        intent.putExtra("dispatch_date", dispatch_date);
-                        intent.putExtra("payment_type", payment_type);
-                        intent.putExtra("payment_option", payment_option);
-                        intent.putExtra("check_utr_no", check_utr_no);
-                        intent.putExtra("attachment", attachment);
-
-                        startActivity(intent);
-                        //  finish();
-                    }
-                },orderTakenByFilter,txtTotalValue, OrderType, viewType);
-                mReportList.setAdapter(mReportViewAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<ReportDataList> call, Throwable t) {
-                t.printStackTrace();
-                Toast.makeText(ReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<ReportDataList> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(ReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                }
+            });
         }else {
             Toast.makeText(ReportActivity.this, "Invalid date selection", Toast.LENGTH_SHORT).show();
         }
@@ -653,6 +653,37 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        toolHeader = null;
+        txtTotalValue = null;
+        txtName = null;
+        imgBack = null;
+        imgShare = null;
+        fromBtn = null;
+        toBtn = null;
+        fromDateString = null;
+        dateTime = null;
+        toDateString = null;
+        FReport = null;
+        TReport = null;
+        OrderType = null;
+        mReportViewAdapter = null;
+        mReportList = null;
+        shared_common_pref = null;
+        modeOrderData = null;
+        mCommon_model_spinner = null;
+        customDialog = null;
+        linearOrderMode = null;
+        txtOrderStatus = null;
+        orderTakenByFilter = null;
+        OrderStatusList = null;
+        linearLayout = null;
+        toolbar_top = null;
+        totalLayout = null;
+        filteredList = null;
+        headingLayout = null;
+    }
 }
 

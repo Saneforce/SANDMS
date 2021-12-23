@@ -59,5 +59,9 @@ public class ReportDashBoard extends AppCompatActivity {
         finish();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mShared_common_pref = null;
+    }
 }
