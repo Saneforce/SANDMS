@@ -315,7 +315,7 @@ public class LoginActivity extends AppCompatActivity{
                                 StckLstAdd = jsonObject.optString("Stockist_Address");
                                 SpAddr = jsonObject.optString("sup_addr");
                                 ERP_Code = jsonObject.optString("ERP_Code");
-                                paymentGatewayType  = jsonObject.getInt("Payment_Gateway_Type");
+                                paymentGatewayType  = jsonObject.getInt(Shared_Common_Pref.PAYMENT_GATEWAY_TYPE);
                             } catch (JSONException jsonException) {
                                 jsonException.printStackTrace();
                             }

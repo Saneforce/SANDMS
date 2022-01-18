@@ -264,8 +264,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 ProceedPayment("","","");
             } else if (PaymntMode.equalsIgnoreCase("Online")) {
                 if(paymentGateWayType == 2)
+                    //razor pay
                     getOnlinePaymentKeys();
                 else {
+                    //bill desk
                     showPaymentDetailsDialog();
                 }
 
