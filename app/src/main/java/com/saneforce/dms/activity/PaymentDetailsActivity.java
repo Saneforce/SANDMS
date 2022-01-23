@@ -143,7 +143,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
         getOfflineMode();
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
-        AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
+//        AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
+        AmountValue = "1";
         paymentGateWayType = getIntent().getIntExtra("paymentGateWayType", 1);
 
         productId.setText(OrderIDValue);
@@ -334,7 +335,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
     public void getSdkParams(String email, String mob) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponse", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, mob, email);
+        Call<JsonObject> call = apiInterface.getSdkParams("get/paymentResponseLive", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), AmountValue, OrderIDValue, mob, email);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -395,7 +396,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
                         JSONObject jsonRootObject = new JSONObject(res);
                         if(jsonRootObject.getBoolean("success")){
-                            Toast.makeText(DMSApplication.getApplication(), "Payment successfully done", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DMSApplication.getApplication(), "Payment done", Toast.LENGTH_SHORT).show();
                             activity.finish();
                         }
                     }
