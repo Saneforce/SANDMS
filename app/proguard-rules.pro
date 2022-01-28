@@ -43,3 +43,27 @@
 #com.billdesk.sdk.PaymentWebView$JavaScriptInterface {
 # <methods>;
 #}
+
+-keep public class com.billdesk.sdk.*
+-keep public class com.billdesk.config.*
+-keep public class com.billdesk.utils.URLUtilActivity
+-keep public interface com.billdesk.sdk.LibraryPaymentStatusProtocol{
+ public void paymentStatus(java.lang.String,android.app.Activity);
+ public void cancelTransaction();
+
+ public void tryAgain();
+}
+-keep class com.billdesk.sdk.PaymentWebView$JavaScriptInterface{
+ public void gotMsg(java.lang.String);
+}
+-keepclassmembers class * {
+ @android.webkit.JavascriptInterface <methods>;
+}
+-keepattributes JavascriptInterface
+-keep public class com.billdesk.sdk.PaymentWebView$JavaScriptInterface
+-keep public class * implements
+com.billdesk.sdk.PaymentWebView$JavaScriptInterface
+-keepclassmembers class
+com.billdesk.sdk.PaymentWebView$JavaScriptInterface {
+ <methods>;
+}
