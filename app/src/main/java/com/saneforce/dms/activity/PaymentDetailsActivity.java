@@ -37,7 +37,6 @@ import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
-import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
@@ -48,6 +47,7 @@ import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.ImageFilePath;
+import com.saneforce.dms.utils.SampleCallBack;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
 
@@ -144,7 +144,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
 //        AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
-        AmountValue = "1";
+        AmountValue = "5.00";
         paymentGateWayType = getIntent().getIntExtra("paymentGateWayType", 1);
 
         productId.setText(OrderIDValue);
@@ -352,7 +352,12 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
                         String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
-                        SampleCallBack objSampleCallBack = new SampleCallBack();
+                        SampleCallBack objSampleCallBack = new SampleCallBack(new DMS.PaymentResponseBilldesk() {
+                            @Override
+                            public void onResponse(Context context, String response) {
+                                updateResponseToServer(PaymentDetailsActivity.this, response);
+                            }
+                        }, PaymentDetailsActivity.this);
 
                         Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
                         sdkIntent.putExtra("msg",strPGMsg);
@@ -382,26 +387,60 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
 
 
-    public static void updateResponseToServer(Activity activity, String response) {
+    public void updateResponseToServer(Activity activity, String response1) {
+
+        String[] responseSplit = response1.split("|");
+
+        if(!responseSplit[14].equals("0300")){
+            Toast.makeText(PaymentDetailsActivity.this, ""+ responseSplit[responseSplit.length-2], Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.d(TAG, "updateResponseToServer: responseSplit "+ responseSplit);
+        JSONObject js = new JSONObject();
+        try {
+            js.put("OrderID", OrderIDValue);
+            js.put("StockistCode", mShared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
+            js.put("divisionCode", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("PaymentMode", PaymntMode);
+
+            js.put("PaymentTypeName", "");
+            js.put("PaymentTypeCode", PaymentTypecode);
+            js.put("UTRNumber", edtUTR.getText().toString());
+            js.put("Amount", AmountValue);
+            js.put("Attachement", serverFileName);
+
+
+            js.put("cheque_date", "");
+            js.put("cheque_amount", "");
+
+            js.put("PaymentID", responseSplit[2]);
+            js.put("RazorOrderID", OrderIDValue);
+            js.put("SignatureID", responseSplit[responseSplit.length-1]);
+            js.put("PaymentResponse", response1);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.updateResponse("get/updateResponse", divCode, sfCode , stateCode, AmountValue, OrderIDValue, response);
+        Call<JsonObject> call = apiInterface.getDetails("save/primarypaymentBillDesk",mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    String res = response.body().toString();
-                    Log.v(TAG, "updateResponseToServer res => "+ res);
 
-                    if(res!=null && !res.equals("")){
+                    JsonObject jsonObject = response.body();
+                    Log.v("Payment_Response", jsonObject.toString());
+                    if (jsonObject!=null && jsonObject.get("success").toString().equalsIgnoreCase("true")){
 
-                        JSONObject jsonRootObject = new JSONObject(res);
-                        if(jsonRootObject.getBoolean("success")){
-                            Toast.makeText(DMSApplication.getApplication(), "Payment done", Toast.LENGTH_SHORT).show();
-                            activity.finish();
-                        }
-                    }
+                        Toast.makeText(PaymentDetailsActivity.this, "Payment done successfully", Toast.LENGTH_SHORT).show();
+                        activity.finish();
 
-                } catch (JSONException e) {
+                    }else
+                        Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -880,6 +919,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     private void sendImageToServer(MultipartBody.Part imgg) {
 
+
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> mCall = apiInterface.offlineImage("upload/paymentimg", imgg);
 
@@ -1085,64 +1126,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
 
-    public static class SampleCallBack implements LibraryPaymentStatusProtocol, Parcelable {
-        String TAG = SampleCallBack.class.getSimpleName();
-        public SampleCallBack() {
-            Log.v(TAG, "CallBack()....");
-
-        }
-
-        public SampleCallBack(Parcel in) {
-        }
-
-        @SuppressWarnings("rawtypes")
-        public static final Creator CREATOR = new Creator() {
-            String TAG = "Callback --- Parcelable.Creator ::: > ";
-
-            @Override
-            public SampleCallBack createFromParcel(Parcel in) {
-                Log.v(TAG, "CallBackActivity createFromParcel(Parcel in)....");
-                return new SampleCallBack(in);
-            }
-
-            @Override
-            public Object[] newArray(int size) {
-                Log.v(TAG, "Object[] newArray(int size)....");
-                return new SampleCallBack[size];
-            }
-        };
 
 
-
-
-        @Override
-        public void paymentStatus(String status, Activity context) {
-            Log.v(TAG, "paymentStatus "+ status);
-            updateResponseToServer(context, status);
-        }
-
-        @Override
-        public void tryAgain() {
-            Log.d(TAG, "tryAgain() called");
-        }
-
-        @Override
-        public void onError(Exception e) {
-            Log.d(TAG, "onError() called with: e = [" + e + "]");
-        }
-
-        @Override
-        public void cancelTransaction() {
-            Log.d(TAG, "cancelTransaction() called");
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int i) {
-        }
-    }
 }

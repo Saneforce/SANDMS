@@ -1,5 +1,6 @@
 package com.saneforce.dms.listener;
 
+import android.content.Context;
 import android.content.DialogInterface;
 
 import com.saneforce.dms.utils.Common_Model;
@@ -62,6 +63,11 @@ public interface DMS {
 
     interface PaymentResponse {
         void onResponse(String response);
+    }
+
+
+    interface PaymentResponseBilldesk {
+        void onResponse(Context context, String response);
     }
 
 
