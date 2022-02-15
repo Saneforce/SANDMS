@@ -37,6 +37,7 @@ import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
@@ -47,7 +48,6 @@ import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.ImageFilePath;
-import com.saneforce.dms.utils.SampleCallBack;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
 
@@ -58,6 +58,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -92,8 +93,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
     String razorpay_signature="";
     Shared_Common_Pref mShared_common_pref;
 
-    String finalPath = "", filePath = "", DateValue = "",
-            PaymntMode = "", PaymentTypecode = "";
+    String finalPath = "", filePath = "", DateValue = "";
+    public static String PaymntMode = "", PaymentTypecode = "";
+
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
     //    int Amount;
@@ -107,7 +109,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     LinearLayout ll_amount;
     EditText et_amount;
     String currentDate ="";
-    String serverFileName = "";
+    public static String serverFileName = "";
 
     //1 razor pay
     //2 bill desk
@@ -117,10 +119,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public static String OrderIDValue = "", AmountValue = "", divCode, sfCode , stateCode;
 
     ImageView iv_attachment;
+
+    public static String Stockist_Code= "", utr = "";
+    public static PaymentDetailsActivity paymentDetailsActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
+        paymentDetailsActivity = this;
         mShared_common_pref = new Shared_Common_Pref(this);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         productId = findViewById(R.id.ord_id);
@@ -139,12 +146,14 @@ public class PaymentDetailsActivity extends AppCompatActivity
         divCode = mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         sfCode  = mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         stateCode = mShared_common_pref.getvalue(Shared_Common_Pref.State_Code);
+        Stockist_Code = mShared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code);
+
 
         getOfflineMode();
         OrderIDValue = String.valueOf(getIntent().getSerializableExtra("OrderId"));
         DateValue = String.valueOf(getIntent().getSerializableExtra("Date"));
-//        AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
-        AmountValue = "5.00";
+        AmountValue = String.valueOf(getIntent().getSerializableExtra("Amount"));
+//        AmountValue = "1.00";
         paymentGateWayType = getIntent().getIntExtra("paymentGateWayType", 1);
 
         productId.setText(OrderIDValue);
@@ -352,12 +361,13 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         String userEmail = jsonRootObject.getString("userEmail");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
                         String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
-                        SampleCallBack objSampleCallBack = new SampleCallBack(new DMS.PaymentResponseBilldesk() {
-                            @Override
-                            public void onResponse(Context context, String response) {
-                                updateResponseToServer(PaymentDetailsActivity.this, response);
-                            }
-                        }, PaymentDetailsActivity.this);
+
+                        utr = edtUTR.getText().toString();
+
+
+
+
+                        SampleCallBack objSampleCallBack = new SampleCallBack();
 
                         Intent sdkIntent = new Intent(PaymentDetailsActivity.this, PaymentOptions.class);
                         sdkIntent.putExtra("msg",strPGMsg);
@@ -386,26 +396,94 @@ public class PaymentDetailsActivity extends AppCompatActivity
     }
 
 
+    public static class SampleCallBack implements LibraryPaymentStatusProtocol, Parcelable {
+        String TAG = SampleCallBack.class.getSimpleName();
+        Context context;
 
-    public void updateResponseToServer(Activity activity, String response1) {
+        public SampleCallBack() {
+            Log.v(TAG, "CallBack()....");
+        }
 
-        String[] responseSplit = response1.split("|");
+        public SampleCallBack(Parcel in) {
 
-        if(!responseSplit[14].equals("0300")){
-            Toast.makeText(PaymentDetailsActivity.this, ""+ responseSplit[responseSplit.length-2], Toast.LENGTH_SHORT).show();
+        }
+
+        @SuppressWarnings("rawtypes")
+        public static Creator CREATOR = new Creator() {
+            String TAG = "Callback --- Parcelable.Creator ::: > ";
+
+            @Override
+            public SampleCallBack createFromParcel(Parcel in) {
+                Log.v(TAG, "CallBackActivity createFromParcel(Parcel in)....");
+                return new SampleCallBack(in);
+            }
+
+            @Override
+            public Object[] newArray(int size) {
+                Log.v(TAG, "Object[] newArray(int size)....");
+                return new SampleCallBack[size];
+            }
+        };
+
+
+        @Override
+        public void paymentStatus(String status, Activity context) {
+            Log.v(TAG, "paymentStatus "+ status);
+            updateResponseToServer(context, status);
+        }
+
+        @Override
+        public void tryAgain() {
+            Log.d(TAG, "tryAgain() called");
+            Toast.makeText(context, "Please Try Again", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(Exception e) {
+            Log.d(TAG, "onError() called with: e = [" + e + "]");
+            Toast.makeText(context, "Error : "+ e, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void cancelTransaction() {
+            Log.d(TAG, "cancelTransaction() called");
+            Toast.makeText(context, "Transaction Canceled ", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+//        parcel.writeParcelable(paymentResponseBilldesk, i);
+
+        }
+    }
+
+
+    public static void updateResponseToServer(Activity activity, String response1) {
+
+        String[] responseSplit = response1.split("\\|");
+
+        if(responseSplit.length> 14 && !responseSplit[14].equals("0300")){
+            Toast.makeText(DMSApplication.getApplication(), ""+ responseSplit[responseSplit.length-2], Toast.LENGTH_SHORT).show();
+            activity.finish();
             return;
         }
-        Log.d(TAG, "updateResponseToServer: responseSplit "+ responseSplit);
+        Log.d(TAG, "updateResponseToServer: responseSplit "+ Arrays.toString(responseSplit));
         JSONObject js = new JSONObject();
         try {
+
             js.put("OrderID", OrderIDValue);
-            js.put("StockistCode", mShared_common_pref.getvalue(Shared_Common_Pref.Stockist_Code));
-            js.put("divisionCode", mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
+            js.put("StockistCode", Stockist_Code);
+            js.put("divisionCode", divCode);
             js.put("PaymentMode", PaymntMode);
 
             js.put("PaymentTypeName", "");
             js.put("PaymentTypeCode", PaymentTypecode);
-            js.put("UTRNumber", edtUTR.getText().toString());
+            js.put("UTRNumber", utr);
             js.put("Amount", AmountValue);
             js.put("Attachement", serverFileName);
 
@@ -424,7 +502,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getDetails("save/primarypaymentBillDesk",mShared_common_pref.getvalue(Shared_Common_Pref.State_Code), js.toString());
+        Call<JsonObject> call = apiInterface.getDetails("save/primarypaymentBillDesk",stateCode, js.toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -434,11 +512,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Log.v("Payment_Response", jsonObject.toString());
                     if (jsonObject!=null && jsonObject.get("success").toString().equalsIgnoreCase("true")){
 
-                        Toast.makeText(PaymentDetailsActivity.this, "Payment done successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Payment done successfully", Toast.LENGTH_SHORT).show();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("closeActivity", true);
                         activity.finish();
+                        paymentDetailsActivity.setResult(-1, resultIntent);
+                        paymentDetailsActivity.finish();
 
                     }else
-                        Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -627,7 +709,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         }
     }
 
-    private void paymentCompleted(boolean closeActivity) {
+    public void paymentCompleted(boolean closeActivity) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("closeActivity", closeActivity);
         setResult(-1, resultIntent);
