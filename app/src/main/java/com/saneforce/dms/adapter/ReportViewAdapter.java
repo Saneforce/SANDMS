@@ -143,7 +143,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 holder.txtOrderTakenBy.setText("Taken By: " + orderTakenBy);
 
-                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
+//                double totalfin =totalvalue+ Float.parseFloat(mDate.get(position).getOrderValue());
                 // textTotalValue.setText(String.valueOf(totalfin));
 
 

@@ -187,21 +187,23 @@ public class ViewCartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
-                    if(orderType == 1)
+                    if(orderType == 1){
+                        btnSubmt.setEnabled(false);
                         SavePrimaryProduct(adapter.getData());
+                    }
                     else{
                         if(!Constant.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
                             Toast.makeText(ViewCartActivity.this, "Edit order cannot be offline", Toast.LENGTH_SHORT).show();
-                        }else
+                        }else{
+                            btnSubmt.setEnabled(false);
                             SaveSecondaryProduct(adapter.getData());
-
+                        }
                     }
 
                 }else {
                     Toast.makeText(ViewCartActivity.this, "Please choose Products", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-
             }
         });
 
@@ -635,8 +637,10 @@ public class ViewCartActivity extends AppCompatActivity {
                     completePreviousActivity(true);
                 }
 
-            } else
+            } else{
+                btnSubmt.setEnabled(true);
                 Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+            }
         }
        /* ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> responseBodyCall = apiInterface.submitValue("dcr/save", shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), totalValueString);
@@ -1165,6 +1169,8 @@ public class ViewCartActivity extends AppCompatActivity {
                 }
             }
             else {
+                btnSubmt.setEnabled(true);
+
                 common_class.ProgressdialogShow(2, "");
                 Toast.makeText(ViewCartActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
             }
@@ -1230,8 +1236,9 @@ public class ViewCartActivity extends AppCompatActivity {
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(ViewCartActivity.this,"Something went wrong, please try again", Toast.LENGTH_SHORT).show();
-
                 }
+
+                btnSubmt.setEnabled(true);
             }
 
             @Override

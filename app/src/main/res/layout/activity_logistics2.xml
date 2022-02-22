@@ -97,7 +97,7 @@
 
                 <TextView
                     style="@style/TextViewHeader"
-                    android:text="Confrimed DISPATCHES" />
+                    android:text="Confirmed DISPATCHES" />
 
 
             </LinearLayout>

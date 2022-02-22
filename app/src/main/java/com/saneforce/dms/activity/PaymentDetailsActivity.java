@@ -107,7 +107,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     TextView tv_date;
 
     LinearLayout ll_amount;
-    EditText et_amount;
+    TextView et_amount;
     String currentDate ="";
     public static String serverFileName = "";
 
@@ -123,13 +123,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public static String Stockist_Code= "", utr = "";
     public static PaymentDetailsActivity paymentDetailsActivity;
 
+    TextView cheque_no_label;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
         paymentDetailsActivity = this;
         mShared_common_pref = new Shared_Common_Pref(this);
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radioGroup = findViewById(R.id.radioGroup);
         productId = findViewById(R.id.ord_id);
         productDate = findViewById(R.id.dis_date);
         productAmt = findViewById(R.id.dis_amt);
@@ -142,6 +144,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         ll_amount = findViewById(R.id.ll_amount);
         et_amount = findViewById(R.id.et_amount);
         iv_attachment = findViewById(R.id.iv_attachment);
+        cheque_no_label = findViewById(R.id.cheque_no_label);
 
         divCode = mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         sfCode  = mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
@@ -957,6 +960,17 @@ public class PaymentDetailsActivity extends AppCompatActivity
             String name = myDataset.get(position).getName();
             offlineMode.setText(name);
             PaymentTypecode = myDataset.get(position).getId();
+
+
+
+            if(name.contains("Cheque")){
+                edtUTR.setHint("Enter Cheque No./UTR");
+                cheque_no_label.setText("Enter Cheque No./UTR");
+            }else {
+                edtUTR.setHint("Enter Challan No./UTR");
+                cheque_no_label.setText("Enter Challan No./UTR");
+            }
+
             if(name.equalsIgnoreCase("cash"))
                 iv_attachment.setVisibility(View.GONE);
             else

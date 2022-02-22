@@ -142,7 +142,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     EditText edt_utr;
     TextView tv_date;
     TextView txt_offline_mode;
-    EditText et_amount;
+    TextView et_amount;
     ImageView imgSource;
     ImageView iv_choose_photo;
     Uri outputFileUri;
@@ -169,6 +169,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     LinearLayout ll_attachment;
     ImageView iv_attachment;
 
+    TextView cheque_no_label;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,6 +196,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         tv_check_utr_no=findViewById(R.id.tv_check_utr_no);
         ll_attachment=findViewById(R.id.ll_attachment);
         iv_attachment=findViewById(R.id.iv_attachment);
+        cheque_no_label=findViewById(R.id.cheque_no_label);
 
         toolbar_top.setVisibility(View.VISIBLE);
 
@@ -1623,6 +1626,13 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             else
                 iv_choose_photo.setVisibility(View.GONE);
 
+            if(name.contains("Cheque")){
+                edt_utr.setHint("Enter Cheque No./UTR");
+                cheque_no_label.setText("Enter Cheque No./UTR");
+            }else {
+                edt_utr.setHint("Enter Challan No./UTR");
+                cheque_no_label.setText("Enter Challan No./UTR");
+            }
         }
     }
 
