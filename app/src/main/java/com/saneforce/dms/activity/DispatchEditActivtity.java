@@ -55,7 +55,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     RecyclerView pendingRecycle;
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
-    ArrayList<Object> listdata = new ArrayList<>();
+//    ArrayList<Object> listdata = new ArrayList<>();
     //    String jsonsds = "";
     JSONArray jsonArray = null;
     JSONObject jsonObject = null;
@@ -88,7 +88,7 @@ public class DispatchEditActivtity extends AppCompatActivity {
     public void ResponseDetails() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca = apiInterface.LogistData(OrderId);
-        listdata.clear();
+//        listdata.clear();
         Log.v("Product_Request", ca.request().toString());
         ca.enqueue(new Callback<JsonObject>() {
             @Override
@@ -104,7 +104,9 @@ public class DispatchEditActivtity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         jsonObject = jsonArray.getJSONObject(i);
-                        listdata.add(jsonArray.get(i));
+                        jsonObject.put("postponed", "false");
+
+//                        listdata.add(jsonArray.get(i));
                     }
 
                     pendingRecycle.setHasFixedSize(true);
