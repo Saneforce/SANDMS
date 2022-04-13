@@ -110,8 +110,13 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if(!Constant.isInternetAvailable(LoginActivity.this))
                     Toast.makeText(LoginActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
-                else
+                else if(edtEmail.getText().toString().equals("")){
+                    Toast.makeText(LoginActivity.this, "Please enter username", Toast.LENGTH_SHORT).show();
+                }else if(edtPass.getText().toString().equals("")){
+                    Toast.makeText(LoginActivity.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                }else{
                     login(edtEmail.getText().toString(), edtPass.getText().toString());
+                }
             }
         });
 

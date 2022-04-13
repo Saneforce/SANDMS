@@ -388,6 +388,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 String Name = String.valueOf(jsonObject.get("name"));
                 String PName = String.valueOf(jsonObject.get("Pname"));
                 String PRate = String.valueOf(jsonObject.get("Product_Cat_Code"));
+//                String PRate = "1";
                 String PBarCode = String.valueOf(jsonObject.get("Product_Brd_Code"));
                 String PId = String.valueOf(jsonObject.get("PID"));
                 String PUOM = String.valueOf(jsonObject.get("UOM"));
