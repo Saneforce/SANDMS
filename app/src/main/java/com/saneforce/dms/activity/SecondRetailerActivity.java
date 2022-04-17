@@ -630,7 +630,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
     private void processSecondaryOrderList() {
-
+        mCommon_class.ProgressdialogShow(2, "");
         new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
 
 /*        SecViewModel = ViewModelProviders.of(SecondRetailerActivity.this).get(SecondaryProductViewModel.class);
@@ -863,7 +863,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             e.printStackTrace();
         }
 
-        mCommon_class.ProgressdialogShow(2, "");
+//        mCommon_class.ProgressdialogShow(2, "");
 //        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
         if(isCallSecActivity){
             Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
