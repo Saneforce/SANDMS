@@ -229,7 +229,10 @@
             android:authorities="${applicationId}.workmanager-init"
             tools:node="remove"/>-->
 
-
+        <activity
+            android:name=".PrivacyPolicy"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" /> <!-- android:debuggable="true" -->
     </application>
 
 </manifest>

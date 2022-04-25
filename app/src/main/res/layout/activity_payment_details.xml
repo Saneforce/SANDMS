@@ -308,5 +308,5 @@
             android:textColor="#FFF"
             tools:ignore="RtlCompat" />
 
-    </LinearLayout>
+        </LinearLayout>
 </LinearLayout>

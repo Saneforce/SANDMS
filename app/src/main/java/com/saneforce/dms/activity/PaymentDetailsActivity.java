@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -38,6 +39,7 @@ import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
 import com.saneforce.dms.DMSApplication;
+import com.saneforce.dms.PrivacyPolicy;
 import com.saneforce.dms.R;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
@@ -304,7 +306,16 @@ public class PaymentDetailsActivity extends AppCompatActivity
         EditText et_email = dialog.findViewById(R.id.et_email);
         EditText et_mob = dialog.findViewById(R.id.et_mob);
         TextView tv_proceed = dialog.findViewById(R.id.tv_proceed);
+        CheckBox privacy_check_box = dialog.findViewById(R.id.privacy_check_box);
+        TextView tv_terms_and_conditions = dialog.findViewById(R.id.tv_terms_and_conditions);
+        tv_terms_and_conditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PaymentDetailsActivity.this, PrivacyPolicy.class);
+                startActivity(intent);
 
+            }
+        });
 
         tv_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +327,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid email id", Toast.LENGTH_SHORT).show();
                 }else if(et_mob.getText().toString().trim().equals("")){
                     Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid mobile number", Toast.LENGTH_SHORT).show();
+                }else if(!privacy_check_box.isChecked()){
+                    Toast.makeText(PaymentDetailsActivity.this, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show();
                 }else {
                     dialog.dismiss();
 /*
