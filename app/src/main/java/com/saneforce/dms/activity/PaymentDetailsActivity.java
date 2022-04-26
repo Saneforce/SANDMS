@@ -6,12 +6,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -302,20 +308,36 @@ public class PaymentDetailsActivity extends AppCompatActivity
         final Dialog dialog = new Dialog(PaymentDetailsActivity.this);
         dialog.setContentView(R.layout.dialog_payment_credential);
 
-
         EditText et_email = dialog.findViewById(R.id.et_email);
         EditText et_mob = dialog.findViewById(R.id.et_mob);
         TextView tv_proceed = dialog.findViewById(R.id.tv_proceed);
         CheckBox privacy_check_box = dialog.findViewById(R.id.privacy_check_box);
         TextView tv_terms_and_conditions = dialog.findViewById(R.id.tv_terms_and_conditions);
-        tv_terms_and_conditions.setOnClickListener(new View.OnClickListener() {
+
+
+        SpannableString ss = new SpannableString(getResources().getString(R.string.please_accept_the_terms_and_conditions_and_privacy_policy));
+        ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View textView) {
                 Intent intent = new Intent(PaymentDetailsActivity.this, PrivacyPolicy.class);
                 startActivity(intent);
-
             }
-        });
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+        ss.setSpan(clickableSpan, 17, 56, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tv_terms_and_conditions.setText(ss);
+        tv_terms_and_conditions.setMovementMethod(LinkMovementMethod.getInstance());
+        tv_terms_and_conditions.setHighlightColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        if(mShared_common_pref.getBooleanvalue("is_accepted_terms")){
+            privacy_check_box.setVisibility(View.GONE);
+        }else
+            privacy_check_box.setVisibility(View.VISIBLE);
 
         tv_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,10 +349,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid email id", Toast.LENGTH_SHORT).show();
                 }else if(et_mob.getText().toString().trim().equals("")){
                     Toast.makeText(PaymentDetailsActivity.this, "Please enter the valid mobile number", Toast.LENGTH_SHORT).show();
-                }else if(!privacy_check_box.isChecked()){
+                }else if(privacy_check_box.getVisibility() == View.VISIBLE && !privacy_check_box.isChecked()){
                     Toast.makeText(PaymentDetailsActivity.this, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show();
                 }else {
                     dialog.dismiss();
+                    mShared_common_pref.save("is_accepted_terms", true);
 /*
 //                    AmountValue
                     //    String strPGMsg = "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|892409133";

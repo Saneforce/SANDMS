@@ -71,6 +71,7 @@
     <string name="rupee_symbol">₹</string>
 
     <string name="gps_require_info">App requires GPS ON, please turn on to work seamlessly</string>
+    <string name="please_accept_the_terms_and_conditions_and_privacy_policy">Please check the terms and conditions and Privacy Policy before payment</string>
 
 
 </resources>

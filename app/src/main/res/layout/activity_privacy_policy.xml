@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFFFFF"
-                android:layout_above="@+id/ln_but">
+                >
                 <TextView
                     android:id="@+id/head"
                     android:layout_width="match_parent"
@@ -24,7 +25,7 @@
                     android:textColor="#000000"
                     android:text="APP PRIVACY POLICY"
                     android:gravity="center"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:layout_marginTop="10dp"
                     android:textStyle="bold"/>
                 <TextView
@@ -33,7 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textColor="#000000"
-                    android:gravity="center|left"/>
+                    android:gravity="center|start"/>
 
                 <TextView
                     android:layout_below="@+id/privacy_webview"
@@ -41,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textColor="#000000"
-                    android:gravity="center|left"/>
+                    android:gravity="center|start"/>
 
             </RelativeLayout>
         </ScrollView>
