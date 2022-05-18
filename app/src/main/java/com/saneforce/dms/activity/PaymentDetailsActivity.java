@@ -1007,10 +1007,15 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 cheque_no_label.setText("Enter Challan No./UTR");
             }
 
-            if(name.equalsIgnoreCase("cash"))
+            if(name.equalsIgnoreCase("cash")){
+                serverFileName = "";
                 iv_attachment.setVisibility(View.GONE);
-            else
+                imgSource.setVisibility(View.GONE);
+            }
+            else {
                 iv_attachment.setVisibility(View.VISIBLE);
+                imgSource.setVisibility(View.VISIBLE);
+            }
 
         }
     }

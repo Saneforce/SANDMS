@@ -1621,10 +1621,16 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             txt_offline_mode.setText(name);
             PaymentTypecode = myDataset.get(position).getId();
 
-            if(!name.equalsIgnoreCase("cash"))
+            if(!name.equalsIgnoreCase("cash")){
                 iv_choose_photo.setVisibility(View.VISIBLE);
-            else
+                imgSource.setVisibility(View.VISIBLE);
+
+            }
+            else{
+                serverFileName = "";
                 iv_choose_photo.setVisibility(View.GONE);
+                imgSource.setVisibility(View.GONE);
+            }
 
             if(name.contains("Cheque")){
                 edt_utr.setHint("Enter Cheque No./UTR");
