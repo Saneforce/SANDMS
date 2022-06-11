@@ -1,111 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/row_category"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:focusable="true"
     android:layout_margin="@dimen/C5dp"
-    android:padding="@dimen/C5dp">
+    android:padding="@dimen/C5dp"
+    android:focusableInTouchMode="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        tools:ignore="MissingConstraints">
+        app:cardCornerRadius="5dp">
 
-        <androidx.cardview.widget.CardView xmlns:card_view="https://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:cardCornerRadius="5dp"
-            tools:ignore="MissingConstraints">
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/child_product_name"
+                    style="@style/TextStyle"
+                    android:layout_weight="1"
+                    android:text="SAN Honey-Almond Cold"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/child_pro_unit"
+                    style="@style/TextStyle"
+                    android:text="BOX"
+                    android:textColor="@color/appColor"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!--
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="vertical"
-                tools:ignore="MissingConstraints">
+                android:layout_marginTop="@dimen/C10dp"
+                android:layout_marginBottom="@dimen/C10dp">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/c35dp"
+                    android:layout_gravity="center"
+                    android:gravity="end"
+                    tools:ignore="MissingConstraints">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true">
+-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_view_count"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/c35dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="0"
+                    android:visibility="visible"
+                    android:layout_marginEnd="10dp"
+                    android:importantForAutofill="no" />
+<!--                android:background="@drawable/oval_background"-->
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:id="@+id/linear_add"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="end"
+                    android:orientation="horizontal"
+                    android:layout_marginVertical="10dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/child_product_name"
-                            style="@style/TextStyle"
-                            android:layout_weight="1"
-                            android:text="SAN Honey-Almond Cold"
-                            android:textSize="@dimen/C17dp" />
-
-                        <TextView
-                            android:id="@+id/child_pro_unit"
-                            style="@style/TextStyle"
-                            android:text="BOX"
-                            android:textColor="@color/appColor"
-                            android:textSize="@dimen/C17dp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/C10dp"
-                        android:layout_marginBottom="@dimen/C10dp">
+                        android:orientation="vertical">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/c35dp"
-                            android:layout_gravity="center"
-                            android:gravity="end"
-                            tools:ignore="MissingConstraints">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Qty" />
 
+                        <TextView
+                            android:id="@+id/et_qty_value"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:ems="2"
+                            android:layout_height="20dp"
+                            android:gravity="start|bottom"
+                            android:inputType="number"
+                            android:text="0"
+                            android:paddingHorizontal="2dp"
+                            android:textSize="15sp"
+                            android:visibility="visible"
+                            android:importantForAutofill="no" />
+                        <!--                            android:background="@drawable/oval_background"-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentEnd="true">
-
-
-                                <LinearLayout
-                                    android:id="@+id/linear_add"
-                                    android:layout_width="@dimen/header_60"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/oval_background">
-
-                                    <EditText
-                                        android:id="@+id/text_view_count"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:background="@android:color/transparent"
-                                        android:gravity="center"
-                                        android:inputType="number"
-                                        android:maxLength="3"
-                                        android:text="0" />
-
-
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
+                        <!--                            <TextView
+                                                        android:id="@+id/tv_qty_value"
+                                                        android:layout_marginTop="5dp"
+                                                        android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:text="0" />-->
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Free" />
+
+                        <TextView
+                            android:id="@+id/tv_free_value"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Disc Amt" />
+
+                        <TextView
+                            android:id="@+id/tv_disc_amt_value"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+
+                    </LinearLayout>
+
+
+
+
+                    <!--      <Button
+                              android:id="@+id/btn_postpond"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:visibility="visible"
+                              android:layout_marginStart="15dp"
+                              android:background="@drawable/sign_bg"
+                              android:textColor="@color/textColor"
+                              android:text="Postpond" />-->
+
 
                 </LinearLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/martl_view"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/Theme.MaterialComponents.Light"
+                    app:cardBackgroundColor="@color/textColor"
+                    app:strokeWidth="2dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_gravity="center_vertical|end"
+                    app:strokeColor="@color/black">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_checking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="6dp"
+                            android:paddingHorizontal="10dp"
+                            android:text="Discard"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <ImageButton
+                    android:visibility="gone"
+                    android:id="@+id/ib_edit_qty"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/edit"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/app_name"/>
 
             </LinearLayout>
+            <!--
+                    </LinearLayout>
 
+                </RelativeLayout>
 
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>-->
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

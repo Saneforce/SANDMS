@@ -53,7 +53,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/route" />
+                            android:text="@string/route_star" />
 
                         <LinearLayout
                             android:id="@+id/lin_route"
@@ -74,7 +74,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Name" />
+                            android:text="@string/name_star" />
 
                         <EditText
                             android:id="@+id/edt_new_name"
@@ -87,11 +87,11 @@
                             android:layout_margin="@dimen/C5dp"
                             android:padding="10dp"
                             android:singleLine="true"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Address" />
+                            android:text="@string/address_star" />
 
                         <EditText
                             android:id="@+id/edt_new_address"
@@ -103,11 +103,11 @@
                             android:elevation="@dimen/C2dp"
                             android:hint="Enter the Address"
                             android:padding="10dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="City" />
+                            android:text="@string/city_star" />
 
                         <EditText
                             android:id="@+id/edt_new_city"
@@ -120,29 +120,29 @@
                             android:layout_margin="@dimen/C5dp"
                             android:elevation="@dimen/C2dp"
                             android:singleLine="true"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Phone" />
+                            android:text="@string/mob_star" />
 
                         <EditText
-                            android:id="@+id/edt_new_phone"
+                            android:id="@+id/edt_new_mob"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/round_white_backround"
                             android:gravity="start"
                             android:elevation="@dimen/C2dp"
-                            android:hint="Enter the Phone No"
+                            android:hint="Enter the Mobile No"
                             android:inputType="number"
                             android:layout_margin="@dimen/C5dp"
                             android:maxLength="10"
                             android:padding="10dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Email" />
+                            android:text="@string/email_star" />
 
                         <EditText
                             android:id="@+id/edt_new_email"
@@ -155,11 +155,30 @@
                             android:inputType="textEmailAddress"
                             android:padding="10dp"
                             android:layout_margin="@dimen/C5dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
-                        <TextView
-                            style="@style/TextStyle"
-                            android:text="Latitude" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                style="@style/TextStyle"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/latitude_star"
+                                android:layout_gravity="center_vertical"/>
+                            <ImageButton
+                                android:id="@+id/ib_refresh"
+                                android:src="@drawable/ic_baseline_refresh_24"
+                                android:layout_width="36dp"
+                                android:scaleType="fitCenter"
+                                android:tint="@color/black"
+                                android:background="@android:color/transparent"
+                                android:layout_height="36dp"
+                                android:contentDescription="@string/app_name" />
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -178,7 +197,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Longitude" />
+                            android:text="@string/longitude_star" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -198,7 +217,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/retailer_class" />
+                            android:text="@string/retailer_class_star" />
 
                         <LinearLayout
                             android:id="@+id/linear_retailer_class"
@@ -219,7 +238,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="@string/retailer_channel" />
+                            android:text="@string/retailer_channel_star" />
 
                         <LinearLayout
                             android:id="@+id/linear_retailer_channel"
@@ -260,7 +279,7 @@
             android:background="@drawable/sign_bg"
             android:text="Save" />
 
-        <include layout="@layout/back_arrow"></include>
+        <include layout="@layout/back_arrow"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="OrderId:" />
+                        android:text="OrderId: " />
 
                     <TextView
                         android:id="@+id/ord_id"
@@ -46,7 +46,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="Date :" />
+                        android:text="Date : " />
 
                     <TextView
                         android:id="@+id/dis_date"
@@ -62,7 +62,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="Amount :" />
+                        android:text="Amount : " />
 
                     <TextView
                         android:id="@+id/dis_amt"
@@ -113,6 +113,7 @@
                             style="@style/TextStyle"
                             android:checked="false"
                             android:text="Credit" />
+
                     </RadioGroup>
 
 
@@ -137,7 +138,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/C20dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -153,38 +154,41 @@
                     android:layout_margin="@dimen/C5dp"
                     android:background="@drawable/round_white_backround"
                     android:elevation="@dimen/C2dp"
-                    android:onClick="LinearOfflineMode"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                    android:orientation="horizontal"
+                    >
 
                     <TextView
                         android:id="@+id/txt_offline_mode"
                         style="@style/TextStyle"
+                        android:onClick="LinearOfflineMode"
+                        android:width="0dp"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:layout_gravity="center_vertical"
                         android:hint="Offline Mode" />
+
+                    <ImageView
+                        android:id="@+id/iv_attachment"
+                        android:layout_width="36dp"
+                        android:visibility="gone"
+                        android:layout_height="36dp"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:onClick="OffImg"
+                        android:src="@drawable/ic_baseline_attachment_24"
+                        android:contentDescription="@string/app_name" />
+
                 </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:background="@color/cardview_light_background"
-                    android:onClick="OffImg"
-                    android:padding="@dimen/C10dp"
-                    android:src="@drawable/ic_baseline_attachment_24" />
 
                 <ImageView
                     android:id="@+id/imgSource"
                     android:layout_width="@dimen/C70dp"
                     android:layout_height="@dimen/C70dp"
-                    android:layout_marginLeft="@dimen/C10dp"
-                    android:padding="@dimen/C10dp" />
-            </LinearLayout>
+                    android:layout_gravity="center"
+                    android:padding="@dimen/C10dp"
+                    android:contentDescription="@string/app_name" />
         </LinearLayout>
 
         <LinearLayout
@@ -194,8 +198,9 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/cheque_no_label"
                 style="@style/TextStyle"
-                android:text="UTR"
+                android:text="Cheque No. / UTR"
                 android:textStyle="bold" />
 
             <EditText
@@ -203,10 +208,78 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/C5dp"
+                android:maxLength="100"
+                android:singleLine="true"
                 android:background="@drawable/round_white_backround"
-                android:hint="Enter UTR number"
+                android:hint="Enter Cheque No./UTR"
                 android:padding="@dimen/C8dp" />
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:id="@+id/ll_date"
+            android:background="@color/textColor">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:gravity="center_vertical"
+                android:text="Date"/>
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:padding="2dp"
+                android:gravity="center"
+                android:textColor="#000"
+                android:text=""/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:id="@+id/ll_amount"
+            android:background="@color/textColor">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:padding="2dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="#000"
+                android:gravity="center_vertical"
+                android:text="Amount"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+            <TextView
+                android:id="@+id/et_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:textColor="#000"/>
+<!--                android:importantForAutofill="no"-->
+<!--                android:ems="4"-->
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
@@ -217,6 +290,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
+        android:layout_marginHorizontal="15dp"
         android:orientation="vertical">
 
 
@@ -234,5 +308,5 @@
             android:textColor="#FFF"
             tools:ignore="RtlCompat" />
 
-    </LinearLayout>
+        </LinearLayout>
 </LinearLayout>

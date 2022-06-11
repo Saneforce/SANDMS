@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="#f9f9f9">
-
+    android:background="@color/textColor"
+    android:id="@+id/scrolllayout">
+<!--    android:background="#f9f9f9"-->
     <LinearLayout
         android:id="@+id/header_linear"
         android:layout_width="match_parent"
@@ -15,10 +16,12 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitCenter"
             android:layout_marginTop="25dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/logo_new" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,13 +66,15 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/C15dp"
             android:text="or"
+            android:visibility="gone"
             android:textColor="@android:color/black" />
 
         <!--Google Sign-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp">
+            android:layout_margin="20dp"
+            android:visibility="gone">
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"

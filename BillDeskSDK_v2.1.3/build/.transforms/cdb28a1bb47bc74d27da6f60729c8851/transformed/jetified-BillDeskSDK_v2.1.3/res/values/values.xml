@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bd_button_bg">#f47421</color>
+    <color name="bd_button_text">#FFFFFF</color>
+    <color name="bd_footer_bg">#FFFFFF</color>
+    <color name="bd_header_text">#FFFFFF</color>
+    <color name="bd_label_bg_clicked">#FFFFFF</color>
+    <color name="bd_label_text">#646567</color>
+    <color name="bd_loader_bg">#FFFFFF</color>
+    <color name="bd_loader_text">#000000</color>
+    <color name="black_text">#25343c</color>
+    <color name="black_text_disable">#808080</color>
+    <color name="body_bg">#B6B6B4</color>
+    <color name="sdk_bd_body_bg">#F2F2F2</color>
+    <color name="sdk_bd_body_text">#000000</color>
+    <color name="sdk_bd_header_bg">#FFFFFF</color>
+    <color name="sdk_bd_options_button_bg">#FFFFFF</color>
+    <color name="sdk_bd_options_button_click">#D9D9D9</color>
+    <color name="sdk_bd_progress_bar">#CC646567</color>
+    <color name="si_txt_bg">#e6ffe6</color>
+    <declare-styleable name="FragmentSlidingTabStrip"><attr format="color" name="pstsIndicatorColor"/><attr format="color" name="pstsUnderlineColor"/><attr format="color" name="pstsDividerColor"/><attr format="dimension" name="pstsIndicatorHeight"/><attr format="dimension" name="pstsUnderlineHeight"/><attr format="dimension" name="pstsDividerPadding"/><attr format="dimension" name="pstsTabPaddingLeftRight"/><attr format="dimension" name="pstsScrollOffset"/><attr format="reference" name="pstsTabBackground"/><attr format="boolean" name="pstsShouldExpand"/><attr format="boolean" name="pstsTextAllCaps"/></declare-styleable>
+    <dimen name="bdsdk_body_font_size">15dp</dimen>
+    <dimen name="bdsdk_button_font_size">20dp</dimen>
+    <dimen name="bdsdk_header_height">48dp</dimen>
+    <dimen name="header_font_size">20dp</dimen>
+    <dimen name="list_font_size">16dp</dimen>
+    <dimen name="menu_button_height">60dp</dimen>
+    <dimen name="quick_pay_bank_size">18dp</dimen>
+    <string name="ERR11">Network connectivity unavailable. Please check if your data connection is activated.</string>
+    <string name="ERR12">SDK not initialized properly, unable to proceed.</string>
+    <string name="ERR13">SDK not configured properly, unable to proceed.</string>
+    <string name="ERR14">Please select an option to proceed!</string>
+    <string name="ERR16">Technical Error [ERR16].</string>
+    <string name="ERR17">Something is wrong, can\'t get the payment options.</string>
+    <string name="ERR18">Something\'s wrong with the configuration!</string>
+    <string name="ERR20">Invalid Card Number.</string>
+    <string name="ERR21">Invalid CVV Number.</string>
+    <string name="ERR22">Invalid Card Expiry Date.</string>
+    <string name="ERR24">Please enter Card Holder\'s Name.</string>
+    <string name="ERR25">Please select your nationality.</string>
+    <string name="ERR26">Please enter a valid Email ID (eg anil_kotwal@yahoo.com)</string>
+    <string name="ERR27">Please enter Contact No. (eg 9824555555)</string>
+    <string name="ERR28">Please enter a valid first name as per your billing statement. (e.g. Akash)</string>
+    <string name="ERR29">Please enter a valid last name as per your billing statement. (e.g. Mahendra)</string>
+    <string name="ERR30">Please enter a valid address as per your billing statement. (e.g. A22, akash CHS, sector 42 nerul)</string>
+    <string name="ERR31">Please enter a valid city as per your billing statement.(e.g. Mumbai)</string>
+    <string name="ERR32">Please enter a valid state as per your billing statement. (e.g. Maharashtra)</string>
+    <string name="ERR33">Please enter a valid pin code as per your billing statement. (e.g. 400031)</string>
+    <string name="ERR34">Please select a valid Country (eg India)</string>
+    <string name="ERR36">QuickPay list is not in proper format</string>
+    <string name="ERR37">No Card Network added</string>
+    <string name="ERR38">Card list not found.</string>
+    <string name="ERR39">Got bank list empty</string>
+    <string name="ERR40">Invalid Batch Code Number.</string>
+    <string name="ERR43">This payment option is not enabled on current version of the app.</string>
+    <string name="ERR44">PG request message is not in proper format.</string>
+    <string name="ERR45">Please enter a valid middle name as per your billing statement. (e.g. Kumar)</string>
+    <string name="ERR46">Unfortunately we can not process your request due to technical reasons</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">Application</string>
+    <string name="bdsdk_body_font_face">Default</string>
+    <string name="bdsdk_header_align">left</string>
+    <string name="bdsdk_loaderString">Please wait a moment, we\'ll be done real quick.</string>
+    <string name="header_amount_text">Amount</string>
+    <string name="show_amount">no</string>
+    <string name="upi_progress_msg"><![CDATA[<b>To complete your online payment please follow the steps below:</b> <br><br>\u2022\tLogin into your PSP (<b>@upi</b>)<br>\tapplication.<br><br>\u2022\tYou will receive a collect <br>\trequest from <br>\tindiaideas@icici<br><br>\u2022\tAuthorise payment]]></string>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+</resources>

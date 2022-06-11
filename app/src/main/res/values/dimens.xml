@@ -50,6 +50,7 @@
     <dimen name="header_width2">120dp</dimen>
     <dimen name="header_date_width">180dp</dimen>
     <dimen name="c200dp">200dp</dimen>
+    <dimen name="c160dp">160dp</dimen>
     <dimen name="header_date_width1">70dp</dimen>
     <dimen name="header_date_width2">75dp</dimen>
     <dimen name="sno">10dp</dimen>

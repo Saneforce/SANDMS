@@ -31,7 +31,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:textStyle="bold"
-                    android:text="Order ID:" />
+                    android:text="Order ID: " />
                 <TextView
 
                     style="@style/TextStyle"
@@ -59,7 +59,7 @@
                 <TextView
                     style="@style/TextStyle"
                     android:textStyle="bold"
-                    android:text="Order ID:" />
+                    android:text="Order ID: " />
                 <TextView
                     android:id="@+id/product_order_id"
                     style="@style/TextStyle"
@@ -83,7 +83,7 @@
                     style="@style/TextStyle"
                     android:textStyle="bold"
                     android:textColor="#C40F0F0F"
-                    android:text="Order Value:" />
+                    android:text="Order Value: " />
                 <TextView
                     android:id="@+id/product_amnt"
                     style="@style/TextStyle"
@@ -105,7 +105,7 @@
                     style="@style/TextStyle"
                     android:textStyle="bold"
                     android:textColor="#C40F0F0F"
-                    android:text="Distributor :" />
+                    android:text="Distributor : " />
                 <TextView
                     android:id="@+id/product_distributor"
                     style="@style/TextStyle"
@@ -115,7 +115,33 @@
             </LinearLayout>
 
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/row_reportpendingpayment"
+            android:layout_below="@+id/row_report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            tools:ignore="MissingConstraints">
+            <TextView
+                android:id="@+id/txt_paymentpending"
+                style="@style/TextStyle"
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="Payment Type: "
 
+                android:textStyle="bold"
+                android:textColor="#C40F0F0F" />
+
+            <TextView
+                android:id="@+id/txt_paymentpending_mode"
+                style="@style/TextStyle"
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:visibility="gone"
+                android:text="Payment Mode: "
+                android:textStyle="bold"
+                android:textColor="#C40F0F0F" /> </LinearLayout>
 
     </LinearLayout>
     </androidx.cardview.widget.CardView>

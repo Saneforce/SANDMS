@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/ll_root_outbox">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_weight=".2"
+            android:layout_width="0dp"
+            android:text="Sl. No"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:id="@+id/tv_sl_no"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute"
+            />
+        <!--        android:layout_width="@dimen/C40dp"-->
+        <TextView
+            android:layout_width="0dp"
+            style="@style/TextStyle"
+            android:id="@+id/tv_order_date"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".2"
+            android:text="Date"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+        <!--        android:layout_width="@dimen/C50dp"-->
+        <TextView
+            android:layout_width="0dp"
+            style="@style/TextStyle"
+            android:id="@+id/tv_order_id"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".274"
+            android:text="Order Id"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+        <!--        android:layout_width="@dimen/C70dp"-->
+        <TextView
+            style="@style/TextStyle"
+            android:id="@+id/tv_order_value"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".273"
+            android:layout_width="0dp"
+            android:text="Order Value"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1"
+
+        >
+        <TextView
+            style="@style/TextStyle"
+            android:layout_weight=".2"
+            android:layout_width="0dp"
+
+            android:text="Status"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:id="@+id/tv_status"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute"
+            />
+  <TextView
+            style="@style/TextStyle"
+            android:layout_weight=".6"
+            android:layout_width="0dp"
+
+            android:text="Reason"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:id="@+id/tv_reason"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute"
+            />
+
+        <Button
+            android:id="@+id/btn_retry"
+            android:visibility="gone"
+            android:layout_weight=".2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:background="@android:color/transparent"
+            android:text="Retry"/>
+        <!--        android:layout_width="@dimen/C40dp"-->
+        <!--<TextView
+            android:layout_width="0dp"
+            style="@style/TextStyle"
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".2"
+            android:text=""
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+&lt;!&ndash;        android:layout_width="@dimen/C50dp"&ndash;&gt;
+        <TextView
+            android:layout_width="0dp"
+            style="@style/TextStyle"
+            android:textSize="@dimen/C12dp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".2"
+            android:text=""
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+&lt;!&ndash;        android:layout_width="@dimen/C70dp"&ndash;&gt;
+        <TextView
+        style="@style/TextStyle"
+        android:textSize="12sp"
+            android:paddingStart="@dimen/C5dp"
+            android:layout_weight=".2"
+            android:layout_width="0dp"
+        android:text=""
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />
+
+&lt;!&ndash;        android:layout_width="@dimen/C40dp"&ndash;&gt;
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_width="0dp"
+            android:text=""
+            android:textSize="12sp"
+            android:paddingStart="@dimen/C10dp"
+            android:layout_weight=".2"
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
+            tools:ignore="UnusedAttribute" />-->
+        <!--        android:layout_width="@dimen/C70dp"-->
+    </LinearLayout>
+
+        <include layout="@layout/view_grey_layout_line" />
+
+</LinearLayout>

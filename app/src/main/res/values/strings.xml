@@ -6,6 +6,8 @@
     <string name="counter_orders">Counter Orders</string>
     <string name="my_orders">My Orders</string>
     <string name="Rep_orders">Reports</string>
+    <string name="Privacy_policy">Privacy Policy</string>
+    <string name="Company_profiles">Company Profile</string>
     <string name="Pri_Rep_orders">Primary Reports</string>
     <string name="Sec_Rep_orders">Secondary Reports</string>
     <string name="View_Rep">View Report</string>
@@ -17,6 +19,16 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="head_quater">Headquaters</string>
     <string name="route">Route  </string>
+    <string name="route_star">Route <font color='#F44336'>*</font></string>
+    <string name="name_star">Name <font color='#F44336'>*</font></string>
+    <string name="address_star">Address <font color='#F44336'>*</font></string>
+    <string name="city_star">City <font color='#F44336'>*</font></string>
+    <string name="mob_star">Mobile <font color='#F44336'>*</font></string>
+    <string name="email_star">Email <font color='#F44336'>*</font></string>
+    <string name="latitude_star">Latitude <font color='#F44336'>*</font></string>
+    <string name="longitude_star">Longitude <font color='#F44336'>*</font></string>
+    <string name="retailer_class_star">Retailer Class <font color='#F44336'>*</font></string>
+    <string name="retailer_channel_star">Retailer Channel <font color='#F44336'>*</font></string>
     <string name="retailer">Name </string>
     <string name="retailer_add"> Address </string>
     <string name="payment">Payment Type </string>
@@ -43,6 +55,23 @@
     <string name="redirect_url">Redirect Url</string>
     <string name="cancel_url">Cancel Url</string>
     <string name="rsa_url">RSA Key Url</string>
+    <string name="outbox">OUTBOX</string>
+    <string name="secondary_orders">Secondary Orders</string>
+    <string name="primary_orders">Primary Orders</string>
+    <string name="new_retailer">New Retailer</string>
+    <string name="retailer_visit">Retailer Visit</string>
+    <string name="no_order">No Order</string>
+    <string name="non_productive_calls">Non Productive Calls</string>
+    <string name="generate_a_new_order_or_discard_the_edit">Generate a new order or discard the edit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="new_order">New Order</string>
+    <string name="discard">Discard</string>
+    <string name="finance">Finance</string>
+    <string name="rupee_symbol">₹</string>
+
+    <string name="gps_require_info">App requires GPS ON, please turn on to work seamlessly</string>
+    <string name="please_accept_the_terms_and_conditions_and_privacy_policy">Please check the terms and conditions and Privacy Policy before payment</string>
 
 
 </resources>

@@ -31,7 +31,7 @@
                     <TextView
                         style="@style/TextStyle"
                         android:textStyle="bold"
-                        android:text="Order ID:" />
+                        android:text="Order ID: " />
                     <TextView
 
                         style="@style/TextStyle"
@@ -59,7 +59,7 @@
                     <TextView
                         style="@style/TextStyle"
                         android:textStyle="bold"
-                        android:text="Order ID:" />
+                        android:text="Order ID: " />
                     <TextView
                         android:id="@+id/product_order_id"
                         style="@style/TextStyle"
@@ -83,11 +83,35 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Order Value:" />
+                        android:text="Order Amount: " />
                     <TextView
                         android:id="@+id/product_amnt"
                         style="@style/TextStyle"
                         android:textStyle="bold"
+                        android:textColor="#C40F0F0F"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="Invoice Amount: " />
+                    <TextView
+                        android:id="@+id/tv_invoice_amount"
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:text="0"
                         android:textColor="#C40F0F0F"/>
 
                 </LinearLayout>
@@ -105,18 +129,69 @@
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"
-                        android:text="Distributor :" />
+                        android:text="Paid Amount: " />
+                    <TextView
+                        android:id="@+id/tv_paid_amount"
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="0"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/TextStyle"
+                        android:textStyle="bold"
+                        android:textColor="#C40F0F0F"
+                        android:text="Distributor : " />
                     <TextView
                         android:id="@+id/product_distributor"
                         style="@style/TextStyle"
                         android:textStyle="bold"
                         android:textColor="#C40F0F0F"/>
 
+
                 </LinearLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/row_reportpayment"
+                android:layout_below="@+id/row_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                tools:ignore="MissingConstraints">
+                <TextView
+                    android:id="@+id/txt_paymenttake"
+                    style="@style/TextStyle"
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:text="Payment Type: "
 
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F" />
+
+                <TextView
+                    android:id="@+id/txt_payment_mode"
+                    style="@style/TextStyle"
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:text="Payment Mode: "
+                    android:textStyle="bold"
+                    android:textColor="#C40F0F0F" /> </LinearLayout>
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

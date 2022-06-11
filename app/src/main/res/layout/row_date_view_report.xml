@@ -1,44 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearproductlayouts"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/text_back">
+    <include layout="@layout/view_grey_layout_line" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:orientation="vertical"
+        android:id="@+id/productLayout">
 
         <TextView
             style="@style/TextStyle"
-            android:text="Name"
-            android:textSize="@dimen/C12dp"
+            android:text="Product Name"
+            android:textSize="12sp"
             android:id="@+id/txt_name"
-            android:layout_width="@dimen/c200dp" />
+            />
 
-        <TextView
-            style="@style/TextStyle"
-            android:text="Qty"
-            android:textSize="@dimen/C12dp"
-            android:id="@+id/txt_qty"
-            android:layout_width="@dimen/C40dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1"
 
-        <TextView
-            style="@style/TextStyle"
-            android:id="@+id/txt_rate"
-            android:textSize="@dimen/C12dp"
-            android:layout_width="@dimen/C50dp"
-            android:text="Rate" />
+            >
+            <TextView
+                style="@style/TextStyle"
+                android:layout_weight=".2"
+                android:layout_width="0dp"
 
-        <TextView
+                android:text="0"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:id="@+id/txt_qty"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute"
+                />
+            <!--        android:layout_width="@dimen/C40dp"-->
+            <TextView
+                android:layout_width="0dp"
+                style="@style/TextStyle"
+                android:id="@+id/txt_rate"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:text="0"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+            <!--        android:layout_width="@dimen/C50dp"-->
+            <TextView
+                android:layout_width="0dp"
+                style="@style/TextStyle"
+                android:id="@+id/txt_discount"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:text="0"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+            <!--        android:layout_width="@dimen/C70dp"-->
+            <TextView
+                style="@style/TextStyle"
+                android:id="@+id/txt_tax"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:layout_width="0dp"
+                android:text="0"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+
+            <!--        android:layout_width="@dimen/C40dp"-->
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="0dp"
+                android:text="0"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C10dp"
+                android:layout_weight=".2"
+                android:id="@+id/txt_total"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+            <!--        android:layout_width="@dimen/C70dp"-->
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1"
+
+            >
+            <TextView
+                style="@style/TextStyle"
+                android:layout_weight=".2"
+                android:layout_width="0dp"
+
+                android:text="0"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:id="@+id/txt_free"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute"
+                />
+            <!--        android:layout_width="@dimen/C40dp"-->
+            <!--<TextView
+                android:layout_width="0dp"
+                style="@style/TextStyle"
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:text=""
+
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+    &lt;!&ndash;        android:layout_width="@dimen/C50dp"&ndash;&gt;
+            <TextView
+                android:layout_width="0dp"
+                style="@style/TextStyle"
+                android:textSize="@dimen/C12dp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:text=""
+
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+    &lt;!&ndash;        android:layout_width="@dimen/C70dp"&ndash;&gt;
+            <TextView
             style="@style/TextStyle"
-            android:layout_width="@dimen/C80dp"
-            android:text="Value"
-            android:textSize="@dimen/C12dp"
-            android:paddingLeft="@dimen/C20dp"
-            android:id="@+id/txt_total" />
+            android:textSize="12sp"
+                android:paddingStart="@dimen/C5dp"
+                android:layout_weight=".2"
+                android:layout_width="0dp"
+            android:text=""
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />
+
+    &lt;!&ndash;        android:layout_width="@dimen/C40dp"&ndash;&gt;
+
+            <TextView
+                style="@style/TextStyle"
+                android:layout_width="0dp"
+                android:text=""
+                android:textSize="12sp"
+                android:paddingStart="@dimen/C10dp"
+                android:layout_weight=".2"
+
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeStepGranularity="2sp"
+                tools:ignore="UnusedAttribute" />-->
+            <!--        android:layout_width="@dimen/C70dp"-->
+        </LinearLayout>
+
 
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    <include layout="@layout/view_grey_layout_line" />-->
+</RelativeLayout>

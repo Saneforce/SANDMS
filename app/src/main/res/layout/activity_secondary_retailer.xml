@@ -139,6 +139,7 @@
                             android:text="SCH Enrollment" />
 
                         <TextView
+                            android:id="@+id/tv_sch_enrollment"
                             style="@style/TextStyle"
                             android:layout_alignParentEnd="true"
                             android:text="-" />
@@ -193,7 +194,7 @@
                             android:text="-" />
                     </RelativeLayout>
 
-                    <RelativeLayout
+            <!--        <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C4dp">
@@ -207,7 +208,7 @@
                             android:id="@+id/txt_distributor"
                             style="@style/TextStyle"
                             android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -252,7 +253,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp"
-                        android:visibility="gone"></ListView>
+                        android:visibility="gone"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -261,7 +262,7 @@
 
                         <TextView
                             style="@style/TextStyle"
-                            android:text="Last Visisted" />
+                            android:text="Last Visited" />
 
                         <TextView
                             android:id="@+id/txt_last_visited"
@@ -271,7 +272,7 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout
+                 <!--   <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp">
@@ -286,7 +287,7 @@
                             android:layout_alignParentEnd="true"
                             android:text="-" />
 
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -305,7 +306,7 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout
+                 <!--   <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/C2dp">
@@ -320,7 +321,7 @@
                             android:layout_alignParentEnd="true"
                             android:text="-" />
 
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                 </LinearLayout>
 
@@ -369,7 +370,7 @@
                             android:gravity="start"
                             android:hint="Reason"
                             android:padding="5dp"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -384,16 +385,30 @@
         android:id="@+id/bottom_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/linearlayout">
+
+        <Button
+            android:id="@+id/btn_no_order"
+            style="@style/ButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_bg"
+            android:onClick="onclickNoOrder"
+            android:text="@string/no_order"
+            android:textAlignment="center"
+            android:textAllCaps="true" />
+<!--        android:drawableRight="@drawable/forward"-->
 
         <Button
             android:id="@+id/Linear_proceed_cart"
             style="@style/ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/sign_bg"
-            android:drawableRight="@drawable/forward"
+            android:drawableEnd="@drawable/forward"
             android:onClick="SaveSecndry"
             android:text="@string/secondary"
             android:textAlignment="center"

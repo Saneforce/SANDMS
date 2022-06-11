@@ -70,7 +70,7 @@
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="@dimen/header_width2"
-                android:text="Retailer Name :" />
+                android:text="Retailer Name : " />
 
             <TextView
                 android:id="@+id/txt_reatiler_name"
@@ -90,7 +90,7 @@
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="@dimen/header_width2"
-                android:text="Route :" />
+                android:text="Route : " />
 
             <TextView
                 android:id="@+id/txt_route"
@@ -111,7 +111,7 @@
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="@dimen/header_width2"
-                android:text="Distrubutor Name :" />
+                android:text="Distrubutor Name : " />
 
             <TextView
                 android:id="@+id/txt_distributor_name"

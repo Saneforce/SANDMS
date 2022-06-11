@@ -8,13 +8,13 @@
     <color name="dividerList">#FAFAFA</color>
     <color name="greyColor">#2C000000</color>
     <color name="subHeader">#9C000000</color>
+    <color name="grey">#A39F9F</color>
     <color name="dark_grey">#453E3E3E</color>
     <color name="Approvals">#014143</color>
-    <color name="grey_text">#898A8A</color>
-
-
-    <color name="IconColor">#FB8C00</color>
-    <color name="StateGreen">#7CB342</color>
-    <color name="grey_line">#E0E0E0</color>
-    <color name="grey_line1">#F5F4F4F4</color>
+    <color name="textColor">#FFFFFF</color>
+    <color name="golden_scheme">#d1b035</color>
+    <color name="postponed">#EC6A41</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#7cb441</color>
 </resources>

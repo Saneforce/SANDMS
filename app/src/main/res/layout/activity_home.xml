@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/scrolllayout">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,46 +13,147 @@
 
         <include layout="@layout/custom_toolbar" />
 
-
-        <LinearLayout
+        <RelativeLayout
+            android:layout_margin="@dimen/C5dp"
+            android:background="@drawable/card_border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/imageLayout"
+            android:onClick="ProfileImage"
+            android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/profileImg"
+            android:layout_margin="10dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/user"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/shape" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/profileImg"
+            android:id="@+id/prof"
+
+
             android:padding="@dimen/C10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <TextView
                     style="@style/TextStyle"
-                    android:text="Name:" />
+                    android:text="Name: " />
 
                 <TextView
                     android:id="@+id/dis_name"
                     android:textStyle="bold"
                     android:textSize="@dimen/C14dp"
-                    style="@style/TextStyle" />
+                    style="@style/TextStyle"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
 
                 <TextView
                     style="@style/TextStyle"
-                    android:text="Address:" />
+                    android:text="Address: " />
 
                 <TextView
                     android:textStyle="bold"
                     android:textSize="@dimen/C14dp"
                     android:id="@+id/dis_place"
-                    style="@style/TextStyle" />
+                    style="@style/TextStyle"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
 
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+
+                    android:src="@drawable/shape" />
             </LinearLayout>
+
+
+
         </LinearLayout>
 
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Current Time : "
+                android:gravity="start"
+                android:textSize="15sp"/>
+
+            <TextClock
+                android:id="@+id/tc_current_time"
+                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:timeZone="Asia/Calcutta"
+                android:format24Hour="yyyy-MM-dd HH:mm:ss"
+                android:format12Hour="@null"
+                android:gravity="end" />
+
+        </LinearLayout>
+     <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+         android:visibility="gone"
+            android:gravity="center"
+            android:id="@+id/ll_cut_off"
+            android:paddingHorizontal="10dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Cut Off Time : "
+                android:gravity="start"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/tv_cut_off_time"
+                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:timeZone="Asia/Calcutta"
+                android:format24Hour="yyyy-MM-dd HH:mm:ss"
+                android:format12Hour="@null"
+                android:gravity="end" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +173,8 @@
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/prim"></ImageView>
+                    android:src="@drawable/prim"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"
@@ -92,7 +195,8 @@
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/primary"></ImageView>
+                    android:src="@drawable/primary"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"
@@ -158,10 +262,10 @@
 
             <LinearLayout
                 android:id="@+id/lin_report"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/C10dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:background="@drawable/text_bg"
                 android:elevation="2dp"
                 android:onClick="ReportData"
@@ -179,24 +283,77 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/C10dp"
-                android:visibility="invisible"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:background="@drawable/text_bg"
                 android:elevation="2dp"
-                android:onClick="Payment"
+                android:onClick="onclickOutbox"
                 android:orientation="vertical"
                 android:padding="@dimen/C20dp">
 
                 <ImageView
                     style="@style/ImageViewHeader"
-                    android:src="@drawable/report" />
+                    android:src="@drawable/report"
+                    android:contentDescription="@string/app_name" />
 
                 <TextView
                     style="@style/TextViewHeader"
-                    android:text="Payment" />
+                    android:text="@string/outbox" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/ll_profile">
+
+            <LinearLayout
+                android:id="@+id/company_policy"
+                android:layout_width="0dp"
+
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="Company"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Company_profiles" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="PrivacyPolicy"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Privacy_policy" />
 
             </LinearLayout>
         </LinearLayout>

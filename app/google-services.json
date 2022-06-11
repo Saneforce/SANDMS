@@ -1,42 +1,62 @@
 {
   "project_info": {
-    "project_number": "966907461610",
-    "firebase_url": "https://distributor-1604072549126.firebaseio.com",
-    "project_id": "distributor-1604072549126",
-    "storage_bucket": "distributor-1604072549126.appspot.com"
+    "project_number": "88803459188",
+    "project_id": "san-fmcg",
+    "storage_bucket": "san-fmcg.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:966907461610:android:2196aeaa82dbf5c76bfc93",
+        "mobilesdk_app_id": "1:88803459188:android:9e592c02b5e223f608d121",
         "android_client_info": {
-          "package_name": "com.example.dms"
+          "package_name": "com.saneforce.dms"
         }
       },
       "oauth_client": [
         {
-          "client_id": "966907461610-vjojmdv5t2b2e5l0fl9kn62da9rqbkl1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.dms",
-            "certificate_hash": "102c2cb84c2e879cfd39e236f80f8f37f2b06a8f"
-          }
-        },
-        {
-          "client_id": "966907461610-bfunvaum8tvsijmun2jthhtkpoofqoge.apps.googleusercontent.com",
+          "client_id": "88803459188-l11uiigqnojdgppj3qehahk8g3l0ldd9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOeAMrQZJkpAan3xUCeBoy-sqNXLHgY78"
+          "current_key": "AIzaSyBvVTmV2nZLCsSFAo4g8nc3oc4zA9nbEVM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "966907461610-bfunvaum8tvsijmun2jthhtkpoofqoge.apps.googleusercontent.com",
+              "client_id": "88803459188-l11uiigqnojdgppj3qehahk8g3l0ldd9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88803459188:android:c9c93ef825d3fe8908d121",
+        "android_client_info": {
+          "package_name": "com.saneforce.sanfmcg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88803459188-l11uiigqnojdgppj3qehahk8g3l0ldd9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvVTmV2nZLCsSFAo4g8nc3oc4zA9nbEVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88803459188-l11uiigqnojdgppj3qehahk8g3l0ldd9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

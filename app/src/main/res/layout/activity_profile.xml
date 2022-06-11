@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ProfileActivity">
+    <ScrollView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+    <include layout="@layout/custom_toolbar" />
+
+
+        <LinearLayout
+            android:id="@+id/header_linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="25dp"
+            android:background="@drawable/card_border"
+            android:orientation="vertical">
+
+            <!--logo-->
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape"
+                android:src="@drawable/user" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/name_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/address_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Address">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/email_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email Id">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ema_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mobile_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Mobile Number">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mob_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/stockname_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Stockist Contact Person">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/stocknam_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ERP CODE">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tie_erp_code"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Sales Team Name">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tie_sales_team_name"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+<!--
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/desig_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Designation">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/desg_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>-->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gst_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="GST No">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gst_edt"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:visibility="gone"
+                        android:id="@+id/btn_update"
+                        android:layout_marginTop="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/textColor"
+                        android:text="UPDATE"
+                        android:background="@drawable/sign_bg"/>
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/custom_button"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_profile">
+
+            <LinearLayout
+                android:id="@+id/company_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="PrivacyPolicy"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Privacy_policy" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:visibility="visible"
+                android:id="@+id/company_profile"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="Company"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+
+
+
+
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/primary" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="@string/Company_profiles" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
