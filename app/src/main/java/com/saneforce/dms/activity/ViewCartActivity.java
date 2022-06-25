@@ -784,6 +784,10 @@ public class ViewCartActivity extends AppCompatActivity {
 
         try {
             adapter.filteredContact(contacts);
+
+            if(contacts.size() == 0){
+                finish();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

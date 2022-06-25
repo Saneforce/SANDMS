@@ -2,6 +2,8 @@ package com.saneforce.dms.adapter;
 
 import static io.realm.Realm.getApplicationContext;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,7 +43,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 //    Float quntaity, price;
     private List<PrimaryProduct> mProduct_arrays = new ArrayList<>();
     DMS.viewProduct viewProd;
-    Context context;
+    Activity context;
 //    AlertDialog.Builder builder;
 //    String productname;
 //    String catName;
@@ -61,7 +63,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     // viewProduct mProducrtDelete;
     int orderType;
     public CustomViewAdapter(Context context ,String grandTotal,TextView viewTotal,int orderType, DMS.viewProduct viewProd) {
-        this.context = context;
+        this.context = (Activity) context;
         this.viewProd = viewProd;
         this.GrandTotal=grandTotal;
         this.viewTotal=viewTotal;
@@ -80,7 +82,7 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         PrimaryProduct mProductArray = mProduct_arrays.get(position);
         shared_common_pref = new Shared_Common_Pref(context);
         String productid=mProductArray.getPID();
@@ -295,6 +297,9 @@ public class CustomViewAdapter extends RecyclerView.Adapter<CustomViewAdapter.My
 
                 try {
                     notifyDataSetChanged();
+                    if(mProduct_arrays.size() == 0)
+                        context.finish();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

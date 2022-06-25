@@ -11,15 +11,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.sandms.Activity.LoginActivity;
 import com.example.sandms.BulkSales.Database.DatabaseHandler;
-import com.example.sandms.Interface.ApiInterface;
-import com.example.sandms.Interface.onDMSListItemClick;
-import com.example.sandms.R;
-import com.example.sandms.Utils.ApiClient;
-import com.example.sandms.Utils.Shared_Common_Pref;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.saneforce.dms.R;
+import com.saneforce.dms.listener.ApiInterface;
+import com.saneforce.dms.utils.ApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

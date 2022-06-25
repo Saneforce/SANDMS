@@ -1,4 +1,3 @@
-
 package com.saneforce.dms.activity;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -18,7 +17,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -370,6 +373,22 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 isDisPatch = true;
 
                 PayNow.setText("Dispatch");
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end,
+                                               Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            if (!Character.isLetterOrDigit(source.charAt(i))) { // Accept only letter & digits ; otherwise just return
+                                Toast.makeText(ViewReportActivity.this,"Please enter the valid number",Toast.LENGTH_SHORT).show();
+                                return "";
+                            }
+                        }
+                        return null;
+                    }
+
+                };
+
+                edt_utr.setFilters(new InputFilter[] { filter });
                 PayNow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -378,11 +397,14 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         else if(isDisPatch && txt_offline_mode.getText().toString().equals(""))
                             Toast.makeText(ViewReportActivity.this, "Please Select the Payment Type", Toast.LENGTH_SHORT).show();
                         else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
-                            Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
-                        }else {
+                            Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toas  t.LENGTH_SHORT).show();
+                        }else if(edt_utr.getText().toString().trim().equals("")) {
+                            Toast.makeText(ViewReportActivity.this, "Enter valid Cheque No.", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else {
                             payOffline();
                         }
-
                     }
                 });
                 currentDate = TimeUtils.getCurrentTime(TimeUtils.FORMAT2);
@@ -438,6 +460,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         }
 
     }
+
 
     private void showDeleteDialog(){
         AlertDialogBox.showDialog(ViewReportActivity.this, "", "Do you Surely want to delete this order?", "Yes", "NO", false, new DMS.AlertBox() {
@@ -753,6 +776,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     t.printStackTrace();
                 }
             });
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -203,32 +204,45 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
                             }
                         }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis()-1000);
                 datePickerDialog.show();
             }
         });
 
+        // initialising the calendar
+        final Calendar calendar = Calendar.getInstance();
+
         toBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ReportActivity.this, new DatePickerDialog.OnDateSetListener() {
+                if (fromDateString.equals(""))
+                    Toast.makeText(ReportActivity.this, "Select date from FromDate", Toast.LENGTH_SHORT).show();
+                else {
+                    final Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(ReportActivity.this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                    fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+//                                mArrayList.clear();
+//                                OrderStatusList.clear();
+                                    modeOrderData.clear();
+                                    orderTakenByFilter = "All";
+                                    txtOrderStatus.setText(orderTakenByFilter);
+                                    ViewDateReport(orderTakenByFilter);
 
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                        toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-//                        mArrayList.clear();
-//                      OrderStatusList.clear();
-                        modeOrderData.clear();
-                        orderTakenByFilter = "All";
-                        txtOrderStatus.setText(orderTakenByFilter);
-                        ViewDateReport(orderTakenByFilter);
-                    }
-                }, mYear, mMonth, mDay);
-                datePickerDialog.show();
+                                }
+
+                            }, mYear, mMonth, mDay);
+                    datePickerDialog.getDatePicker().setMinDate(TimeUtils.getTimeStamp(fromDateString, TimeUtils.FORMAT1));
+                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis()-1000);
+                    datePickerDialog.show();
+
+                }
             }
         });
 
@@ -236,7 +250,6 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
         mReportList.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mReportList.setLayoutManager(layoutManager);
-
 
         OrderStatusList=new ArrayList<>();
         OrderStatusList.add("All");
@@ -590,10 +603,10 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             return;
         }
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
+        //Intent intent = new Intent(Intent.ACTION_SEND);
         // change with required  application package
         File file1 = new File( dirpath + "/"+ fileName+".pdf");
-        intent.setPackage("com.whatsapp");
+        /*intent.setPackage("com.whatsapp");
         if (intent != null && file.exists()) {
             intent.setType("application/pdf");
             Uri uri = FileProvider.getUriForFile(ReportActivity.this, getApplicationContext().getPackageName()+ ".provider", file1);
@@ -602,7 +615,16 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             startActivity(Intent.createChooser(intent, "Share File"));
         } else {
             Toast.makeText(ReportActivity.this, "App not found", Toast.LENGTH_SHORT).show();
-        }
+        }*/
+        Uri fileUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file1);
+        Intent intent = ShareCompat.IntentBuilder.from(this)
+                .setType("*/*")
+                .setStream(fileUri)
+                .setChooserTitle("Choose bar")
+                .createChooserIntent()
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        startActivity(intent);
 
 
     }

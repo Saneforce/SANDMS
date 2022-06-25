@@ -193,6 +193,12 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         }else if(holder1 instanceof MyViewHolderFinance){
             MyViewHolderFinance holderFinance = (MyViewHolderFinance) holder1;
+            if(mDate.get(position).getOrderStatus().equals("Payment Verified")){
+                holderFinance.cv_root.setVisibility(View.VISIBLE);
+            }
+            else{
+                holderFinance.cv_root.setVisibility(View.GONE);
+            }
 //            holderFinance.cv_root.setText();
 
             holderFinance.tv_customer_name.setText(mDate.get(position).getCustomer_Name());

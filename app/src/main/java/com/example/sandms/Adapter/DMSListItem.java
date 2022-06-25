@@ -1,5 +1,6 @@
 package com.example.sandms.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.Interface.onDMSListItemClick;
-import com.example.sandms.R;
+import com.saneforce.dms.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class DMSListItem  extends RecyclerView.Adapter<DMSListItem.ViewHolder> {
         payClick=mPayClick;
     }
     @Override
-    public void onBindViewHolder(@NonNull DMSListItem.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DMSListItem.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         JSONObject itm = null;
         try {

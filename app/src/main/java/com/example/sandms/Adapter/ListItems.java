@@ -1,5 +1,6 @@
 package com.example.sandms.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sandms.Interface.onDMSListItemClick;
-import com.example.sandms.R;
+import com.saneforce.dms.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public class ListItems  extends RecyclerView.Adapter<ListItems.ViewHolder> {
     public ListItems.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dms_row_item, parent, false);
         ListItems.ViewHolder holder = new ListItems.ViewHolder(view);
+
         return holder;
 
     }
@@ -50,7 +52,7 @@ public class ListItems  extends RecyclerView.Adapter<ListItems.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListItems.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListItems.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         JSONObject itm = null;
         try {

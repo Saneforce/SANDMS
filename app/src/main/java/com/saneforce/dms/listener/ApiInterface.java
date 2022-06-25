@@ -1,5 +1,6 @@
 package com.saneforce.dms.listener;
 
+import com.google.gson.JsonArray;
 import com.saneforce.dms.model.HeaderCat;
 import com.saneforce.dms.model.ReportDataList;
 import com.google.gson.JsonObject;
@@ -166,6 +167,8 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?")
     Call<JsonObject> updateResponse(@Query("axn") String Axn, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
                                   @Query("State_Code") String State_Code, @Field("rate") String rate, @Field("orderId") String orderId, @Field("paymentResponse") String response);
+
+    Call<JsonArray> getDetailsArray(String s, String toString);
 
     /*"axn" - "get/updateResponse"
     input "response" sample

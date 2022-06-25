@@ -192,7 +192,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                 String STR = grandTotal.getText().toString();
                 Log.v("STRVALUE", STR);
                 if (STR.equals("0") || STR.equals("0.0")) {
-                    Toast.makeText(PrimaryOrderProducts.this, "Please choose to cart", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PrimaryOrderProducts.this, "Please select quantity", Toast.LENGTH_SHORT).show();
                 } else {
                     SaveDataValue(STR);
                 }
@@ -262,7 +262,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
-                //  llm.scrollToPositionWithOffset(mLast + 1, List.length());
+                //  llm.scrollToPositionWithOffset(mLast + +
                 llm.scrollToPositionWithOffset(mLast + 2, priCateAdapter.jsonArray.length());
             }
         });
@@ -791,7 +791,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         try {
             JSONObject jsFuel = null;
             jsFuel = (JSONObject) jsonArray.get(position);
@@ -975,7 +975,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductAdapter.ContactHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductAdapter.ContactHolder holder, @SuppressLint("RecyclerView") int position) {
 
 //        String productdata;
         PrimaryProduct mContact = workinglist.get(position);
@@ -1092,8 +1092,12 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                 product_Sale_Unit_Cn_Qty=mContact.getProduct_Sale_Unit_Cn_Qty();
 //                Log.v("+Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
 //                String prdDisAmt;
-
-                count = count + 1;
+                if(count>=999){
+                    Toast.makeText(getApplicationContext(),"Please select Minimum quantity",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    count = count + 1;
+                }
                 ProductCount = Integer.parseInt(holder.mProductCount.getText().toString());
                 ProductCount = ProductCount + 1;
 //                Scheme = selectedScheme.getScheme();

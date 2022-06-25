@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".BulkSales.BlkMainActivity">
+    android:orientation="vertical">
     <include layout="@layout/custom_toolbar" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,7 +99,7 @@
                         android:layout_marginRight="@dimen/C10dp"
                         android:text="Order taken from customer for primary order indent "
                         android:textSize="11sp"
-                        android:textColor="@color/grey_text"
+                        android:textColor="@color/grey"
                         />
                     </LinearLayout>
                     <ImageView
@@ -143,7 +142,7 @@
                     android:layout_marginRight="@dimen/C10dp"
                     android:text="Send the primary order to the company "
                     android:textSize="11sp"
-                    android:textColor="@color/grey_text"
+                    android:textColor="@color/grey"
                     />
                     </LinearLayout>
                     <ImageView
@@ -207,7 +206,7 @@
                             android:layout_marginRight="@dimen/C10dp"
                             android:text="Order taken from customer for primary order indent "
                             android:textSize="11sp"
-                            android:textColor="@color/grey_text"
+                            android:textColor="@color/grey"
                             />
                     </LinearLayout>
                     <ImageView
@@ -250,7 +249,7 @@
                             android:layout_marginRight="@dimen/C10dp"
                             android:text="Send the primary order to the company "
                             android:textSize="11sp"
-                            android:textColor="@color/grey_text"
+                            android:textColor="@color/grey"
                             />
                     </LinearLayout>
                     <ImageView
@@ -258,11 +257,9 @@
                         android:layout_height="match_parent"
                         app:tint="@color/grey_line"
                         android:src="@drawable/forward"/>
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
-
-
-
 </LinearLayout>

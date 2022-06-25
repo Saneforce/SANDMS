@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.example.sandms.Adapter.DMSListItem;
 import com.example.sandms.BulkSales.Database.DatabaseHandler;
 import com.example.sandms.Interface.onDMSListItemClick;
-import com.example.sandms.R;
+import com.saneforce.dms.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
