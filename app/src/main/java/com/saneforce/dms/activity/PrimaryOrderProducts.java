@@ -262,8 +262,12 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
-                //  llm.scrollToPositionWithOffset(mLast + +
-                llm.scrollToPositionWithOffset(mLast + 2, priCateAdapter.jsonArray.length());
+                //  llm.scrollToPositionWithOffset(mLast + 1, List.length());
+                int currentPosition = llm.findLastVisibleItemPosition()+2;
+                if(currentPosition>=priCateAdapter.jsonArray.length())
+                    currentPosition = priCateAdapter.jsonArray.length()-1;
+
+                llm.scrollToPosition(currentPosition);
             }
         });
 
@@ -272,7 +276,11 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             public void onClick(View v) {
                 LinearLayoutManager llm = (LinearLayoutManager)     priCategoryRecycler.getLayoutManager();
                 //   llm.scrollToPositionWithOffset(mFirst - 1, List.length());
-                llm.scrollToPositionWithOffset(mFirst - 2,priCateAdapter.jsonArray.length());
+                int currentPosition = llm.findFirstVisibleItemPosition()-2;
+                if(currentPosition<0)
+                    currentPosition = 0;
+
+                llm.scrollToPosition(currentPosition);
             }
         });
 //        edt_serach = findViewById(R.id.edt_serach);
@@ -1092,14 +1100,13 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                 product_Sale_Unit_Cn_Qty=mContact.getProduct_Sale_Unit_Cn_Qty();
 //                Log.v("+Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
 //                String prdDisAmt;
-                if(count>=999){
-                    Toast.makeText(getApplicationContext(),"Please select Minimum quantity",Toast.LENGTH_SHORT).show();
+                ProductCount = Integer.parseInt(holder.mProductCount.getText().toString());
+                if(ProductCount>=999){
+                    Toast.makeText(mCtx,"Please select Minimum quantity",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    count = count + 1;
+                    ProductCount = ProductCount + 1;
                 }
-                ProductCount = Integer.parseInt(holder.mProductCount.getText().toString());
-                ProductCount = ProductCount + 1;
 //                Scheme = selectedScheme.getScheme();
                 String proCnt = String.valueOf(ProductCount);
 //                Log.v("countcount_Click", String.valueOf(proCnt));

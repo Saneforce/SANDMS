@@ -1,6 +1,7 @@
 package com.saneforce.dms.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -1002,6 +1004,9 @@ public class PaymentDetailsActivity extends AppCompatActivity
             if(name.contains("Cheque")){
                 edtUTR.setHint("Enter Cheque No./UTR");
                 cheque_no_label.setText("Enter Cheque No./UTR");
+            }else if(name.contains("Cash")) {
+                edtUTR.setHint("Date & Amount");
+                cheque_no_label.setText("Date & Amount");
             }else {
                 edtUTR.setHint("Enter Challan No./UTR");
                 cheque_no_label.setText("Enter Challan No./UTR");
@@ -1025,7 +1030,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         Log.v("PATH_IMAGE", path);
         MultipartBody.Part imgg = convertimg("file", path);
 
-        sendImageToServer(imgg);
+        sendImageToServer(imgg,path);
     }
 
     public MultipartBody.Part convertimg(String tag, String path) {
@@ -1054,21 +1059,28 @@ public class PaymentDetailsActivity extends AppCompatActivity
         return yy;
     }
 
-    private void sendImageToServer(MultipartBody.Part imgg) {
-
-
+    private void sendImageToServer(MultipartBody.Part imgg,String imgpath) {
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> mCall = apiInterface.offlineImage("upload/paymentimg", imgg);
 
+        View imageView;
         mCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonObject jsonObject = response.body();
-                if(jsonObject!=null && !jsonObject.has("success") && jsonObject.get("success").getAsBoolean()){
+                if (jsonObject != null && !jsonObject.has("success") && jsonObject.get("success").getAsBoolean()) {
                     Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
-                }
+                } else {
+                    imgSource.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (imgpath != null && !imgpath.equals(""))
+                                showZoomableImage();
+                        }
+                    });
 
+                }
             }
 
             @Override
@@ -1076,10 +1088,41 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 Log.e("SEND_IMAGE_Response", "ERROR");
                 Toast.makeText(PaymentDetailsActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             }
+
+
         });
     }
+    ImageView imageView;
+    public void showZoomableImage() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.custom_dialog, null);
+        imageView = dialogLayout.findViewById(R.id.iv_image);
 
+        try {
+
+            imageView.setImageURI(Uri.parse(filePath));
+           /* Glide.with(context)
+                    .asBitmap()
+                    .load(Imgurl)
+                    .into(imageView);*/
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dialog.setView(dialogLayout);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
+    }
 
     public void getOnlinePayment(String orderId){
 

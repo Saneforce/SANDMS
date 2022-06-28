@@ -227,7 +227,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                     fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                    fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                    toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
 //                                mArrayList.clear();
 //                                OrderStatusList.clear();
                                     modeOrderData.clear();

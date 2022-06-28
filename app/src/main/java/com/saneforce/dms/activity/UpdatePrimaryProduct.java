@@ -206,7 +206,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
                 } else {
                     ProductCount = 0;
-                    mProductCount.setText("" + 0);
+                    mProductCount.setText("0");
                 }
             }
         });
@@ -427,7 +427,7 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
                                 productTaxAmt.setText(task.getTax_amt());
                                 valueTotal=Float.parseFloat(task.getTax_amt());
                             }
-                            productTotal.setText("" + subTotal);
+                            productTotal.setText("0" + subTotal);
                             //  productTaxAmt.setText(task.getTax_amt());
                         }
 

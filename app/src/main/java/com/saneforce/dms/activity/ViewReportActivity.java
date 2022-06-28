@@ -3,6 +3,7 @@ package com.saneforce.dms.activity;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -18,12 +19,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -171,7 +173,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     TextView tv_check_utr_no;
     LinearLayout ll_attachment;
     ImageView iv_attachment;
-
+    LinearLayout ll_utr;
     TextView cheque_no_label;
 
     @Override
@@ -200,6 +202,8 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         ll_attachment=findViewById(R.id.ll_attachment);
         iv_attachment=findViewById(R.id.iv_attachment);
         cheque_no_label=findViewById(R.id.cheque_no_label);
+        ll_utr=findViewById(R.id.ll_utr);
+
 
         toolbar_top.setVisibility(View.VISIBLE);
 
@@ -374,21 +378,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
                 PayNow.setText("Dispatch");
 
-                InputFilter filter = new InputFilter() {
-                    public CharSequence filter(CharSequence source, int start, int end,
-                                               Spanned dest, int dstart, int dend) {
-                        for (int i = start; i < end; i++) {
-                            if (!Character.isLetterOrDigit(source.charAt(i))) { // Accept only letter & digits ; otherwise just return
-                                Toast.makeText(ViewReportActivity.this,"Please enter the valid number",Toast.LENGTH_SHORT).show();
-                                return "";
-                            }
-                        }
-                        return null;
-                    }
 
-                };
-
-                edt_utr.setFilters(new InputFilter[] { filter });
                 PayNow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -397,9 +387,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         else if(isDisPatch && txt_offline_mode.getText().toString().equals(""))
                             Toast.makeText(ViewReportActivity.this, "Please Select the Payment Type", Toast.LENGTH_SHORT).show();
                         else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
-                            Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toas  t.LENGTH_SHORT).show();
-                        }else if(edt_utr.getText().toString().trim().equals("")) {
-                            Toast.makeText(ViewReportActivity.this, "Enter valid Cheque No.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
+                        }else if(edt_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
+                            Toast.makeText(ViewReportActivity.this, "Enter valid Number", Toast.LENGTH_SHORT).show();
 
                         }
                         else {
@@ -501,7 +491,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 
             js.put("PaymentTypeName", option);
             js.put("PaymentTypeCode", PaymentTypecode);
-            js.put("UTRNumber", edt_utr.getText().toString());
+            js.put("UTRNumber", edt_utr.getText().toString().trim());
             js.put("Attachement", serverFileName);
             js.put("Retcode", custCode);
             js.put("Amount", OrderValueTotal);
@@ -1016,6 +1006,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                     imgSource.setImageURI(Uri.parse(filePath));
                     imgSource.setVisibility(View.VISIBLE);
+
+
+
                     getMulipart(filePath);
                 }else
                     Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
@@ -1030,7 +1023,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                     // update the preview image in the layout
                     imgSource.setImageURI(selectedImageUri);
                     imgSource.setVisibility(View.VISIBLE);
-                    String filePath = ImageFilePath.getPath(ViewReportActivity.this, selectedImageUri);
+                    filePath = ImageFilePath.getPath(ViewReportActivity.this, selectedImageUri);
                     getMulipart(filePath);
 
                 }else
@@ -1540,7 +1533,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         Log.v("PATH_IMAGE", path);
         MultipartBody.Part imgg = convertimg("file", path);
 
-        sendImageToServer(imgg);
+        sendImageToServer(imgg,path);
     }
 
     public MultipartBody.Part convertimg(String tag, String path) {
@@ -1569,7 +1562,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         return yy;
     }
 
-    private void sendImageToServer(MultipartBody.Part imgg) {
+    private void sendImageToServer(MultipartBody.Part imgg,String imgpath) {
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> mCall = apiInterface.offlineImage("upload/paymentimg", imgg);
@@ -1580,6 +1573,14 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                 JsonObject jsonObject = response.body();
                 if(jsonObject!=null && !jsonObject.has("success") && jsonObject.get("success").getAsBoolean()){
                     Toast.makeText(ViewReportActivity.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+                }else{
+                    imgSource.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(imgpath!=null && !imgpath.equals(""))
+                                showZoomableImage();
+                        }
+                    });
                 }
 
             }
@@ -1591,6 +1592,39 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             }
         });
     }
+
+    ImageView imageView;
+    public void showZoomableImage() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.custom_dialog, null);
+        imageView = dialogLayout.findViewById(R.id.iv_image);
+
+        try {
+
+            imageView.setImageURI(Uri.parse(filePath));
+           /* Glide.with(context)
+                    .asBitmap()
+                    .load(Imgurl)
+                    .into(imageView);*/
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        dialog.setView(dialogLayout);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
+    }
+
 
 
     public void getOfflineMode() {
@@ -1658,9 +1692,15 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             }
 
             if(name.contains("Cheque")){
+                ll_utr.setVisibility(View.VISIBLE);
                 edt_utr.setHint("Enter Cheque No./UTR");
                 cheque_no_label.setText("Enter Cheque No./UTR");
-            }else {
+            }else if(name.contains("Cash")) {
+                ll_utr.setVisibility(View.GONE);
+                edt_utr.setHint("Date & Amount");
+                cheque_no_label.setText("Date & Amount");
+            }else{
+                ll_utr.setVisibility(View.VISIBLE);
                 edt_utr.setHint("Enter Challan No./UTR");
                 cheque_no_label.setText("Enter Challan No./UTR");
             }

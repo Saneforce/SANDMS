@@ -229,7 +229,7 @@
                                         android:inputType="number"
                                         android:maxLength="3"
                                         android:padding="5dp"
-                                        android:text="0"/>
+                                        android:text=""/>
 
                                     <TextView
                                         android:id="@+id/text_view_count"
@@ -239,7 +239,7 @@
                                         android:gravity="center"
                                         android:inputType="number"
                                         android:maxLength="3"
-                                        android:text="0"
+                                        android:text=""
                                         android:visibility="gone" />
 
                                     <LinearLayout

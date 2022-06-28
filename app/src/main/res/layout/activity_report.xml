@@ -6,8 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.saneforce.dms.activity.ReportActivity">
 
-    <include
-        layout="@layout/custom_toolbar" />
+    <include layout="@layout/custom_toolbar" />
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
