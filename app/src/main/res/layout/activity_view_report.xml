@@ -204,7 +204,7 @@
                             android:id="@+id/iv_attachment"
                             android:layout_width="150dp"
                             android:layout_height="80dp"
-                            android:scaleType="center"
+                            android:scaleType="fitCenter"
                             android:contentDescription="@string/app_name" />
 
                     </LinearLayout>

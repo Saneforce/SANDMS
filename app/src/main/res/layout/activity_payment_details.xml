@@ -186,12 +186,13 @@
                     android:id="@+id/imgSource"
                     android:layout_width="@dimen/C70dp"
                     android:layout_height="@dimen/C70dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="bottom"
                     android:padding="@dimen/C10dp"
                     android:contentDescription="@string/app_name" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_utr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/C10dp"

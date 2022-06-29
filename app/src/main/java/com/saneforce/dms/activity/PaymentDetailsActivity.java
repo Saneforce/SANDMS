@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -22,6 +24,7 @@ import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +45,7 @@ import androidx.core.content.FileProvider;
 
 import com.billdesk.sdk.LibraryPaymentStatusProtocol;
 import com.billdesk.sdk.PaymentOptions;
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
@@ -86,6 +90,26 @@ public class PaymentDetailsActivity extends AppCompatActivity
     private static final int SELECT_PICTURE = 103;
     private static final int CAMERA_REQUEST = 1888;
 
+    Context context;
+
+    //image zoom
+    float[] lastEvent = null;
+    float d = 0f;
+    float newRot = 0f;
+    private boolean isZoomAndRotate;
+    private boolean isOutSide;
+    private static final int NONE = 0;
+    private static final int DRAG = 1;
+    private static final int ZOOM = 2;
+    private int mode = NONE;
+    private PointF start = new PointF();
+    private PointF mid = new PointF();
+    float oldDist = 1f;
+    private float xCoOrdinate, yCoOrdinate;
+//    private ScaleGestureDetector scaleGestureDetector;
+//    private float mScaleFactor = 1.0f;
+
+
     TextView productId, productDate, productAmt, offlineMode;
     private RadioGroup radioGroup;
     LinearLayout offView;
@@ -118,7 +142,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     LinearLayout ll_amount;
     TextView et_amount;
-    String currentDate ="";
+    String currentDate ="",Imgurl="";
     public static String serverFileName = "";
 
     //1 razor pay
@@ -134,6 +158,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
     public static PaymentDetailsActivity paymentDetailsActivity;
 
     TextView cheque_no_label;
+    LinearLayout ll_utr;
+    EditText edt_utr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +181,8 @@ public class PaymentDetailsActivity extends AppCompatActivity
         et_amount = findViewById(R.id.et_amount);
         iv_attachment = findViewById(R.id.iv_attachment);
         cheque_no_label = findViewById(R.id.cheque_no_label);
+        ll_utr = findViewById(R.id.ll_utr);
+        edt_utr=findViewById(R.id.edt_utr);
 
         divCode = mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         sfCode  = mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
@@ -982,7 +1010,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                     Uri selectedImageUri = data.getData();
                     // update the preview image in the layout
                     imgSource.setImageURI(selectedImageUri);
-                    String filePath = ImageFilePath.getPath(PaymentDetailsActivity.this, selectedImageUri);
+                    filePath = ImageFilePath.getPath(PaymentDetailsActivity.this, selectedImageUri);
                     getMulipart(filePath);
 
                 }else
@@ -1000,15 +1028,17 @@ public class PaymentDetailsActivity extends AppCompatActivity
             PaymentTypecode = myDataset.get(position).getId();
 
 
-
             if(name.contains("Cheque")){
-                edtUTR.setHint("Enter Cheque No./UTR");
+                ll_utr.setVisibility(View.VISIBLE);
+                edt_utr.setHint("Enter Cheque No./UTR");
                 cheque_no_label.setText("Enter Cheque No./UTR");
             }else if(name.contains("Cash")) {
-                edtUTR.setHint("Date & Amount");
+                ll_utr.setVisibility(View.GONE);
+                edt_utr.setHint("Date & Amount");
                 cheque_no_label.setText("Date & Amount");
-            }else {
-                edtUTR.setHint("Enter Challan No./UTR");
+            }else{
+                ll_utr.setVisibility(View.VISIBLE);
+                edt_utr.setHint("Enter Challan No./UTR");
                 cheque_no_label.setText("Enter Challan No./UTR");
             }
 
@@ -1110,10 +1140,21 @@ public class PaymentDetailsActivity extends AppCompatActivity
         try {
 
             imageView.setImageURI(Uri.parse(filePath));
-           /* Glide.with(context)
+        /*  Glide.with(context)
                     .asBitmap()
                     .load(Imgurl)
                     .into(imageView);*/
+
+
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    ImageView view = (ImageView) v;
+                    view.bringToFront();
+                    viewTransformation(view, event);
+                    return true;
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1185,6 +1226,87 @@ public class PaymentDetailsActivity extends AppCompatActivity
             e.printStackTrace();
             AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Checkout Error", "Unable to create checkout, please try again");
         }
+    }
+    //image zoom
+    private void viewTransformation(View view, MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                xCoOrdinate = view.getX() - event.getRawX();
+                yCoOrdinate = view.getY() - event.getRawY();
+
+                start.set(event.getX(), event.getY());
+                isOutSide = false;
+                mode = DRAG;
+                lastEvent = null;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                oldDist = spacing(event);
+                if (oldDist > 10f) {
+                    midPoint(mid, event);
+                    mode = ZOOM;
+                }
+
+                lastEvent = new float[4];
+                lastEvent[0] = event.getX(0);
+                lastEvent[1] = event.getX(1);
+                lastEvent[2] = event.getY(0);
+                lastEvent[3] = event.getY(1);
+                d = rotation(event);
+                break;
+            case MotionEvent.ACTION_UP:
+                isZoomAndRotate = false;
+                if (mode == DRAG) {
+                    float x = event.getX();
+                    float y = event.getY();
+                }
+            case MotionEvent.ACTION_OUTSIDE:
+                isOutSide = true;
+                mode = NONE;
+                lastEvent = null;
+            case MotionEvent.ACTION_POINTER_UP:
+                mode = NONE;
+                lastEvent = null;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (!isOutSide) {
+                    if (mode == DRAG) {
+                        isZoomAndRotate = false;
+                        view.animate().x(event.getRawX() + xCoOrdinate).y(event.getRawY() + yCoOrdinate).setDuration(0).start();
+                    }
+                    if (mode == ZOOM && event.getPointerCount() == 2) {
+                        float newDist1 = spacing(event);
+                        if (newDist1 > 10f) {
+                            float scale = newDist1 / oldDist * view.getScaleX();
+                            view.setScaleX(scale);
+                            view.setScaleY(scale);
+                        }
+                        if (lastEvent != null) {
+                            newRot = rotation(event);
+                            view.setRotation((float) (view.getRotation() + (newRot - d)));
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private float rotation(MotionEvent event) {
+        double delta_x = (event.getX(0) - event.getX(1));
+        double delta_y = (event.getY(0) - event.getY(1));
+        double radians = Math.atan2(delta_y, delta_x);
+        return (float) Math.toDegrees(radians);
+    }
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (int) Math.sqrt(x * x + y * y);
+    }
+
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
     }
 
     //    @Override

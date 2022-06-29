@@ -75,7 +75,11 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         loadTask(task);
 
-        ProductCount = Integer.parseInt(mProductCount.getText().toString());
+        if(!mProductCount.getText().toString().equals(""))
+            ProductCount = Integer.parseInt(mProductCount.getText().toString());
+        else
+            ProductCount = 0;
+
         subTotal = Float.parseFloat(productQty.getText().toString()) *
                 Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
         Log.v("total", String.valueOf(subTotal));
@@ -148,10 +152,17 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
             public void onClick(View v) {
 
                 Log.v("Prouct_Value", String.valueOf(ProductCount));
-                ProductCount = Integer.parseInt(mProductCount.getText().toString());
+
+                if(!mProductCount.getText().toString().equals(""))
+                    ProductCount = Integer.parseInt(mProductCount.getText().toString());
+                else
+                    ProductCount = 0;
 
                 ProductCount = ProductCount + 1;
-                mProductCount.setText("" + ProductCount);
+                if(ProductCount>0)
+                    mProductCount.setText("" + ProductCount);
+                mProductCount.setText("");
+
                 productQty.setText(mProductCount.getText().toString());
                 subTotal = Float.parseFloat(productQty.getText().toString()) * Float.parseFloat(productPrice.getText().toString().replaceAll("Rs: ", ""));
                 Log.v("PRODUCT_COUNT", String.valueOf(subTotal));
@@ -175,7 +186,10 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         linMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductCount = Integer.parseInt(mProductCount.getText().toString());
+                if(!mProductCount.getText().toString().equals(""))
+                    ProductCount = Integer.parseInt(mProductCount.getText().toString());
+                else
+                    ProductCount = 0;
 
                 ProductCount = ProductCount - 1;
                 if (ProductCount >= 0) {
@@ -458,7 +472,11 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
 
         productPrice.setText(Constant.roundTwoDecimals(itemPrice));
         productQty.setText(task.getTxtqty());
-        mProductCount.setText(task.getQty());
+        if(!task.getQty().equals("0"))
+            mProductCount.setText(task.getQty());
+        else
+            mProductCount.setText("");
+
         productTax.setText(task.getTax_Value());
         productDis.setText(discountValue);
         productUnit.setText(task.getProduct_Sale_Unit());
@@ -498,15 +516,18 @@ public class UpdatePrimaryProduct extends AppCompatActivity {
         class UpdateTask extends AsyncTask<Void, Void, Void> {
             @Override
             protected Void doInBackground(Void... voids) {
+                String count = "0";
+                if(!mProductCount.getText().toString().equals(""))
+                    count = mProductCount.getText().toString();
 
-                task.setQty(mProductCount.getText().toString());
-                task.setTxtqty(mProductCount.getText().toString());
+                task.setQty(count);
+                task.setTxtqty(count);
                 task.setSubtotal(String.valueOf(finalPrice));
                 PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()
                         .contactDao()
                         .update(task.getPID(),
-                                mProductCount.getText().toString(),
-                                mProductCount.getText().toString(),
+                                count,
+                                count,
                                 String.valueOf(finalPrice),
                                 task.getTax_Value(),
                                 task.getDiscount(),
