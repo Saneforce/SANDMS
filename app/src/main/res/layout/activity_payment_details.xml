@@ -167,13 +167,15 @@
                         android:layout_gravity="center_vertical"
                         android:hint="Offline Mode" />
 
+
+
                     <ImageView
                         android:id="@+id/iv_attachment"
                         android:layout_width="36dp"
                         android:visibility="gone"
                         android:layout_height="36dp"
                         android:scaleType="fitCenter"
-                        android:layout_gravity="center"
+                        android:layout_gravity="bottom"
                         android:layout_marginEnd="5dp"
                         android:onClick="OffImg"
                         android:src="@drawable/ic_baseline_attachment_24"
@@ -187,7 +189,6 @@
                     android:layout_width="@dimen/C70dp"
                     android:layout_height="@dimen/C70dp"
                     android:layout_gravity="bottom"
-                    android:padding="@dimen/C10dp"
                     android:contentDescription="@string/app_name" />
         </LinearLayout>
 
@@ -290,8 +291,8 @@
         android:id="@+id/lin_payment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
         android:layout_marginHorizontal="15dp"
+        android:gravity="bottom"
         android:orientation="vertical">
 
 
@@ -309,5 +310,5 @@
             android:textColor="#FFF"
             tools:ignore="RtlCompat" />
 
-        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

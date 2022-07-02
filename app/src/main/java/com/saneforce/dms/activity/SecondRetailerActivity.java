@@ -86,7 +86,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     TextView tv_sch_enrollment;
 
     String sfCode = "";
-    boolean isCallSecActivity = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -360,7 +360,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 linRtDetails.setVisibility(View.VISIBLE);
                 retailerId = myDataset.get(position).getId();
                 shared_common_pref.save("RetailerID", retailerId);
-                isCallSecActivity = false;
+                //isCallSecActivity = false;
                 RetailerViewDetailsMethod(retailerId);
 
             }else
@@ -382,7 +382,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         } /*else if (editRemarks.getText().toString().equals("")) {
             Toast.makeText(this, "Enter Retailer Remarks", Toast.LENGTH_SHORT).show();
         }*/ else {
-            isCallSecActivity = true;
+            //isCallSecActivity = true;
             SaveRetials();
 
         }
@@ -548,7 +548,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
                     if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
                             !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                        processSecondaryOrderList();
+                        Log.d("SecondRetailerActivity", "processSecondaryOrderList: " );
+                        processSecondaryOrderList(1);
                     }else
                         brandSecondaryApi();
 
@@ -574,7 +575,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
                         if(!dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_BRAND).equals("") &&
                                 !dbController.getResponseFromKey(DBController.SECONDARY_PRODUCT_DATA).equals("")){
-                            processSecondaryOrderList();
+                            processSecondaryOrderList(1);
                         }else
                             brandSecondaryApi();
 
@@ -618,7 +619,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
                 Log.v("Product_Response", jsonArray.toString());
 
-                processSecondaryOrderList();
+                processSecondaryOrderList(0);
 
             }
 
@@ -629,9 +630,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         });
     }
 
-    private void processSecondaryOrderList() {
+    private void processSecondaryOrderList(int loadActivity) {
         mCommon_class.ProgressdialogShow(2, "");
-        new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+        new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase(), loadActivity).execute();
 
 /*        SecViewModel = ViewModelProviders.of(SecondRetailerActivity.this).get(SecondaryProductViewModel.class);
         SecViewModel.getAllData().observe(SecondRetailerActivity.this, new Observer<List<SecondaryProduct>>() {
@@ -734,17 +735,21 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     public class PopulateDbAsyntasks extends AsyncTask<Void, Void, Void> {
         private PrimaryProductDao contactDao;
+        private int loadActivity;
 
-
-        public PopulateDbAsyntasks(PrimaryProductDatabase contactDaos) {
+        public PopulateDbAsyntasks(PrimaryProductDatabase contactDaos, int loadActivity) {
             contactDao = contactDaos.contactDao();
+            this.loadActivity=loadActivity;
         }
 
+       /* public PopulateDbAsyntasks(PrimaryProductDatabase appDatabase) {
+        }
+*/
         @Override
         protected Void doInBackground(Void... voids) {
             PrimaryProductDatabase.getInstance(SecondRetailerActivity.this).clearAllTables();
 
-            secStart();
+            secStart(loadActivity);
             Log.v("Data_CHeckng", "Checking_data");
             return null;
         }
@@ -752,7 +757,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     }
 
 
-    private void secStart() {
+    private void secStart(int loadActivity) {
 
         Log.v("Data_CHeckng", "Checking_data");
 
@@ -865,7 +870,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
 //        mCommon_class.ProgressdialogShow(2, "");
 //        startActivity(new Intent(SecondRetailerActivity.this, SecondaryOrderProducts.class));
-        if(isCallSecActivity){
+        if(loadActivity==1){
             Intent dashIntent = new Intent(getApplicationContext(), PrimaryOrderProducts.class);
             dashIntent.putExtra("Mode", "0");
             dashIntent.putExtra("order_type", 2);

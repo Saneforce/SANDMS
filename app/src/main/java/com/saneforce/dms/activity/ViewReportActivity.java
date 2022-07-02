@@ -81,6 +81,7 @@ import com.saneforce.dms.utils.ImageFilePath;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,10 +110,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     private static final int CAMERA_REQUEST = 1888;
 
     ImageView imgBack,imgShare;
-
-
-    Context context;
-
+    
     //image zoom
     float[] lastEvent = null;
     float d = 0f;
@@ -180,6 +178,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     boolean isDisPatch = false;
     CustomListViewDialog customDialog;
 
+
     //1 bill desk
     //2 razor pay
 
@@ -195,6 +194,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     ImageView iv_attachment;
     LinearLayout ll_utr;
     TextView cheque_no_label;
+    String attachment = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,7 +257,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         Paymentflag = intent.getIntExtra("Paymentflag", 1);
         Dispatch_Flag = intent.getIntExtra("Dispatch_Flag", 1);
 
-        String dispatch_date = "", payment_type = "", payment_option = "", check_utr_no = "", attachment = "";
+        String dispatch_date = "", payment_type = "", payment_option = "", check_utr_no = "";
 
         if(intent.hasExtra("dispatch_date")){
             dispatch_date = intent.getStringExtra("dispatch_date");
@@ -315,6 +315,13 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         .apply(myOptions)
                         .load(attachment)
                         .into(iv_attachment);
+                iv_attachment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(attachment!=null && !attachment.equals(""))
+                            showZoomableImage(0);
+                    }
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -361,7 +368,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         if(ApiClient.APP_TYPE == 2)
             Delete.setText("Delete");
         else
-            Delete.setText("Cancel");
+            Delete.setText("Delete");
 
         Delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1598,7 +1605,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                         @Override
                         public void onClick(View view) {
                             if(imgpath!=null && !imgpath.equals(""))
-                                showZoomableImage();
+                                showZoomableImage(1);
                         }
                     });
                 }
@@ -1614,7 +1621,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
     }
 
     ImageView imageView;
-    public void showZoomableImage() {
+    public void showZoomableImage(int  fromAddImg ) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -1629,12 +1636,25 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         imageView = dialogLayout.findViewById(R.id.iv_image);
 
         try {
+            if(fromAddImg ==1 )
+                imageView.setImageURI(Uri.parse(filePath));
+            else {
 
-            imageView.setImageURI(Uri.parse(filePath));
-           /* Glide.with(context)
-                    .asBitmap()
-                    .load(Imgurl)
-                    .into(imageView);*/
+//                RequestOptions myOptions = new RequestOptions()
+//                        .fitCenter() // or centerCrop
+//                        .override(100, 100);
+
+               /* Glide.with(this)
+//                        .apply(myOptions)
+                        .load(attachment)
+                        .into(imageView);*/
+
+                Picasso.with(this)
+                        .load(attachment)
+                        .error(R.drawable.logo_new)
+                        .into(imageView);
+
+            }
 
             imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override

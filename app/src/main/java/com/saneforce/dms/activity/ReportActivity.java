@@ -204,8 +204,13 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
                             }
                         }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis()-1000);
+                if(!toDateString.equals("")){
+                    datePickerDialog.getDatePicker().setMaxDate(TimeUtils.getTimeStamp(toDateString, TimeUtils.FORMAT1));
+                }
+
                 datePickerDialog.show();
+
+
             }
         });
 
@@ -226,7 +231,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                    fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                    toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                     toBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
 //                                mArrayList.clear();
 //                                OrderStatusList.clear();

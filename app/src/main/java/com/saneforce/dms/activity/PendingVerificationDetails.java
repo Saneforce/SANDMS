@@ -31,6 +31,7 @@ import com.saneforce.dms.R;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Shared_Common_Pref;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,24 +129,29 @@ public class PendingVerificationDetails extends AppCompatActivity {
                 .override(100, 100);
 
         try {
-            if(Imgurl!=null && !Imgurl.equals(""))
+            if(Imgurl!=null && !Imgurl.equals("")){
                 Glide.with(context)
-                    .asBitmap()
-                    .apply(myOptions)
-                    .load(Imgurl)
-                    .into(imgView);
+                        .asBitmap()
+                        .apply(myOptions)
+                        .load(Imgurl)
+                        .into(imgView);
+
+                imgView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(Imgurl!=null && !Imgurl.equals(""))
+                            showZoomableImage();
+                    }
+                });
+
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        imgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(Imgurl!=null && !Imgurl.equals(""))
-                    showZoomableImage();
-            }
-        });
+
       /*  imgView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -262,8 +268,12 @@ public class PendingVerificationDetails extends AppCompatActivity {
         imageView = dialogLayout.findViewById(R.id.iv_image);
 
         try {
-            Glide.with(context)
+            /*Glide.with(this)
                     .asBitmap()
+                    .load(Imgurl)
+                    .into(imageView);*/
+
+            Picasso.with(this)
                     .load(Imgurl)
                     .into(imageView);
 
@@ -322,6 +332,7 @@ public class PendingVerificationDetails extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 //              startActivity(new Intent(PendingVerificationDetails.this,PendingVerification.class));
+                Toast.makeText(PendingVerificationDetails.this, "Verified", Toast.LENGTH_SHORT).show();
 //                finish();
                 onBackPressed();
             }

@@ -116,6 +116,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
     Uri outputFileUri;
     CustomListViewDialog customDialog;
     ImageView imgSource;
+    ImageView iv_choose_photo;
     EditText edtUTR;
     String orderIDRazorpay;
     String razorpay_payment_id="";
@@ -132,6 +133,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
     List<Common_Model> modelOffileData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
+    boolean isDisPatch = false;
     //    int Amount;
     double AMOUNTFINAL ;
 //    SoapPrimitive resultString;
@@ -310,6 +312,10 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();
         }else if(PaymntMode.equalsIgnoreCase("Offline") && iv_attachment.getVisibility()==View.VISIBLE && serverFileName.equals("")) {
             Toast.makeText(this, "Please choose Valid Image", Toast.LENGTH_SHORT).show();
+        }else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
+            Toast.makeText(PaymentDetailsActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
+        }else if(edt_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
+        Toast.makeText(PaymentDetailsActivity.this, "Enter valid Number", Toast.LENGTH_SHORT).show();
         }else {
             if (PaymntMode.equalsIgnoreCase("Offline")) {
                 ProceedPayment("","","");
@@ -1227,7 +1233,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
             AlertDialogBox.showDialog(PaymentDetailsActivity.this, "Checkout Error", "Unable to create checkout, please try again");
         }
     }
-    //image zoom
+
     private void viewTransformation(View view, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
