@@ -112,8 +112,10 @@ public class LoginActivity extends AppCompatActivity{
                     Toast.makeText(LoginActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 else if(edtEmail.getText().toString().equals("")){
                     Toast.makeText(LoginActivity.this, "Please enter username", Toast.LENGTH_SHORT).show();
+                    edtEmail.requestFocus();
                 }else if(edtPass.getText().toString().equals("")){
                     Toast.makeText(LoginActivity.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                    edtPass.requestFocus();
                 }else{
                     login(edtEmail.getText().toString(), edtPass.getText().toString());
                 }

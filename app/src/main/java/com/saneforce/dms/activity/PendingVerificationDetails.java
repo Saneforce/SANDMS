@@ -105,7 +105,6 @@ public class PendingVerificationDetails extends AppCompatActivity {
         ll_update_details= findViewById(R.id.ll_update_details);
         DateRecyclerView = findViewById(R.id.date_recycler);
 
-
         if(paymentType!=null && !paymentType.equals(""))
             tv_payment_type.setText(paymentType);
 

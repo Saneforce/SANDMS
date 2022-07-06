@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -69,6 +70,8 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     JSONObject docMasterObject;
     EditText edtName, edtAdds, edtCity, edtMobile, edtEmail;
     JSONArray mainArray;
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    String regexStr = "^[0-9]$";
 //    private FusedLocationProviderClient mFusedLocationClient;
 //    private SettingsClient mSettingsClient;
 //    private LocationRequest mLocationRequest;
@@ -403,18 +406,23 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     public void addSave(View v) {
+
         if (txtRoute.getText().toString().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Route", Toast.LENGTH_SHORT).show();
-        } else if (edtName.getText().toString().equals("")) {
+        } else if (edtName.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Name", Toast.LENGTH_SHORT).show();
-        } else if (edtAdds.getText().toString().equals("")) {
+        } else if (edtAdds.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Address", Toast.LENGTH_SHORT).show();
-        } else if (edtCity.getText().toString().equals("")) {
+        } else if (edtCity.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please Enter Retailer City", Toast.LENGTH_SHORT).show();
         } else if (edtMobile.getText().toString().equals("")) {
-            Toast.makeText(this, "Please Enter Retailer Phone", Toast.LENGTH_SHORT).show();
-        } else if (edtEmail.getText().toString().equals("")) {
+            Toast.makeText(this, "Please Enter Retailer Mobile No.", Toast.LENGTH_SHORT).show();
+        } else if(edtMobile.getText().toString().length()<10) {
+            Toast.makeText(this,"Please enter valid phone number",Toast.LENGTH_SHORT).show();
+        }else if (edtEmail.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Email", Toast.LENGTH_SHORT).show();
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(edtEmail.getText().toString()).matches() && edtEmail.getText().toString().trim().length() > 0) {
+            Toast.makeText(getApplicationContext(), "Please Enter Valid Email Address", Toast.LENGTH_SHORT).show();
         } else if (txtLat.getText().toString().equals("")) {
             Toast.makeText(this, "Please Refresh Retailer Latitude", Toast.LENGTH_SHORT).show();
         } else if (txtLon.getText().toString().equals("")) {
@@ -571,9 +579,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     private void checkLocationData(){
-        if(!Constant.isInternetAvailable(this)){
+        /*if(!Constant.isInternetAvailable(this)){
             Toast.makeText(AddNewRetailer.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
-        }else if(Constant.checkPermissions(AddNewRetailer.this)){
+        }else*/ if(Constant.checkPermissions(AddNewRetailer.this)){
             if(mLocationManager == null)
                 mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -607,6 +615,10 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     @Override
     protected void onDestroy() {
+
+
+
+
         mLocationManager.removeUpdates(locationListener);
         super.onDestroy();
 

@@ -352,7 +352,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 PhoneOrderTypes =0;
 
         } else if (type == 10) {
-            if(Constant.isInternetAvailable(this)){
+            //if(Constant.isInternetAvailable(this)){
                 if(customDialog10!=null && customDialog10.isShowing())
                     customDialog10.dismiss();
 
@@ -361,10 +361,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
                 retailerId = myDataset.get(position).getId();
                 shared_common_pref.save("RetailerID", retailerId);
                 //isCallSecActivity = false;
-                RetailerViewDetailsMethod(retailerId);
+                if(Constant.isInternetAvailable(this)){
+                    RetailerViewDetailsMethod(retailerId);
 
-            }else
-                Toast.makeText(SecondRetailerActivity.this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(SecondRetailerActivity.this, "unable to load retailer details in offline", Toast.LENGTH_SHORT).show();
         } else if (type == 123) {
             if(customDialog123!=null && customDialog123.isShowing())
                 customDialog123.dismiss();

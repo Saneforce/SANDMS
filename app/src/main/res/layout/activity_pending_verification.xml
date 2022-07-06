@@ -18,7 +18,19 @@
             android:background="#05000000"
             tools:listitem="@layout/row_pending_verficiation"
             android:id="@+id/recycler_view"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tv_emptylist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:text="Empty List"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,7 +43,6 @@ import androidx.core.content.FileProvider;
 
 import com.billdesk.sdk.LibraryPaymentStatusProtocol;
 import com.billdesk.sdk.PaymentOptions;
-import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
@@ -64,6 +61,7 @@ import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.ImageFilePath;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,8 +88,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
     private static final int SELECT_PICTURE = 103;
     private static final int CAMERA_REQUEST = 1888;
 
-    Context context;
-
     //image zoom
     float[] lastEvent = null;
     float d = 0f;
@@ -117,7 +113,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
     CustomListViewDialog customDialog;
     ImageView imgSource;
     ImageView iv_choose_photo;
-    EditText edtUTR;
     String orderIDRazorpay;
     String razorpay_payment_id="";
     String razorpay_response="";
@@ -175,7 +170,6 @@ public class PaymentDetailsActivity extends AppCompatActivity
         productAmt = findViewById(R.id.dis_amt);
         offView = findViewById(R.id.lin_offline);
         imgSource = findViewById(R.id.imgSource);
-        edtUTR = findViewById(R.id.edt_utr);
         offlineMode = findViewById(R.id.txt_offline_mode);
         ll_date = findViewById(R.id.ll_date);
         tv_date = findViewById(R.id.tv_date);
@@ -185,7 +179,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
         cheque_no_label = findViewById(R.id.cheque_no_label);
         ll_utr = findViewById(R.id.ll_utr);
         edt_utr=findViewById(R.id.edt_utr);
-
+        serverFileName = "";
         divCode = mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code);
         sfCode  = mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
         stateCode = mShared_common_pref.getvalue(Shared_Common_Pref.State_Code);
@@ -310,11 +304,11 @@ public class PaymentDetailsActivity extends AppCompatActivity
             Toast.makeText(PaymentDetailsActivity.this, "Please Select the Payment Option", Toast.LENGTH_SHORT).show();
         else if(PaymntMode.equalsIgnoreCase("Offline") && offlineMode.getText().toString().equals("")) {
             Toast.makeText(this, "Please choose any Offline payment Option", Toast.LENGTH_SHORT).show();
-        }else if(PaymntMode.equalsIgnoreCase("Offline") && iv_attachment.getVisibility()==View.VISIBLE && serverFileName.equals("")) {
+        }else if(PaymntMode.equalsIgnoreCase("Offline") && imgSource.getVisibility()==View.VISIBLE && serverFileName.equals("")) {
             Toast.makeText(this, "Please choose Valid Image", Toast.LENGTH_SHORT).show();
-        }else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
+        }/*else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
             Toast.makeText(PaymentDetailsActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
-        }else if(edt_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
+        }*/else if(ll_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
         Toast.makeText(PaymentDetailsActivity.this, "Enter valid Number", Toast.LENGTH_SHORT).show();
         }else {
             if (PaymntMode.equalsIgnoreCase("Offline")) {
@@ -437,7 +431,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                         String userMobile = jsonRootObject.getString("userMobile");// "AIRMTST|ARP1553593909862|NA|2|NA|NA|NA|INR|NA|R|airmtst|NA|NA|F|NA|NA|NA|NA|NA|NA|NA|https://uat.billdesk.com/pgidsk/pgmerc/pg_dump.jsp|723938585|CP1005!AIRMTST!D1DDC94112A3B939A4CFC76B5490DC1927197ABBC66E5BC3D59B12B552EB5E7DF56B964D2284EBC15A11643062FD6F63!NA!NA!NA";
 
 
-                        utr = edtUTR.getText().toString();
+                        utr = edt_utr.getText().toString();
 
 
 
@@ -705,7 +699,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
             js.put("PaymentTypeName", option);
             js.put("PaymentTypeCode", PaymentTypecode);
-            js.put("UTRNumber", edtUTR.getText().toString());
+            js.put("UTRNumber", edt_utr.getText().toString());
             js.put("Amount", AmountValue);
             js.put("Attachement", serverFileName);
 
@@ -1052,6 +1046,7 @@ public class PaymentDetailsActivity extends AppCompatActivity
                 serverFileName = "";
                 iv_attachment.setVisibility(View.GONE);
                 imgSource.setVisibility(View.GONE);
+                imgSource.setImageDrawable(null);
             }
             else {
                 iv_attachment.setVisibility(View.VISIBLE);
@@ -1145,11 +1140,23 @@ public class PaymentDetailsActivity extends AppCompatActivity
 
         try {
 
-            imageView.setImageURI(Uri.parse(filePath));
+//            imageView.setImageURI(Uri.parse(filePath));
         /*  Glide.with(context)
                     .asBitmap()
                     .load(Imgurl)
                     .into(imageView);*/
+
+           Picasso.with(PaymentDetailsActivity.this)
+                            .load(new File(filePath))
+                                    .placeholder(R.drawable.icon_placeholder)
+                                            .into(imageView);
+
+/*
+            Glide.with(PaymentDetailsActivity.this)
+                    .load(new File(filePath))
+                    .placeholder(R.drawable.logo_new)
+                    .into(imageView);
+*/
 
 
             imageView.setOnTouchListener(new View.OnTouchListener() {

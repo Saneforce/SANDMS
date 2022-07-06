@@ -20,4 +20,7 @@
     <color name="IconColor">#7cb441</color>
     <color name="grey_line">#7cb441</color>
     <color name="StateGreen">#7cb441</color>
+    <color name="purple_500">#7cb441</color>
+    <color name="call_preview_text2">#7cb441</color>
+
 </resources>

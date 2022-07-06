@@ -6,7 +6,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,10 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -413,9 +410,9 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
                             Toast.makeText(ViewReportActivity.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();
                         else if(isDisPatch && txt_offline_mode.getText().toString().equals(""))
                             Toast.makeText(ViewReportActivity.this, "Please Select the Payment Type", Toast.LENGTH_SHORT).show();
-                        else if(isDisPatch && iv_choose_photo.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
+                        else if(isDisPatch && imgSource.getVisibility() ==View.VISIBLE && serverFileName.equals("")) {
                             Toast.makeText(ViewReportActivity.this, "Please choose Attachment", Toast.LENGTH_SHORT).show();
-                        }else if(edt_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
+                        }else if(ll_utr.getVisibility()== View.VISIBLE && edt_utr.getText().toString().trim().equals("")) {
                             Toast.makeText(ViewReportActivity.this, "Enter valid Number", Toast.LENGTH_SHORT).show();
 
                         }
@@ -883,9 +880,10 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             return;
         }
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
+//        Intent intent = new Intent(Intent.ACTION_SEND);
         // change with required  application package
         File file1 = new File( dirpath + "/"+ fileName+".pdf");
+/*
         intent.setPackage("com.whatsapp");
         if (intent != null && file.exists()) {
             intent.setType("application/pdf");
@@ -896,7 +894,17 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         } else {
             Toast.makeText(ViewReportActivity.this, "App not found", Toast.LENGTH_SHORT).show();
         }
+*/
 
+        Uri fileUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file1);
+        Intent intent = ShareCompat.IntentBuilder.from(this)
+                .setType("*/*")
+                .setStream(fileUri)
+                .setChooserTitle("Choose bar")
+                .createChooserIntent()
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        startActivity(intent);
 
     }
 
@@ -1636,8 +1644,12 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
         imageView = dialogLayout.findViewById(R.id.iv_image);
 
         try {
-            if(fromAddImg ==1 )
-                imageView.setImageURI(Uri.parse(filePath));
+            if(fromAddImg ==1 ){
+                Picasso.with(ViewReportActivity.this)
+                        .load(new File(filePath))
+                        .placeholder(R.drawable.icon_placeholder)
+                        .into(imageView);
+            }
             else {
 
 //                RequestOptions myOptions = new RequestOptions()
@@ -1645,14 +1657,16 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
 //                        .override(100, 100);
 
                /* Glide.with(this)
+
 //                        .apply(myOptions)
                         .load(attachment)
                         .into(imageView);*/
 
-                Picasso.with(this)
+                Picasso.with(ViewReportActivity.this)
                         .load(attachment)
-                        .error(R.drawable.logo_new)
+                        .placeholder(R.drawable.icon_placeholder)
                         .into(imageView);
+
 
             }
 
@@ -1817,6 +1831,7 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             }
             else{
                 serverFileName = "";
+                imgSource.setImageDrawable(null);
                 iv_choose_photo.setVisibility(View.GONE);
                 imgSource.setVisibility(View.GONE);
             }

@@ -38,6 +38,8 @@ public class PendingVerification extends AppCompatActivity {
     Shared_Common_Pref mShared_common_pref;
     Common_Class mCommon_class;
     ImageView imgBack;
+    TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class PendingVerification extends AppCompatActivity {
         pendingRecycle = (RecyclerView) findViewById(R.id.recycler_view);
         mShared_common_pref = new Shared_Common_Pref(this);
         mCommon_class = new Common_Class(this);
-
+        textView=findViewById(R.id.tv_emptylist);
         getToolbar();
 
     }
@@ -59,6 +61,8 @@ public class PendingVerification extends AppCompatActivity {
         }
 
         imgBack = (ImageView) findViewById(R.id.toolbar_back);
+
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,8 +97,10 @@ public class PendingVerification extends AppCompatActivity {
 //                    JSONObject jsonObject = null;
                     if(!jsonObject1.isNull("success") && jsonObject1.getBoolean("success") && !jsonObject1.isNull("Data")){
                         jsonArray = jsonObject1.optJSONArray("Data");
-                    }/*else
-                        Toast.makeText(PendingVerification.this, "No Data, please try again", Toast.LENGTH_SHORT).show();*/
+                    }else{
+                        textView.setVisibility(View.VISIBLE);
+                    }
+                        //Toast.makeText(PendingVerification.this, "Empty List", Toast.LENGTH_SHORT).show();
 
 
                     pendingRecycle.setHasFixedSize(true);
@@ -191,7 +197,8 @@ class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHolder> {
             holder.martl_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent MIntent = new Intent(context, PendingVerificationDetails.class);
+                    Intent MIntent = new Intent(context,
+                            PendingVerificationDetails.class);
                     MIntent.putExtra("title", "PENDING VERIFICATION DETAILS");
                     MIntent.putExtra("OrderID", OrderID);
                     MIntent.putExtra("PayDt", PayDt);
