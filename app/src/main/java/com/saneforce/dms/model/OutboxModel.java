@@ -5,13 +5,16 @@ import java.util.List;
 
 public class OutboxModel {
     private String name;
-    private int  id, count;
+    private int  id, count, value;
     private List<OutboxItem> outboxItemList = new ArrayList<>();
+
+
 
     public OutboxModel(String name, int id, int count, List<OutboxItem> outboxItemList) {
         this.name = name;
         this.id = id;
         this.count = count;
+        this.value = value;
         this.outboxItemList = outboxItemList;
     }
 
@@ -27,13 +30,19 @@ public class OutboxModel {
         return count;
     }
 
+    public int getvalue() {
+        return value;
+    }
+
+
     public List<OutboxItem> getOutboxItemList() {
         return outboxItemList;
     }
 
-    private static class OutboxItem {
+    public static class OutboxItem {
         private int slNo;
         private String date, orderId, orderValue, status, reason;
+
 
         public OutboxItem(int slNo, String date, String orderId, String orderValue, String status, String reason) {
             this.slNo = slNo;

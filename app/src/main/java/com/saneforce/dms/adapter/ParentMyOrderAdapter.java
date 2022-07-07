@@ -1,5 +1,6 @@
 package com.saneforce.dms.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class ParentMyOrderAdapter extends RecyclerView.Adapter<ParentMyOrderAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainMenuViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainMenuViewHolder holder, @SuppressLint("RecyclerView") int position) {
         md = cacheMenuRes.get(position);
         holder.custName.setText(md.getSubCategoryName());
 
