@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -193,6 +194,9 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         }else if(holder1 instanceof MyViewHolderFinance){
             MyViewHolderFinance holderFinance = (MyViewHolderFinance) holder1;
+
+            if (OrderTakenbyFilter.equalsIgnoreCase(mDate.get(position).getOrderStatus()) || OrderTakenbyFilter.equals("All")){
+                holderFinance.rl_root.setVisibility(View.VISIBLE);
             if(mDate.get(position).getOrderStatus().equals("Payment Verified")){
                 holderFinance.cv_root.setVisibility(View.VISIBLE);
             }
@@ -227,6 +231,9 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             holderFinance.rv_sub_orders.setLayoutManager(mLayoutManager);
             holderFinance.rv_sub_orders.setAdapter(mAdapterDayReportList);*/
+            }else {
+                holderFinance.rl_root.setVisibility(View.GONE);
+            }
 
         }
 
@@ -284,7 +291,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tv_customer_name, tv_payment_status, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;
         TextView tv_order_id, tv_sales_value, tv_received_amt;
 //        RecyclerView rv_sub_orders;
-
+        RelativeLayout rl_root;
         public MyViewHolderFinance(@NonNull View itemView) {
             super(itemView);
 
@@ -299,6 +306,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_date_paid=itemView.findViewById(R.id.tv_date_paid);
             tv_payment_mode=itemView.findViewById(R.id.tv_payment_mode);
             tv_cutomer_id=itemView.findViewById(R.id.tv_cutomer_id);
+            rl_root=itemView.findViewById(R.id.rl_root);
 
 //            rv_sub_orders=itemView.findViewById(R.id.rv_sub_orders);
 
