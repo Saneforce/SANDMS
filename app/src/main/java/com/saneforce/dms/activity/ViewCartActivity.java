@@ -600,6 +600,7 @@ public class ViewCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         totalValueString = sendArray.toString();
 
+        Log.d(TAG, "SavePrimaryProduct: "+ totalValueString);
 
         if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();
@@ -1136,6 +1137,8 @@ public class ViewCartActivity extends AppCompatActivity {
         sendArray.put(JSONHEAD);
         sendArray.put(JSONPROCEED);
         totalValueString = sendArray.toString();
+
+        Log.d(TAG, "SaveSecondaryProduct: "+ totalValueString);
 
         if(Constant.isInternetAvailable(ViewCartActivity.this)){
             HashMap<String, String> data = new HashMap<>();

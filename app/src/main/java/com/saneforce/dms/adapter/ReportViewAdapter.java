@@ -182,6 +182,8 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
             double totalroundoff= bd.doubleValue();
+
+
             holder.txtValue.setText(""+ totalroundoff);
 //    float total = Float.parseFloat(mDate.get(position).getOrderValue());
 //    holder.txtValue.setText(new DecimalFormat("##.##").format(total));
@@ -197,6 +199,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (OrderTakenbyFilter.equalsIgnoreCase(mDate.get(position).getOrderStatus()) || OrderTakenbyFilter.equals("All")){
                 holderFinance.rl_root.setVisibility(View.VISIBLE);
+                holderFinance.cv_root.setVisibility(View.VISIBLE);
             if(mDate.get(position).getOrderStatus().equals("Payment Verified")){
                 holderFinance.cv_root.setVisibility(View.VISIBLE);
             }
@@ -233,6 +236,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holderFinance.rv_sub_orders.setAdapter(mAdapterDayReportList);*/
             }else {
                 holderFinance.rl_root.setVisibility(View.GONE);
+                holderFinance.cv_root.setVisibility(View.GONE);
             }
 
         }

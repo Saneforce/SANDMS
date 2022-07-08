@@ -380,7 +380,6 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                     if(cars.getQty()!=null && !cars.getQty().equals(""))
                         productQty = Double.parseDouble(cars.getQty());
 
-
                     totalAmt = productCode * (productQty * unitQty);
                     if(cars.getTax_amt()!=null && !cars.getTax_amt().equals(""))
                         taxValue = Double.parseDouble(cars.getTax_amt());
