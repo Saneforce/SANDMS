@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.saneforce.dms.R;
 import com.saneforce.dms.sqlite.DBController;
@@ -88,8 +89,11 @@ public class OutboxActivity extends AppCompatActivity {
         try {
             count = dbController.getOfflineCount(axn, isOrder);
             if(Integer.parseInt(count) > 0){
-                // change color
+                tvCount.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 tvCount.setOnClickListener(new View.OnClickListener() {
+
+
+
                     @Override
                     public void onClick(View v) {
                         Intent intent;

@@ -216,12 +216,12 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (OrderTakenbyFilter.equalsIgnoreCase(mDate.get(position).getOrderStatus()) || OrderTakenbyFilter.equals("All")){
                 holderFinance.rl_root.setVisibility(View.VISIBLE);
                 holderFinance.cv_root.setVisibility(View.VISIBLE);
-            if(mDate.get(position).getOrderStatus().equals("Payment Verified")){
+            /*if(mDate.get(position).getOrderStatus().equals("Payment Verified")){
                 holderFinance.cv_root.setVisibility(View.VISIBLE);
             }
             else{
                 holderFinance.cv_root.setVisibility(View.GONE);
-            }
+            }*/
 //            holderFinance.cv_root.setText();
 
             holderFinance.tv_customer_name.setText(mDate.get(position).getCustomer_Name());
