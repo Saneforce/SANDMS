@@ -315,49 +315,35 @@ public class DBController extends SQLiteOpenHelper {
         return String.valueOf(count);
     }
 
-    public String getOfflineData(String axn, int isOrder) {
 
-        int count = 0;
+    public ArrayList<HashMap<String, String>> getOfflineData(String axn, int isOrder) {
 
-        SQLiteDatabase database = null;
-        Cursor cursor = null;
-        try {
-            database = this.getWritableDatabase();
-            cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    if(cursor.getString(3).equals("0") && cursor.getInt(5)==isOrder && cursor.getString(4).equals(axn)){
-                        count++;
-                    }
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-            database.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-      /*  ArrayList<HashMap<String, String>> productList = new ArrayList<>();
+        ArrayList<HashMap<String, String>> productList = new ArrayList<>();
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         if (cursor.moveToFirst()) {
             do {
-                if(cursor.getString(3).equals("0")){
-                    HashMap<String, String> map = new HashMap<String, String>();
+                if(cursor.getString(3).equals("0") && cursor.getInt(5)==isOrder && cursor.getString(4).equals(axn)){
+                    HashMap<String, String> map = new HashMap<>();
                     map.put(ID, cursor.getString(0));
                     map.put(DATA_KEY, cursor.getString(1));
                     map.put(DATA_RESPONSE, cursor.getString(2));
                     map.put(IS_UPDATED_TO_SERVER, cursor.getString(3));
                     map.put(AXN_KEY, cursor.getString(4));
+                    map.put(IS_ORDER_KEY, cursor.getString(5));
                     productList.add(map);
                 }
             } while (cursor.moveToNext());
         }
-*/
-        return String.valueOf(count);
+
+        cursor.close();
+        database.close();
+
+// return contact list
+        return productList;
     }
+
+
 
     public boolean isValidLocation(long time) {
         String lastInsertTime;

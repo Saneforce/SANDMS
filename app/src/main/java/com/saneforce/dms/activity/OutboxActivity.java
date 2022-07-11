@@ -1,5 +1,6 @@
 package com.saneforce.dms.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -86,6 +87,37 @@ public class OutboxActivity extends AppCompatActivity {
 
         try {
             count = dbController.getOfflineCount(axn, isOrder);
+            if(Integer.parseInt(count) > 0){
+                // change color
+                tvCount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent;
+                        switch (tvCount.getId()){
+                            case R.id.tv_primary_count:
+
+                                intent = new Intent(OutboxActivity.this, OutboxActivityWorking.class);
+                                intent.putExtra("type", 1);
+                                startActivity(intent);
+
+                                break;
+                            case R.id.tv_secondary_count:
+                                intent = new Intent(OutboxActivity.this, OutboxActivityWorking.class);
+                                intent.putExtra("type", 2);
+                                startActivity(intent);
+
+                                break;
+//                            case R.id.tv_new_retailer:
+//
+//                                break;
+//                            case R.id.tv_retailer_visit:
+//
+//                                break;
+                        }
+
+                    }
+                });
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

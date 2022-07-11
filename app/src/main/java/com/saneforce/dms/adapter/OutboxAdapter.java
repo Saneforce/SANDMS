@@ -21,14 +21,11 @@ import org.json.JSONArray;
 import java.util.List;
 
 public class OutboxAdapter extends RecyclerView.Adapter<OutboxAdapter.MyViewHolder> {
-    private List<OutboxModel> outboxItemList;
+    private List<OutboxModel.OutboxItem> outboxItemList;
     Context context;
-    JSONArray viewPro;
-    OutboxModel bm;
 
-    public OutboxAdapter(List<OutboxModel>outboxModelList,Context context, JSONArray viewPro) {
+    public OutboxAdapter(List<OutboxModel.OutboxItem>outboxModelList,Context context) {
         this.context = context;
-        this.viewPro = viewPro;
         this.outboxItemList = outboxModelList;
     }
 
@@ -44,16 +41,16 @@ public class OutboxAdapter extends RecyclerView.Adapter<OutboxAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull OutboxAdapter.MyViewHolder holder, int position) {
-        bm = outboxItemList.get(position);
-        holder.tv_orderId.setText(String.valueOf(bm.getId()));
+        OutboxModel.OutboxItem bm = outboxItemList.get(position);
+//        holder.tv_orderId.setText(String.valueOf(bm.getId()));
         holder.tv_product_name.setText(String.valueOf(bm.getName()));
-        holder.tv_order_value.setText(String.valueOf(bm.getvalue()));
+        holder.tv_order_value.setText(String.valueOf(bm.getOrderValue()));
 
 }
 
     @Override
     public int getItemCount() {
-        return viewPro.length();
+        return outboxItemList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +63,7 @@ public class OutboxAdapter extends RecyclerView.Adapter<OutboxAdapter.MyViewHold
             super(itemView);
 
             tv_orderId=itemView.findViewById(R.id.tv_orderId);
+
             tv_product_name=itemView.findViewById(R.id.tv_product_name);
             tv_order_value=itemView.findViewById(R.id.tv_order_value);
 

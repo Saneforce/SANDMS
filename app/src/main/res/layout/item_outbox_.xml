@@ -2,7 +2,6 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/ll_toolbar"
-    android:layout_marginHorizontal="15dp"
     android:layout_marginVertical="10dp"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -12,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginHorizontal="15dp"
         android:orientation="horizontal">
 
         <TextView
@@ -39,13 +40,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="15dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/_product"
-            android:textSize="20sp" />
+            android:text="@string/_product_name"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_product_name"
@@ -55,7 +57,7 @@
             android:layout_weight="1"
             android:text=""
             android:textColor="@color/purple_500"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
 
     </LinearLayout>
@@ -65,13 +67,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
+        android:layout_marginHorizontal="15dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_order_value"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_order_value"
@@ -81,8 +84,15 @@
             android:layout_weight="1"
             android:text=""
             android:textColor="@color/purple_500"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/grey_line"/>
+
 </LinearLayout>

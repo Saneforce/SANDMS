@@ -51,6 +51,10 @@
         tools:replace="android:theme">
 
         <activity
+            android:name=".activity.OutboxActivityWorking"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
             android:name=".activity.DSMActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>

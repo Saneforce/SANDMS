@@ -37,6 +37,22 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     int viewType  = 1;
     int slno = 1;
 
+    public void setOrderTakenbyFilter(String orderTakenbyFilter) {
+        OrderTakenbyFilter = orderTakenbyFilter;
+    }
+
+    public void setTextTotalValue(TextView textTotalValue) {
+        this.textTotalValue = textTotalValue;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
     public ReportViewAdapter(Context context, List<ReportModel> mDate, DMS.ViewReport mViewReport , String ordertakenbyFilter , TextView textTotalValue, String reportType, int viewType) {
         this.context = context;
         this.mDate = mDate;

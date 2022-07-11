@@ -18,6 +18,10 @@ public class OutboxModel {
         this.outboxItemList = outboxItemList;
     }
 
+    public OutboxModel() {
+
+    }
+
     public String getName() {
         return name;
     }
@@ -34,6 +38,25 @@ public class OutboxModel {
         return value;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public void setOutboxItemList(List<OutboxItem> outboxItemList) {
+        this.outboxItemList = outboxItemList;
+    }
 
     public List<OutboxItem> getOutboxItemList() {
         return outboxItemList;
@@ -42,7 +65,7 @@ public class OutboxModel {
     public static class OutboxItem {
         private int slNo;
         private String date, orderId, orderValue, status, reason;
-
+        private String name;
 
         public OutboxItem(int slNo, String date, String orderId, String orderValue, String status, String reason) {
             this.slNo = slNo;
@@ -50,6 +73,42 @@ public class OutboxModel {
             this.orderId = orderId;
             this.orderValue = orderValue;
             this.status = status;
+            this.reason = reason;
+        }
+
+        public OutboxItem() {
+
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setSlNo(int slNo) {
+            this.slNo = slNo;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public void setOrderValue(String orderValue) {
+            this.orderValue = orderValue;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public void setReason(String reason) {
             this.reason = reason;
         }
 

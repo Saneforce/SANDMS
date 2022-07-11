@@ -290,6 +290,33 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
             }
         });
 
+        mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
+            @Override
+            public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {//,String TaxValue,String Tax
+                Intent intent = new Intent(ReportActivity.this, ViewReportActivity.class);
+                intent.putExtra("ProductID", productId);
+                intent.putExtra("OrderDate", orderDate);
+                intent.putExtra("FromDate", fromBtn.getText().toString());
+                intent.putExtra("ToDate", toBtn.getText().toString());
+                intent.putExtra("OderValue", OrderValue);
+                intent.putExtra("orderType", orderType);
+                intent.putExtra("editOrder", editOrder);
+                intent.putExtra("Paymentflag", Paymentflag);
+                intent.putExtra("Dispatch_Flag", Dispatch_Flag);
+
+                intent.putExtra("dispatch_date", dispatch_date);
+                intent.putExtra("payment_type", payment_type);
+                intent.putExtra("payment_option", payment_option);
+                intent.putExtra("check_utr_no", check_utr_no);
+                intent.putExtra("attachment", attachment);
+
+                startActivity(intent);
+                //  finish();
+            }
+        },orderTakenByFilter,txtTotalValue, OrderType, viewType);
+        mReportList.setAdapter(mReportViewAdapter);
+
+
 
     }
 
@@ -432,13 +459,13 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                             mDReportModels = mReportActivities.getData();
 
                     }
+                    float intSum = 0f;
 
                     try
                     {
 
                         modeOrderData.clear();
                         filteredList.clear();
-                        Float intSum = 0f;
 
                         OrderStatusList.clear();
                         OrderStatusList.add("All");
@@ -479,31 +506,11 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
                         e.printStackTrace();
                     }
 
-                    mReportViewAdapter = new ReportViewAdapter(ReportActivity.this, filteredList, new DMS.ViewReport() {
-                        @Override
-                        public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {//,String TaxValue,String Tax
-                            Intent intent = new Intent(ReportActivity.this, ViewReportActivity.class);
-                            intent.putExtra("ProductID", productId);
-                            intent.putExtra("OrderDate", orderDate);
-                            intent.putExtra("FromDate", fromBtn.getText().toString());
-                            intent.putExtra("ToDate", toBtn.getText().toString());
-                            intent.putExtra("OderValue", OrderValue);
-                            intent.putExtra("orderType", orderType);
-                            intent.putExtra("editOrder", editOrder);
-                            intent.putExtra("Paymentflag", Paymentflag);
-                            intent.putExtra("Dispatch_Flag", Dispatch_Flag);
+                    mReportViewAdapter.setOrderTakenbyFilter(orderTakenByFilter);
+                    mReportViewAdapter.setTextTotalValue(txtTotalValue);
+                    mReportViewAdapter.notifyDataSetChanged();
 
-                            intent.putExtra("dispatch_date", dispatch_date);
-                            intent.putExtra("payment_type", payment_type);
-                            intent.putExtra("payment_option", payment_option);
-                            intent.putExtra("check_utr_no", check_utr_no);
-                            intent.putExtra("attachment", attachment);
 
-                            startActivity(intent);
-                            //  finish();
-                        }
-                    },orderTakenByFilter,txtTotalValue, OrderType, viewType);
-                    mReportList.setAdapter(mReportViewAdapter);
                 }
 
                 @Override
