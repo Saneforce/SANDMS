@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -743,8 +744,14 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
             @Override
             protected void onPostExecute(List<PrimaryProduct> todoList) {
-                priProdAdapter.setContact(todoList, category);
                 mPrimaryProduct = todoList;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        priProdAdapter.setContact(todoList, category);
+                    }
+                }, 1000);
+
                 Log.d(TAG, "onPostExecute: ");
 
 //                Log.v("calculate_value", new Gson().toJson(todoList.size()));
@@ -1441,6 +1448,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                                     holder.productItemTotal.setText("0.0");//new july10
                                 } else {
                                     if (product_Sale_Unit_Cn_Qty != 0) {
+
                                         subTotal = subTotal * product_Sale_Unit_Cn_Qty;
                                         Log.v("40Sale_Unit_Cn_Qty", String.valueOf(product_Sale_Unit_Cn_Qty));
                                         holder.productItemTotal.setText("" + Constant.roundTwoDecimals(subTotal));
