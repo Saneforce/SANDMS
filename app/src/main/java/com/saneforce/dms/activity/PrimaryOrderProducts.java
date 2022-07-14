@@ -101,6 +101,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 //    PrimaryProductViewModel mPrimaryProductViewModel;
     String productBarCode = "a", productBarCodes = "";
     SearchView searchEdit;
+    ImageView imageView;
     //    EditText edt_serach;
     PrimaryProductDatabase primaryProductDatabase;
     PrimaryProductViewModel deleteViewModel;
@@ -130,6 +131,8 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         gson = new Gson();
         grandTotal = (TextView) findViewById(R.id.total_amount);
         item_count = (TextView) findViewById(R.id.item_count);
+        imageView = findViewById(R.id.ib_home);
+        imageView.setVisibility(View.VISIBLE);
         mShared_common_pref = new Shared_Common_Pref(this);
         dbController = new DBController(this);
         searchEdit = findViewById(R.id.edt_serach_view);
@@ -258,6 +261,14 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent img=new Intent(PrimaryOrderProducts.this,DashBoardActivity.class);
+                startActivity(img);
+                finish();
+            }
+        });
 
         forward.setOnClickListener(new View.OnClickListener() {
             @Override

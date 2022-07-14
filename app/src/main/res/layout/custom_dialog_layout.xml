@@ -13,14 +13,15 @@
         android:layout_height="35dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/search_backround"
-        android:drawableLeft="@drawable/ic_search_icon"
-        android:paddingLeft="5dp"
+        android:drawableStart="@drawable/ic_search_icon"
+        android:paddingHorizontal="5dp"
         android:singleLine="true"
         android:textAlignment="textStart"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="15sp"
         android:textStyle="normal"
-        tools:ignore="RtlCompat" />
+        android:imeOptions="actionSearch"
+        android:importantForAutofill="no" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

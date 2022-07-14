@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,6 +49,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
     public CustomListViewDialog(Activity a, List<Common_Model> wk, int type) {
         super(a);
         this.activity = a;
+        this.context = a;
         this.type = type;
         //this.adapter = adapter;
         this.mDataset = wk;
@@ -102,6 +106,23 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
             }
         });
 
+        searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performSearch();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void performSearch() {
+        searchView.clearFocus();
+        InputMethodManager in = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
 
     @Override
