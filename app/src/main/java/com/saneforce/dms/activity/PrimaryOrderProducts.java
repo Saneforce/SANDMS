@@ -431,13 +431,15 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
 
                             deleteViewModel.delete(contacts);
 //                                    startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
-                            completePreviousActivity(true);
+                            //completePreviousActivity(true);
+                            finish();
                         }
                     });
 
                 }else{
-                    completePreviousActivity(true);
+                    //completePreviousActivity(true);
 //                            startActivity(new Intent(PrimaryOrderProducts.this, DashBoardActivity.class));
+                    finish();
                 }
 
             }
@@ -746,6 +748,9 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
     @SuppressLint("StaticFieldLeak")
     private void loadFilteredTodos(String category) {
         Log.d(TAG, "loadFilteredTodos: ");
+
+
+        
         Log.v("AsynTASk_VALUE", category);
         new AsyncTask<String, Void, List<PrimaryProduct>>() {
             @Override

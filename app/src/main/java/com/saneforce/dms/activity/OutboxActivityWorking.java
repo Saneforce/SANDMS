@@ -64,7 +64,8 @@ public class OutboxActivityWorking extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(submittedCallAdapter);
+        recyclerView.setAdapter(
+                submittedCallAdapter);
 
     }
 
@@ -113,6 +114,9 @@ public class OutboxActivityWorking extends AppCompatActivity {
                                     JSONObject jsonObject = jsonArray1.getJSONObject(r);
                                     if(jsonObject.has("Productname"))
                                         productName.append(jsonObject.getString("Productname"));
+                                    if(r<jsonArray1.length()-1) {
+                                        productName.append(", ");
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
