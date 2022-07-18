@@ -104,6 +104,7 @@ public class ViewCartActivity extends AppCompatActivity {
     String GrandTotal = "";
     String SubTotal = "";
     TextView viewTotal;
+    ImageView imageView;
     PrimaryProductViewModel contactViewModel, deleteViewModel;
 //    List<PrimaryProduct> contacts;
 
@@ -125,6 +126,8 @@ public class ViewCartActivity extends AppCompatActivity {
         // Log.v("carListAsString", carListAsString);
         viewTotal = findViewById(R.id.view_total);
         btnSubmt = findViewById(R.id.add_cart);
+        imageView = findViewById(R.id.ib_home);
+        imageView.setVisibility(View.VISIBLE);
         deleteViewModel = ViewModelProviders.of(ViewCartActivity.this).get(PrimaryProductViewModel.class);
 
         if(getIntent().hasExtra("order_type"))
@@ -182,6 +185,14 @@ public class ViewCartActivity extends AppCompatActivity {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent img=new Intent(ViewCartActivity.this,DashBoardActivity.class);
+                startActivity(img);
+                finish();
+            }
+        });
 
         btnSubmt.setOnClickListener(new View.OnClickListener() {
             @Override

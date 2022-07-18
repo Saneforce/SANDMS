@@ -4,6 +4,7 @@ package com.saneforce.dms.activity;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
@@ -115,12 +117,27 @@ public class DashBoardActivity extends AppCompatActivity {
         ib_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                MyLocationWorker.stopLocationTracker();
-                dbController.clearDatabase(DBController.TABLE_NAME);
-//                dbController.clearDatabase(DBController.TABLE_LOCATION);
-                shared_common_pref.logoutUser(DashBoardActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(DashBoardActivity.this);
+                alert.setTitle("Confirmation");
+                alert.setCancelable(false);
+                alert.setMessage("Do you want to Logout?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shared_common_pref.logoutUser(DashBoardActivity.this);
+                       // onBackPressed();
+                    }
+                });
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
             }
         });
+
         LinearLayout llProfile = findViewById(R.id.ll_profile);
         if(ApiClient.APP_TYPE == 1)
             llProfile.setVisibility(View.GONE);

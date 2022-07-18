@@ -1,14 +1,17 @@
 package com.saneforce.dms.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 
@@ -43,10 +46,26 @@ public class FinanceActivity extends AppCompatActivity {
         ib_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shared_common_pref.logoutUser(FinanceActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(FinanceActivity.this);
+                alert.setTitle("Confirmation");
+                alert.setCancelable(false);
+                alert.setMessage("Do you want to Logout?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shared_common_pref.logoutUser(FinanceActivity.this);
+                       // onBackPressed();
+                    }
+                });
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
             }
         });
-
     }
 
     public void PendingVerification(View v) {
