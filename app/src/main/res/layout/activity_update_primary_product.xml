@@ -216,10 +216,12 @@
                                             android:layout_height="12dp"
                                             android:layout_margin="8dp"
                                             android:background="@drawable/minus"
-                                            android:gravity="center"></LinearLayout>
+                                            android:gravity="center">
+
+                                        </LinearLayout>
                                     </LinearLayout>
 
-                                    <EditText
+                                   <EditText
                                         android:id="@+id/edt_product_count_inc_dec"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"

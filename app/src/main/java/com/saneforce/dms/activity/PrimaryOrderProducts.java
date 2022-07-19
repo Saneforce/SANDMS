@@ -910,8 +910,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
 
 
 
-    class ContactHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener,DMS.Master_Interface {
+    class ContactHolder extends RecyclerView.ViewHolder implements DMS.Master_Interface {
 
 
         //        Common_Model mCommon_model_spinner;
@@ -920,7 +919,7 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
                 ProductDisAmt, ProductUnit;
         //        productItem,
         LinearLayout linPLus, linMinus, linInfo;
-        TextView mProductCount;
+        EditText mProductCount;
         LinearLayout image_dropdown;
         CustomListViewDialog customDialog;
 
@@ -966,19 +965,19 @@ class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ContactHolder>
             tv_off_label = itemView.findViewById(R.id.tv_off_label);
             ib_edit_price = itemView.findViewById(R.id.ib_edit_price);
             child_product_price_total = itemView.findViewById(R.id.child_product_price_total);
-            itemView.setOnClickListener(this);
+       //    itemView.setOnClickListener(this);
 
 
         }
-        @Override
-        public void onClick(View v) {
-            PrimaryProduct task = workinglist.get(getAdapterPosition());
-//            Log.v("PRODUCT_LIST", new Gson().toJson(task));
-            shared_common_pref.save("task", new Gson().toJson(task));
-            Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
-            intent.putExtra("order_type",orderType);
-            mCtx.startActivity(intent);
-        }
+      //  @Override
+//        public void onClick(View v) {
+//            PrimaryProduct task = workinglist.get(getAdapterPosition());
+////            Log.v("PRODUCT_LIST", new Gson().toJson(task));
+//            shared_common_pref.save("task", new Gson().toJson(task));
+//            Intent intent = new Intent(mCtx, UpdatePrimaryProduct.class);
+//            intent.putExtra("order_type",orderType);
+//            mCtx.startActivity(intent);
+//        }
 
         public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
             customDialog.dismiss();
