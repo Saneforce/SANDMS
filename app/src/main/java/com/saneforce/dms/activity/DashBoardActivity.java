@@ -558,6 +558,14 @@ public class DashBoardActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), OutboxActivity.class));
     }
 
+    public void AddRetailer(View v){
+        startActivity(new Intent(getApplicationContext(), AddNewRetailer.class));
+    }
+
+    public void EditRetailer(View v){
+        startActivity(new Intent(getApplicationContext(), EditRetailer.class));
+    }
+
     public void Company(View v) {
         Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);
         intent.putExtra("fileName", "CompanyProfile.html");

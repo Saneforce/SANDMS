@@ -358,6 +358,55 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/lin_add_retailer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="AddRetailer"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/ic_baseline_add_24"
+                    android:contentDescription="@string/app_name" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="Add Retailer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lin_edit_retailer_"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/C10dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_bg"
+                android:elevation="2dp"
+                android:onClick="SecondaryOrder"
+                android:orientation="vertical"
+                android:padding="@dimen/C20dp">
+
+                <ImageView
+                    style="@style/ImageViewHeader"
+                    android:src="@drawable/ic_baseline_edit_24"
+                    android:contentDescription="@string/app_name" />
+
+                <TextView
+                    style="@style/TextViewHeader"
+                    android:text="Edit Retailer" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
