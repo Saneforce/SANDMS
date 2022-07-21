@@ -1,21 +1,23 @@
 package com.saneforce.dms.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.Common_Model;
+import com.saneforce.dms.utils.CustomListViewDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +58,23 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         if(contact.getFlag()!=null && !contact.getFlag().equals("") && !contact.getFlag().equalsIgnoreCase("flag")){
             fruitViewHolder.tv_scheme.setText(contact.getFlag());
             fruitViewHolder.tv_scheme.setVisibility(View.VISIBLE);
+
         }
-        else
+        else {
             fruitViewHolder.tv_scheme.setVisibility(View.GONE);
+            new View.OnClickListener(new View.OnClickListener() {
+                Context context;
+
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(context,CustomListViewDialog.class);
+                    context.startActivity(intent);
+
+                }
+            };
+        }
+
+
     }
 
     @Override
@@ -103,6 +119,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
     public class FruitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTextName, mTextPhone,mTextAddress, tv_address, tv_scheme;
+        ImageButton ib_edit;
 
         public FruitViewHolder(View v) {
             super(v);
@@ -111,6 +128,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
             mTextAddress = v.findViewById(R.id.txt_address);
             tv_address = v.findViewById(R.id.tv_address);
             tv_scheme = v.findViewById(R.id.tv_scheme);
+            ib_edit=v.findViewById(R.id.ib_edit);
             v.setOnClickListener(this);
         }
 

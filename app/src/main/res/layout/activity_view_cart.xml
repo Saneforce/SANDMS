@@ -15,6 +15,7 @@
         android:layout_above="@+id/Linear_proceed_cart"
         android:layout_below="@+id/toolbar_top"
         android:layout_marginVertical="10dp"
+        android:layout_marginBottom="-19dp"
         tools:itemCount="3"
         tools:listitem="@layout/row_item_viewcart_new">
 
