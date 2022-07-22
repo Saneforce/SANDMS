@@ -384,7 +384,7 @@
                     android:text="Add Retailer" />
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/lin_edit_retailer_"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -405,7 +405,7 @@
                     style="@style/TextViewHeader"
                     android:text="Edit Retailer" />
 
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 

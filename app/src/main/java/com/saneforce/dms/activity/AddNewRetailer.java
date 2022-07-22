@@ -178,7 +178,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                JsonObject jsonObject = null;
+                /*JsonObject jsonObject = null;
                 try {
                     jsonObject = new JsonObject(response.body().toString());
                     Log.v("Retailer_Details", jsonObject.toString());
@@ -242,7 +242,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
 
             }
 

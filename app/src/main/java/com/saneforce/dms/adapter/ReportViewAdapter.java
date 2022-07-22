@@ -1,9 +1,12 @@
 package com.saneforce.dms.adapter;
 
+import static com.billdesk.utils.PaymentLibConstants.v;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -264,9 +267,11 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mDate.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtsNo,txtOrderDate,txtOrderID,txtValue,txtOrderStatus,txtOrderTakenBy,txtRetailerName,tv_order_type;
-        LinearLayout linearLayout,linearLayoutTakenby;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        //implements View.OnClickListener
+        TextView txtsNo, txtOrderDate, txtOrderID, txtValue, txtOrderStatus, txtOrderTakenBy, txtRetailerName, tv_order_type;
+        LinearLayout linearLayout, linearLayoutTakenby;
+        ImageButton imageButton;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -275,36 +280,41 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             txtOrderID = (TextView) itemView.findViewById(R.id.txt_order);
             txtOrderDate = (TextView) itemView.findViewById(R.id.txt_date);
             txtValue = (TextView) itemView.findViewById(R.id.txt_total);
-            txtOrderStatus=itemView.findViewById(R.id.txt_status);
+            txtOrderStatus = itemView.findViewById(R.id.txt_status);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
-            linearLayoutTakenby= itemView.findViewById(R.id.row_reporttakenby);
-            txtOrderTakenBy=itemView.findViewById(R.id.txt_ordertaken);
-            txtRetailerName=itemView.findViewById(R.id.txt_reatiler);
-            tv_order_type=itemView.findViewById(R.id.tv_order_type);
-            itemView.setOnClickListener(this);
-        }
+            linearLayoutTakenby = itemView.findViewById(R.id.row_reporttakenby);
+            txtOrderTakenBy = itemView.findViewById(R.id.txt_ordertaken);
+            txtRetailerName = itemView.findViewById(R.id.txt_reatiler);
+            tv_order_type = itemView.findViewById(R.id.tv_order_type);
+            imageButton = itemView.findViewById(R.id.ib_forward);
 
-        @Override
-        public void onClick(View v) {
-            String editOrder = "0";
 
-            try {
-                if(mDate.get(getAdapterPosition()).getSfCode()!=null && shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code).equals(mDate.get(getAdapterPosition()).getSfCode())){
-                    editOrder = "1";
-                }else{
-                    editOrder = "0";
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    {
+                        String editOrder = "0";
+
+                        try {
+                            if (mDate.get(getAdapterPosition()).getSfCode() != null && shared_common_pref.getvalue1(Shared_Common_Pref.Sf_Code).equals(mDate.get(getAdapterPosition()).getSfCode())) {
+                                editOrder = "1";
+                            } else {
+                                editOrder = "0";
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(), mDate.get(getAdapterPosition()).getOrderValue(),
+                                mDate.get(getAdapterPosition()).getOrder_type(), editOrder, mDate.get(getAdapterPosition()).getPaymentflag(), mDate.get(getAdapterPosition()).getDispatch_Flag(),
+                                mDate.get(getAdapterPosition()).getPaid_Date(), mDate.get(getAdapterPosition()).getPayment_Mode(), mDate.get(getAdapterPosition()).getPaymentTypeName(), mDate.get(getAdapterPosition()).getUTR(),
+                                mDate.get(getAdapterPosition()).getAttachment());
+
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mViewReport.reportCliick(mDate.get(getAdapterPosition()).getOrderNo(), mDate.get(getAdapterPosition()).getOrderDate(),mDate.get(getAdapterPosition()).getOrderValue(),
-                    mDate.get(getAdapterPosition()).getOrder_type(), editOrder,mDate.get(getAdapterPosition()).getPaymentflag(),mDate.get(getAdapterPosition()).getDispatch_Flag(),
-                    mDate.get(getAdapterPosition()).getPaid_Date(),mDate.get(getAdapterPosition()).getPayment_Mode(),mDate.get(getAdapterPosition()).getPaymentTypeName(),mDate.get(getAdapterPosition()).getUTR(),
-                    mDate.get(getAdapterPosition()).getAttachment());
+            });
         }
     }
-
     public class MyViewHolderFinance extends RecyclerView.ViewHolder {
 
         CardView cv_root;
