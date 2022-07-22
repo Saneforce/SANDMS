@@ -75,7 +75,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     implementation 'org.jetbrains:annotations:15.0'
-    implementation 'com.android.car.ui:car-ui-lib:+'
     implementation 'androidx.databinding:compiler:3.2.0-alpha11'
     implementation 'androidx.databinding:databinding-compiler:4.2.2'
     testImplementation 'junit:junit:4.13.2'

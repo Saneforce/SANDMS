@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saneforce.dms.activity.AddNewRetailer;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.Common_Model;
@@ -27,12 +28,14 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     DMS.Master_Interface updateUi;
     int typeName;
     private List<Common_Model> contactListFiltered;
+    Context context;
 
     public DataAdapter(List<Common_Model> myDataset, Context context, int type) {
         contactList = myDataset;
         typeName = type;
         contactListFiltered = myDataset;
         updateUi = ((DMS.Master_Interface) context);
+        context=this.context;
     }
 
     @NonNull
@@ -47,6 +50,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     public void onBindViewHolder(@NonNull FruitViewHolder fruitViewHolder, int i) {
         Common_Model contact = contactListFiltered.get(i);
         fruitViewHolder.mTextName.setText(contact.getName());
+        fruitViewHolder.mTextName.setText(contact.getId());
 
         if(contact.getAddress()!=null && !contact.getAddress().equals("")){
             fruitViewHolder.tv_address.setText(contact.getAddress());
@@ -62,13 +66,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         }
         else {
             fruitViewHolder.tv_scheme.setVisibility(View.GONE);
-            new View.OnClickListener(new View.OnClickListener() {
-                Context context;
+            fruitViewHolder.ib_edit.setVisibility(View.GONE);
+            new View.OnClickListener() {
+
+
 
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(context,CustomListViewDialog.class);
-                    context.startActivity(intent);
 
                 }
             };

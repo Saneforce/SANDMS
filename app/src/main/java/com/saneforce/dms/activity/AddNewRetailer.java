@@ -1,5 +1,8 @@
 package com.saneforce.dms.activity;
 
+import static com.billdesk.utils.PaymentLibConstants.t;
+import static com.saneforce.dms.activity.PaymentDetailsActivity.sfCode;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -44,6 +47,7 @@ import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.sqlite.DBController;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -63,7 +67,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     List<Common_Model> modelRetailClass = new ArrayList<>();
     List<Common_Model> modelRetailChannel = new ArrayList<>();
     Common_Model mCommon_model_spinner;
-    TextView txtRoute, txtClass, txtChannel, txtLat, txtLon;
+    TextView txtRoute, txtClass, txtChannel, txtLat, txtLon,tv_sch_enrollment,txtModelOrderValue,txtMobile,txtLastVisited,txtLastOrderAmount;
     Shared_Common_Pref mShared_common_pref;
     String KeyDate = "", keyCodeValue = "", keyEk = "", KeyHyp = "", routeID = "", classID = "", channelID = "",
             locationValue = "", str1 = "", str2 = "";
@@ -132,6 +136,11 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         txtRoute = findViewById(R.id.txt_route);
         txtClass = findViewById(R.id.txt_retailer_class);
         txtChannel = findViewById(R.id.txt_retailer_channel);
+        txtLastVisited = findViewById(R.id.txt_last_visited);
+        txtModelOrderValue = findViewById(R.id.model_order_vlaue);
+        txtMobile = findViewById(R.id.txt_mobile);
+        txtLastOrderAmount = findViewById(R.id.txt_last_order_amount);
+        tv_sch_enrollment = findViewById(R.id.tv_sch_enrollment);
         txtLat = findViewById(R.id.txt_retail_lat);
         txtLon = findViewById(R.id.txt_retail_lon);
         edtName = findViewById(R.id.edt_new_name);
@@ -152,11 +161,96 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
         ib_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                checkLocationData();
-            }
+            public void onClick(View view) {checkLocationData();}
         });
 
+        Intent intent=getIntent();
+        String retailerId="";
+        if (intent.hasExtra("retailerId"))
+        retailerId=intent.getStringExtra("retailerId");
+
+    }
+
+    public void RetailerViewDetailsMethod(String retailerID){
+        ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
+        Call<JsonObject>call=apiInterface.retailerViewDetails(retailerID, mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),sfCode);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                JsonObject jsonObject = null;
+                try {
+                    jsonObject = new JsonObject(response.body().toString());
+                    Log.v("Retailer_Details", jsonObject.toString());
+                    String channel = "";
+                    if (jsonObject.has("DrSpl"))
+                        channel = jsonObject.getAsString("DrSpl");
+                    txtChannel.setText(channel);
+
+                    String retailerClass = "";
+                    if (jsonObject.has("DrCat"))
+                        retailerClass = jsonObject.getAsString("DrCat");
+                    txtClass.setText(retailerClass);
+
+                    String lastVisit = "-";
+                    if (jsonObject.has("last_visit_date") && !jsonObject.getAsString("last_visit_date").equals(""))
+                        lastVisit = jsonObject.getAsString("last_visit_date");
+                    txtLastVisited.setText(lastVisit);
+
+                    double total = 0;
+                    if (!jsonObject.isJsonNull("MOV")) {
+                        JsonArray jsonArray = jsonObject.getAsJsonArray("MOV");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            try {
+                                JSONObject jsonObject1 = jsonArray.getAsJsonObject(i);
+                                if (!jsonObject1.isNull("MorderSum"))
+                                    total += jsonObject1.getDouble("MorderSum");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    txtModelOrderValue.setText(Constant.roundTwoDecimals(total));
+
+                    String scheme = "-";
+                    if (jsonObject.has("Slan_Name"))
+                        scheme = jsonObject.getAsString("Slan_Name");
+                    tv_sch_enrollment.setText(scheme);
+
+                    String lastOrderAmt = "-";
+                    lastOrderAmt = jsonObject.getAsString("LastOrderAmt");
+                    if (!lastOrderAmt.equals(""))
+                        lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constant.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
+                    txtLastOrderAmount.setText(lastOrderAmt);
+
+
+                    String mob1 = "-";
+//                        String mob2 = "";
+                    if (!jsonObject.isJsonNull("POTENTIAL") && jsonObject.getAsJsonArray("POTENTIAL").length() > 0) {
+
+                        if (jsonObject.getAsJsonArray("POTENTIAL").getAsJsonArray
+                                (0).getString("ListedDr_Mobile") != null) {
+                            mob1 = jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Mobile");
+                        }
+
+                        if ((mob1.equals("") || mob1.equals("-") || mob1.equals("null")) && jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Phone") != null) {
+                            mob1 = jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Phone");
+                        }
+                    }
+                    txtMobile.setText(mob1);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("Retailer_Details","Error");
+            }
+        });
     }
 
     private void OnGPS() {
