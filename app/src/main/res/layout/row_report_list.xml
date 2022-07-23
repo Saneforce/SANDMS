@@ -149,10 +149,10 @@
 
         <ImageButton
             android:id="@+id/ib_forward"
-            android:layout_width="9dp"
-            android:layout_height="9dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_gravity="end"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="30dp"
             android:src="@drawable/ic_baseline_arrow_forward_24" />
 
         <LinearLayout
