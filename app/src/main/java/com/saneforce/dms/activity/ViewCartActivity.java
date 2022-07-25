@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -197,24 +198,47 @@ public class ViewCartActivity extends AppCompatActivity {
         btnSubmt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
-                    if(orderType == 1){
-                        btnSubmt.setEnabled(false);
-                        SavePrimaryProduct(adapter.getData());
-                    }
-                    else{
-                        if(!Constant.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
-                            Toast.makeText(ViewCartActivity.this, "Edit order cannot be offline", Toast.LENGTH_SHORT).show();
-                        }else{
-                            btnSubmt.setEnabled(false);
-                            SaveSecondaryProduct(adapter.getData());
+                AlertDialog.Builder alert = new AlertDialog.Builder(ViewCartActivity.this);
+                alert.setTitle("Confirmation");
+                alert.setCancelable(false);
+                alert.setMessage("Do you want to Submit?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
+                            if(orderType == 1){
+                                btnSubmt.setEnabled(false);
+                                SavePrimaryProduct(adapter.getData());
+                            }
+                            else{
+                                if(!Constant.isInternetAvailable(ViewCartActivity.this) && !orderNo.equals("") ){
+                                    Toast.makeText(ViewCartActivity.this, "Edit order cannot be offline", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    btnSubmt.setEnabled(false);
+                                    SaveSecondaryProduct(adapter.getData());
+                                }
+                            }
+                            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            //alert.show();
+
+                        }else {
+                            Toast.makeText(ViewCartActivity.this, "Please choose Products", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     }
-
-                }else {
-                    Toast.makeText(ViewCartActivity.this, "Please choose Products", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                });
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
             }
         });
 
@@ -246,9 +270,12 @@ public class ViewCartActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showExitDialog();
+                finish();
+              //  startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
+               // showExitDialog();
             }
         });
+
         toolHeader = (TextView) findViewById(R.id.toolbar_title);
 
         if(orderType == 1)
@@ -261,7 +288,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
     }
 
-    private void showExitDialog() {
+    /*private void showExitDialog() {
         AlertDialogBox.showDialog(ViewCartActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
             @Override
             public void PositiveMethod(DialogInterface dialog, int id) {
@@ -278,7 +305,7 @@ public class ViewCartActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
 
     /*Date and Time Format*/
     public void DateTime() {
@@ -645,7 +672,6 @@ public class ViewCartActivity extends AppCompatActivity {
 //                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                 } else {
                     common_class.ProgressdialogShow(2, "");
-
                     completePreviousActivity(true);
                 }
 
@@ -708,8 +734,8 @@ public class ViewCartActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //     startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
-        showExitDialog();
+        startActivity(new Intent(getApplicationContext(), PrimaryOrderProducts.class));
+        //showExitDialog();
     }
 
 

@@ -29,7 +29,6 @@
     <string name="longitude_star">Longitude <font color='#F44336'>*</font></string>
     <string name="retailer_class_star">Retailer Class <font color='#F44336'>*</font></string>
     <string name="retailer_channel_star">Retailer Channel <font color='#F44336'>*</font></string>
-    <string name="retailer">Name </string>
     <string name="retailer_add"> Address </string>
     <string name="payment">Payment Type </string>
     <string name="retailer_class">Retailer Class  </string>

@@ -185,7 +185,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
                 Log.v("mPrimaryProduct", String.valueOf(mPrimaryProduct.size()));
-                showExitDialog();
+                onBackPressed();
 
             }
         });

@@ -22,5 +22,8 @@
     <color name="StateGreen">#7cb441</color>
     <color name="purple_500">#7cb441</color>
     <color name="call_preview_text2">#7cb441</color>
+    <color name="menu_color">#607d8b</color>
+    <color name="login_text">#607d8b</color>
+    <color name="red">#607d8b</color>
 
 </resources>
