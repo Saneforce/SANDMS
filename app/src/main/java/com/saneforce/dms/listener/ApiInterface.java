@@ -170,6 +170,14 @@ public interface ApiInterface {
 
     Call<JsonArray> getDetailsArray(String s, String toString);
 
+    @Multipart
+    @POST("dms_db_V1.php?")
+    Call<ResponseBody> retailerDetails(@Part("data") RequestBody data, @Query("axn") String axn,
+                                      @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode,
+                                      @Query("State_Code") String State_Code, @Query("desig") String desig);
+
+
+
     /*"axn" - "get/updateResponse"
     input "response" sample
 

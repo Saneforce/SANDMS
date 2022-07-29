@@ -40,7 +40,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
     RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     //RecyclerView.Adapter adapter;
-    public DataAdapter da;
+    public DataAdapter dataAdapter;
     int type;
     List<Common_Model> mDataset;
     public Button no;
@@ -54,7 +54,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         //this.adapter = adapter;
         this.mDataset = wk;
 
-        this.da = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, activity, type);
 
     }
 
@@ -67,7 +67,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.mDataset =productCodeOffileData;
 
 
-        this.da = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, activity, type);
     }
     public CustomListViewDialog(Context aa, List<Common_Model> wk, int type, TextView productdata) {
         super(aa);
@@ -77,7 +77,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.mDataset = wk;
         this.productdata=productdata;
 
-        this.da = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, activity, type);
 
     }
     @Override
@@ -91,8 +91,8 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         mLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(mLayoutManager);
         no.setOnClickListener(this);
-        recyclerView.setAdapter(da);
-        da.notifyDataSetChanged();
+        recyclerView.setAdapter(dataAdapter);
+        dataAdapter.notifyDataSetChanged();
         searchView.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -102,7 +102,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                da.getFilter().filter(s);
+                dataAdapter.getFilter().filter(s);
             }
         });
 
@@ -130,6 +130,8 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         Log.e("Custom_Dialog_Calling", "");
         dismiss();
     }
+
+
 
 
     @Override

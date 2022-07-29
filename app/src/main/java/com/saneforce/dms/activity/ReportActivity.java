@@ -331,7 +331,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
         try {
             if(customDialog!=null)
-                customDialog.da.notifyDataSetChanged();
+                customDialog.dataAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }

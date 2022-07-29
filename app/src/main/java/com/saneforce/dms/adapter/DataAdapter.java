@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saneforce.dms.activity.AddNewRetailer;
+import com.saneforce.dms.activity.FinanceActivity;
+import com.saneforce.dms.activity.PaymentVerified;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.Common_Model;
@@ -36,6 +38,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         contactListFiltered = myDataset;
         updateUi = ((DMS.Master_Interface) context);
         context=this.context;
+
+    }
+    public DataAdapter(List<Common_Model> myDataset,Context context){
+        contactList=myDataset;
+        this.context=context;
+        contactListFiltered = myDataset;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -138,7 +147,16 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
         @Override
         public void onClick(View v) {
-            updateUi.OnclickMasterType(contactListFiltered, this.getAdapterPosition(), typeName);
+            if(updateUi!=null){
+                updateUi.OnclickMasterType(contactListFiltered, this.getAdapterPosition(), typeName);
+            }else {
+                Intent intent =new Intent(context,AddNewRetailer.class);
+                intent.putExtra("retailerId",contactListFiltered.get(this.getAbsoluteAdapterPosition()).getId());
+                context.startActivity(intent);
+
+
+
+            }
         }
     }
 

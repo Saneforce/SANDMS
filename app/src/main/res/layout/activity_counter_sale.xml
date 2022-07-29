@@ -77,7 +77,7 @@
 
                     <TextView
                         style="@style/TextStyle"
-                        android:text="@string/retailer"/>
+                        android:text="Name"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -93,7 +93,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@null"
-                            android:hint="@string/retailer"
+                            android:hint="Name"
                             android:padding="5dp"
                             android:textSize="13dp" />
                     </LinearLayout>

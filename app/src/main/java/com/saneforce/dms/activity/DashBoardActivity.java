@@ -562,9 +562,9 @@ public class DashBoardActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), AddNewRetailer.class));
     }
 
-    /*public void EditRetailer(View v){
-        startActivity(new Intent(getApplicationContext(), EditRetailer.class));
-    }*/
+    public void EditRetailer(View v){
+        startActivity(new Intent(getApplicationContext(), RetailerListActivity.class));
+    }
 
     public void Company(View v) {
         Intent intent =new Intent(getApplicationContext(), CompanyProfile.class);

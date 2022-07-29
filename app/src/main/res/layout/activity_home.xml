@@ -384,15 +384,15 @@
                     android:text="Add Retailer" />
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:id="@+id/lin_edit_retailer_"
+            <LinearLayout
+                android:id="@+id/lin_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/C10dp"
                 android:layout_weight="1"
                 android:background="@drawable/text_bg"
                 android:elevation="2dp"
-                android:onClick="SecondaryOrder"
+                android:onClick="EditRetailer"
                 android:orientation="vertical"
                 android:padding="@dimen/C20dp">
 
@@ -405,7 +405,7 @@
                     style="@style/TextViewHeader"
                     android:text="Edit Retailer" />
 
-            </LinearLayout>-->
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

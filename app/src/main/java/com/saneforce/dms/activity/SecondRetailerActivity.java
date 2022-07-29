@@ -85,7 +85,8 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     int PhoneOrderTypes = 0;
     TextView tv_sch_enrollment;
 
-    String sfCode = "";
+
+
 
 
     @Override

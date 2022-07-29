@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.saneforce.dms">
 
-
     <queries>
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
-        <queries>
-            <intent>
-                <action android:name="android.intent.action.PICK" />
-                <data android:mimeType="vnd.android.cursor.dir/image" />
-            </intent>
-        </queries>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PICK" />
+
+            <data android:mimeType="vnd.android.cursor.dir/image" />
+        </intent>
+    </queries>
 
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -23,20 +23,18 @@
         android:name="android.hardware.location"
         android:required="true" />
 
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-<!--    <uses-permission  android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>-->
-<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
 
     <application
+        android:name=".DMSApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -44,24 +42,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:name=".DMSApplication"
         android:theme="@style/AppBaseTheme"
-        tools:targetApi="p"
-        tools:replace="android:theme">
-
+        android:usesCleartextTraffic="true"
+        tools:replace="android:theme"
+        tools:targetApi="p">
         <activity
             android:name=".activity.OutboxActivityWorking"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".activity.RetailerListActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.DSMActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.OutboxActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.CompanyProfile"
             android:screenOrientation="portrait"
@@ -119,7 +119,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".activity.PrimaryOrderProducts"
             android:screenOrientation="portrait"
@@ -145,8 +144,8 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:exported="true"
             android:name=".activity.SplashScreen"
+            android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -184,11 +183,13 @@
             android:name=".activity.ViewCartActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <!--<activity
+        <!--
+<activity
             android:name=".activity.ProductImageView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dialog"
-            tools:ignore="LockedOrientationActivity" />-->
+            tools:ignore="LockedOrientationActivity" />
+        -->
         <activity
             android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
@@ -201,7 +202,6 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
-
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
@@ -222,22 +222,22 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-<!--
+        <!--
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="location"
             tools:node="merge" />
--->
-
-<!--        <provider
+        -->
+        <!--
+        <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove"/>-->
-
+            tools:node="remove"/>
+        -->
         <activity
             android:name=".PrivacyPolicy"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" /> <!-- android:debuggable="true" -->
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>

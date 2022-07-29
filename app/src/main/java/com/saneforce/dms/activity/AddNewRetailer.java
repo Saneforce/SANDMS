@@ -168,6 +168,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         String retailerId="";
         if (intent.hasExtra("retailerId"))
         retailerId=intent.getStringExtra("retailerId");
+        RetailerViewDetailsMethod(retailerId);
 
     }
 
@@ -178,8 +179,27 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                txtRoute.setText("");
+                        txtClass.setText("");
+                txtChannel.setText("");
+                        txtLastVisited.setText("");
+                txtModelOrderValue.setText("");
+                        txtMobile.setText("");
+                txtLastOrderAmount.setText("");
+                        tv_sch_enrollment.setText("");
+                txtLat.setText("");
+                        txtLon.setText("");
+                edtName.setText("");
+                        edtAdds.setText("");
+                edtCity.setText("");
+                        edtMobile.setText("");
+                edtEmail.setText("");
+                JsonObject jsonObject = null;
+                String res =response.body().toString();
+                Log.d("AddRetaileractivity","response"+res);
                 /*JsonObject jsonObject = null;
                 try {
+
                     jsonObject = new JsonObject(response.body().toString());
                     Log.v("Retailer_Details", jsonObject.toString());
                     String channel = "";
@@ -217,6 +237,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                     if (jsonObject.has("Slan_Name"))
                         scheme = jsonObject.getAsString("Slan_Name");
                     tv_sch_enrollment.setText(scheme);
+
 
                     String lastOrderAmt = "-";
                     lastOrderAmt = jsonObject.getAsString("LastOrderAmt");

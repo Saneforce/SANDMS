@@ -164,11 +164,10 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.5"
                             android:layout_height="wrap_content"
                             android:text="Sno"
                             android:paddingStart="@dimen/C5dp"
-
                             android:textSize="12sp"
                             android:textColor="@android:color/black"
                             android:autoSizeTextType="uniform"
@@ -186,28 +185,28 @@
                             android:textStyle="bold" />-->
 
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="OrderID"
-                            android:paddingStart="@dimen/C5dp"
-                            android:textSize="12sp"
-                            android:autoSizeTextType="uniform"
-                            android:autoSizeMinTextSize="11sp"
-                            android:autoSizeMaxTextSize="20sp"
-                            android:autoSizeStepGranularity="2sp"
-                            android:textColor="@android:color/black"
-                            android:textStyle="bold"
-                            tools:targetApi="o" />
-
-
-<!--                        <TextView
+                        <!--                        <TextView
                             style="@style/TextStyle"
                             android:layout_width="@dimen/C80dp"
                             android:text="OrderID"
                             android:textSize="@dimen/C12dp"
                             android:textStyle="bold" />-->
+
+                        <TextView
+                            android:layout_width="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5
+"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeMinTextSize="11sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:autoSizeTextType="uniform"
+                            android:paddingStart="@dimen/C2dp"
+                            android:text="OrderID"
+                            android:textColor="@android:color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            tools:targetApi="o" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -287,6 +286,7 @@
                             android:text="Type"
                             android:textSize="@dimen/C12dp"
                             android:textStyle="bold" />-->
+
 
                     </LinearLayout>
 

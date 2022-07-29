@@ -22,7 +22,7 @@
                 android:id="@+id/txt_serial"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:autoSizeMaxTextSize="20sp"
                 android:autoSizeMinTextSize="11sp"
                 android:autoSizeStepGranularity="2sp"
@@ -44,7 +44,7 @@
                 android:id="@+id/txt_order"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:autoSizeMaxTextSize="20sp"
                 android:autoSizeMinTextSize="11sp"
                 android:autoSizeStepGranularity="2sp"
@@ -107,8 +107,8 @@
 
             <TextView
                 android:id="@+id/txt_total"
-                android:layout_width="76dp"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:autoSizeMaxTextSize="20sp"
                 android:autoSizeMinTextSize="11sp"
@@ -128,6 +128,21 @@
               android:textSize="@dimen/C12dp"
               android:paddingLeft="@dimen/C15dp" />-->
 
+            <!--<TextView
+                android:id="@+id/txt_edit"
+                android:layout_width="76dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:paddingStart="@dimen/C5dp"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                tools:targetApi="o" />-->
+
         </LinearLayout>
 
         <LinearLayout
@@ -141,18 +156,19 @@
                 style="@style/TextStyle"
                 android:layout_width="match_parent"
                 android:paddingLeft="@dimen/C5dp"
+                android:gravity="center"
                 android:text="Retailer Name: "
-                android:textSize="@dimen/C12dp"
+                android:textSize="12sp"
                 android:visibility="gone" />
         </LinearLayout>
 
 
         <ImageButton
             android:id="@+id/ib_forward"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="14dp"
+            android:layout_height="11dp"
             android:layout_gravity="end"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="20dp"
             android:src="@drawable/ic_baseline_arrow_forward_24" />
 
         <LinearLayout
