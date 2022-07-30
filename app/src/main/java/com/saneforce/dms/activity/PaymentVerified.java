@@ -67,6 +67,7 @@ public class PaymentVerified extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca;
         if (LoginType.equalsIgnoreCase("Logistics")) {
+
             //below api is omitted because new
             // ca = apiInterface.getPaymentVerifed(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
             ca = apiInterface.getPendingVer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),

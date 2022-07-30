@@ -50,12 +50,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -174,103 +176,54 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     public void RetailerViewDetailsMethod(String retailerID){
         ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject>call=apiInterface.retailerViewDetails(retailerID, mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code),sfCode);
+        Call<ResponseBody>call=apiInterface.retailerViewDetails1(retailerID);
 
-        call.enqueue(new Callback<JsonObject>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                txtRoute.setText("");
-                        txtClass.setText("");
-                txtChannel.setText("");
-                        txtLastVisited.setText("");
-                txtModelOrderValue.setText("");
-                        txtMobile.setText("");
-                txtLastOrderAmount.setText("");
-                        tv_sch_enrollment.setText("");
-                txtLat.setText("");
-                        txtLon.setText("");
-                edtName.setText("");
-                        edtAdds.setText("");
-                edtCity.setText("");
-                        edtMobile.setText("");
-                edtEmail.setText("");
-                JsonObject jsonObject = null;
-                String res =response.body().toString();
-                Log.d("AddRetaileractivity","response"+res);
-                /*JsonObject jsonObject = null;
-                try {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("AddNewRetailer", "onResponse: " + response.body());
+                try{
+                    JSONArray jsonArray = new JSONArray(response.body().string());
+                    if(jsonArray.length()>0) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
 
-                    jsonObject = new JsonObject(response.body().toString());
-                    Log.v("Retailer_Details", jsonObject.toString());
-                    String channel = "";
-                    if (jsonObject.has("DrSpl"))
-                        channel = jsonObject.getAsString("DrSpl");
-                    txtChannel.setText(channel);
+                        if (jsonObject.has("Doc_Class_ShortName"))
+                            txtClass.setText(jsonObject.getString("Doc_Class_ShortName"));
 
-                    String retailerClass = "";
-                    if (jsonObject.has("DrCat"))
-                        retailerClass = jsonObject.getAsString("DrCat");
-                    txtClass.setText(retailerClass);
+                        if (jsonObject.has("Addr"))
+                            edtAdds.setText(jsonObject.getString("Addr"));
 
-                    String lastVisit = "-";
-                    if (jsonObject.has("last_visit_date") && !jsonObject.getAsString("last_visit_date").equals(""))
-                        lastVisit = jsonObject.getAsString("last_visit_date");
-                    txtLastVisited.setText(lastVisit);
+                        if (jsonObject.has("ListedDr_Mobile"))
+                            edtMobile.setText(jsonObject.getString("ListedDr_Mobile"));
 
-                    double total = 0;
-                    if (!jsonObject.isJsonNull("MOV")) {
-                        JsonArray jsonArray = jsonObject.getAsJsonArray("MOV");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            try {
-                                JSONObject jsonObject1 = jsonArray.getAsJsonObject(i);
-                                if (!jsonObject1.isNull("MorderSum"))
-                                    total += jsonObject1.getDouble("MorderSum");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        if (jsonObject.has("cityname"))
+                            edtCity.setText(jsonObject.getString("cityname"));
+
+                        if (jsonObject.has("RetailerName"))
+                            edtName.setText(jsonObject.getString("RetailerName"));
+
+                        if (jsonObject.has("Territory_Code"))
+                            txtRoute.setText(jsonObject.getString("Territory_Code"));
+
+                        if (jsonObject.has("Doc_Spec_ShortName"))
+                            txtChannel.setText(jsonObject.getString("Doc_Spec_ShortName"));
+
                     }
-
-                    txtModelOrderValue.setText(Constant.roundTwoDecimals(total));
-
-                    String scheme = "-";
-                    if (jsonObject.has("Slan_Name"))
-                        scheme = jsonObject.getAsString("Slan_Name");
-                    tv_sch_enrollment.setText(scheme);
-
-
-                    String lastOrderAmt = "-";
-                    lastOrderAmt = jsonObject.getAsString("LastOrderAmt");
-                    if (!lastOrderAmt.equals(""))
-                        lastOrderAmt = lastOrderAmt.equals("-") ? "-" : Constant.roundTwoDecimals(Double.parseDouble(lastOrderAmt));
-                    txtLastOrderAmount.setText(lastOrderAmt);
-
-
-                    String mob1 = "-";
-//                        String mob2 = "";
-                    if (!jsonObject.isJsonNull("POTENTIAL") && jsonObject.getAsJsonArray("POTENTIAL").length() > 0) {
-
-                        if (jsonObject.getAsJsonArray("POTENTIAL").getAsJsonArray
-                                (0).getString("ListedDr_Mobile") != null) {
-                            mob1 = jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Mobile");
-                        }
-
-                        if ((mob1.equals("") || mob1.equals("-") || mob1.equals("null")) && jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Phone") != null) {
-                            mob1 = jsonObject.getAsJsonArray("POTENTIAL").getAsJsonObject(0).getString("ListedDr_Phone");
-                        }
-                    }
-                    txtMobile.setText(mob1);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }*/
+                }catch(IOException e){
+                        e.printStackTrace();
+                    }
 
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("Retailer_Details","Error");
             }
+
+
         });
     }
 

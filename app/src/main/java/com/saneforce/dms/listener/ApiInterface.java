@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.saneforce.dms.model.HeaderCat;
 import com.saneforce.dms.model.ReportDataList;
 import com.google.gson.JsonObject;
-import com.saneforce.dms.utils.ApiClient;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -83,8 +82,9 @@ public interface ApiInterface {
     Call<JsonObject> addNewRetailer(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("State_Code") String StateCode, @Query("desig") String desig, @Field("data") String data);
 
     /*retailer details*/
-    @POST("dms_db_V1.php?axn=get/precall")
-    Call<JsonObject> retailerViewDetails(@Query("Msl_No") String retailerID, @Query("divisionCode") String divisionCode, @Query("sfCode") String sfCode);
+    @FormUrlEncoded
+    @POST("dms_db_V1.php?axn=get/retailer")
+    Call<ResponseBody> retailerViewDetails1(@Field("data")String data);
 
     /*Save Retailer*/
     @FormUrlEncoded

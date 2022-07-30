@@ -55,6 +55,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -84,10 +85,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
     DBController dbController;
     int PhoneOrderTypes = 0;
     TextView tv_sch_enrollment;
-
-
-
-
+    String sfCode="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -392,11 +390,11 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
     public void RetailerViewDetailsMethod(String retailerID) {
         ApiInterface apiInterface2 = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface2.retailerViewDetails(retailerID, shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode);
+        Call<ResponseBody>call=apiInterface2.retailerViewDetails1(retailerID);
 
-        call.enqueue(new Callback<JsonObject>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(response.body().toString());
@@ -471,7 +469,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("Retailer_Details", "Error");
             }
         });

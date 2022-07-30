@@ -181,6 +181,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             } else {
+                holder.imageButton.setVisibility(View.GONE);
                 holder.linearLayout.setVisibility(View.GONE);
                 holder.linearLayoutTakenby.setVisibility(View.GONE);
             }
@@ -282,6 +283,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             txtValue = (TextView) itemView.findViewById(R.id.txt_total);
             txtOrderStatus = itemView.findViewById(R.id.txt_status);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
+
             linearLayoutTakenby = itemView.findViewById(R.id.row_reporttakenby);
             txtOrderTakenBy = itemView.findViewById(R.id.txt_ordertaken);
             txtRetailerName = itemView.findViewById(R.id.txt_reatiler);

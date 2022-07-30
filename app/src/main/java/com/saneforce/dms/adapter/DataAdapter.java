@@ -32,6 +32,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     private List<Common_Model> contactListFiltered;
     Context context;
 
+    int enableEdit = 0;
+
     public DataAdapter(List<Common_Model> myDataset, Context context, int type) {
         contactList = myDataset;
         typeName = type;
@@ -44,6 +46,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         contactList=myDataset;
         this.context=context;
         contactListFiltered = myDataset;
+        enableEdit = 1;
         notifyDataSetChanged();
     }
 
@@ -59,7 +62,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     public void onBindViewHolder(@NonNull FruitViewHolder fruitViewHolder, int i) {
         Common_Model contact = contactListFiltered.get(i);
         fruitViewHolder.mTextName.setText(contact.getName());
-        fruitViewHolder.mTextName.setText(contact.getId());
 
         if(contact.getAddress()!=null && !contact.getAddress().equals("")){
             fruitViewHolder.tv_address.setText(contact.getAddress());
@@ -75,19 +77,25 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         }
         else {
             fruitViewHolder.tv_scheme.setVisibility(View.GONE);
-            fruitViewHolder.ib_edit.setVisibility(View.GONE);
-            new View.OnClickListener() {
 
-
-
+        }
+        if(enableEdit == 1){
+            Log.d("dataadapter", "onBindViewHolder jayavardhini 1");
+            fruitViewHolder.ib_edit.setVisibility(View.VISIBLE);
+            fruitViewHolder.ib_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
+                    Log.d("dataadapter", "onBindViewHolder jayavardhini 2");
+
+                    Intent intent = new Intent(context, AddNewRetailer.class);
+                    intent.putExtra("retailerId", contact.getId());
+                    context.startActivity(intent);
                 }
-            };
+            });
+        }else {
+            fruitViewHolder.ib_edit.setVisibility(View.GONE);
         }
-
-
     }
 
     @Override
@@ -147,15 +155,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
         @Override
         public void onClick(View v) {
-            if(updateUi!=null){
+            if(enableEdit==0 && updateUi!=null){
                 updateUi.OnclickMasterType(contactListFiltered, this.getAdapterPosition(), typeName);
-            }else {
-                Intent intent =new Intent(context,AddNewRetailer.class);
-                intent.putExtra("retailerId",contactListFiltered.get(this.getAbsoluteAdapterPosition()).getId());
-                context.startActivity(intent);
-
-
-
             }
         }
     }

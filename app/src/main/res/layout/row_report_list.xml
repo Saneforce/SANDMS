@@ -166,7 +166,7 @@
         <ImageButton
             android:id="@+id/ib_forward"
             android:layout_width="14dp"
-            android:layout_height="11dp"
+            android:layout_height="14dp"
             android:layout_gravity="end"
             android:layout_marginRight="20dp"
             android:src="@drawable/ic_baseline_arrow_forward_24" />
