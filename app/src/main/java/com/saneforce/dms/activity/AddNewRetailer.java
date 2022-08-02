@@ -38,6 +38,7 @@ import com.saneforce.dms.DMSApplication;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
+import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.Common_Model;
@@ -157,7 +158,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                showExitDialog();
             }
         });
 
@@ -172,6 +173,21 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         retailerId=intent.getStringExtra("retailerId");
         RetailerViewDetailsMethod(retailerId);
 
+    }
+
+    private void showExitDialog() {
+        AlertDialogBox.showDialog(AddNewRetailer.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                finish();
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void RetailerViewDetailsMethod(String retailerID){

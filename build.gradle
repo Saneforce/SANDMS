@@ -13,7 +13,6 @@ buildscript {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
         classpath "io.realm:realm-gradle-plugin:10.0.1"
 
-
     }
 }
 

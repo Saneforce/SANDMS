@@ -1,11 +1,14 @@
 package com.saneforce.dms.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,9 +29,13 @@ import com.google.gson.JsonObject;
 import com.saneforce.dms.R;
 import com.saneforce.dms.adapter.DataAdapter;
 import com.saneforce.dms.listener.ApiInterface;
+import com.saneforce.dms.listener.DMS;
+import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.sqlite.DBController;
+import com.saneforce.dms.utils.AlertDialogBox;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
+import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import java.util.ArrayList;
@@ -81,8 +88,7 @@ public class RetailerListActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v("RetailerType",String.valueOf(RetailerType.size()));
-                onBackPressed();
+                showExitDialog();
             }
         });
 
@@ -108,6 +114,22 @@ public class RetailerListActivity extends AppCompatActivity {
                 }
 
                 return false;
+            }
+        });
+    }
+
+
+    private void showExitDialog() {
+        AlertDialogBox.showDialog(RetailerListActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
+            @Override
+            public void PositiveMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                finish();
+            }
+
+            @Override
+            public void NegativeMethod(DialogInterface dialog, int id) {
+                dialog.dismiss();
             }
         });
     }

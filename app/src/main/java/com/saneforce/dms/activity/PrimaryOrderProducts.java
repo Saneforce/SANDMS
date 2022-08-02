@@ -414,7 +414,6 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
                 mShared_common_pref.save("SubTotal", "0.0");
             }
         });
-
     }
 
     private void showExitDialog() {

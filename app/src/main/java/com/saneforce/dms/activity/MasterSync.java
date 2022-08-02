@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,12 +53,9 @@ public class MasterSync extends AppCompatActivity {
     JSONObject jsonObject1;
     DBController dbController;
 
-    String productid;
-
-    TextView tv_channel, tv_class, tv_payment_key, tv_pri_category, tv_product_uom, tv_profile, tv_retailer, tv_route_list, tv_sec_category;
-    TextInputEditText edtName, edtAddress, edtMobile, edtStoclistName, edtGst, edtEmail;
-    TextInputEditText tie_erp_code, tie_sales_team_name;
-    ImageView imageView;
+    TextView tv_channel, tv_class, tv_payment_key, tv_pri_category, tv_product_uom, tv_profile, tv_retailer, tv_route_list, tv_sec_category,tv_sync_all_data;
+    ImageView imageView,fail_channel,fail_class,fail_payment_key,fail_pri_category,fail_product_uom,fail_profile,fail_retailer,fail_route_list,fail_sec_category;
+    GifImageView gif_channel,gif_class,gif_payment_key,gif_pri_category,gif_product_uom,gif_profile,gif_retailer,gif_route_list,gif_sec_category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +71,28 @@ public class MasterSync extends AppCompatActivity {
         tv_retailer = findViewById(R.id.tv_retailer);
         tv_route_list = findViewById(R.id.tv_route_list);
         tv_sec_category = findViewById(R.id.tv_sec_category);
+        tv_sync_all_data=findViewById(R.id.tv_sync_all_data);
+
+        fail_channel=findViewById(R.id.fail_channel);
+        fail_class=findViewById(R.id.fail_class);
+        fail_payment_key=findViewById(R.id.fail_payment_key);
+        fail_pri_category=findViewById(R.id.fail_pri_category);
+        fail_product_uom= findViewById(R.id.fail_product_uom);
+        fail_profile=findViewById(R.id.fail_profile);
+        fail_retailer=findViewById(R.id.fail_retailer);
+        fail_route_list=findViewById(R.id.fail_route_list);
+        fail_sec_category=findViewById(R.id.fail_sec_category);
+
+
+        gif_channel=findViewById(R.id.gif_channel);
+        gif_class=findViewById(R.id.gif_class);
+        gif_payment_key=findViewById(R.id.gif_payment_key);
+        gif_pri_category=findViewById(R.id.gif_pri_category);
+        gif_product_uom=findViewById(R.id.gif_product_uom);
+        gif_profile=findViewById(R.id.gif_profile);
+        gif_retailer=findViewById(R.id.gif_retailer);
+        gif_route_list=findViewById(R.id.gif_route_list);
+        gif_sec_category=findViewById(R.id.gif_sec_category);
 
         dbController = new DBController(MasterSync.this);
         shared_common_pref=new Shared_Common_Pref(MasterSync.this);
@@ -90,6 +110,7 @@ public class MasterSync extends AppCompatActivity {
         tv_channel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getRouteChannel();
             }
         });
@@ -97,6 +118,7 @@ public class MasterSync extends AppCompatActivity {
         tv_class.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getRouteClass();
             }
         });
@@ -104,6 +126,7 @@ public class MasterSync extends AppCompatActivity {
         tv_payment_key.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getOnlinePaymentKeys();
             }
         });
@@ -111,6 +134,7 @@ public class MasterSync extends AppCompatActivity {
         tv_pri_category.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 brandPrimaryApi(true);
             }
         });
@@ -118,6 +142,7 @@ public class MasterSync extends AppCompatActivity {
         tv_product_uom.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getProductId();
             }
         });
@@ -125,6 +150,7 @@ public class MasterSync extends AppCompatActivity {
         tv_profile.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getProfileData();
             }
         });
@@ -132,6 +158,7 @@ public class MasterSync extends AppCompatActivity {
         tv_retailer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 RetailerType();
             }
         });
@@ -139,6 +166,7 @@ public class MasterSync extends AppCompatActivity {
         tv_route_list.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
                 getRouteDetails();
             }
         });
@@ -146,21 +174,40 @@ public class MasterSync extends AppCompatActivity {
         tv_sec_category.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                fail_class.setVisibility(GONE);
+                brandSecondaryApi();
+            }
+        });
+
+        tv_sync_all_data.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRouteChannel();
+                getRouteClass();
+                getOnlinePaymentKeys();
+                brandPrimaryApi(true);
+                getProductId();
+                getProfileData();
+                RetailerType();
+                getRouteDetails();
                 brandSecondaryApi();
             }
         });
     }
 
-
     public void getRouteChannel() {
+
+        gif_channel.setVisibility(VISIBLE);
         String routeMap = "{\"tableName\":\"Doctor_Specialty\",\"coloumns\":\"[\\\"Specialty_Code as id\\\", \\\"Specialty_Name as name\\\"]\",\"where\":\"[\\\"isnull(Deactivate_flag,0)=0\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
                 try {
+                    fail_channel.setVisibility(VISIBLE);
+                    fail_channel.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_channel.setVisibility(GONE);
                     JsonObject jsonRootObject = response.body();
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.CHANNEL_LIST, new Gson().toJson(jsonArray));
@@ -172,12 +219,17 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("Route_response", "ERROR");
+                fail_channel.setVisibility(VISIBLE);
+                fail_channel.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_channel.setVisibility(GONE);
                 t.printStackTrace();
             }
         });
     }
 
     public void getRouteClass() {
+
+        gif_class.setVisibility(VISIBLE);
         String routeMap = "{\"tableName\":\"Mas_Doc_Class\",\"coloumns\":\"[\\\"Doc_ClsCode as id\\\", \\\"Doc_ClsSName as name\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
@@ -185,6 +237,9 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
+                    fail_class.setVisibility(VISIBLE);
+                    fail_class.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_class.setVisibility(GONE);
                     JsonObject jsonRootObject = response.body();
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonArray));
@@ -197,12 +252,17 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("Route_response", "ERROR");
+                fail_class.setVisibility(VISIBLE);
+                fail_class.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_class.setVisibility(GONE);
                 t.printStackTrace();
             }
         });
     }
 
     private void getOnlinePaymentKeys() {
+
+        gif_payment_key.setVisibility(VISIBLE);
         try {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<JsonObject> call = apiInterface.getPaymentKey(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));
@@ -211,10 +271,13 @@ public class MasterSync extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     try {
+                        fail_payment_key.setVisibility(VISIBLE);
+                        fail_payment_key.setImageResource(R.drawable.ic_baseline_check_24);
+                        gif_payment_key.setVisibility(GONE);
                         JSONObject jsonRootObject = new JSONObject(response.body().toString());
                         if (jsonRootObject.get("success").toString().equalsIgnoreCase("true")) {
 
-                            dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonRootObject));
+                            dbController.updateDataResponse(DBController.PAYMENT_KEYS, new Gson().toJson(jsonRootObject));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -225,6 +288,9 @@ public class MasterSync extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     t.printStackTrace();
+                    fail_payment_key.setVisibility(VISIBLE);
+                    fail_payment_key.setImageResource(R.drawable.ic_baseline_warning_24);
+                    gif_payment_key.setVisibility(GONE);
                     AlertDialogBox.showDialog(MasterSync.this, "Payment keys Error", "Unable to get payment keys from server, please try again");
                 }
             });
@@ -237,6 +303,7 @@ public class MasterSync extends AppCompatActivity {
 
     public void brandPrimaryApi(boolean isUpdateOffline) {
 
+        gif_pri_category.setVisibility(VISIBLE);
         String tempalteValue = "{\"tableName\":\"category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 1);
@@ -247,6 +314,9 @@ public class MasterSync extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
                 if(response.body()!=null ){
+                    fail_pri_category.setVisibility(VISIBLE);
+                    fail_pri_category.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_pri_category.setVisibility(GONE);
                     JsonObject jsonObject = response.body();
                     JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
                     JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
@@ -263,6 +333,9 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 mCommon_class.ProgressdialogShow(2, "");
+                fail_pri_category.setVisibility(VISIBLE);
+                fail_pri_category.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_pri_category.setVisibility(GONE);
             }
         });
     }
@@ -398,6 +471,8 @@ public class MasterSync extends AppCompatActivity {
 
 
     public void getProductId() {
+
+        gif_product_uom.setVisibility(VISIBLE);
         mCommon_class.ProgressdialogShow(1, "");
         //   this.sf_Code=sf_Code;
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -409,8 +484,11 @@ public class MasterSync extends AppCompatActivity {
                 Log.v("DMS_RESPONSE", response.body().toString());
                 mCommon_class.ProgressdialogShow(2, "");
                 try {
+                    fail_product_uom.setVisibility(VISIBLE);
+                    fail_product_uom.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_product_uom.setVisibility(GONE);
                     jsonProductuom = new JSONObject(response.body().toString());
-                    dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonProductuom));
+                    dbController.updateDataResponse(DBController.PRODUCT_UOM, new Gson().toJson(jsonProductuom));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -420,6 +498,9 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 mCommon_class.ProgressdialogShow(2, "");
+                fail_product_uom.setVisibility(VISIBLE);
+                fail_product_uom.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_product_uom.setVisibility(GONE);
                 Toast.makeText(MasterSync.this, "Invalid products", Toast.LENGTH_LONG).show();
             }
         });
@@ -427,6 +508,7 @@ public class MasterSync extends AppCompatActivity {
     }
 
     public void getProfileData() {
+        gif_profile.setVisibility(VISIBLE);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getProfile(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         Log.v("DMS_REQUEST", call.request().toString());
@@ -437,45 +519,13 @@ public class MasterSync extends AppCompatActivity {
                 Log.v("DMS_RESPONSE", res);
 
                 try {
+                    fail_profile.setVisibility(VISIBLE);
+                    fail_profile.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_profile.setVisibility(GONE);
                     jsonObject1 = new JSONObject(res);
                     Log.e("LoginResponse1",  jsonObject1.toString());
                     JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String name=jsonObject.getString("Stockist_Name");
-                        Log.e("LoginResponse", name.toString());
-                            edtName.setText(name);
-                        String email=jsonObject.getString("Email");
-                        if(email!=null && !email.equals("") && !email.equals("null"))
-                        edtEmail.setText(email);
-                        String stocklistname=jsonObject.getString("Stockist_ContactPerson");
-                        edtStoclistName.setText(stocklistname);
-                        String address=jsonObject.getString("Stockist_Address");
-                        edtAddress.setText(address);
-                        String mobile=jsonObject.getString("Stockist_Mobile");
-                        edtMobile.setText(mobile);
-                        String gst=jsonObject.getString("gstn");
-                        edtGst.setText(gst);
-
-                        String erpCode = "";
-                        if(jsonObject.has("ERP_Code"))
-                            erpCode=jsonObject.getString("ERP_Code");
-                        tie_erp_code.setText(erpCode);
-
-                        String salesTeamName = "";
-                        if(jsonObject.has("FieldPerson"))
-                            salesTeamName=jsonObject.getString("FieldPerson");
-                        tie_sales_team_name.setText(salesTeamName);
-
-                        try {
-                            shared_common_pref.save(Shared_Common_Pref.USER_NAME, name);
-                            shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
-                            shared_common_pref.save(Shared_Common_Pref.USER_PHONE, mobile);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
+                    dbController.updateDataResponse(DBController.PROFILE_DATA, new Gson().toJson(jsonProductuom));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -485,21 +535,28 @@ public class MasterSync extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                fail_profile.setVisibility(VISIBLE);
+                fail_profile.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_profile.setVisibility(GONE);
                 Toast.makeText(MasterSync.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void RetailerType() {
+
+        gif_retailer.setVisibility(VISIBLE);
         String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\",\\\"Slan_Name\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
                 JsonObject JsonObject = response.body();
                 try {
+                    fail_retailer.setVisibility(VISIBLE);
+                    fail_retailer.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_retailer.setVisibility(GONE);
                     JsonArray jsonArray = JsonObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonArray));
                     shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);
@@ -510,22 +567,27 @@ public class MasterSync extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                fail_retailer.setVisibility(VISIBLE);
+                fail_retailer.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_retailer.setVisibility(GONE);
                 Log.d("LeaveTypeList", "Error");
             }
         });
     }
 
     public void getRouteDetails() {
+        gif_route_list.setVisibility(VISIBLE);
         String routeMap = "{\"tableName\":\"vwTown_Master_APP\",\"coloumns\":\"[\\\"town_code as id\\\", \\\"town_name as name\\\",\\\"target\\\",\\\"min_prod\\\",\\\"field_code\\\",\\\"stockist_code\\\"]\",\"where\":\"[\\\"isnull(Town_Activation_Flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
-
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
+                    fail_route_list.setVisibility(VISIBLE);
+                    fail_route_list.setImageResource(R.drawable.ic_baseline_check_24);
+                    gif_route_list.setVisibility(GONE);
                     JsonObject jsonRootObject = response.body();
-
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.ROUTE_LIST, new Gson().toJson(jsonArray));
                 } catch (Exception e) {
@@ -536,12 +598,16 @@ public class MasterSync extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e("Route_response", "ERROR");
+                fail_route_list.setVisibility(VISIBLE);
+                fail_route_list.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_route_list.setVisibility(GONE);
                 t.printStackTrace();
             }
         });
     }
 
     public void brandSecondaryApi() {
+        gif_sec_category.setVisibility(VISIBLE);
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 2);
@@ -550,7 +616,9 @@ public class MasterSync extends AppCompatActivity {
         ca.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
+                fail_sec_category.setVisibility(VISIBLE);
+                fail_sec_category.setImageResource(R.drawable.ic_baseline_check_24);
+                gif_sec_category.setVisibility(GONE);
                 JsonObject jsonObject = response.body();
                 JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
                 JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
@@ -558,14 +626,15 @@ public class MasterSync extends AppCompatActivity {
                 dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
                 dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
                 Log.v("Product_Response", jsonArray.toString());
-
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                fail_sec_category.setVisibility(VISIBLE);
+                fail_sec_category.setImageResource(R.drawable.ic_baseline_warning_24);
+                gif_sec_category.setVisibility(GONE);
                 mCommon_class.ProgressdialogShow(2, "");
             }
         });
     }
-
 }

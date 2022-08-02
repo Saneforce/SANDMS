@@ -40,6 +40,9 @@ public class DBController extends SQLiteOpenHelper {
     public static final String PRIMARY_PRODUCT_DATA = "primary_product_data";
     public static final String SECONDARY_PRODUCT_BRAND = "secondary_product_brand";
     public static final String SECONDARY_PRODUCT_DATA = "secondary_product_data";
+    public static final String PAYMENT_KEYS = "payment_keys";
+    public static final String PRODUCT_UOM = "product_uom";
+    public static final String PROFILE_DATA = "profile_data";
 
     //location
     public static final String TABLE_LOCATION = "table_location";
