@@ -62,7 +62,7 @@ public class DashBoardActivity extends AppCompatActivity {
     Shared_Common_Pref shared_common_pref;
     Gson gson;
     Common_Class mCommon_class;
-    ImageView imagView,profilePic, ib_logout;
+    ImageView imagView,profilePic, ib_logout, iv_sync;
     //    PrimaryProductViewModel mPrimaryProductViewModel;
     RelativeLayout profileLayout;
 
@@ -105,6 +105,17 @@ public class DashBoardActivity extends AppCompatActivity {
         cutOffTime ="10:00 pm";
         tc_current_time.setFormat24Hour("yyyy-MM-dd HH:mm");
         tv_cut_off_time.setText(cutOffTime);*/
+
+        iv_sync=findViewById(R.id.iv_sync);
+            iv_sync.setVisibility(View.VISIBLE);
+        iv_sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(DashBoardActivity.this,MasterSync.class);
+                startActivity(intent);
+
+            }
+        });
 
         imagView.setOnClickListener(new View.OnClickListener() {
             @Override

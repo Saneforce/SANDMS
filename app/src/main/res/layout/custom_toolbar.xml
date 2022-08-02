@@ -62,6 +62,19 @@
             android:contentDescription="@string/app_name" />
 
         <ImageView
+            android:id="@+id/iv_sync"
+            android:visibility="gone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_sync_24"
+            android:padding="3dp"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="@string/app_name"
+            app:tint="@color/textColor" />
+
+        <ImageView
             android:id="@+id/ib_logout"
             android:visibility="gone"
             android:layout_width="24dp"
@@ -73,19 +86,6 @@
             android:layout_marginEnd="5dp"
             android:contentDescription="@string/app_name"
             app:tint="@color/textColor" />
-
-        <!--<ImageView
-            android:id="@+id/ib_sync"
-            android:visibility="gone"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_sync_24"
-            android:padding="3dp"
-            android:layout_marginEnd="5dp"
-            android:contentDescription="@string/app_name"
-            app:tint="@color/textColor" />-->
 
         <ImageView
             android:id="@+id/ib_home"

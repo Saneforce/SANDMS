@@ -6,13 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent">
 
-    <include layout="layout/custom_toolbar"/>
+    <include layout="@layout/custom_toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/vw_bottom"
-        android:layout_below="@+id/ll_toolbar"
+        android:layout_below="@+id/toolbar_top"
         android:layout_marginBottom="30dp">
 
         <LinearLayout
@@ -119,10 +119,11 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:orientation="horizontal"/>
 
             <LinearLayout
-                android:id="@+id/ll_retailer"
+                android:id="@+id/ll_channel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -140,18 +141,18 @@
 
 
                 <TextView
-                    android:id="@+id/tv_retailer_label"
+                    android:id="@+id/tv_channel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_weight="1"
                     android:paddingVertical="15dp"
-                    android:text="Retailer"
+                    android:text="Channel"
                     android:textColor="@color/login_text"
                     android:textSize="17sp" />
 
                 <TextView
-                    android:id="@+id/fail_retailer"
+                    android:id="@+id/fail_channel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/app_name"
@@ -159,7 +160,117 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
-                    <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+
+                <!--<pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/giv_retailer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/loading"
+                    android:visibility="invisible" />-->
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey"
+                android:orientation="horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/ll_class"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--<com.saneforce.sanfmcg.view.IconTextview
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:text="0" />-->
+
+
+                <TextView
+                    android:id="@+id/tv_class"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="15dp"
+                    android:text="Class"
+                    android:textColor="@color/login_text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/fail_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+
+                <!--<pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/giv_retailer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/loading"
+                    android:visibility="invisible" />-->
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_payment_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--<com.saneforce.sanfmcg.view.IconTextview
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:text="0" />-->
+
+                <TextView
+                    android:id="@+id/tv_payment_key"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="15dp"
+                    android:text="Payment Key"
+                    android:textColor="@color/login_text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/fail_payment_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
                     android:id="@+id/giv_retailer"
@@ -177,7 +288,7 @@
                 android:orientation="horizontal"/>
 
             <LinearLayout
-                android:id="@+id/ll_category"
+                android:id="@+id/ll_pri_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -195,18 +306,18 @@
 
 
                 <TextView
-                    android:id="@+id/tv_category"
+                    android:id="@+id/tv_pri_category"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_weight="1"
                     android:paddingVertical="15dp"
-                    android:text="Category"
+                    android:text="Primary Category"
                     android:textColor="@color/login_text"
                     android:textSize="17sp" />
 
                 <TextView
-                    android:id="@+id/fail_category"
+                    android:id="@+id/fail_pri_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/app_name"
@@ -214,7 +325,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
-                    <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
                     android:id="@+id/giv_retailer"
@@ -223,6 +334,62 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/loading"
                     android:visibility="invisible" />-->
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey"
+                android:orientation="horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/ll_product_uom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--<com.saneforce.sanfmcg.view.IconTextview
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:text="0" />-->
+
+
+                <TextView
+                    android:id="@+id/tv_product_uom"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="15dp"
+                    android:text="Product UOM"
+                    android:textColor="@color/login_text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/fail_product_uom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+
+                <!--<pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/giv_retailer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/loading"
+                    android:visibility="invisible" />-->
+
             </LinearLayout>
 
             <View
@@ -269,61 +436,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
-                    <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
-
-                <!--<pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/giv_retailer"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/loading"
-                    android:visibility="invisible" />-->
-
-            </LinearLayout> <View
-                android:layout_width="match_parent"
-                android:layout_height="0.7dp"
-                android:background="@color/grey"
-                android:orientation="horizontal"/>
-
-            <LinearLayout
-                android:id="@+id/ll_payment_key"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <!--<com.saneforce.sanfmcg.view.IconTextview
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:contentDescription="@string/app_name"
-                    android:gravity="center"
-                    android:text="0" />-->
-
-
-                <TextView
-                    android:id="@+id/tv_payment_key"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_weight="1"
-                    android:paddingVertical="15dp"
-                    android:text="Payment Key"
-                    android:textColor="@color/login_text"
-                    android:textSize="17sp" />
-
-                <TextView
-                    android:id="@+id/fail_payment_key"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-                    <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
                     android:id="@+id/giv_retailer"
@@ -334,6 +447,60 @@
                     android:visibility="invisible" />-->
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_retailer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--<com.saneforce.sanfmcg.view.IconTextview
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:text="0" />-->
+
+                <TextView
+                    android:id="@+id/tv_retailer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="15dp"
+                    android:text="Retailer"
+                    android:textColor="@color/login_text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/fail_retailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+
+                <!--<pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/giv_retailer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/loading"
+                    android:visibility="invisible" />-->
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
@@ -341,7 +508,7 @@
                 android:orientation="horizontal"/>
 
             <LinearLayout
-                android:id="@+id/ll_product_uom"
+                android:id="@+id/ll_route_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -359,18 +526,18 @@
 
 
                 <TextView
-                    android:id="@+id/tv_product_uom"
+                    android:id="@+id/tv_route_list"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_weight="1"
                     android:paddingVertical="15dp"
-                    android:text="Product UOM"
+                    android:text="Route List"
                     android:textColor="@color/login_text"
                     android:textSize="17sp" />
 
                 <TextView
-                    android:id="@+id/fail_product_uom"
+                    android:id="@+id/fail_route_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/app_name"
@@ -378,7 +545,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
-                    <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
                     android:id="@+id/giv_retailer"
@@ -387,6 +554,63 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/loading"
                     android:visibility="invisible" />-->
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey"
+                android:orientation="horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/ll_sec_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--<com.saneforce.sanfmcg.view.IconTextview
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:text="0" />-->
+
+
+                <TextView
+                    android:id="@+id/tv_sec_category"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:paddingVertical="15dp"
+                    android:text="Secondary Category"
+                    android:textColor="@color/login_text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/fail_sec_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+                <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
+
+                <!--<pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/giv_retailer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/loading"
+                    android:visibility="invisible" />-->
+
 
             </LinearLayout>
         </LinearLayout>

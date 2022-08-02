@@ -35,6 +35,7 @@ public class ReportDashBoard extends AppCompatActivity {
         });
     }
 
+
     public void PrimaryReports(View v) {
         if(Constant.isInternetAvailable(this)){
             startActivity(new Intent(getApplicationContext(), ReportActivity.class));

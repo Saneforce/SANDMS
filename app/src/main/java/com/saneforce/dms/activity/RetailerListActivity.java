@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -75,6 +76,16 @@ public class RetailerListActivity extends AppCompatActivity {
         //
         // recyclerView.setAdapter(da);
        // da.notifyDataSetChanged();
+
+        ImageView imageView=findViewById(R.id.toolbar_back);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.v("RetailerType",String.valueOf(RetailerType.size()));
+                onBackPressed();
+            }
+        });
+
         searchView.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {

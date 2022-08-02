@@ -115,6 +115,7 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?axn=save/pripaymentverify")
     Call<JsonObject> getPayVerification(@Query("Order_Id") String disvisonCode, @Query("Sf_code") String sFCode);
 
+
     @Multipart
     @POST("dms_db_V1.php?")
     Call<JsonObject> offlineImage(@Query("axn") String AXN,@Part MultipartBody.Part file);

@@ -748,7 +748,6 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         @Override
         protected Void doInBackground(Void... voids) {
             PrimaryProductDatabase.getInstance(SecondRetailerActivity.this).clearAllTables();
-
             secStart(loadActivity);
             Log.v("Data_CHeckng", "Checking_data");
             return null;

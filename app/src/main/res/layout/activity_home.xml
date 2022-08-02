@@ -29,64 +29,64 @@
             android:src="@drawable/user"
             android:layout_alignParentEnd="true"
             android:background="@drawable/shape" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/profileImg"
-            android:id="@+id/prof"
-
-
-            android:padding="@dimen/C10dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:id="@+id/prof"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/profileImg"
+                android:orientation="vertical"
 
-                <TextView
-                    style="@style/TextStyle"
-                    android:text="Name: " />
 
-                <TextView
-                    android:id="@+id/dis_name"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/C14dp"
-                    style="@style/TextStyle"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
+                android:padding="@dimen/C10dp">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="match_parent">
-
-                <TextView
-                    style="@style/TextStyle"
-                    android:text="Address: " />
-
-                <TextView
-                    android:textStyle="bold"
-                    android:textSize="@dimen/C14dp"
-                    android:id="@+id/dis_place"
-                    style="@style/TextStyle"
-                    android:singleLine="true"
-                    android:maxLines="1"/>
-
-                <ImageView
-                    android:id="@+id/img"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
+                    android:layout_height="match_parent">
 
-                    android:src="@drawable/shape" />
+                    <TextView
+                        style="@style/TextStyle"
+                        android:text="Name: " />
+
+                    <TextView
+                        android:id="@+id/dis_name"
+                        style="@style/TextStyle"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="@dimen/C14dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextStyle"
+                        android:text="Address: " />
+
+                    <TextView
+                        android:id="@+id/dis_place"
+                        style="@style/TextStyle"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="@dimen/C14dp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+
+                        android:src="@drawable/shape" />
+                </LinearLayout>
+
+
             </LinearLayout>
-
-
-
-        </LinearLayout>
 
         </RelativeLayout>
 
