@@ -45,17 +45,12 @@ import retrofit2.Response;
 public class MasterSync extends AppCompatActivity {
     List<PrimaryProduct.UOMlist> mMasterSync = new ArrayList<PrimaryProduct.UOMlist>();
     public JSONObject jsonProductuom;
-    private ProductAdapter mAdapter;
 
     Intent dashIntent;
     Shared_Common_Pref shared_common_pref;
-    Common_Model mCommon_model_spinner;
     Common_Class mCommon_class;
-    String sf_Code;
     JSONObject jsonObject1;
-    RecyclerView recyclerView;
     DBController dbController;
-    public DataAdapter da;
 
     String productid;
 
@@ -80,6 +75,8 @@ public class MasterSync extends AppCompatActivity {
         tv_sec_category = findViewById(R.id.tv_sec_category);
 
         dbController = new DBController(MasterSync.this);
+        shared_common_pref=new Shared_Common_Pref(MasterSync.this);
+        mCommon_class=new Common_Class(MasterSync.this);
 
         imageView = findViewById(R.id.toolbar_back);
         imageView.setOnClickListener(new OnClickListener() {
@@ -165,7 +162,6 @@ public class MasterSync extends AppCompatActivity {
 
                 try {
                     JsonObject jsonRootObject = response.body();
-
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.CHANNEL_LIST, new Gson().toJson(jsonArray));
                 } catch (Exception e) {
@@ -190,7 +186,6 @@ public class MasterSync extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     JsonObject jsonRootObject = response.body();
-
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonArray));
                 } catch (Exception e) {
@@ -286,16 +281,13 @@ public class MasterSync extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             PrimaryProductDatabase.getInstance(MasterSync.this).clearAllTables();
             fillingWithStart();
-//            Log.v("Data_CHeckng", "Checking_data");
             return null;
         }
     }
 
     private void fillingWithStart() {
-//        Log.v("Data_CHeckng", "Checking_data");
 
         String sPrimaryProd = dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA);
-//        Shared_Common_Pref mShared_common_pref = new Shared_Common_Pref(this);
         PrimaryProductDao contact = PrimaryProductDatabase.getInstance(this).getAppDatabase()
                 .contactDao();
 
@@ -418,36 +410,7 @@ public class MasterSync extends AppCompatActivity {
                 mCommon_class.ProgressdialogShow(2, "");
                 try {
                     jsonProductuom = new JSONObject(response.body().toString());
-                    Log.e("LoginResponse1", jsonProductuom.toString());
-                    String js = jsonProductuom.getString(
-                            "success");
-                    Log.e("LoginResponse133w", js.toString());
-                    JSONArray jss = jsonProductuom.getJSONArray(
-                            "Data");
-                    Log.e("LoginResponse133ws", jss.toString());
-
-                    // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
-                    //  Log.e("LoginResponse133",  jsonProductuom.toString());
-                    for (int i = 0; i < jss.length(); i++) {
-                        JSONObject jsonObject = jss.optJSONObject(i);
-                        String id = "";
-                        if(jsonObject.has("id"))
-                            id = jsonObject.getString("id");
-                        String name = jsonObject.getString("name");
-                        Log.v("LoginResponse1nn", name);
-                        String productCode = jsonObject.getString("Product_Code");
-                        Log.v("LoginResponse1nnq", productCode);
-                        String conqty = jsonObject.getString("ConQty");
-                        Log.v("LoginResponse1nnq", conqty);
-                        if (productid.equals(productCode) || productid.contains(productCode)) {
-                            PrimaryProduct.UOMlist pp = new PrimaryProduct.UOMlist(id, name, productCode, conqty);
-                            mMasterSync.add(pp);
-                        }
-//                         priProdAdapter = new ProductsAdapter(PrimaryOrderList.this, name,productCode,conqty);
-//                         priUnitRecycler.setAdapter(priProdAdapter);
-
-                        mAdapter.notifyDataSetChanged();
-                    }
+                    dbController.updateDataResponse(DBController.RETAILER_LIST, new Gson().toJson(jsonProductuom));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -465,7 +428,7 @@ public class MasterSync extends AppCompatActivity {
 
     public void getProfileData() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<JsonObject> call = apiInterface.getProfile(sf_Code);
+        Call<JsonObject> call = apiInterface.getProfile(shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code));
         Log.v("DMS_REQUEST", call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -481,14 +444,12 @@ public class MasterSync extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String name=jsonObject.getString("Stockist_Name");
                         Log.e("LoginResponse", name.toString());
-                        edtName.setText(name);
+                            edtName.setText(name);
                         String email=jsonObject.getString("Email");
                         if(email!=null && !email.equals("") && !email.equals("null"))
-                            edtEmail.setText(email);
+                        edtEmail.setText(email);
                         String stocklistname=jsonObject.getString("Stockist_ContactPerson");
                         edtStoclistName.setText(stocklistname);
-//                       String designation=jsonObject.getString("Stockist_Designation");
-//                       edtDesignation.setText(designation);
                         String address=jsonObject.getString("Stockist_Address");
                         edtAddress.setText(address);
                         String mobile=jsonObject.getString("Stockist_Mobile");
@@ -581,7 +542,6 @@ public class MasterSync extends AppCompatActivity {
     }
 
     public void brandSecondaryApi() {
-
         String tempalteValue = "{\"tableName\":\"sec_category_master\",\"coloumns\":\"[\\\"Category_Code as id\\\", \\\"Category_Name as name\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> ca = apiInterface.Category(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),"", shared_common_pref.getvalue(Shared_Common_Pref.State_Code), tempalteValue, 2);
@@ -597,7 +557,6 @@ public class MasterSync extends AppCompatActivity {
                 JsonArray jProd = jsonArray.getAsJsonArray("Products");
                 dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
                 dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
-
                 Log.v("Product_Response", jsonArray.toString());
 
             }

@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_channel"
@@ -159,7 +159,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -176,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_class"
@@ -215,7 +215,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -269,7 +269,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -285,7 +285,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_pri_category"
@@ -324,7 +324,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -340,7 +340,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_product_uom"
@@ -379,7 +379,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -396,7 +396,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_profile"
@@ -435,7 +435,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -489,7 +489,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -505,7 +505,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_route_list"
@@ -544,7 +544,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -561,7 +561,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:background="@color/grey"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal" />
 
             <LinearLayout
                 android:id="@+id/ll_sec_category"
@@ -600,7 +600,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <!--app:drawableEndCompat="@drawable/ic_warninghead"-->
 
                 <!--<pl.droidsonroids.gif.GifImageView
@@ -611,8 +611,13 @@
                     android:src="@drawable/loading"
                     android:visibility="invisible" />-->
 
-
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:background="@color/grey"
+                android:orientation="horizontal" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
