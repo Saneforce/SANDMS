@@ -81,6 +81,11 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?axn=dcr/save")
     Call<JsonObject> addNewRetailer(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("State_Code") String StateCode, @Query("desig") String desig, @Field("data") String data);
 
+    /*Update New Retailer*/
+    @FormUrlEncoded
+    @POST("dms_db_V1.php?axn=upd/retailer")
+    Call<JsonObject> updateRetailer(@Query("divisionCode") String disvisonCode, @Query("sfCode") String sFCode, @Query("State_Code") String StateCode, @Query("desig") String desig, @Field("data") String data);
+
     /*retailer details*/
     @FormUrlEncoded
     @POST("dms_db_V1.php?axn=get/retailer")

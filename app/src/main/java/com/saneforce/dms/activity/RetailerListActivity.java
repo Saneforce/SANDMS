@@ -92,6 +92,7 @@ public class RetailerListActivity extends AppCompatActivity {
             }
         });
 
+
         searchView.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {

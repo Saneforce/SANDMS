@@ -110,7 +110,7 @@ public class MasterSync extends AppCompatActivity {
         tv_channel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_channel.setVisibility(GONE);
                 getRouteChannel();
             }
         });
@@ -126,7 +126,7 @@ public class MasterSync extends AppCompatActivity {
         tv_payment_key.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_payment_key.setVisibility(GONE);
                 getOnlinePaymentKeys();
             }
         });
@@ -134,7 +134,7 @@ public class MasterSync extends AppCompatActivity {
         tv_pri_category.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_pri_category.setVisibility(GONE);
                 brandPrimaryApi(true);
             }
         });
@@ -142,7 +142,7 @@ public class MasterSync extends AppCompatActivity {
         tv_product_uom.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_product_uom.setVisibility(GONE);
                 getProductId();
             }
         });
@@ -150,7 +150,7 @@ public class MasterSync extends AppCompatActivity {
         tv_profile.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_profile.setVisibility(GONE);
                 getProfileData();
             }
         });
@@ -158,7 +158,7 @@ public class MasterSync extends AppCompatActivity {
         tv_retailer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_retailer.setVisibility(GONE);
                 RetailerType();
             }
         });
@@ -166,7 +166,7 @@ public class MasterSync extends AppCompatActivity {
         tv_route_list.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_route_list.setVisibility(GONE);
                 getRouteDetails();
             }
         });
@@ -174,7 +174,7 @@ public class MasterSync extends AppCompatActivity {
         tv_sec_category.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                fail_class.setVisibility(GONE);
+                fail_sec_category.setVisibility(GONE);
                 brandSecondaryApi();
             }
         });
@@ -473,7 +473,7 @@ public class MasterSync extends AppCompatActivity {
     public void getProductId() {
 
         gif_product_uom.setVisibility(VISIBLE);
-        mCommon_class.ProgressdialogShow(1, "");
+       /* mCommon_class.ProgressdialogShow(1, "");*/
         //   this.sf_Code=sf_Code;
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getProductuom(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code));

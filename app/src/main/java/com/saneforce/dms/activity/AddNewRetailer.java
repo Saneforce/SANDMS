@@ -5,6 +5,7 @@ import static com.saneforce.dms.activity.PaymentDetailsActivity.sfCode;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Criteria;
@@ -77,6 +78,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     JSONObject docMasterObject;
     EditText edtName, edtAdds, edtCity, edtMobile, edtEmail;
     JSONArray mainArray;
+
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     String regexStr = "^[0-9]$";
 //    private FusedLocationProviderClient mFusedLocationClient;
@@ -97,6 +99,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     DBController dbController;
     LocationManager mLocationManager;
     ImageButton ib_refresh;
+
+    String retailerId="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +173,6 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         });
 
         Intent intent=getIntent();
-        String retailerId="";
         if (intent.hasExtra("retailerId"))
         retailerId=intent.getStringExtra("retailerId");
         RetailerViewDetailsMethod(retailerId);
@@ -212,6 +216,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                         if (jsonObject.has("ListedDr_Mobile"))
                             edtMobile.setText(jsonObject.getString("ListedDr_Mobile"));
 
+                        if (jsonObject.has("ListedDr_Email"))
+                            edtEmail.setText(jsonObject.getString("ListedDr_Email"));
+
                         if (jsonObject.has("cityname"))
                             edtCity.setText(jsonObject.getString("cityname"));
 
@@ -223,6 +230,8 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
                         if (jsonObject.has("Doc_Spec_ShortName"))
                             txtChannel.setText(jsonObject.getString("Doc_Spec_ShortName"));
+
+
 
                     }
 
@@ -516,10 +525,87 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         } else if (txtChannel.getText().toString().equals("")) {
             Toast.makeText(this, "Please Enter Retailer Channel", Toast.LENGTH_SHORT).show();
         } else {
-            saveRetailer();
+            if(retailerId.equals(""))
+                saveRetailer();
+            else
+                updateRetailer();
         }
     }
 
+    private void updateRetailer() {
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.addProperty("routeID",txtRoute.getText().toString());
+        jsonObject.addProperty("name",edtName.getText().toString());
+        jsonObject.addProperty("Address",edtAdds.getText().toString());
+        jsonObject.addProperty("Cityname",edtCity.getText().toString());
+        jsonObject.addProperty("Phone",edtMobile.getText().toString());
+        jsonObject.addProperty("email",edtEmail.getText().toString());
+        jsonObject.addProperty("lat",txtLat.getText().toString());
+        jsonObject.addProperty("long",txtLon.getText().toString());
+        jsonObject.addProperty("classID",txtClass.getText().toString());
+        jsonObject.addProperty("channelID",txtChannel.getText().toString()); // class code
+        jsonObject.addProperty("id",retailerId);
+        jsonObject.addProperty("SpecCode",""); // channel code
+        jsonObject.addProperty("ClassCode",""); // channel name
+        jsonObject.addProperty("GSTno","");
+        jsonObject.addProperty("Land_Mark","");
+        jsonObject.addProperty("AreaName","");
+        jsonObject.addProperty("PINcode","");
+        jsonObject.addProperty("ContactPerson","");
+        jsonObject.addProperty("Designation2","");
+        jsonObject.addProperty("Phone2","");
+        jsonObject.addProperty("ContactPerson2","");
+        jsonObject.addProperty("keyoutlet","");
+        jsonObject.addProperty("street","");
+        jsonObject.addProperty("imgurl","");
+
+        String totalValueString = jsonObject.toString();
+        Log.e("TOTAL_VALUE_STRING", totalValueString);
+
+        if(!Constant.isInternetAvailable(AddNewRetailer.this)){
+            DBController dbController = new DBController(AddNewRetailer.this);
+            if(dbController.addDataOfflineCalls(String.valueOf(System.currentTimeMillis()), totalValueString, "dcr/save", 0)){
+                mShared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, true);
+                if(Constant.isInternetAvailable(this)){
+                    new Common_Class(this).checkData(dbController,getApplicationContext());
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RetailerType();
+                        }
+                    }, 2000);
+                }else{
+                    Toast.makeText(DMSApplication.getApplication(), "New Retailer will be updated in offline", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+            else
+                Toast.makeText(AddNewRetailer.this, "Please try again", Toast.LENGTH_SHORT).show();
+        }else {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<JsonObject> call = apiInterface.updateRetailer(mShared_common_pref.getvalue(Shared_Common_Pref.Div_Code), mShared_common_pref.getvalue(Shared_Common_Pref.Sf_Code),mShared_common_pref.getvalue(Shared_Common_Pref.State_Code) , "MGR", totalValueString);
+
+            Log.v("ADD_NEW_RETAILER", call.request().toString());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    JsonObject jsonObject = response.body();
+                    Log.e("Add_Retailer_details", String.valueOf(jsonObject));
+                    String success = String.valueOf(jsonObject.get("success"));
+                    if (success.equalsIgnoreCase("true")) {
+                        Toast.makeText(DMSApplication.getApplication(), "Retailer Updated Successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+        }
+    }
 
     public void saveRetailer() {
         DateFormat dfw = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -734,5 +820,4 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
             Log.d("Provider Disabled", provider);
         }
     };
-
 }
