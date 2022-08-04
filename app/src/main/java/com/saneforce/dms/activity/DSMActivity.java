@@ -310,7 +310,6 @@ public class DSMActivity extends AppCompatActivity {
 
                 try {
                     JsonObject jsonRootObject = response.body();
-
                     JsonArray jsonArray = jsonRootObject.getAsJsonArray("Data");
                     dbController.updateDataResponse(DBController.CHANNEL_LIST, new Gson().toJson(jsonArray));
                 } catch (Exception e) {

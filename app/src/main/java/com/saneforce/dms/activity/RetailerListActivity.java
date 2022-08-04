@@ -76,7 +76,7 @@ public class RetailerListActivity extends AppCompatActivity {
         sfCode = shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code);
       //  no.setOnClickListener((View.OnClickListener) this);
         dbController = new DBController(this);
-        RetailerType();
+
         da = new DataAdapter(RetailerType, this);
        //
         //
@@ -121,6 +121,7 @@ public class RetailerListActivity extends AppCompatActivity {
 
 
     private void showExitDialog() {
+
         AlertDialogBox.showDialog(RetailerListActivity.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
             @Override
             public void PositiveMethod(DialogInterface dialog, int id) {
@@ -190,5 +191,11 @@ public class RetailerListActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RetailerType();
     }
 }

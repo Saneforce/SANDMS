@@ -39,6 +39,10 @@ public class ApiClient {
     public static final String BASE_URL = BASE+"server/";
     public static final String BASE_WEBVIEW = BASE;//server
 
+
+
+
+
 //    public static final String BASE_URLS = "http://govind.sanfmcg.com/";
     private static Retrofit retrofit = null, retrofit2 = null;
 
@@ -51,6 +55,11 @@ public class ApiClient {
             builder.writeTimeout(150, TimeUnit.SECONDS)
                     .connectTimeout(150, TimeUnit.SECONDS)
                     .readTimeout(150, TimeUnit.SECONDS);
+
+
+
+
+
 
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
