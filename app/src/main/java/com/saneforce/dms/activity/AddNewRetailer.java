@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.saneforce.dms.DMSApplication;
+import com.saneforce.dms.adapter.DataAdapter;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
@@ -139,8 +140,6 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
         }
 
-
-
         txtRoute = findViewById(R.id.txt_route);
         txtClass = findViewById(R.id.txt_retailer_class);
         txtChannel = findViewById(R.id.txt_retailer_channel);
@@ -157,7 +156,6 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         edtMobile = findViewById(R.id.edt_new_mob);
         edtEmail = findViewById(R.id.edt_new_email);
         ib_refresh = findViewById(R.id.ib_refresh);
-
 
         ImageView imgBack = (ImageView) findViewById(R.id.toolbar_back);
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -210,11 +208,17 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
                         if (jsonObject.has("Doc_Class_ShortName"))
                             txtClass.setText(jsonObject.getString("Doc_Class_ShortName"));
 
+                        if (jsonObject.has("Doc_ClsCode"))
+                            classID= jsonObject.getString("Doc_ClsCode");
+
+                        if (jsonObject.has("doc_special_code"))
+                            channelID= jsonObject.getString("doc_special_code");
+
                         if (jsonObject.has("Addr"))
                             edtAdds.setText(jsonObject.getString("Addr"));
 
-                        if (jsonObject.has("ListedDr_Mobile"))
-                            edtMobile.setText(jsonObject.getString("ListedDr_Mobile"));
+                        if (jsonObject.has("PhoneNo"))
+                            edtMobile.setText(jsonObject.getString("PhoneNo"));
 
                         if (jsonObject.has("ListedDr_Email"))
                             edtEmail.setText(jsonObject.getString("ListedDr_Email"));
@@ -534,7 +538,8 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
     private void updateRetailer() {
         JsonObject jsonObject=new JsonObject();
-        jsonObject.addProperty("routeID",txtRoute.getText().toString());
+        jsonObject.addProperty("town_code",  routeID);
+        jsonObject.addProperty("town_name",txtRoute.getText().toString());
         jsonObject.addProperty("name",edtName.getText().toString());
         jsonObject.addProperty("Address",edtAdds.getText().toString());
         jsonObject.addProperty("Cityname",edtCity.getText().toString());
@@ -542,16 +547,17 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         jsonObject.addProperty("email",edtEmail.getText().toString());
         jsonObject.addProperty("lat",txtLat.getText().toString());
         jsonObject.addProperty("long",txtLon.getText().toString());
-        jsonObject.addProperty("classID",txtClass.getText().toString());
-        jsonObject.addProperty("channelID",txtChannel.getText().toString()); // class code
+        jsonObject.addProperty("ClassName",txtClass.getText().toString());
+        jsonObject.addProperty("SpecName", txtChannel.getText().toString()); // class code
         jsonObject.addProperty("id",retailerId);
-        jsonObject.addProperty("SpecCode",""); // channel code
-        jsonObject.addProperty("ClassCode",""); // channel name
+        jsonObject.addProperty("SpecCode",channelID); // channel code
+        jsonObject.addProperty("ClassCode",classID ); // channel name
         jsonObject.addProperty("GSTno","");
         jsonObject.addProperty("Land_Mark","");
         jsonObject.addProperty("AreaName","");
         jsonObject.addProperty("PINcode","");
         jsonObject.addProperty("ContactPerson","");
+        jsonObject.addProperty("Designation","");
         jsonObject.addProperty("Designation2","");
         jsonObject.addProperty("Phone2","");
         jsonObject.addProperty("ContactPerson2","");
