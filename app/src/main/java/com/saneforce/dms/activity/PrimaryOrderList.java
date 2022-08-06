@@ -2,6 +2,7 @@ package com.saneforce.dms.activity;
 
 import static com.saneforce.dms.activity.ViewCartActivity.createProgressDialog;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,16 +26,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.model.PrimaryProduct;
 import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Class;
 import com.saneforce.dms.utils.PrimaryProductDatabase;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -43,6 +47,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+
+
 
 public class PrimaryOrderList extends AppCompatActivity {
     Shared_Common_Pref mShared_common_pref;
@@ -60,6 +67,7 @@ public class PrimaryOrderList extends AppCompatActivity {
 
     List<PrimaryProduct.UOMlist> uoMlistList = new ArrayList<>();
     Common_Class common_class;
+    DBController dbController ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,15 +91,57 @@ public class PrimaryOrderList extends AppCompatActivity {
 //        priUnitRecycler.setHasFixedSize(true);
 //        priUnitRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        priUnitRecycler.setNestedScrollingEnabled(false);
-
+        dbController = new DBController(this);
         mAdapter = new ProducAdapter(getApplicationContext(), uoMlistList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         priUnitRecycler.setLayoutManager(mLayoutManager);
         priUnitRecycler.setItemAnimator(new DefaultItemAnimator());
         priUnitRecycler.setAdapter(mAdapter);
 
+
         if(uoMlistList.size()==0){
             getProductId();
+
+            if(!dbController.getResponseFromKey(DBController.PRODUCT_UOM).equals("")){
+                processUOMList(dbController.getResponseFromKey(DBController.PRODUCT_UOM));
+            }
+
+        }
+    }
+
+    private void processUOMList(String res) {
+        try {
+            jsonProductuom = new JSONObject(res);
+            Log.e("LoginResponse1", res);
+
+            JSONArray jss = jsonProductuom.getJSONArray(
+                    "Data");
+            Log.e("LoginResponse133ws", jss.toString());
+
+            // JSONArray jsonArray = jsonProductuom.optJSONArray("Data");
+            //  Log.e("LoginResponse133",  jsonProductuom.toString());
+            for (int i = 0; i < jss.length(); i++) {
+                JSONObject jsonObject = jss.optJSONObject(i);
+                String id = "";
+                if(jsonObject.has("id"))
+                    id = jsonObject.getString("id");
+                String name = jsonObject.getString("name");
+                Log.v("LoginResponse1nn", name);
+                String productCode = jsonObject.getString("Product_Code");
+                Log.v("LoginResponse1nnq", productCode);
+                String conqty = jsonObject.getString("ConQty");
+                Log.v("LoginResponse1nnq", conqty);
+                if (productid.equals(productCode) || productid.contains(productCode)) {
+                    PrimaryProduct.UOMlist pp = new PrimaryProduct.UOMlist(id, name, productCode, conqty);
+                    uoMlistList.add(pp);
+                }
+    //                         priProdAdapter = new ProductsAdapter(PrimaryOrderList.this, name,productCode,conqty);
+    //                         priUnitRecycler.setAdapter(priProdAdapter);
+
+                mAdapter.notifyDataSetChanged();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -215,7 +265,7 @@ public class PrimaryOrderList extends AppCompatActivity {
             return new MyViewHolder(itemView);
         }
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
+        public void onBindViewHolder(MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             PrimaryProduct.UOMlist productlist = productList.get(position);
             holder.title.setText(productlist.getName());
             holder.productvalue.setText(productlist.getConQty());

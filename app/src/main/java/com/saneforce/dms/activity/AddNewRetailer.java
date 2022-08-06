@@ -140,6 +140,10 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
         }
 
+        if(!dbController.getResponseFromKey(DBController.PAYMENT_KEYS).equals("")){
+            processPaymentkey(new Gson().fromJson(dbController.getResponseFromKey(DBController.PAYMENT_KEYS),JsonArray.class));
+        }
+
         txtRoute = findViewById(R.id.txt_route);
         txtClass = findViewById(R.id.txt_retailer_class);
         txtChannel = findViewById(R.id.txt_retailer_channel);
@@ -176,6 +180,24 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         RetailerViewDetailsMethod(retailerId);
 
     }
+
+    private void processPaymentkey(JsonArray jsonArray) {
+        try {
+            for (int a = 0; a < jsonArray.size(); a++) {
+                JsonObject jso = (JsonObject) jsonArray.get(a);
+                String className = jso.get("name").getAsString();
+                String id = jso.get("id").getAsString();
+                mCommon_model_spinner = new Common_Model(id, className, "flag");
+                modelRetailClass.add(mCommon_model_spinner);
+            }
+
+            dbController.updateDataResponse(DBController.CLASS_LIST, new Gson().toJson(jsonArray));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void showExitDialog() {
         AlertDialogBox.showDialog(AddNewRetailer.this, "", "Do you want to exit?", "Yes", "NO", false, new DMS.AlertBox() {
@@ -469,7 +491,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         });
     }
 
-    private void processChannelList(JsonArray jsonArray) {
+    private void
+
+    processChannelList(JsonArray jsonArray) {
         try {
             for (int a = 0; a < jsonArray.size(); a++) {
                 JsonObject jso = (JsonObject) jsonArray.get(a);
