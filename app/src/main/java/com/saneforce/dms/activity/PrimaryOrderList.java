@@ -100,7 +100,8 @@ public class PrimaryOrderList extends AppCompatActivity {
 
 
         if(uoMlistList.size()==0){
-            getProductId();
+ //
+            //           getProductId();
 
             if(!dbController.getResponseFromKey(DBController.PRODUCT_UOM).equals("")){
                 processUOMList(dbController.getResponseFromKey(DBController.PRODUCT_UOM));

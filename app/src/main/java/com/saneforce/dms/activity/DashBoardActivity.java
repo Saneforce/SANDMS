@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -186,7 +187,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 if(!Common_Class.isOnProgress)
                     mCommon_class.checkData(dbController,context);
 
-                if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
+               /* if(syncData || dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_BRAND).equals("")){
                     syncData = false;
                     brandPrimaryApi(true);
                 }
@@ -197,16 +198,16 @@ public class DashBoardActivity extends AppCompatActivity {
                 if(syncData || shared_common_pref.getBooleanvalue(Shared_Common_Pref.YET_TO_SYN) || dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
                     syncData = false;
                     RetailerType();
-                }
+                }*/
 
               /* if(syncData || dbController.getResponseFromKey(DBController.TEMPLATE_LIST).equals("")){
                     syncData = false;
                     getTemplate();
                 }*/
-                if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
+                /*if(syncData || dbController.getResponseFromKey(DBController.ROUTE_LIST).equals("")){
                     syncData = false;
                     getRouteDetails();
-                }
+                }*/
                 if(syncData || dbController.getResponseFromKey(DBController.CLASS_LIST).equals("")){
                     syncData = false;
                     getRouteClass();
@@ -230,14 +231,16 @@ public class DashBoardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                JsonObject jsonObject = response.body();
-                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
-                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
-                JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
+                if(response.body()!=null) {
+                    JsonObject jsonObject = response.body();
+                    JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
+                    JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
+                    JsonArray jProd = jsonArray.getAsJsonArray("Products");
+                    dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                    dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
 
-                Log.v("Product_Response", jsonArray.toString());
+                    Log.v("Product_Response", jsonArray.toString());
+                }
 
             }
 
@@ -517,7 +520,10 @@ public class DashBoardActivity extends AppCompatActivity {
                 !dbController.getResponseFromKey(DBController.PRIMARY_PRODUCT_DATA).equals("")){
             processPrimaryData();
         }else
-            brandPrimaryApi(false);
+            Toast.makeText(DashBoardActivity.this,"Please do MasterSync",Toast.LENGTH_SHORT).show();
+
+
+            //brandPrimaryApi(false);
 //        }else
 //            Toast.makeText(DashBoardActivity.this, "Cut off time is over, please try again later", Toast.LENGTH_SHORT).show();
     }

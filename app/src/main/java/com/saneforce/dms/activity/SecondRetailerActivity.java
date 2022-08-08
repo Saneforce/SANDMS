@@ -611,16 +611,18 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                JsonObject jsonObject = response.body();
-                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
-                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
-                JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
-                Log.v("Product_Response", jsonArray.toString());
+                if(response.body()!=null) {
+                    JsonObject jsonObject = response.body();
+                    JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
+                    JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
+                    JsonArray jProd = jsonArray.getAsJsonArray("Products");
+                    dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                    dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
 
-                processSecondaryOrderList(0);
+                    Log.v("Product_Response",jsonArray.toString());
+                        processSecondaryOrderList(0);
 
+                }
             }
 
             @Override
@@ -888,6 +890,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
         if(shared_common_pref.getBooleanvalue(Shared_Common_Pref.YET_TO_SYN) || !dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
             processRetailerList(new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JsonArray.class));
         }else {
+
             if(Constant.isInternetAvailable(this))
                 RetailerType();
             else

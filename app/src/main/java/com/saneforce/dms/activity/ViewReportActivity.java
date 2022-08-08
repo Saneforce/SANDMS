@@ -1544,15 +1544,17 @@ public class ViewReportActivity extends AppCompatActivity implements DMS.Master_
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                JsonObject jsonObject = response.body();
-                JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
-                JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
-                JsonArray jProd = jsonArray.getAsJsonArray("Products");
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
-                dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
-                Log.v("Product_Response", jsonArray.toString());
+               if(response.body()!=null) {
+                   JsonObject jsonObject = response.body();
+                   JsonObject jsonArray = jsonObject.getAsJsonObject("Data");
+                   JsonArray jBrand = jsonArray.getAsJsonArray("Brand");
+                   JsonArray jProd = jsonArray.getAsJsonArray("Products");
+                   dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_BRAND, new Gson().toJson(jBrand));
+                   dbController.updateDataResponse(DBController.SECONDARY_PRODUCT_DATA, new Gson().toJson(jProd));
+                   Log.v("Product_Response", jsonArray.toString());
 
-                new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+                   new PopulateDbAsyntasks(PrimaryProductDatabase.getInstance(getApplicationContext()).getAppDatabase()).execute();
+               }
             }
 
             @Override

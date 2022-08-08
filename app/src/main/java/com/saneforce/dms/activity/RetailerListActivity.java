@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -37,6 +38,9 @@ import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.PrimaryProductViewModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +145,7 @@ public class RetailerListActivity extends AppCompatActivity {
         InputMethodManager in = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         in.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
-    public void RetailerType() {
+    /*public void RetailerType() {
         String RetailerDetails = "{\"tableName\":\"vwDoctor_Master_APP\",\"coloumns\":\"[\\\"doctor_code as id\\\", \\\"doctor_name as name\\\",\\\"town_code\\\",\\\"town_name\\\",\\\"lat\\\",\\\"long\\\",\\\"addrs\\\",\\\"ListedDr_Address1\\\",\\\"ListedDr_Sl_No\\\",\\\"Mobile_Number\\\",\\\"Doc_cat_code\\\",\\\"ContactPersion\\\",\\\"Doc_Special_Code\\\",\\\"Slan_Name\\\"]\",\"where\":\"[\\\"isnull(Doctor_Active_flag,0)=0\\\"]\",\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.getRetName(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), sfCode, sfCode, shared_common_pref.getvalue(Shared_Common_Pref.State_Code), RetailerDetails);
@@ -167,13 +171,13 @@ public class RetailerListActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
-    }
+    }*/
 
-    private void processRetailerList(JsonArray jsonArray) {
-        if(jsonArray.size()>0)
+    private void processRetailerList(JSONArray jsonArray) {
+        if(jsonArray.length()>0)
             RetailerType.clear();
         try {
-            for (int a = 0; a < jsonArray.size(); a++) {
+            for (int a = 0; a < jsonArray.length(); a++) {
                 JsonObject jsonObject = (JsonObject) jsonArray.get(a);
                 String id = jsonObject.get("id").getAsString();
                 String name = jsonObject.get("name").getAsString();
@@ -196,6 +200,23 @@ public class RetailerListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        RetailerType();
+//        RetailerType();
+
+        if(!dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
+            try {
+            JSONObject jsonObject = new JSONObject(dbController.getResponseFromKey(DBController.RETAILER_LIST));
+
+                JSONArray jsonArray = jsonObject.getJSONArray("Data");
+//                    shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);
+
+                processRetailerList(jsonArray);
+
+            } catch (Exception io) {
+                io.printStackTrace();
+            }
+        }else {
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

@@ -17,6 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonObject;
 import com.saneforce.dms.listener.ApiInterface;
 import com.saneforce.dms.R;
+import com.saneforce.dms.sqlite.DBController;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Constant;
 import com.saneforce.dms.utils.Shared_Common_Pref;
@@ -35,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     JSONObject jsonObject1;
 //    JsonArray jsonArray;
     ImageView imagView;
+    DBController dbController;
     TextInputEditText edtName, edtAddress, edtMobile, edtStoclistName, edtGst, edtEmail;
 //    edtDesignation,
     TextView toolbarTitle;
@@ -58,12 +60,14 @@ public class ProfileActivity extends AppCompatActivity {
         tie_erp_code = findViewById(R.id.tie_erp_code);
         tie_sales_team_name = findViewById(R.id.tie_sales_team_name);
 
-        if(Constant.isInternetAvailable(this))
-            getProfileData();
-        else{
-            Toast.makeText(this, "Please check the internet connection", Toast.LENGTH_SHORT).show();
-            finish();
+        processResponse(String.valueOf(dbController.getResponseFromKey(DBController.PROFILE_DATA).equals("")));
+        if(!dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
+            processResponse(dbController.getResponseFromKey(DBController.PROFILE_DATA));
         }
+        else {
+            Toast.makeText(this, "Do Master Sync", Toast.LENGTH_SHORT).show();
+        }
+
         Button btnUpdate = findViewById(R.id.btn_update);
         LinearLayout llProfile = findViewById(R.id.ll_profile);
         if(ApiClient.APP_TYPE == 1){
@@ -189,52 +193,7 @@ public class ProfileActivity extends AppCompatActivity {
                 String res = response.body().toString();
                 Log.v("DMS_RESPONSE", res);
 
-              try {
-                   jsonObject1 = new JSONObject(res);
-                   Log.e("LoginResponse1",  jsonObject1.toString());
-                   JSONArray jsonArray = jsonObject1.optJSONArray("Data");
-                   for (int i = 0; i < jsonArray.length(); i++) {
-                       JSONObject jsonObject = jsonArray.getJSONObject(i);
-                       String name=jsonObject.getString("Stockist_Name");
-                       Log.e("LoginResponse", name.toString());
-                       edtName.setText(name);
-                       String email=jsonObject.getString("Email");
-                       if(email!=null && !email.equals("") && !email.equals("null"))
-                       edtEmail.setText(email);
-                       String stocklistname=jsonObject.getString("Stockist_ContactPerson");
-                       edtStoclistName.setText(stocklistname);
-//                       String designation=jsonObject.getString("Stockist_Designation");
-//                       edtDesignation.setText(designation);
-                       String address=jsonObject.getString("Stockist_Address");
-                       edtAddress.setText(address);
-                       String mobile=jsonObject.getString("Stockist_Mobile");
-                       edtMobile.setText(mobile);
-                       String gst=jsonObject.getString("gstn");
-                       edtGst.setText(gst);
-
-                       String erpCode = "";
-                        if(jsonObject.has("ERP_Code"))
-                       erpCode=jsonObject.getString("ERP_Code");
-                       tie_erp_code.setText(erpCode);
-
-                       String salesTeamName = "";
-                        if(jsonObject.has("FieldPerson"))
-                            salesTeamName=jsonObject.getString("FieldPerson");
-                       tie_sales_team_name.setText(salesTeamName);
-
-                       try {
-                           shared_common_pref.save(Shared_Common_Pref.USER_NAME, name);
-                           shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
-                           shared_common_pref.save(Shared_Common_Pref.USER_PHONE, mobile);
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-
-                   }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+              processResponse(res);
 
             }
 
@@ -243,6 +202,55 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void processResponse(String res) {
+        try {
+            jsonObject1 = new JSONObject(res);
+            Log.e("LoginResponse1",  jsonObject1.toString());
+            JSONArray jsonArray = jsonObject1.optJSONArray("Data");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name=jsonObject.getString("Stockist_Name");
+                Log.e("LoginResponse", name.toString());
+                edtName.setText(name);
+                String email=jsonObject.getString("Email");
+                if(email!=null && !email.equals("") && !email.equals("null"))
+                    edtEmail.setText(email);
+                String stocklistname=jsonObject.getString("Stockist_ContactPerson");
+                edtStoclistName.setText(stocklistname);
+//                       String designation=jsonObject.getString("Stockist_Designation");
+//                       edtDesignation.setText(designation);
+                String address=jsonObject.getString("Stockist_Address");
+                edtAddress.setText(address);
+                String mobile=jsonObject.getString("Stockist_Mobile");
+                edtMobile.setText(mobile);
+                String gst=jsonObject.getString("gstn");
+                edtGst.setText(gst);
+
+                String erpCode = "";
+                if(jsonObject.has("ERP_Code"))
+                    erpCode=jsonObject.getString("ERP_Code");
+                tie_erp_code.setText(erpCode);
+
+                String salesTeamName = "";
+                if(jsonObject.has("FieldPerson"))
+                    salesTeamName=jsonObject.getString("FieldPerson");
+                tie_sales_team_name.setText(salesTeamName);
+
+                try {
+                    shared_common_pref.save(Shared_Common_Pref.USER_NAME, name);
+                    shared_common_pref.save(Shared_Common_Pref.USER_EMAIL, email);
+                    shared_common_pref.save(Shared_Common_Pref.USER_PHONE, mobile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void Company(View v) {
