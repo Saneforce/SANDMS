@@ -140,9 +140,9 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
 
         }
 
-        if(!dbController.getResponseFromKey(DBController.PAYMENT_KEYS).equals("")){
+        /*if(!dbController.getResponseFromKey(DBController.PAYMENT_KEYS).equals("")){
             processPaymentkey(new Gson().fromJson(dbController.getResponseFromKey(DBController.PAYMENT_KEYS),JsonArray.class));
-        }
+        }*/
 
         txtRoute = findViewById(R.id.txt_route);
         txtClass = findViewById(R.id.txt_retailer_class);
@@ -175,9 +175,10 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
         });
 
         Intent intent=getIntent();
-        if (intent.hasExtra("retailerId"))
-        retailerId=intent.getStringExtra("retailerId");
-        RetailerViewDetailsMethod(retailerId);
+        if (intent.hasExtra("retailerId")){
+            retailerId=intent.getStringExtra("retailerId");
+            RetailerViewDetailsMethod(retailerId);
+        }
 
     }
 

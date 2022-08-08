@@ -173,6 +173,7 @@ public class RetailerListActivity extends AppCompatActivity {
         });
     }*/
 
+
     private void processRetailerList(JSONArray jsonArray) {
         if(jsonArray.length()>0)
             RetailerType.clear();
@@ -204,9 +205,10 @@ public class RetailerListActivity extends AppCompatActivity {
 
         if(!dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
             try {
-            JSONObject jsonObject = new JSONObject(dbController.getResponseFromKey(DBController.RETAILER_LIST));
+                Log.v("RetailerListActivity","RETAILER_LIST"+ dbController.getResponseFromKey(DBController.RETAILER_LIST));
+                JSONArray jsonArray =new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JSONArray.class);
 
-                JSONArray jsonArray = jsonObject.getJSONArray("Data");
+//                JSONArray jsonArray = jsonObject.getJSONArray("Data");
 //                    shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);
 
                 processRetailerList(jsonArray);
@@ -215,7 +217,7 @@ public class RetailerListActivity extends AppCompatActivity {
                 io.printStackTrace();
             }
         }else {
-            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RetailerListActivity.this, "Please do Master Sync", Toast.LENGTH_SHORT).show();
         }
 
     }
