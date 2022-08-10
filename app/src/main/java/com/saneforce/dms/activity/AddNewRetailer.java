@@ -280,7 +280,7 @@ public class AddNewRetailer extends AppCompatActivity implements DMS.Master_Inte
     }
 
     private void OnGPS() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final   AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

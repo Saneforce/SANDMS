@@ -174,11 +174,11 @@ public class RetailerListActivity extends AppCompatActivity {
     }*/
 
 
-    private void processRetailerList(JSONArray jsonArray) {
-        if(jsonArray.length()>0)
+    private void processRetailerList(JsonArray jsonArray) {
+        if(jsonArray.size()>0)
             RetailerType.clear();
         try {
-            for (int a = 0; a < jsonArray.length(); a++) {
+            for (int a = 0; a < jsonArray.size(); a++) {
                 JsonObject jsonObject = (JsonObject) jsonArray.get(a);
                 String id = jsonObject.get("id").getAsString();
                 String name = jsonObject.get("name").getAsString();
@@ -206,7 +206,8 @@ public class RetailerListActivity extends AppCompatActivity {
         if(!dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
             try {
                 Log.v("RetailerListActivity","RETAILER_LIST"+ dbController.getResponseFromKey(DBController.RETAILER_LIST));
-                JSONArray jsonArray =new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JSONArray.class);
+                JsonArray jsonArray =new Gson().fromJson(dbController.getResponseFromKey(DBController.RETAILER_LIST), JsonArray.class);
+                Log.v("RetailerListActivity","RETAILER_LIST"+ dbController.getResponseFromKey(DBController.RETAILER_LIST));
 
 //                JSONArray jsonArray = jsonObject.getJSONArray("Data");
 //                    shared_common_pref.save(Shared_Common_Pref.YET_TO_SYN, false);

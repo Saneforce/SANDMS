@@ -26,6 +26,7 @@ public class AlertDialogBox {
             alert.setCancelable(isCancelable);
             alert.show();
             if (isCancelable) {
+
                 alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface arg0) {

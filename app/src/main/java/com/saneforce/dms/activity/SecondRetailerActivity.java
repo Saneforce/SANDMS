@@ -369,6 +369,9 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
             if(customDialog123!=null && customDialog123.isShowing())
                 customDialog123.dismiss();
 
+
+
+
             editRemarks.setText(myDataset.get(position).getName());
             editRemarks.setSelection(editRemarks.getText().toString().length());
         }

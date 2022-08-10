@@ -3,6 +3,7 @@ package com.saneforce.dms.activity;
 import static android.view.View.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -53,6 +54,7 @@ public class MasterSync extends AppCompatActivity {
     JSONObject jsonObject1;
     DBController dbController;
 
+    CardView cv_sync_all_data;
     TextView tv_channel, tv_class, tv_payment_key, tv_pri_category, tv_product_uom, tv_profile, tv_retailer, tv_route_list, tv_sec_category,tv_sync_all_data;
     ImageView imageView,fail_channel,fail_class,fail_payment_key,fail_pri_category,fail_product_uom,fail_profile,fail_retailer,fail_route_list,fail_sec_category;
     GifImageView gif_channel,gif_class,gif_payment_key,gif_pri_category,gif_product_uom,gif_profile,gif_retailer,gif_route_list,gif_sec_category;
@@ -61,6 +63,8 @@ public class MasterSync extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_sync);
+
+        cv_sync_all_data=findViewById(R.id.cv_sync_all_data);
 
         tv_channel = findViewById(R.id.tv_channel);
         tv_class = findViewById(R.id.tv_class);
@@ -179,7 +183,7 @@ public class MasterSync extends AppCompatActivity {
             }
         });
 
-        tv_sync_all_data.setOnClickListener(new OnClickListener() {
+        cv_sync_all_data.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 getRouteChannel();
@@ -201,7 +205,7 @@ public class MasterSync extends AppCompatActivity {
         String routeMap = "{\"tableName\":\"Doctor_Specialty\",\"coloumns\":\"[\\\"Specialty_Code as id\\\", \\\"Specialty_Name as name\\\"]\",\"where\":\"[\\\"isnull(Deactivate_flag,0)=0\\\"]\",\"sfCode\":0,\"orderBy\":\"[\\\"name asc\\\"]\",\"desig\":\"mgr\"}";
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<JsonObject> call = apiInterface.retailerClass(shared_common_pref.getvalue(Shared_Common_Pref.Div_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.State_Code), routeMap);
-        call.enqueue(new Callback<>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
