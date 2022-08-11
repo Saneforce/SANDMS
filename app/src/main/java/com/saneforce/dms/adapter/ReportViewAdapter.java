@@ -13,9 +13,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.saneforce.dms.activity.SecondaryReportTab;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.R;
@@ -39,6 +41,9 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     int viewType  = 1;
     int slno = 1;
+
+    public ReportViewAdapter(SecondaryReportTab context, FragmentManager childFragmentManager, int tabCount) {
+    }
 
     public void setOrderTakenbyFilter(String orderTakenbyFilter) {
         OrderTakenbyFilter = orderTakenbyFilter;
