@@ -47,7 +47,7 @@ public class ReportDashBoard extends AppCompatActivity {
     public void SecodaryReports(View v) {
         if(Constant.isInternetAvailable(this)){
 
-            startActivity(new Intent(getApplicationContext(), ReportActivity.class));
+            startActivity(new Intent(getApplicationContext(), SecondaryReportTab.class));
             mShared_common_pref.save("OrderType", "2");
         }else
             Toast.makeText(ReportDashBoard.this, "Please check the Internet connection", Toast.LENGTH_SHORT).show();

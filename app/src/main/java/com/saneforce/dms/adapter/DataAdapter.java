@@ -15,12 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saneforce.dms.activity.AddNewRetailer;
-import com.saneforce.dms.activity.FinanceActivity;
-import com.saneforce.dms.activity.PaymentVerified;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.R;
 import com.saneforce.dms.utils.Common_Model;
-import com.saneforce.dms.utils.CustomListViewDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +31,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
     int enableEdit = 0;
 
-    public DataAdapter(List<Common_Model> myDataset, Context context, int type) {
+    public DataAdapter(List<Common_Model> myDataset, int type) {
         contactList = myDataset;
         typeName = type;
         contactListFiltered = myDataset;
-        updateUi = ((DMS.Master_Interface) context);
-        context=this.context;
 
     }
     public DataAdapter(List<Common_Model> myDataset,Context context){

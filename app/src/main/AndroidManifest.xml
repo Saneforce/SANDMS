@@ -47,7 +47,7 @@
         tools:replace="android:theme"
         tools:targetApi="p">
         <activity
-            android:name=".SecondaryReportTab"
+            android:name=".activity.SecondaryReportTab"
             android:exported="false" />
         <activity
             android:name=".activity.MasterSync"

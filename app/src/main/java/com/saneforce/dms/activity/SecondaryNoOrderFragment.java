@@ -170,27 +170,27 @@ public class SecondaryNoOrderFragment extends Fragment {
         toolbar_top = view.findViewById(R.id.toolbar_top);
         toolbar_top.setVisibility(View.VISIBLE);
 
-        totalLayout = getView().findViewById(R.id.totalLayout);
+        totalLayout = view.findViewById(R.id.totalLayout);
 
         shared_common_pref = new Shared_Common_Pref(requireActivity());
         OrderType = shared_common_pref.getvalue("OrderType");
         Log.v("OrderType", OrderType);
 
-        txtTotalValue = getView().findViewById(R.id.total_value);
-        txtOrderStatus = getView().findViewById(R.id.txt_orderstatus);
-        txtName = getView().findViewById(R.id.dist_name);
+        txtTotalValue = view.findViewById(R.id.total_value);
+        txtOrderStatus = view.findViewById(R.id.txt_orderstatus);
+        txtName = view.findViewById(R.id.dist_name);
         txtName.setText("Name: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
 
-        TextView tv_erp_code = getView().findViewById(R.id.tv_erp_code);
+        TextView tv_erp_code = view.findViewById(R.id.tv_erp_code);
         if (!shared_common_pref.getvalue1(Shared_Common_Pref.USER_ERP_CODE).equals("")) {
             tv_erp_code.setVisibility(View.VISIBLE);
             tv_erp_code.setText("ERP Code: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
         } else
             tv_erp_code.setVisibility(View.GONE);
 
-        fromBtn = getView().findViewById(R.id.from_picker);
-        toBtn = getView().findViewById(R.id.to_picker);
-        linearOrderMode = getView().findViewById(R.id.lin_order);
+        fromBtn = view.findViewById(R.id.from_picker);
+        toBtn = view.findViewById(R.id.to_picker);
+        linearOrderMode = view.findViewById(R.id.lin_order);
         txtTotalValue.setText("0");
         DateFormat df = new SimpleDateFormat("yyyy-MM-d");
         Calendar calobj = Calendar.getInstance();
@@ -290,7 +290,7 @@ public class SecondaryNoOrderFragment extends Fragment {
             }
         });
 
-        mReportList = getView().findViewById(R.id.report_list);
+        mReportList = view.findViewById(R.id.report_list);
         mReportList.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
         mReportList.setLayoutManager(layoutManager);
@@ -546,7 +546,8 @@ public class SecondaryNoOrderFragment extends Fragment {
 
                             saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                         } else {
-                            Constant.showSnackbar(requireActivity(), getView().findViewById(R.id.scrolllayout));
+                           // Constant.showSnackbar(requireActivity(), getView().findViewById(R.id.scrolllayout));
+                            Toast.makeText(requireActivity(),"Please give Permission",Toast.LENGTH_SHORT).show();
                         }
 
                     }

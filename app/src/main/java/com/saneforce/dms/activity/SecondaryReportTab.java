@@ -1,18 +1,15 @@
 package com.saneforce.dms.activity;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentHostCallback;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.saneforce.dms.R;
@@ -39,8 +36,14 @@ public class SecondaryReportTab extends AppCompatActivity {
         LinearLayout llToolbar = findViewById(R.id.ll_toolbar);
 
         DBController dbController = new DBController(SecondaryReportTab.this);
+
+        tabLayout.addTab(tabLayout.newTab().setText("tab 1"));
+        tabLayout.addTab(tabLayout.newTab().setText("tab 2"));
+
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        final ReportViewAdapter adapter = new ReportViewAdapter(SecondaryReportTab.this, getChildFragmentManager(), tabLayout.getTabCount());
+        GeoTagTabAdapter adapter = new GeoTagTabAdapter(SecondaryReportTab.this, getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
         dotsIndicator.setViewPager(viewPager);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -60,12 +63,7 @@ public class SecondaryReportTab extends AppCompatActivity {
         });
     }
 
-    private FragmentManager getChildFragmentManager() {
-        if (mHost == null) {
-            throw new IllegalStateException("Fragment " + this + " has not been attached yet.");
-        }
-        return mChildFragmentManager;
-    }
+
     public class GeoTagTabAdapter extends FragmentPagerAdapter {
 
         int totalTabs;

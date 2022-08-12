@@ -54,7 +54,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         //this.adapter = adapter;
         this.mDataset = wk;
 
-        this.dataAdapter = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, type);
 
     }
 
@@ -67,7 +67,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.mDataset =productCodeOffileData;
 
 
-        this.dataAdapter = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, type);
     }
     public CustomListViewDialog(Context aa, List<Common_Model> wk, int type, TextView productdata) {
         super(aa);
@@ -77,7 +77,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.mDataset = wk;
         this.productdata=productdata;
 
-        this.dataAdapter = new DataAdapter(mDataset, activity, type);
+        this.dataAdapter = new DataAdapter(mDataset, type);
 
     }
     @Override

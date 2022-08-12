@@ -11,11 +11,11 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        android:layout_below="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextColor="@color/white"
-        android:background="@color/colorAccent">
+        android:layout_below="@+id/custom_toolbar"
+        android:background="@color/colorAccent"
+        app:tabTextColor="@color/white">
 
     </com.google.android.material.tabs.TabLayout>
 
