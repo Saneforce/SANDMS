@@ -538,7 +538,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     }
 
 
-
+    @Override
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
         customDialog.dismiss();
         if (type == 11) {

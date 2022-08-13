@@ -60,12 +60,12 @@ public class ProfileActivity extends AppCompatActivity {
         tie_erp_code = findViewById(R.id.tie_erp_code);
         tie_sales_team_name = findViewById(R.id.tie_sales_team_name);
 
-        processResponse(String.valueOf(dbController.getResponseFromKey(DBController.PROFILE_DATA).equals("")));
-        if(!dbController.getResponseFromKey(DBController.RETAILER_LIST).equals("")){
+        dbController = new DBController(this);
+        if(!dbController.getResponseFromKey(DBController.PROFILE_DATA).equals("")){
             processResponse(dbController.getResponseFromKey(DBController.PROFILE_DATA));
         }
         else {
-            Toast.makeText(this, "Do Master Sync", Toast.LENGTH_SHORT).show();
+            getProfileData();
         }
 
         Button btnUpdate = findViewById(R.id.btn_update);

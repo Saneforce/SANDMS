@@ -2,7 +2,11 @@ package com.saneforce.dms.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -37,9 +41,8 @@ public class SecondaryReportTab extends AppCompatActivity {
 
         DBController dbController = new DBController(SecondaryReportTab.this);
 
-        tabLayout.addTab(tabLayout.newTab().setText("tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("tab 2"));
-
+        tabLayout.addTab(tabLayout.newTab().setText("Order"));
+        tabLayout.addTab(tabLayout.newTab().setText("No Order"));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         GeoTagTabAdapter adapter = new GeoTagTabAdapter(SecondaryReportTab.this, getSupportFragmentManager(), tabLayout.getTabCount());

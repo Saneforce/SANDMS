@@ -1,6 +1,5 @@
 package com.saneforce.dms.activity;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static io.realm.Realm.getApplicationContext;
 
 import android.Manifest;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -76,7 +74,7 @@ import retrofit2.Response;
  */
 public class SecondaryNoOrderFragment extends Fragment {
     TextView toolHeader, txtTotalValue, txtProductDate, txtName;
-    ImageView imgBack, imgShare;
+    ImageView imgBack;
     Button fromBtn, toBtn;
 
     int geoTaggingType = 1;
@@ -97,8 +95,6 @@ public class SecondaryNoOrderFragment extends Fragment {
     LinearLayout linearLayout;
     LinearLayout totalLayout;
     LinearLayout headingLayout;
-
-    Toolbar toolbar_top;
 
     List<ReportModel> filteredList = new ArrayList<>();
     int viewType = 1;
@@ -167,8 +163,6 @@ public class SecondaryNoOrderFragment extends Fragment {
 
         linearLayout = view.findViewById(R.id.linearlayout);
         headingLayout = view.findViewById(R.id.headingLayout);
-        toolbar_top = view.findViewById(R.id.toolbar_top);
-        toolbar_top.setVisibility(View.VISIBLE);
 
         totalLayout = view.findViewById(R.id.totalLayout);
 
@@ -187,6 +181,7 @@ public class SecondaryNoOrderFragment extends Fragment {
             tv_erp_code.setText("ERP Code: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
         } else
             tv_erp_code.setVisibility(View.GONE);
+
 
         fromBtn = view.findViewById(R.id.from_picker);
         toBtn = view.findViewById(R.id.to_picker);
@@ -224,14 +219,20 @@ public class SecondaryNoOrderFragment extends Fragment {
                     } else {
                             checkPermission();
                     }
-              });
-        imgBack.setOnClickListener(new View.OnClickListener(){
+              });*/
+       /* imgBack.setOnClickListener(new View.OnClickListener(){
             @Override
                public void onClick (View view){
+                    onBackPressed();
+                }*/
 
-                }                                }
-            });
-        }*/
+           /* private void onBackPressed() {
+                finish();
+            }
+
+            private void finish() {
+            }
+        });*/
 
         fromBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -312,7 +313,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         mReportViewAdapter = new ReportViewAdapter(requireActivity(), filteredList, new DMS.ViewReport() {
             @Override
             public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {
-                Intent intent = new Intent(requireActivity(), DMS.ViewReport.class);
+                Intent intent = new Intent(requireActivity(), ViewReportActivity.class);
                 intent.putExtra("ProductID", productId);
                 intent.putExtra("OrderDate", orderDate);
                 intent.putExtra("FromDate", fromBtn.getText().toString());
@@ -339,7 +340,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         mReportList.setAdapter(mReportViewAdapter);
         return view;
     }
-
 
     private void updateFilterList() {
         modeOrderData.clear();
@@ -461,7 +461,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         }
     }
 
-
     public Bitmap createBitmap3(View v, int width, int height) {
         // The measurement makes the view specified size
         int measuredWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
@@ -475,6 +474,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         v.draw(c);
         return bmp;
     }
+
 
 
     String dirpath = "";
@@ -584,7 +584,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         txtTotalValue = null;
         txtName = null;
         imgBack = null;
-        imgShare = null;
         fromBtn = null;
         toBtn = null;
         fromDateString = null;
@@ -604,7 +603,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         orderTakenByFilter = null;
         OrderStatusList = null;
         linearLayout = null;
-        toolbar_top = null;
         totalLayout = null;
         filteredList = null;
         headingLayout = null;
