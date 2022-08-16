@@ -275,7 +275,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         //implements View.OnClickListener
-        TextView txtsNo, txtOrderDate, txtOrderID, txtValue, txtOrderStatus, txtOrderTakenBy, txtRetailerName, tv_order_type;
+        TextView txtsNo, txtOrderDate, txtOrderID, txtValue, txtOrderType,txtOrderStatus, txtOrderTakenBy, txtRetailerName, tv_order_type;
         LinearLayout linearLayout, linearLayoutTakenby;
         ImageButton imageButton;
 
@@ -285,6 +285,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             txtsNo = (TextView) itemView.findViewById(R.id.txt_serial);
             txtOrderID = (TextView) itemView.findViewById(R.id.txt_order);
             txtOrderDate = (TextView) itemView.findViewById(R.id.txt_date);
+            //txtOrderType = (TextView) itemView.findViewById(R.id.);
             txtValue = (TextView) itemView.findViewById(R.id.txt_total);
             txtOrderStatus = itemView.findViewById(R.id.txt_status);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.row_report);
@@ -322,7 +323,7 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
         }
     }
-    public class MyViewHolderFinance extends RecyclerView.ViewHolder {
+    public static class MyViewHolderFinance extends RecyclerView.ViewHolder {
 
         CardView cv_root;
         TextView tv_customer_name, tv_payment_status, tv_ordered_date, tv_date_paid, tv_payment_mode, tv_cutomer_id;

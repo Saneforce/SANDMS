@@ -1,7 +1,5 @@
 package com.saneforce.dms.activity;
 
-import static com.billdesk.utils.ResourceConstants.i;
-
 import static io.realm.Realm.getApplicationContext;
 
 import android.Manifest;
@@ -13,14 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,6 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
@@ -72,40 +69,39 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SecondaryNoOrderFragment#newInstance} factory method to
+ * Use the {@link SecondaryOrderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondaryNoOrderFragment extends Fragment {
-    TextView toolHeader,txtTotalValue,txtName;
+public class SecondaryOrderFragment extends Fragment {
+    TextView toolHeader, txtTotalValue, txtName;
     ImageView imgBack;
-    Button fromBtn,toBtn;
+    Button fromBtn, toBtn;
 
-    int geoTaggingType=1;
+    int geoTaggingType = 1;
 
-    String fromDateString,dateTime,toDateString,FReport="",TReport="",OrderType="1";
-    private int mYear,mMonth,mDay;
+    String fromDateString, dateTime, toDateString, FReport = "", TReport = "", OrderType = "1";
+    private int mYear, mMonth, mDay;
     ReportViewAdapter mReportViewAdapter;
     RecyclerView mReportList;
     Shared_Common_Pref shared_common_pref;
-    Integer Count=0;
-    List<Common_Model>modeOrderData=new ArrayList<>();
+    Integer Count = 0;
+    List<Common_Model> modeOrderData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
     CustomListViewDialog customDialog;
     LinearLayout linearOrderMode;
     TextView txtOrderStatus;
-    String orderTakenByFilter="All";
+    String orderTakenByFilter = "All";
     ArrayList<String> OrderStatusList;
     LinearLayout linearLayout;
     LinearLayout totalLayout;
     LinearLayout headingLayout;
 
-    List<ReportModel> filteredList=new ArrayList<>();
-    int viewType=1;
+    List<ReportModel> filteredList = new ArrayList<>();
+    int viewType = 1;
 
-    private static final String GEOTAGGING_TYPE="geotaggingType";
+    private static final String GEOTAGGING_TYPE = "geotaggingType";
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -113,7 +109,7 @@ public class SecondaryNoOrderFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SecondaryNoOrderFragment() {
+    public SecondaryOrderFragment() {
 
     }
 
@@ -126,8 +122,8 @@ public class SecondaryNoOrderFragment extends Fragment {
      * @return A new instance of fragment SecondaryNoOrderFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SecondaryNoOrderFragment newInstance(String param1, String param2) {
-        SecondaryNoOrderFragment fragment = new SecondaryNoOrderFragment();
+    public static SecondaryOrderFragment newInstance(String param1, String param2) {
+        SecondaryOrderFragment fragment = new SecondaryOrderFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -135,10 +131,10 @@ public class SecondaryNoOrderFragment extends Fragment {
         return fragment;
     }
 
-    public static Fragment newInstance(int type){
-        SecondaryNoOrderFragment fragment=new SecondaryNoOrderFragment();
-        Bundle args=new Bundle();
-        args.putInt(GEOTAGGING_TYPE,type);
+    public static Fragment newInstance(int type) {
+        SecondaryOrderFragment fragment = new SecondaryOrderFragment();
+        Bundle args = new Bundle();
+        args.putInt(GEOTAGGING_TYPE, type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -149,154 +145,189 @@ public class SecondaryNoOrderFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            geoTaggingType=getArguments().getInt(GEOTAGGING_TYPE);
+            geoTaggingType = getArguments().getInt(GEOTAGGING_TYPE);
 
-            FReport=getArguments().getString("FromReport");
-            TReport=getArguments().getString("ToReport");
-            viewType=getArguments().getInt("viewType",1);
-            Count=getArguments().getInt("count",100);
+            FReport = getArguments().getString("FromReport");
+            TReport = getArguments().getString("ToReport");
+            viewType = getArguments().getInt("viewType", 1);
+            Count = getArguments().getInt("count", 100);
+
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_no_order_list, container, false);
+        View view= inflater.inflate(R.layout.fragment_secondary_no_order, container, false);
 
-        linearLayout=view.findViewById(R.id.linearLayout);
-        headingLayout=view.findViewById(R.id.headingLayout);
+        linearLayout = view.findViewById(R.id.linearlayout);
+        headingLayout = view.findViewById(R.id.headingLayout);
 
-        totalLayout=view.findViewById(R.id.totalLayout);
+        totalLayout = view.findViewById(R.id.totalLayout);
 
-        shared_common_pref=new Shared_Common_Pref(requireActivity());
-        OrderType=shared_common_pref.getvalue("OrderType");
-        Log.v("OrderType",OrderType);
+        shared_common_pref = new Shared_Common_Pref(requireActivity());
+        OrderType = shared_common_pref.getvalue("OrderType");
+        Log.v("OrderType", OrderType);
 
-        txtTotalValue=view.findViewById(R.id.total_value);
-        txtOrderStatus=view.findViewById(R.id.txt_orderstatus);
-        txtName=view.findViewById(R.id.dist_name);
-        txtName.setText("Name:" + ""+ shared_common_pref.getvalue(Shared_Common_Pref.name)+"~"+shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
+        txtTotalValue = view.findViewById(R.id.total_value);
+        txtOrderStatus = view.findViewById(R.id.txt_orderstatus);
+        txtName = view.findViewById(R.id.dist_name);
+        txtName.setText("Name: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
 
-        TextView tv_erp_code=view.findViewById(R.id.tv_erp_code);
-        if(!shared_common_pref.getvalue1(Shared_Common_Pref.USER_ERP_CODE).equals("")){
+        TextView tv_erp_code = view.findViewById(R.id.tv_erp_code);
+        if (!shared_common_pref.getvalue1(Shared_Common_Pref.USER_ERP_CODE).equals("")) {
             tv_erp_code.setVisibility(View.VISIBLE);
-            tv_erp_code.setText("ERP Code:"+""+shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
-        }
-        else
+            tv_erp_code.setText("ERP Code: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.USER_ERP_CODE));
+        } else
             tv_erp_code.setVisibility(View.GONE);
 
-        fromBtn=view.findViewById(R.id.from_picker);
-        toBtn=view.findViewById(R.id.to_picker);
-        linearOrderMode=view.findViewById(R.id.lin_order);
-        txtTotalValue.setText("0");
-        DateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calobj=Calendar.getInstance();
-        dateTime=df.format(calobj.getTime());
 
-        if(viewType==2)
+        fromBtn = view.findViewById(R.id.from_picker);
+        toBtn = view.findViewById(R.id.to_picker);
+        linearOrderMode = view.findViewById(R.id.lin_order);
+        txtTotalValue.setText("0");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calobj = Calendar.getInstance();
+        dateTime = df.format(calobj.getTime());
+
+        if (viewType == 2)
             headingLayout.setVisibility(View.GONE);
         else
             headingLayout.setVisibility(View.VISIBLE);
 
-        if(Count==1){
-            fromBtn.setText(""+FReport);
-            toBtn.setText(""+TReport);
-            fromDateString=FReport;
-            toDateString=TReport;
-        }else{
-            fromBtn.setText(""+dateTime);
-            toBtn.setText(""+dateTime);
-            fromDateString=dateTime;
-            toDateString=dateTime;
+        if (Count == 1) {
+            fromBtn.setText("" + FReport);
+            toBtn.setText("" + TReport);
+            fromDateString = FReport;
+            toDateString = TReport;
+        } else {
+            fromBtn.setText("" + dateTime);
+            toBtn.setText("" + dateTime);
+            fromDateString = dateTime;
+            toDateString = dateTime;
         }
 
         fromBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar c=Calendar.getInstance();
-                mYear=c.get(Calendar.YEAR);
-                mMonth=c.get(Calendar.MONTH);
-                DatePickerDialog datePickerDialog=new DatePickerDialog(requireActivity(),
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                fromDateString=year+"-"+(monthOfYear+1)+"-"+dayOfMonth;
-                                fromBtn.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+                                fromDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                fromBtn.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                                 modeOrderData.clear();
-                                orderTakenByFilter="All";
+                                orderTakenByFilter = "All";
                                 txtOrderStatus.setText(orderTakenByFilter);
                                 ViewDateReport(orderTakenByFilter);
+
                             }
-                        },mYear,mMonth,mDay);
-                if(!toDateString.equals("")){
-                    datePickerDialog.getDatePicker().setMaxDate(TimeUtils.getTimeStamp(toDateString,TimeUtils.FORMAT1));
+                        }, mYear, mMonth, mDay);
+                if (!toDateString.equals("")) {
+                    datePickerDialog.getDatePicker().setMaxDate(TimeUtils.getTimeStamp(toDateString, TimeUtils.FORMAT1));
                 }
                 datePickerDialog.show();
             }
         });
-        final Calendar calendar=Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         toBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(fromDateString.equals(""))
-                    Toast.makeText(requireActivity(),"Select date from FromDate",Toast.LENGTH_SHORT).show();
+                if (fromDateString.equals(""))
+                    Toast.makeText(requireActivity(), "Select date from FromDate", Toast.LENGTH_SHORT).show();
                 else {
-                    final Calendar c=Calendar.getInstance();
-                    mYear=c.get(Calendar.YEAR);
-                    mMonth=c.get(Calendar.MONTH);
-                    DatePickerDialog datePickerDialog=new DatePickerDialog(requireActivity(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker View, int year, int monthOfYear, int dayOfMonth) {
-                                toDateString=year+"-"+(monthOfYear+1)+"-"+dayOfMonth;
-                                toBtn.setText(year+"-"+(monthOfYear+1+"-"+dayOfMonth));
-                                modeOrderData.clear();
-                                orderTakenByFilter="All";
-                                txtOrderStatus.setText(orderTakenByFilter);
-                                ViewDateReport(orderTakenByFilter);
-                            }
-                        },mYear,mMonth,mDay);
-                    datePickerDialog.getDatePicker().setMinDate(TimeUtils.getTimeStamp(fromDateString,TimeUtils.FORMAT1));
-                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis()-1000);
+                    final Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
+                            new DatePickerDialog.OnDateSetListener() {
+
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    toDateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                    toBtn.setText(year + "-" + (monthOfYear + 1 + "-" + dayOfMonth));
+                                    modeOrderData.clear();
+                                    orderTakenByFilter = "All";
+                                    txtOrderStatus.setText(orderTakenByFilter);
+                                    ViewDateReport(orderTakenByFilter);
+                                }
+                            }, mYear, mMonth, mDay);
+                    datePickerDialog.getDatePicker().setMinDate(TimeUtils.getTimeStamp(fromDateString, TimeUtils.FORMAT1));
+                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
                     datePickerDialog.show();
                 }
             }
         });
 
-        mReportList=view.findViewById(R.id.report_list);
+        mReportList = view.findViewById(R.id.report_list);
         mReportList.setHasFixedSize(true);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(requireActivity());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
         mReportList.setLayoutManager(layoutManager);
 
-        OrderStatusList=new ArrayList<>();
+        OrderStatusList = new ArrayList<>();
         OrderStatusList.add("All");
 
         updateFilterList();
 
-        customDialog=new CustomListViewDialog(requireActivity(),modeOrderData,11);
+        customDialog = new CustomListViewDialog(requireActivity(), modeOrderData, 11);
         linearOrderMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(customDialog!=null)
+                if (customDialog != null)
                     customDialog.show();
             }
         });
+
+        mReportViewAdapter = new ReportViewAdapter(requireActivity(), filteredList, new DMS.ViewReport() {
+            @Override
+            public void reportCliick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {
+                Intent intent = new Intent(requireActivity(), ViewReportActivity.class);
+                intent.putExtra("ProductID", productId);
+                intent.putExtra("OrderDate", orderDate);
+                intent.putExtra("FromDate", fromBtn.getText().toString());
+                intent.putExtra("ToDate", toBtn.getText().toString());
+                intent.putExtra("OrderValue", OrderValue);
+                intent.putExtra("orderType", orderType);
+                intent.putExtra("editOrder", editOrder);
+                intent.putExtra("Paymentflag", Paymentflag);
+                intent.putExtra("Dispatch_Flag", Dispatch_Flag);
+                intent.putExtra("dispatch_date", dispatch_date);
+                intent.putExtra("payment_type", payment_type);
+                intent.putExtra("payment_option", payment_option);
+                intent.putExtra("check_utr_no", check_utr_no);
+                intent.putExtra("attachment", attachment);
+
+                startActivity(intent);
+            }
+
+            @Override
+            public void reportClick(String productId, String orderDate, String OrderValue, String orderType, String editOrder, int Paymentflag, int Dispatch_Flag, String dispatch_date, String payment_type, String payment_option, String check_utr_no, String attachment) {
+
+            }
+        }, orderTakenByFilter, txtTotalValue, OrderType, viewType);
+        mReportList.setAdapter(mReportViewAdapter);
         return view;
     }
 
-    private void updateFilterList(){
+    private void updateFilterList() {
         modeOrderData.clear();
-        for (int i=0;i<OrderStatusList.size();i++);
-        {
+        for (int i = 0; i < OrderStatusList.size(); i++) {
             String id = String.valueOf(OrderStatusList.get(i));
             String name = OrderStatusList.get(i);
             mCommon_model_spinner = new Common_Model(id, name, "flag");
             modeOrderData.add(mCommon_model_spinner);
         }
+
         try {
-            if(customDialog!=null)
+            if (customDialog!=null)
                 customDialog.dataAdapter.notifyDataSetChanged();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -304,27 +335,27 @@ public class SecondaryNoOrderFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(Constant.isInternetAvailable(requireActivity())){
+        if (Constant.isInternetAvailable(requireActivity())) {
             ViewDateReport(orderTakenByFilter);
-        }else
-            Toast.makeText(requireActivity(),"Please check the Internet Connection",Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(requireActivity(), "Please check the Internet Connection", Toast.LENGTH_SHORT).show();
     }
 
-    private void ViewDateReport(String orderTakenByFilters){
-        if(TimeUtils.getDate(TimeUtils.FORMAT1,fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1,toDateString))<=0){
-            ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+    private void ViewDateReport(String orderTakenByFilter) {
+        if (TimeUtils.getDate(TimeUtils.FORMAT1, fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1, toDateString)) <= 0) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<ReportDataList> responseBodyCall;
-            String axn="";
-            if(viewType==1) {
+            String axn = "";
+            if (viewType == 1) {
                 if (OrderType.equalsIgnoreCase("1")) {
                     axn = "get/ViewReport";
                 } else {
                     axn = "get/secviewreport";
                 }
-            }else
-                axn="get/finreport";
+            } else
+                axn = "get/finreport";
 
-            responseBodyCall=apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
+            responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
             responseBodyCall.enqueue(new Callback<ReportDataList>() {
                 @Override
                 public void onResponse(Call<ReportDataList> call, Response<ReportDataList> response) {
@@ -489,7 +520,6 @@ public class SecondaryNoOrderFragment extends Fragment {
 
                             saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                         } else {
-                            // Constant.showSnackbar(requireActivity(), getView().findViewById(R.id.scrolllayout));
                             Toast.makeText(requireActivity(),"Please give Permission",Toast.LENGTH_SHORT).show();
                         }
 
@@ -549,6 +579,5 @@ public class SecondaryNoOrderFragment extends Fragment {
         totalLayout = null;
         filteredList = null;
         headingLayout = null;
-
     }
 }

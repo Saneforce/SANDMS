@@ -2,11 +2,7 @@ package com.saneforce.dms.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,7 +13,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.saneforce.dms.R;
-import com.saneforce.dms.adapter.ReportViewAdapter;
 import com.saneforce.dms.sqlite.DBController;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
@@ -44,7 +39,7 @@ public class SecondaryReportTab extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Order"));
         tabLayout.addTab(tabLayout.newTab().setText("No Order"));
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         GeoTagTabAdapter adapter = new GeoTagTabAdapter(SecondaryReportTab.this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         dotsIndicator.setViewPager(viewPager);
@@ -81,10 +76,10 @@ public class SecondaryReportTab extends AppCompatActivity {
             switch (position) {
                 case 0:
                     //retailer
-                    return SecondaryNoOrderFragment.newInstance(1);
+                    return SecondaryOrderFragment.newInstance(1);
                 case 1:
                     //distributor
-                    return SecondaryNoOrderFragment.newInstance(2);
+                    return SecondaryOrderFragment.newInstance(2);
                 default:
                     return null;
             }
