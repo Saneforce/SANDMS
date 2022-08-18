@@ -58,6 +58,9 @@ public interface ApiInterface {
     @POST("dms_db_V1.php?")
     Call<ReportDataList> reportValues(@Query("axn") String Axn,@Query("Sf_code") String sFCode, @Query("divisionCode") String divisionCode, @Query("fromdate") String fromdate, @Query("todate") String todate);
 
+    @POST("dms_db_V1.php?")
+    Call<ResponseBody> reportNoOrder(@Query("axn") String Axn,@Query("sfCode") String sFCode, @Query("divisionCode") String divisionCode, @Query("fromdate") String fromdate, @Query("todate") String todate);
+
     /*DateReportView*/
     @POST("dms_db_V1.php?")
     Call<JsonObject> dateReport(@Query("axn") String Axn,@Query("Order_Id") String rsfCode, @Query("Sf_code") String sFCode);

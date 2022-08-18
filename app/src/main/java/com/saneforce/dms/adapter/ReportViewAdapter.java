@@ -42,8 +42,6 @@ public class ReportViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     int viewType  = 1;
     int slno = 1;
 
-    public ReportViewAdapter(SecondaryReportTab context, FragmentManager childFragmentManager, int tabCount) {
-    }
 
     public void setOrderTakenbyFilter(String orderTakenbyFilter) {
         OrderTakenbyFilter = orderTakenbyFilter;

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/scrolllayout"
+<RelativeLayout android:id="@+id/scrolllayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.ReportActivity">
+    tools:context="com.saneforce.dms.activity.ReportActivity">
+
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/ns_order_details"
@@ -23,23 +24,24 @@
             android:visibility="visible"
             android:id="@+id/linearlayout">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                   android:id="@+id/dist_name"
+                    android:id="@+id/dist_name"
                     style="@style/TextStyle"
-                    android:layout_margin="4dp"
+                    android:layout_margin="@dimen/C4dp"
                     android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
                 <TextView
-                   android:id="@+id/tv_erp_code"
+                    android:id="@+id/tv_erp_code"
                     style="@style/TextStyle"
-                    android:layout_margin="4dp"
+                    android:layout_margin="@dimen/C4dp"
                     android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -50,143 +52,145 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="@dimen/C10dp">
 
-                    <TextView
-                        style="@style/TextStyle"
-                        android:layout_gravity="center"
-                        android:text="From :"/>
-
-                    <Button
-                        android:id="@+id/from_picker"
+                    <LinearLayout
+                        android:id="@+id/prm_linear_orders"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/text_bg"/>
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:layout_gravity="center"
+                            android:text="@string/from_date" />
+
+                        <Button
+                            android:id="@+id/from_picker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/C30dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/text_bg" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/prm_linear_reports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            style="@style/TextStyle"
+                            android:layout_gravity="center"
+                            android:text="@string/to_date" />
+
+
+                        <Button
+                            android:id="@+id/to_picker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/C30dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/text_bg" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/prm_linear_orders"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/view_layout" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/headingLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_margin="5dp">
 
                     <TextView
-                       style="@style/TextStyle"
-                        android:layout_gravity="center"
-                        android:text="To :"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Sno"
+                        android:paddingStart="@dimen/C5dp"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeStepGranularity="2sp"
+                        android:textStyle="bold"
+                        tools:targetApi="o" />
 
-                    <Button
-                        android:id="@+id/to_picker"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/text_bg"/>
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeStepGranularity="2sp"
+                        android:autoSizeTextType="uniform"
+                        android:paddingStart="@dimen/C2dp"
+                        android:text="OrderID"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:targetApi="o" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="OrderDate"
+                        android:paddingStart="@dimen/C5dp"
+                        android:textSize="12sp"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeStepGranularity="2sp"
+                        android:textColor="@android:color/black"
+                        tools:targetApi="o"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="OrderType"
+                        android:paddingStart="@dimen/C5dp"
+                        android:textSize="12sp"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeStepGranularity="2sp"
+                        android:textColor="@android:color/black"
+                        tools:targetApi="o"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
+
+                <include layout="@layout/view_layout" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <include layout="@layout/view_layout"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/headingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp">
+                android:id="@+id/recyclerlinear"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="0.5"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/report_list"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sno"
-                    android:paddingStart="5dp"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:textStyle="bold"
-                    tools:targetApi="o"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:text="OrderID"
-                    android:paddingStart="5dp"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:textStyle="bold"
-                    tools:targetApi="o"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:text="OrderDate"
-                    android:paddingStart="5dp"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:textStyle="bold"
-                    tools:targetApi="o"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:text="OrderType"
-                    android:paddingStart="5dp"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeStepGranularity="2sp"
-                    android:textStyle="bold"
-                    tools:targetApi="o"/>
+                    tools:listitem="@layout/row_report_list" />
 
             </LinearLayout>
-
-            <include layout="@layout/view_layout"/>
-
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/recyclerlinear"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/report_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/row_report_list"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:id="@+id/bottom_linear"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/C5dp"
-                android:layout_height="match_parent">
-
-            </LinearLayout>
-
-        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </RelativeLayout>
+
+

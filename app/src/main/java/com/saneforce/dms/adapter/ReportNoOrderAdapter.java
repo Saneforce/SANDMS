@@ -33,9 +33,8 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     int viewType=1;
     int slno=1;
+    private List<ReportModel> data;
 
-    public ReportNoOrderAdapter(SecondaryReportTab context, FragmentManager childFragmentManager,int tabCount){
-    }
 
     public void setOrderTakenbyFilter(String orderTakenbyFilter){
         OrderTakenbyFilter=orderTakenbyFilter;
@@ -50,7 +49,7 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.viewType=viewType;
     }
 
-    public ReportNoOrderAdapter(Context context,List<ReportModel>mDate,DMS.ViewReport mViewReport,String orderTakenbyFilter,TextView textTotalValue,String reportType,int viewType){
+    public ReportNoOrderAdapter(Context context, List<ReportModel> mDate, String orderTakenbyFilter, String reportType, int viewType){
         this.context=context;
         this.mDate=mDate;
         this.mViewReport=mViewReport;
@@ -173,6 +172,14 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemCount() {
         return mDate.size();
+    }
+
+    public List<ReportModel> getData() {
+        return data;
+    }
+
+    public void setData(List<ReportModel> data) {
+        this.data = data;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

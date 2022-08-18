@@ -79,9 +79,13 @@ public class SecondaryReportTab extends AppCompatActivity {
                     return SecondaryOrderFragment.newInstance(1);
                 case 1:
                     //distributor
-                    return SecondaryOrderFragment.newInstance(2);
+                    return SecondaryNoOrderFragment.newInstance(2);
                 default:
                     return null;
+
+
+
+
             }
         }
         // this counts total number of tabs

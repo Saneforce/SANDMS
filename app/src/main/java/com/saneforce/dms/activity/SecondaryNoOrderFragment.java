@@ -44,11 +44,9 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.saneforce.dms.R;
-import com.saneforce.dms.adapter.ReportViewAdapter;
+import com.saneforce.dms.adapter.ReportNoOrderAdapter;
 import com.saneforce.dms.listener.ApiInterface;
-import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.model.OrderGroup;
-import com.saneforce.dms.model.ReportDataList;
 import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
@@ -66,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,7 +75,7 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class SecondaryNoOrderFragment extends Fragment {
-    TextView toolHeader,txtTotalValue,txtName;
+    TextView toolHeader,txtName;
     ImageView imgBack;
     Button fromBtn,toBtn;
 
@@ -84,14 +83,13 @@ public class SecondaryNoOrderFragment extends Fragment {
 
     String fromDateString,dateTime,toDateString,FReport="",TReport="",OrderType="1";
     private int mYear,mMonth,mDay;
-    ReportViewAdapter mReportViewAdapter;
+    ReportNoOrderAdapter mReportViewAdapter;
     RecyclerView mReportList;
     Shared_Common_Pref shared_common_pref;
     Integer Count=0;
     List<Common_Model>modeOrderData=new ArrayList<>();
     Common_Model mCommon_model_spinner;
     CustomListViewDialog customDialog;
-    LinearLayout linearOrderMode;
     TextView txtOrderStatus;
     String orderTakenByFilter="All";
     ArrayList<String> OrderStatusList;
@@ -105,7 +103,6 @@ public class SecondaryNoOrderFragment extends Fragment {
     private static final String GEOTAGGING_TYPE="geotaggingType";
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -172,7 +169,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         OrderType=shared_common_pref.getvalue("OrderType");
         Log.v("OrderType",OrderType);
 
-        txtTotalValue=view.findViewById(R.id.total_value);
         txtOrderStatus=view.findViewById(R.id.txt_orderstatus);
         txtName=view.findViewById(R.id.dist_name);
         txtName.setText("Name:" + ""+ shared_common_pref.getvalue(Shared_Common_Pref.name)+"~"+shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
@@ -187,8 +183,6 @@ public class SecondaryNoOrderFragment extends Fragment {
 
         fromBtn=view.findViewById(R.id.from_picker);
         toBtn=view.findViewById(R.id.to_picker);
-        linearOrderMode=view.findViewById(R.id.lin_order);
-        txtTotalValue.setText("0");
         DateFormat df=new SimpleDateFormat("yyyy-MM-dd");
         Calendar calobj=Calendar.getInstance();
         dateTime=df.format(calobj.getTime());
@@ -244,6 +238,7 @@ public class SecondaryNoOrderFragment extends Fragment {
                     final Calendar c=Calendar.getInstance();
                     mYear=c.get(Calendar.YEAR);
                     mMonth=c.get(Calendar.MONTH);
+                    mDay=c.get(Calendar.DATE);
                     DatePickerDialog datePickerDialog=new DatePickerDialog(requireActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -271,16 +266,12 @@ public class SecondaryNoOrderFragment extends Fragment {
         OrderStatusList=new ArrayList<>();
         OrderStatusList.add("All");
 
-        updateFilterList();
 
         customDialog=new CustomListViewDialog(requireActivity(),modeOrderData,11);
-        linearOrderMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(customDialog!=null)
-                    customDialog.show();
-            }
-        });
+
+        mReportViewAdapter = new ReportNoOrderAdapter(requireActivity(), filteredList, orderTakenByFilter, OrderType, viewType);
+        mReportList.setAdapter(mReportViewAdapter);
+
         return view;
     }
 
@@ -313,27 +304,29 @@ public class SecondaryNoOrderFragment extends Fragment {
     private void ViewDateReport(String orderTakenByFilters){
         if(TimeUtils.getDate(TimeUtils.FORMAT1,fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1,toDateString))<=0){
             ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-            Call<ReportDataList> responseBodyCall;
-            String axn="";
-            if(viewType==1) {
-                if (OrderType.equalsIgnoreCase("1")) {
-                    axn = "get/ViewReport";
-                } else {
-                    axn = "get/secviewreport";
-                }
-            }else
-                axn="get/finreport";
+            Call<ResponseBody> responseBodyCall;
+            String axn= "get/retailerVisits";
 
-            responseBodyCall=apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
-            responseBodyCall.enqueue(new Callback<ReportDataList>() {
+
+            responseBodyCall=apiInterface.reportNoOrder(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
+            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+
                 @Override
-                public void onResponse(Call<ReportDataList> call, Response<ReportDataList> response) {
-                    ReportDataList mReportActivities = response.body();
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        String res = response.body().string();
+                        Log.d("SecNoOrderFragment", "onResponse: "+ res);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    ResponseBody mReportActivities = response.body();
                     List<ReportModel> mDReportModels = new ArrayList<>();
-                    if (mReportActivities != null) {
+                    /*if (mReportActivities != null) {
                         if (mReportActivities.getData() != null)
                             mDReportModels = mReportActivities.getData();
-                    }
+
+                    }*/
                     float intSum = 0f;
 
                     try {
@@ -368,20 +361,19 @@ public class SecondaryNoOrderFragment extends Fragment {
                                         OrderStatusList.add(orderStatus);
                                 }
                             }
-                            txtTotalValue.setText("Rs. " + Constant.roundTwoDecimals(intSum));
                         }
-                        updateFilterList();
+
+                         updateFilterList();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                     mReportViewAdapter.setOrderTakenbyFilter(orderTakenByFilter);
-                    mReportViewAdapter.setTextTotalValue(txtTotalValue);
                     mReportViewAdapter.notifyDataSetChanged();
                 }
 
                 @Override
-                public void onFailure(Call<ReportDataList> call, Throwable t) {
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                     t.printStackTrace();
                     Toast.makeText(requireActivity(), "Something went wrong,please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -417,8 +409,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         v.draw(c);
         return bmp;
     }
-
-
 
     String dirpath = "";
     String fileName = "";
@@ -489,7 +479,6 @@ public class SecondaryNoOrderFragment extends Fragment {
 
                             saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                         } else {
-                            // Constant.showSnackbar(requireActivity(), getView().findViewById(R.id.scrolllayout));
                             Toast.makeText(requireActivity(),"Please give Permission",Toast.LENGTH_SHORT).show();
                         }
 
@@ -524,7 +513,6 @@ public class SecondaryNoOrderFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         toolHeader = null;
-        txtTotalValue = null;
         txtName = null;
         imgBack = null;
         fromBtn = null;
@@ -541,7 +529,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         modeOrderData = null;
         mCommon_model_spinner = null;
         customDialog = null;
-        linearOrderMode = null;
         txtOrderStatus = null;
         orderTakenByFilter = null;
         OrderStatusList = null;
