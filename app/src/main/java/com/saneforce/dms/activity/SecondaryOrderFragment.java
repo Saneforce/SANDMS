@@ -1,5 +1,6 @@
 package com.saneforce.dms.activity;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static io.realm.Realm.getApplicationContext;
 
 import android.Manifest;
@@ -74,7 +75,6 @@ import retrofit2.Response;
  */
 public class SecondaryOrderFragment extends Fragment {
     TextView toolHeader, txtTotalValue, txtName;
-    ImageView imgBack;
     Button fromBtn, toBtn;
 
     int geoTaggingType = 1;
@@ -87,7 +87,7 @@ public class SecondaryOrderFragment extends Fragment {
     Integer Count = 0;
     List<Common_Model> modeOrderData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
-    CustomListViewDialog customDialog;
+    CustomListViewDialog customDialog = new CustomListViewDialog(requireActivity(), modeOrderData, 11);
     LinearLayout linearOrderMode;
     TextView txtOrderStatus;
     String orderTakenByFilter = "All";
@@ -159,7 +159,7 @@ public class SecondaryOrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_secondary_no_order, container, false);
+        View view = inflater.inflate(R.layout.fragment_secondary_no_order, container, false);
 
         linearLayout = view.findViewById(R.id.linearlayout);
         headingLayout = view.findViewById(R.id.headingLayout);
@@ -325,7 +325,7 @@ public class SecondaryOrderFragment extends Fragment {
         }
 
         try {
-            if (customDialog!=null)
+            if (customDialog != null)
                 customDialog.dataAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
@@ -450,7 +450,6 @@ public class SecondaryOrderFragment extends Fragment {
     }
 
 
-
     String dirpath = "";
     String fileName = "";
 
@@ -520,7 +519,7 @@ public class SecondaryOrderFragment extends Fragment {
 
                             saveBitmap(createBitmap3(linearLayout, linearLayout.getWidth(), linearLayout.getHeight()));
                         } else {
-                            Toast.makeText(requireActivity(),"Please give Permission",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), "Please give Permission", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -556,7 +555,6 @@ public class SecondaryOrderFragment extends Fragment {
         toolHeader = null;
         txtTotalValue = null;
         txtName = null;
-        imgBack = null;
         fromBtn = null;
         toBtn = null;
         fromDateString = null;

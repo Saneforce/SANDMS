@@ -55,6 +55,10 @@ import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -90,7 +94,7 @@ public class SecondaryNoOrderFragment extends Fragment {
     List<Common_Model>modeOrderData=new ArrayList<>();
     Common_Model mCommon_model_spinner;
     CustomListViewDialog customDialog;
-    TextView txtOrderStatus;
+//    TextView txtOrderStatus;
     String orderTakenByFilter="All";
     ArrayList<String> OrderStatusList;
     LinearLayout linearLayout;
@@ -169,7 +173,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         OrderType=shared_common_pref.getvalue("OrderType");
         Log.v("OrderType",OrderType);
 
-        txtOrderStatus=view.findViewById(R.id.txt_orderstatus);
+//        txtOrderStatus=view.findViewById(R.id.txt_orderstatus);
         txtName=view.findViewById(R.id.dist_name);
         txtName.setText("Name:" + ""+ shared_common_pref.getvalue(Shared_Common_Pref.name)+"~"+shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
 
@@ -218,7 +222,7 @@ public class SecondaryNoOrderFragment extends Fragment {
                                 fromBtn.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
                                 modeOrderData.clear();
                                 orderTakenByFilter="All";
-                                txtOrderStatus.setText(orderTakenByFilter);
+//                                txtOrderStatus.setText(orderTakenByFilter);
                                 ViewDateReport(orderTakenByFilter);
                             }
                         },mYear,mMonth,mDay);
@@ -247,7 +251,7 @@ public class SecondaryNoOrderFragment extends Fragment {
                                 toBtn.setText(year+"-"+(monthOfYear+1+"-"+dayOfMonth));
                                 modeOrderData.clear();
                                 orderTakenByFilter="All";
-                                txtOrderStatus.setText(orderTakenByFilter);
+//                                txtOrderStatus.setText(orderTakenByFilter);
                                 ViewDateReport(orderTakenByFilter);
                             }
                         },mYear,mMonth,mDay);
@@ -259,7 +263,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         });
 
         mReportList=view.findViewById(R.id.report_list);
-        mReportList.setHasFixedSize(true);
+//        mReportList.setHasFixedSize(true);
         LinearLayoutManager layoutManager=new LinearLayoutManager(requireActivity());
         mReportList.setLayoutManager(layoutManager);
 
@@ -313,21 +317,42 @@ public class SecondaryNoOrderFragment extends Fragment {
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    filteredList.clear();
                     try {
                         String res = response.body().string();
                         Log.d("SecNoOrderFragment", "onResponse: "+ res);
+                        JSONObject jsonObject = new JSONObject(res);
+                        JSONArray jsonArray = jsonObject.getJSONArray("Data");
+                        for(int i = 0; i < jsonArray.length(); i++){
+                            ReportModel reportModel = new ReportModel();
+                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                            if(jsonObject1.has("Trans_SlNo"))
+                                reportModel.setOrderNo(jsonObject1.getString("Trans_SlNo"));
+                            if(jsonObject1.has("Trans_Detail_Info_Type")){
+                                if(jsonObject1.getString("Trans_Detail_Info_Type").equals("1"))
+                                    reportModel.setOrder_type("Field Order");
+                                else
+                                    reportModel.setOrder_type("Phone Order");
+                            }
 
-                    } catch (IOException e) {
+                            if(jsonObject1.has("ModTime")){
+                                JSONObject jsonObject2 = jsonObject1.getJSONObject("ModTime");
+                                if(jsonObject2.has("date"))
+                                reportModel.setOrderDate(jsonObject2.getString("date"));
+                            }
+                            filteredList.add(reportModel);
+                        }
+
+                    } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
-                    ResponseBody mReportActivities = response.body();
-                    List<ReportModel> mDReportModels = new ArrayList<>();
+
                     /*if (mReportActivities != null) {
                         if (mReportActivities.getData() != null)
                             mDReportModels = mReportActivities.getData();
 
                     }*/
-                    float intSum = 0f;
+                    /*float intSum = 0f;
 
                     try {
                         modeOrderData.clear();
@@ -336,8 +361,8 @@ public class SecondaryNoOrderFragment extends Fragment {
                         OrderStatusList.clear();
                         OrderStatusList.add("All");
 
-                        if (mDReportModels != null) {
-                            for (ReportModel r : mDReportModels) {
+                        if (filteredList != null) {
+                            for (ReportModel r : filteredList) {
                                 if (orderTakenByFilter.equalsIgnoreCase("All") || r.getOrderStatus().equalsIgnoreCase(orderTakenByFilter))
                                     if (viewType == 2 && (r.getSubOrderGroup() == null || r.getSubOrderGroup().size() == 0)) {
                                         List<OrderGroup> orderGroupList = new ArrayList<>();
@@ -363,12 +388,13 @@ public class SecondaryNoOrderFragment extends Fragment {
                             }
                         }
 
-                         updateFilterList();
+//                         updateFilterList();
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     mReportViewAdapter.setOrderTakenbyFilter(orderTakenByFilter);
+//                    mReportViewAdapter.setData(filteredList);
                     mReportViewAdapter.notifyDataSetChanged();
                 }
 
@@ -386,7 +412,7 @@ public class SecondaryNoOrderFragment extends Fragment {
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
         customDialog.dismiss();
         if (type == 11) {
-            txtOrderStatus.setText(myDataset.get(position).getName());
+//            txtOrderStatus.setText(myDataset.get(position).getName());
             orderTakenByFilter = myDataset.get(position).getName();
             Log.e("order filter", orderTakenByFilter);
 
@@ -529,7 +555,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         modeOrderData = null;
         mCommon_model_spinner = null;
         customDialog = null;
-        txtOrderStatus = null;
+//        txtOrderStatus = null;
         orderTakenByFilter = null;
         OrderStatusList = null;
         linearLayout = null;

@@ -6,8 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.saneforce.dms.activity.ReportActivity">
 
-
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/ns_order_details"
         android:visibility="visible"
@@ -36,6 +34,7 @@
                     android:layout_margin="@dimen/C4dp"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_erp_code"
                     style="@style/TextStyle"

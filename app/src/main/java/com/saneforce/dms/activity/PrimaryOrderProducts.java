@@ -195,7 +195,7 @@ public class PrimaryOrderProducts extends AppCompatActivity implements PrimaryPr
             @Override
             public void onClick(View v) {
 
-                String STR = grandTotal.getText().toString();
+                String STR = item_count.getText().toString();
                 Log.v("STRVALUE", STR);
                 if (STR.equals("0") || STR.equals("0.0")) {
                     Toast.makeText(PrimaryOrderProducts.this, "Please select quantity", Toast.LENGTH_SHORT).show();

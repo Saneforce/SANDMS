@@ -9,11 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saneforce.dms.R;
-import com.saneforce.dms.activity.SecondaryReportTab;
 import com.saneforce.dms.listener.DMS;
 import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.utils.Shared_Common_Pref;
@@ -25,7 +23,7 @@ import java.util.List;
 public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<ReportModel> mDate;
-    DMS.ViewReport mViewReport;
+//    DMS.ViewReport mViewReport;
     String OrderTakenbyFilter;
     TextView textTotalValue;
     String reportType;
@@ -52,9 +50,7 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
     public ReportNoOrderAdapter(Context context, List<ReportModel> mDate, String orderTakenbyFilter, String reportType, int viewType){
         this.context=context;
         this.mDate=mDate;
-        this.mViewReport=mViewReport;
         this.OrderTakenbyFilter=orderTakenbyFilter;
-        this.textTotalValue=textTotalValue;
         this.reportType=reportType;
         this.viewType=viewType;
         shared_common_pref=new Shared_Common_Pref(context);
@@ -67,14 +63,19 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater layoutInflater=LayoutInflater.from(parent.getContext());
         View listItem;
             listItem=layoutInflater.inflate(R.layout.row_report_list,null,false);
-            return new ReportViewAdapter.MyViewHolderFinance(listItem);
+            return new ReportNoOrderAdapter.MyViewHolder(listItem);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder1, int position) {
-        if(holder1 instanceof ReportViewAdapter.MyViewHolder){
-            ReportViewAdapter.MyViewHolder holder=(ReportViewAdapter.MyViewHolder) holder1;
+        if(holder1 instanceof ReportNoOrderAdapter.MyViewHolder){
+
+            ReportNoOrderAdapter.MyViewHolder holder=(ReportNoOrderAdapter.MyViewHolder) holder1;
+            holder.txt_status.setVisibility(View.GONE);
+            holder.ib_forward.setVisibility(View.GONE);
+            holder.txt_total.setText(String.valueOf(mDate.get(position).getOrder_type()));
         try {
+
             double totalValue = 0.0;
             String reportType = mDate.get(position).getReportType();
             String orderType = "";
@@ -96,7 +97,8 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                 holder.txtsNo.setText(String.valueOf(this.slno++));
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
+
+//                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
 
                 String orderTakenBy=mDate.get(position).getOrderTakenBy();
 
@@ -111,13 +113,13 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
                 float total=Float.parseFloat(mDate.get(position).getOrderValue());
                 BigDecimal bd=new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
                 double totalroundoff=bd.doubleValue();
-                holder.txtValue.setText(String.valueOf(totalroundoff));
+//                holder.txtValue.setText(String.valueOf(totalroundoff));
             }
             else if(OrderTakenbyFilter.equals("All")){
                 holder.txtsNo.setText(String.valueOf(this.slno++));
                 holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
                 holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
+//                holder.txtOrderStatus.setText(mDate.get(position).getOrderStatus());
 
                 String orderTakenBy=mDate.get(position).getOrderTakenBy();
 
@@ -130,18 +132,19 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 BigDecimal bd=new BigDecimal(total).setScale(2,RoundingMode.HALF_UP);
                 float totalroundoff=(float) bd.doubleValue();
-                holder.txtValue.setText(String.valueOf(totalroundoff));
+//                holder.txtValue.setText(String.valueOf(totalroundoff));
             }
             else {
                 holder.imageButton.setVisibility(View.GONE);
                 holder.linearLayout.setVisibility(View.GONE);
                 holder.linearLayoutTakenby.setVisibility(View.GONE);
+
             }
         }catch (NullPointerException e){
             holder.txtsNo.setText(String.valueOf(this.slno++));
             holder.txtOrderDate.setText(mDate.get(position).getOrderDate());
             holder.txtOrderID.setText(mDate.get(position).getOrderNo());
-            holder.txtOrderType.setText(mDate.get(position).getOrderStatus());
+//            holder.txtOrderType.setText(mDate.get(position).getOrder_type());
 
             String orderTakenBy = mDate.get(position).getOrderTakenBy();
 
@@ -150,16 +153,16 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             holder.txtOrderTakenBy.setText("Taken By: " + orderTakenBy);
 
-            float total = Float.parseFloat(mDate.get(position).getOrderValue());
+//            float total = Float.parseFloat(mDate.get(position).getOrderValue());
+//
+//            BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+//            double totalroundoff= bd.doubleValue();
 
-            BigDecimal bd = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
-            double totalroundoff= bd.doubleValue();
 
-
-            holder.txtValue.setText(""+ totalroundoff);
+//            holder.txtValue.setText(""+ totalroundoff);
 
             String reportType=mDate.get(position).getReportType();
-            if(reportType.equals("Secondary")) {
+            if(reportType!=null && reportType.equals("Secondary")) {
                 holder.txtRetailerName.setVisibility(View.VISIBLE);
                 holder.txtRetailerName.setText("Retailer Name: " + mDate.get(position).getRetailerName());
             }
@@ -184,9 +187,10 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         //implements View.OnClickListener
-        TextView txtsNo, txtOrderDate, txtOrderID, txtOrderTakenBy, txtRetailerName, tv_order_type;
+        TextView txtsNo, txtOrderDate, txtOrderID, txtOrderTakenBy, txtRetailerName, tv_order_type, txt_total;
         LinearLayout linearLayout, linearLayoutTakenby;
-        ImageButton imageButton;
+        ImageButton imageButton, ib_forward;
+        TextView txt_status;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -200,6 +204,10 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
             txtRetailerName = itemView.findViewById(R.id.txt_reatiler);
             tv_order_type = itemView.findViewById(R.id.tv_order_type);
             imageButton = itemView.findViewById(R.id.ib_forward);
+            txt_status = itemView.findViewById(R.id.txt_status);
+            txt_total = itemView.findViewById(R.id.txt_total);
+            ib_forward = itemView.findViewById(R.id.ib_forward);
+
         }
     }
 }

@@ -352,6 +352,7 @@ public class SecondRetailerActivity extends AppCompatActivity implements DMS.Mas
 
         } else if (type == 10) {
             //if(Constant.isInternetAvailable(this)){
+            Log.d("gh","hhi"+myDataset.get(position).getName());
                 if(customDialog10!=null && customDialog10.isShowing())
                     customDialog10.dismiss();
 

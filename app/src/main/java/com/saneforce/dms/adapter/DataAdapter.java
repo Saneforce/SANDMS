@@ -31,15 +31,18 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
     int enableEdit = 0;
 
-    public DataAdapter(List<Common_Model> myDataset, int type) {
+    public DataAdapter(List<Common_Model> myDataset, Context context, int type) {
         contactList = myDataset;
         typeName = type;
+        updateUi = (DMS.Master_Interface) context;
         contactListFiltered = myDataset;
+        context = this.context;
 
     }
-    public DataAdapter(List<Common_Model> myDataset,Context context){
-        contactList=myDataset;
-        this.context=context;
+
+    public DataAdapter(List<Common_Model> myDataset, Context context) {
+        contactList = myDataset;
+        this.context = context;
         contactListFiltered = myDataset;
         enableEdit = 1;
         notifyDataSetChanged();
@@ -58,23 +61,21 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
         Common_Model contact = contactListFiltered.get(i);
         fruitViewHolder.mTextName.setText(contact.getName());
 
-        if(contact.getAddress()!=null && !contact.getAddress().equals("")){
+        if (contact.getAddress() != null && !contact.getAddress().equals("")) {
             fruitViewHolder.tv_address.setText(contact.getAddress());
             fruitViewHolder.tv_address.setVisibility(View.VISIBLE);
-        }
-        else
+        } else
             fruitViewHolder.tv_address.setVisibility(View.GONE);
 
-        if(contact.getFlag()!=null && !contact.getFlag().equals("") && !contact.getFlag().equalsIgnoreCase("flag")){
+        if (contact.getFlag() != null && !contact.getFlag().equals("") && !contact.getFlag().equalsIgnoreCase("flag")) {
             fruitViewHolder.tv_scheme.setText(contact.getFlag());
             fruitViewHolder.tv_scheme.setVisibility(View.VISIBLE);
 
-        }
-        else {
+        } else {
             fruitViewHolder.tv_scheme.setVisibility(View.GONE);
 
         }
-        if(enableEdit == 1){
+        if (enableEdit == 1) {
             Log.d("dataadapter", "onBindViewHolder jayavardhini 1");
             fruitViewHolder.ib_edit.setVisibility(View.VISIBLE);
             fruitViewHolder.ib_edit.setOnClickListener(new View.OnClickListener() {
@@ -88,14 +89,14 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
                     context.startActivity(intent);
                 }
             });
-        }else {
+        } else {
             fruitViewHolder.ib_edit.setVisibility(View.GONE);
         }
     }
 
     @Override
     public int getItemCount() {
-       return contactListFiltered.size();
+        return contactListFiltered.size();
     }
 
     @Override
@@ -134,7 +135,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
     }
 
     public class FruitViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTextName, mTextPhone,mTextAddress, tv_address, tv_scheme;
+        public TextView mTextName, mTextPhone, mTextAddress, tv_address, tv_scheme;
         ImageButton ib_edit;
 
         public FruitViewHolder(View v) {
@@ -144,13 +145,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
             mTextAddress = v.findViewById(R.id.txt_address);
             tv_address = v.findViewById(R.id.tv_address);
             tv_scheme = v.findViewById(R.id.tv_scheme);
-            ib_edit=v.findViewById(R.id.ib_edit);
+            ib_edit = v.findViewById(R.id.ib_edit);
             v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if(enableEdit==0 && updateUi!=null){
+            if (enableEdit == 0 && updateUi != null) {
                 updateUi.OnclickMasterType(contactListFiltered, this.getAdapterPosition(), typeName);
             }
         }
