@@ -571,6 +571,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
 
     String dirpath = "";
     String fileName = "";
+
     private void saveBitmap(Bitmap bitmap) {
 
         fileName  = String.valueOf(System.currentTimeMillis());
@@ -694,7 +695,7 @@ public class ReportActivity extends AppCompatActivity implements DMS.Master_Inte
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         toolHeader = null;
         txtTotalValue = null;

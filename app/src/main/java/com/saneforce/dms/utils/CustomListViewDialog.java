@@ -57,8 +57,12 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.dataAdapter = new DataAdapter(mDataset,context,type);
 
     }
+    public void setCallbackListener(DMS.Master_Interface master_interface){
+        dataAdapter.setCallbackListener(master_interface);
+    }
 
-    public CustomListViewDialog(Context applicationContext, List<Common_Model> productCodeOffileData, int i) {
+
+    public CustomListViewDialog(Context applicationContext, List<Common_Model> productCodeOffileData, int i, int test) {
         super(applicationContext);
 
         this. context= applicationContext;
@@ -67,7 +71,7 @@ public class CustomListViewDialog extends Dialog implements View.OnClickListener
         this.mDataset =productCodeOffileData;
 
 
-        this.dataAdapter = new DataAdapter(mDataset,context,type);
+        this.dataAdapter = new DataAdapter(mDataset,context,type, test);
     }
     public CustomListViewDialog(Context aa, List<Common_Model> wk, int type, TextView productdata) {
         super(aa);

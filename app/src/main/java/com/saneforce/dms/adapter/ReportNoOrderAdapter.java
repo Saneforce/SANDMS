@@ -74,9 +74,10 @@ public class ReportNoOrderAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.txt_status.setVisibility(View.GONE);
             holder.ib_forward.setVisibility(View.GONE);
             holder.txt_total.setText(String.valueOf(mDate.get(position).getOrder_type()));
+            holder.txtOrderTakenBy.setText(String.valueOf(mDate.get(position).getOrderTakenBy()));
         try {
 
-            double totalValue = 0.0;
+//            double totalValue = 0.0;
             String reportType = mDate.get(position).getReportType();
             String orderType = "";
             if (mDate.get(position).getOrder_type() != null) {

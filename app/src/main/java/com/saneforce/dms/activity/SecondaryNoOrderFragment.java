@@ -46,12 +46,10 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.saneforce.dms.R;
 import com.saneforce.dms.adapter.ReportNoOrderAdapter;
 import com.saneforce.dms.listener.ApiInterface;
-import com.saneforce.dms.model.OrderGroup;
 import com.saneforce.dms.model.ReportModel;
 import com.saneforce.dms.utils.ApiClient;
 import com.saneforce.dms.utils.Common_Model;
 import com.saneforce.dms.utils.Constant;
-import com.saneforce.dms.utils.CustomListViewDialog;
 import com.saneforce.dms.utils.Shared_Common_Pref;
 import com.saneforce.dms.utils.TimeUtils;
 
@@ -78,7 +76,7 @@ import retrofit2.Response;
  * Use the {@link SecondaryNoOrderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondaryNoOrderFragment extends Fragment {
+public class SecondaryNoOrderFragment extends Fragment{
     TextView toolHeader,txtName;
     ImageView imgBack;
     Button fromBtn,toBtn;
@@ -93,7 +91,7 @@ public class SecondaryNoOrderFragment extends Fragment {
     Integer Count=0;
     List<Common_Model>modeOrderData=new ArrayList<>();
     Common_Model mCommon_model_spinner;
-    CustomListViewDialog customDialog;
+//    CustomListViewDialog customDialog;
 //    TextView txtOrderStatus;
     String orderTakenByFilter="All";
     ArrayList<String> OrderStatusList;
@@ -271,7 +269,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         OrderStatusList.add("All");
 
 
-        customDialog=new CustomListViewDialog(requireActivity(),modeOrderData,11);
+//        customDialog=new CustomListViewDialog(requireActivity(),modeOrderData,11);
 
         mReportViewAdapter = new ReportNoOrderAdapter(requireActivity(), filteredList, orderTakenByFilter, OrderType, viewType);
         mReportList.setAdapter(mReportViewAdapter);
@@ -288,12 +286,12 @@ public class SecondaryNoOrderFragment extends Fragment {
             mCommon_model_spinner = new Common_Model(id, name, "flag");
             modeOrderData.add(mCommon_model_spinner);
         }
-        try {
-            if(customDialog!=null)
-                customDialog.dataAdapter.notifyDataSetChanged();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+//            if(customDialog!=null)
+//                customDialog.dataAdapter.notifyDataSetChanged();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -339,6 +337,9 @@ public class SecondaryNoOrderFragment extends Fragment {
                                 JSONObject jsonObject2 = jsonObject1.getJSONObject("ModTime");
                                 if(jsonObject2.has("date"))
                                 reportModel.setOrderDate(jsonObject2.getString("date"));
+                            }
+                            if(jsonObject1.has("Trans_Detail_Name")){
+                                reportModel.setOrderTakenBy(jsonObject1.getString("Trans_Detail_Name"));
                             }
                             filteredList.add(reportModel);
                         }
@@ -409,18 +410,6 @@ public class SecondaryNoOrderFragment extends Fragment {
         }
     }
 
-    public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
-        customDialog.dismiss();
-        if (type == 11) {
-//            txtOrderStatus.setText(myDataset.get(position).getName());
-            orderTakenByFilter = myDataset.get(position).getName();
-            Log.e("order filter", orderTakenByFilter);
-
-            ViewDateReport(orderTakenByFilter);
-//            mArrayList.clear();
-
-        }
-    }
 
     public Bitmap createBitmap3(View v, int width, int height) {
         // The measurement makes the view specified size
@@ -554,7 +543,7 @@ public class SecondaryNoOrderFragment extends Fragment {
         shared_common_pref = null;
         modeOrderData = null;
         mCommon_model_spinner = null;
-        customDialog = null;
+//        customDialog = null;
 //        txtOrderStatus = null;
         orderTakenByFilter = null;
         OrderStatusList = null;

@@ -205,7 +205,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(adapter.getData().size() >0 && Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
+                        if(adapter.getData().size() >0 || Double.parseDouble(viewTotal.getText().toString().replaceAll("[a-b]", ""))>0){
                             if(orderType == 1){
                                 btnSubmt.setEnabled(false);
                                 SavePrimaryProduct(adapter.getData());

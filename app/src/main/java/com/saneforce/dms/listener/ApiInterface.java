@@ -26,11 +26,12 @@ public interface ApiInterface {
     @GET("dms_db_V1.php?axn=get/StockistGLogin")
     Call<JsonObject> Glogin(@Query("Email") String email);
 
+
     @GET("dms_db_V1.php?axn=get/Templates")
     Call<JsonObject> getTemplates(@Query("SfCode") String sfcode);
 
     /*UserName and Password*/
-    @GET("dms_db_V1.php?axn=get/GoogleUserLogin")
+    @GET("Dms_v1.php?axn=get/GoogleUserLogin")
     Call<JsonObject> userLogin(@Query("Username") String sfcode, @Query("Password") String pass);
 
     /*SUbcategory*/

@@ -40,6 +40,17 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.FruitViewHolde
 
     }
 
+    public DataAdapter(List<Common_Model> myDataset, Context context, int type, int withoutCallback) {
+        contactList = myDataset;
+        typeName = type;
+        contactListFiltered = myDataset;
+        context = this.context;
+
+    }
+    public void setCallbackListener(DMS.Master_Interface master_interface){
+        this.updateUi = master_interface;
+    }
+
     public DataAdapter(List<Common_Model> myDataset, Context context) {
         contactList = myDataset;
         this.context = context;

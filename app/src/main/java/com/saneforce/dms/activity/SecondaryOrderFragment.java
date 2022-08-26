@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -80,14 +81,14 @@ public class SecondaryOrderFragment extends Fragment {
     int geoTaggingType = 1;
 
     String fromDateString, dateTime, toDateString, FReport = "", TReport = "", OrderType = "1";
-    private int mYear, mMonth, mDay;
+    private int mYear, mMonth, mDay,mHour,mMinute;
     ReportViewAdapter mReportViewAdapter;
     RecyclerView mReportList;
     Shared_Common_Pref shared_common_pref;
     Integer Count = 0;
     List<Common_Model> modeOrderData = new ArrayList<>();
     Common_Model mCommon_model_spinner;
-    CustomListViewDialog customDialog = new CustomListViewDialog(requireActivity(), modeOrderData, 11);
+    CustomListViewDialog customDialog;
     LinearLayout linearOrderMode;
     TextView txtOrderStatus;
     String orderTakenByFilter = "All";
@@ -95,6 +96,8 @@ public class SecondaryOrderFragment extends Fragment {
     LinearLayout linearLayout;
     LinearLayout totalLayout;
     LinearLayout headingLayout;
+
+
 
     List<ReportModel> filteredList = new ArrayList<>();
     int viewType = 1;
@@ -174,7 +177,6 @@ public class SecondaryOrderFragment extends Fragment {
         txtOrderStatus = view.findViewById(R.id.txt_orderstatus);
         txtName = view.findViewById(R.id.dist_name);
         txtName.setText("Name: " + "" + shared_common_pref.getvalue(Shared_Common_Pref.name) + " ~ " + shared_common_pref.getvalue(Shared_Common_Pref.Sf_UserName));
-
         TextView tv_erp_code = view.findViewById(R.id.tv_erp_code);
         if (!shared_common_pref.getvalue1(Shared_Common_Pref.USER_ERP_CODE).equals("")) {
             tv_erp_code.setVisibility(View.VISIBLE);
@@ -275,7 +277,21 @@ public class SecondaryOrderFragment extends Fragment {
 
         updateFilterList();
 
-        customDialog = new CustomListViewDialog(requireActivity(), modeOrderData, 11);
+        customDialog = new CustomListViewDialog(requireActivity(), modeOrderData, 11, 0);
+        customDialog.setCallbackListener(new DMS.Master_Interface() {
+            @Override
+            public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
+                customDialog.dismiss();
+                if (type == 11) {
+                    txtOrderStatus.setText(myDataset.get(position).getName());
+                    orderTakenByFilter = myDataset.get(position).getName();
+                    Log.e("order filter", orderTakenByFilter);
+
+                    ViewDateReport(orderTakenByFilter);
+
+                }
+            }
+        });
         linearOrderMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -337,22 +353,25 @@ public class SecondaryOrderFragment extends Fragment {
         super.onResume();
         if (Constant.isInternetAvailable(requireActivity())) {
             ViewDateReport(orderTakenByFilter);
-        } else
-            Toast.makeText(requireActivity(), "Please check the Internet Connection", Toast.LENGTH_SHORT).show();
+        }else
+            Toast.makeText(requireActivity(), "Please check the Internet connection", Toast.LENGTH_SHORT).show();
+
     }
 
-    private void ViewDateReport(String orderTakenByFilter) {
-        if (TimeUtils.getDate(TimeUtils.FORMAT1, fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1, toDateString)) <= 0) {
+    public void ViewDateReport(String orderTakenByFilter) {
+        if(TimeUtils.getDate(TimeUtils.FORMAT1, fromDateString).compareTo(TimeUtils.getDate(TimeUtils.FORMAT1, toDateString))<=0){
+
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<ReportDataList> responseBodyCall;
             String axn = "";
-            if (viewType == 1) {
+            if(viewType ==1){
                 if (OrderType.equalsIgnoreCase("1")) {
                     axn = "get/ViewReport";
                 } else {
                     axn = "get/secviewreport";
                 }
-            } else
+
+            }else
                 axn = "get/finreport";
 
             responseBodyCall = apiInterface.reportValues(axn, shared_common_pref.getvalue(Shared_Common_Pref.Sf_Code), shared_common_pref.getvalue(Shared_Common_Pref.Div_Code).replaceAll(",", ""), fromDateString, toDateString);
@@ -422,18 +441,25 @@ public class SecondaryOrderFragment extends Fragment {
         }
     }
 
+    public void onBackPressed() {
+        finish();
+    }
+
+    private void finish() {
+    }
+
     public void OnclickMasterType(List<Common_Model> myDataset, int position, int type) {
         customDialog.dismiss();
         if (type == 11) {
             txtOrderStatus.setText(myDataset.get(position).getName());
-            orderTakenByFilter = myDataset.get(position).getName();
-            Log.e("order filter", orderTakenByFilter);
+            orderTakenByFilter=myDataset.get(position).getName();
+            Log.e("order filter",orderTakenByFilter);
 
             ViewDateReport(orderTakenByFilter);
-//            mArrayList.clear();
 
         }
     }
+
 
     public Bitmap createBitmap3(View v, int width, int height) {
         // The measurement makes the view specified size
@@ -455,9 +481,9 @@ public class SecondaryOrderFragment extends Fragment {
 
     private void saveBitmap(Bitmap bitmap) {
 
-        fileName = String.valueOf(System.currentTimeMillis());
+        fileName  = String.valueOf(System.currentTimeMillis());
 
-        dirpath = Environment.getExternalStorageDirectory().toString();
+        dirpath = android.os.Environment.getExternalStorageDirectory().toString();
         File file = null;
         try {
             File appDir = new File(Environment.getExternalStorageDirectory(), "receiptImage");
